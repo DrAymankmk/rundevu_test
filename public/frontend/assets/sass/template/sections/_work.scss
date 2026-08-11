@@ -1,0 +1,68 @@
+/* work-area start -----------------------*/
+.work-card {
+    background: $white-color;
+    padding: 40px 45px;
+    border-radius: 16px;
+    text-align: center;
+    transition: 0.4s;
+    @include xxl {
+        padding: 40px 28px;
+    }
+    @include ml {
+        padding: 40px 22px;
+    }
+    @include lg {
+        padding: 40px 45px;
+    }
+    @include md {
+        padding: 40px 35px;
+    }
+    .box-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: $smoke-color5;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        color: $theme-color;
+        margin-bottom: 24px;
+        i {
+            transition: 0.4s;
+        }
+    }
+    .box-title {
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 18px;
+        transition: 0.4s;
+        @include xl {
+            font-size: 22px;
+        }
+    }
+    .box-text {
+        font-size: 18px;
+        letter-spacing: 0.02em;
+        margin-bottom: -0.5em;
+        margin-top: -0.5em;
+        transition: 0.4s;
+        @include ml {
+            font-size: 16px;
+        }
+    }
+    &:hover {
+        background: $theme-color;
+        .box-icon {
+            i {
+                transform: scale(-1) rotate(180deg);
+            }
+        }
+        .box-title {
+            color: $white-color;
+        }
+        .box-text {
+            color: $white-color;
+        }
+    }
+}

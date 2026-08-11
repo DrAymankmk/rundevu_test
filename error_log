@@ -1,0 +1,68 @@
+[10-Aug-2022 09:22:02 UTC] PHP Fatal error:  Cannot declare class App\Http\Requests\ClinicsPosts\ShiftEmployeeRequest, because the name is already in use in /home/m8oncvyq3588/public_html/tak.doctordietapp.com/app/Http/Requests/Clinics/ShiftEmployeeRequest.php on line 0
+[08-Nov-2022 13:57:04 UTC] PHP Warning:  require(/home/m8oncvyq3588/public_html/tak.doctordietapp.com/public/../vendor/autoload.php): Failed to open stream: No such file or directory in /home/m8oncvyq3588/public_html/tak.doctordietapp.com/public/index.php on line 34
+[08-Nov-2022 13:57:04 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/m8oncvyq3588/public_html/tak.doctordietapp.com/public/../vendor/autoload.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/m8oncvyq3588/public_html/tak.doctordietapp.com/public/index.php:34
+Stack trace:
+#0 /home/m8oncvyq3588/public_html/tak.doctordietapp.com/server.php(21): require_once()
+#1 {main}
+  thrown in /home/m8oncvyq3588/public_html/tak.doctordietapp.com/public/index.php on line 34
+[08-Nov-2022 13:58:25 UTC] PHP Warning:  require_once(/home/m8oncvyq3588/public_html/tak.doctordietapp.com/vendor/composer/autoload_real.php): Failed to open stream: No such file or directory in /home/m8oncvyq3588/public_html/tak.doctordietapp.com/vendor/autoload.php on line 10
+[08-Nov-2022 13:58:25 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/m8oncvyq3588/public_html/tak.doctordietapp.com/vendor/composer/autoload_real.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/m8oncvyq3588/public_html/tak.doctordietapp.com/vendor/autoload.php:10
+Stack trace:
+#0 /home/m8oncvyq3588/public_html/tak.doctordietapp.com/public/index.php(34): require()
+#1 /home/m8oncvyq3588/public_html/tak.doctordietapp.com/server.php(21): require_once('/home/m8oncvyq3...')
+#2 {main}
+  thrown in /home/m8oncvyq3588/public_html/tak.doctordietapp.com/vendor/autoload.php on line 10
+[08-Nov-2022 14:17:27 UTC] PHP Warning:  require(/home/m8oncvyq3588/public_html/tak.doctordietapp.com/vendor/composer/../symfony/polyfill-mbstring/bootstrap.php): Failed to open stream: No such file or directory in /home/m8oncvyq3588/public_html/tak.doctordietapp.com/vendor/composer/autoload_real.php on line 55
+[08-Nov-2022 14:17:27 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/m8oncvyq3588/public_html/tak.doctordietapp.com/vendor/composer/../symfony/polyfill-mbstring/bootstrap.php' (include_path='.:/opt/alt/php81/usr/share/pear:/opt/alt/php81/usr/share/php:/usr/share/pear:/usr/share/php') in /home/m8oncvyq3588/public_html/tak.doctordietapp.com/vendor/composer/autoload_real.php:55
+Stack trace:
+#0 /home/m8oncvyq3588/public_html/tak.doctordietapp.com/vendor/composer/autoload_real.php(38): composerRequire2308ef9be6ca293d0c647b7bacfb8391()
+#1 /home/m8oncvyq3588/public_html/tak.doctordietapp.com/vendor/autoload.php(12): ComposerAutoloaderInit2308ef9be6ca293d0c647b7bacfb8391::getLoader()
+#2 /home/m8oncvyq3588/public_html/tak.doctordietapp.com/public/index.php(34): require('/home/m8oncvyq3...')
+#3 /home/m8oncvyq3588/public_html/tak.doctordietapp.com/server.php(21): require_once('/home/m8oncvyq3...')
+#4 {main}
+  thrown in /home/m8oncvyq3588/public_html/tak.doctordietapp.com/vendor/composer/autoload_real.php on line 55
+[02-Feb-2023 08:51:24 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.1.0". You are running 7.4.33. in /home/takafoljood/public_html/vendor/composer/platform_check.php on line 24
+[14-Feb-2023 06:55:11 UTC] PHP Warning:  require(/home/takafoljood/public_html/public/../vendor/autoload.php): Failed to open stream: No such file or directory in /home/takafoljood/public_html/public/index.php on line 34
+[14-Feb-2023 06:55:11 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/takafoljood/public_html/public/../vendor/autoload.php' (include_path='.:/opt/cpanel/ea-php81/root/usr/share/pear') in /home/takafoljood/public_html/public/index.php:34
+Stack trace:
+#0 /home/takafoljood/public_html/server.php(21): require_once()
+#1 {main}
+  thrown in /home/takafoljood/public_html/public/index.php on line 34
+[20-May-2023 22:13:59 UTC] PHP Warning:  require(/home/takafoljood/public_html/public/../vendor/autoload.php): Failed to open stream: No such file or directory in /home/takafoljood/public_html/public/index.php on line 34
+[20-May-2023 22:13:59 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/takafoljood/public_html/public/../vendor/autoload.php' (include_path='.:/opt/cpanel/ea-php81/root/usr/share/pear') in /home/takafoljood/public_html/public/index.php:34
+Stack trace:
+#0 /home/takafoljood/public_html/server.php(21): require_once()
+#1 {main}
+  thrown in /home/takafoljood/public_html/public/index.php on line 34
+[20-May-2023 22:18:19 UTC] PHP Warning:  require(/home/takafoljood/public_html/public/../vendor/autoload.php): Failed to open stream: No such file or directory in /home/takafoljood/public_html/public/index.php on line 34
+[20-May-2023 22:18:19 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/takafoljood/public_html/public/../vendor/autoload.php' (include_path='.:/opt/cpanel/ea-php81/root/usr/share/pear') in /home/takafoljood/public_html/public/index.php:34
+Stack trace:
+#0 /home/takafoljood/public_html/server.php(21): require_once()
+#1 {main}
+  thrown in /home/takafoljood/public_html/public/index.php on line 34
+[21-May-2023 09:39:39 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.1.0". You are running 7.4.33. in /home/takafoljood/public_html/vendor/composer/platform_check.php on line 24
+[21-May-2023 09:40:18 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.1.0". You are running 7.4.33. in /home/takafoljood/public_html/vendor/composer/platform_check.php on line 24
+[21-May-2023 09:40:29 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.1.0". You are running 7.4.33. in /home/takafoljood/public_html/vendor/composer/platform_check.php on line 24
+[21-May-2023 09:41:25 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.1.0". You are running 8.0.28. in /home/takafoljood/public_html/vendor/composer/platform_check.php on line 24
+[21-May-2023 09:41:50 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.1.0". You are running 7.4.33. in /home/takafoljood/public_html/vendor/composer/platform_check.php on line 24
+[21-May-2023 09:42:22 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.1.0". You are running 7.4.33. in /home/takafoljood/public_html/vendor/composer/platform_check.php on line 24
+[21-May-2023 09:47:00 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.1.0". You are running 7.4.33. in /home/takafoljood/public_html/vendor/composer/platform_check.php on line 24
+[21-May-2023 09:52:40 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.1.0". You are running 7.4.33. in /home/takafoljood/public_html/vendor/composer/platform_check.php on line 24
+[21-May-2023 09:52:54 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.1.0". You are running 7.4.33. in /home/takafoljood/public_html/vendor/composer/platform_check.php on line 24
+[21-May-2023 10:00:08 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.1.0". You are running 7.4.33. in /home/takafoljood/public_html/vendor/composer/platform_check.php on line 24
+[21-May-2023 10:01:41 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.1.0". You are running 7.4.33. in /home/takafoljood/public_html/vendor/composer/platform_check.php on line 24
+[21-May-2023 10:02:23 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.1.0". You are running 7.4.33. in /home/takafoljood/public_html/vendor/composer/platform_check.php on line 24
+[21-May-2023 10:03:45 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.1.0". You are running 7.4.33. in /home/takafoljood/public_html/vendor/composer/platform_check.php on line 24
+[21-May-2023 10:14:46 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.1.0". You are running 7.4.33. in /home/takafoljood/public_html/vendor/composer/platform_check.php on line 24
+[21-May-2023 10:19:04 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.1.0". You are running 7.4.33. in /home/takafoljood/public_html/vendor/composer/platform_check.php on line 24
+[21-May-2023 10:30:08 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.1.0". You are running 7.4.33. in /home/takafoljood/public_html/vendor/composer/platform_check.php on line 24
+[21-May-2023 10:52:29 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.1.0". You are running 7.4.33. in /home/takafoljood/public_html/vendor/composer/platform_check.php on line 24
+[21-May-2023 10:53:43 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.1.0". You are running 7.4.33. in /home/takafoljood/public_html/vendor/composer/platform_check.php on line 24
+[21-May-2023 10:54:43 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.1.0". You are running 7.4.33. in /home/takafoljood/public_html/vendor/composer/platform_check.php on line 24
+[21-May-2023 11:00:08 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.1.0". You are running 7.4.33. in /home/takafoljood/public_html/vendor/composer/platform_check.php on line 24
+[21-May-2023 11:08:20 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.1.0". You are running 7.4.33. in /home/takafoljood/public_html/vendor/composer/platform_check.php on line 24
+[21-May-2023 11:20:32 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.1.0". You are running 7.4.33. in /home/takafoljood/public_html/vendor/composer/platform_check.php on line 24
+[21-May-2023 11:30:09 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.1.0". You are running 7.4.33. in /home/takafoljood/public_html/vendor/composer/platform_check.php on line 24
+[21-May-2023 11:31:11 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.1.0". You are running 7.4.33. in /home/takafoljood/public_html/vendor/composer/platform_check.php on line 24
+[21-May-2023 12:00:08 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.1.0". You are running 7.4.33. in /home/takafoljood/public_html/vendor/composer/platform_check.php on line 24
+[21-May-2023 12:30:07 UTC] PHP Fatal error:  Composer detected issues in your platform: Your Composer dependencies require a PHP version ">= 8.1.0". You are running 7.4.33. in /home/takafoljood/public_html/vendor/composer/platform_check.php on line 24

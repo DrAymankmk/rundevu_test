@@ -1,0 +1,18 @@
+@font-face {
+    font-family: din;
+    src: url(/admin/fonts/din.ttf);
+  }
+
+body {
+    background-color: rgba(246, 246, 246, 0.6);
+    font-size: 14px;
+    overflow-x: hidden;
+    font-family: din !important;
+    color: #313131;
+    direction: rtl;
+    text-align: right;
+}
+html
+{
+    font-family: din !important;
+}

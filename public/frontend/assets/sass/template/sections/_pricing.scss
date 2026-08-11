@@ -1,0 +1,724 @@
+/* Pricing 1 ---------------------------------- */
+.available-list {
+    @include xs {
+        padding: 0;
+    }
+
+    ul {
+        padding: 0;
+        margin: 0;
+        list-style: none;
+    }
+
+    li {
+        position: relative;
+        font-size: 18px;
+        color: $black-color;
+        padding-left: 40px;
+        margin-bottom: 15px;
+        text-transform: capitalize;
+
+        &:after {
+            content: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg clip-path='url(%23clip0_200_1643)'%3E%3Cpath d='M23.3137 3.2813C22.9607 2.92762 22.3878 2.92701 22.0348 3.2798L11.1835 14.1024L7.26844 9.85022C6.93014 9.483 6.35817 9.45919 5.99034 9.79744C5.62279 10.1357 5.59926 10.708 5.93756 11.0755L10.4903 16.02C10.6571 16.2012 10.8904 16.3064 11.1365 16.3115C11.1431 16.3118 11.1495 16.3118 11.1558 16.3118C11.3949 16.3118 11.6249 16.2168 11.7944 16.048L23.312 4.56056C23.6659 4.20783 23.6665 3.63497 23.3137 3.2813Z' fill='%23F96363'/%3E%3Cpath d='M23.0955 11.0955C22.5959 11.0955 22.191 11.5004 22.191 12C22.191 17.6195 17.6195 22.191 12 22.191C6.38081 22.191 1.80905 17.6195 1.80905 12C1.80905 6.38081 6.38081 1.80905 12 1.80905C12.4996 1.80905 12.9045 1.40414 12.9045 0.904547C12.9045 0.404906 12.4996 0 12 0C5.38312 0 0 5.38312 0 12C0 18.6166 5.38312 24 12 24C18.6166 24 24 18.6166 24 12C24 11.5004 23.5951 11.0955 23.0955 11.0955Z' fill='%23F96363'/%3E%3C/g%3E%3Cdefs%3E%3CclipPath id='clip0_200_1643'%3E%3Crect width='24' height='24' fill='white'/%3E%3C/clipPath%3E%3C/defs%3E%3C/svg%3E%0A");
+            font-family: var(--icon-font);
+            font-weight: 500;
+            color: $theme-color;
+            font-weight: 900;
+            font-size: 16px;
+            width: 16px;
+            height: 16px;
+            line-height: 16px;
+            text-align: center;
+            border-radius: 50px;
+            position: absolute;
+            top: 5px;
+            left: 0;
+        }
+
+        &.unavailable {
+            &:after {
+                content: "\f057";
+                right: 0px;
+            }
+        }
+
+        img {
+            max-width: 18px;
+            margin-right: 10px;
+        }
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+
+        &.unavailable {
+            font-weight: 400;
+            color: $body-color;
+
+            img {
+                opacity: 0.2;
+            }
+        }
+    }
+
+}
+
+/* Price card start -------------------------*/
+.price-box {
+    position: relative;
+    background-color: $white-color;
+    border: 1px solid #DEDFE3;
+    border-radius: 24px;
+    padding: 48px;
+    transition: 0.4s;
+    z-index: 1;
+    overflow: hidden;
+
+    @include xl {
+        padding: 48px 25px;
+    }
+
+    @include md {
+        padding: 48px 25px;
+    }
+
+    .price-title-wrap {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .subtitle {
+        color: $theme-color;
+        font-weight: 600;
+        margin-bottom: 0;
+    }
+
+    .box-title {
+        margin-bottom: 5px;
+
+        @include xs {
+            font-size: 24px;
+        }
+    }
+
+    .box-text {
+        color: $title-color;
+        margin-bottom: 30px;
+    }
+
+    .box-text2 {
+        font-size: 18px;
+        border-bottom: 1px solid #DEDFE3;
+        padding-bottom: 30px;
+        margin-bottom: 50px;
+    }
+
+    .box-price {
+        font-weight: 700;
+        font-size: 57px;
+        line-height: 72px;
+        letter-spacing: 0.02em;
+        margin-bottom: 0px;
+
+        @include sm {
+            font-size: 30px;
+        }
+    }
+
+    .duration {
+        font-size: 24px;
+        color: $body-color;
+        font-weight: 600;
+    }
+
+    .th-btn {
+        margin-top: 56px;
+    }
+
+
+    .offer-tag {
+        position: absolute;
+        top: 0px;
+        right: 0;
+        font-family: var(--title-font);
+        background-color: $theme-color;
+        border-radius: 0px 0px 0px 24px;
+        font-weight: 400;
+        font-size: 18px;
+        letter-spacing: 0.02em;
+        color: $white-color;
+        width: 178px;
+        height: 40px;
+        line-height: 40px;
+        display: inline-block;
+        text-align: center;
+        display: block;
+        opacity: 0;
+    }
+
+    &.active {
+        background-color: #FFF2F2;
+        border-color: #FFF2F2;
+
+        .th-btn {
+            border: 1px solid $theme-color;
+            background-color: $theme-color;
+            color: $white-color;
+
+            &:hover {
+                border-color: $title-color;
+            }
+
+        }
+
+        .offer-tag {
+            opacity: 1;
+        }
+    }
+    &.style2 {
+        .available-list li:after {
+            content: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg clip-path='url(%23clip0_692_4795)'%3E%3Cpath d='M23.3145 3.28105C22.9614 2.92738 22.3886 2.92677 22.0355 3.27955L11.1843 14.1021L7.26917 9.84997C6.93087 9.48275 6.3589 9.45894 5.99107 9.79719C5.62353 10.1355 5.6 10.7077 5.93829 11.0753L10.4911 16.0197C10.6578 16.2009 10.8912 16.3062 11.1372 16.3113C11.1438 16.3116 11.1502 16.3116 11.1565 16.3116C11.3956 16.3116 11.6256 16.2166 11.7951 16.0477L23.3127 4.56032C23.6667 4.20758 23.6673 3.63472 23.3145 3.28105Z' fill='%231FC5B1'/%3E%3Cpath d='M23.0955 11.0955C22.5959 11.0955 22.191 11.5004 22.191 12C22.191 17.6195 17.6195 22.191 12 22.191C6.38081 22.191 1.80905 17.6195 1.80905 12C1.80905 6.38081 6.38081 1.80905 12 1.80905C12.4996 1.80905 12.9045 1.40414 12.9045 0.904547C12.9045 0.404906 12.4996 0 12 0C5.38312 0 0 5.38312 0 12C0 18.6166 5.38312 24 12 24C18.6166 24 24 18.6166 24 12C24 11.5004 23.5951 11.0955 23.0955 11.0955Z' fill='%231FC5B1'/%3E%3C/g%3E%3Cdefs%3E%3CclipPath id='clip0_692_4795'%3E%3Crect width='24' height='24' fill='white'/%3E%3C/clipPath%3E%3C/defs%3E%3C/svg%3E");
+        }
+        &.active {
+            background: $smoke-color2;
+            border-color: $smoke-color2;
+            .th-btn {
+                background: $theme-color2;
+                border-color: $theme-color2;
+            }
+        }
+        .offer-tag {
+            background: $theme-color2;
+        }
+    }
+}
+
+
+.price-content {
+    background-color: $title-color;
+    border-radius: 16px;
+    display: flex;
+    justify-content: space-between;
+    padding: 32px 32px 20px 32px;
+
+    @include xs {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+    }
+
+    .subtitle {
+        font-weight: 500;
+        font-size: 18px;
+        letter-spacing: 0.02em;
+        color: $white-color;
+        display: block;
+        margin-bottom: 14px;
+
+        .duration {
+            font-weight: 400;
+        }
+    }
+
+    .box-title {
+        color: $white-color;
+    }
+
+    .box-text {
+        font-weight: 500;
+        font-size: 18px;
+        line-height: 24px;
+        letter-spacing: 0.02em;
+        color: #B7BDDE;
+        max-width: 344px;
+        margin-bottom: 25px;
+
+        @include xs {
+            display: block;
+            margin: auto auto 25px auto;
+        }
+    }
+
+    .th-btn {
+        padding: 13px 40px;
+    }
+}
+
+/* Price card end -------------------------*/
+
+/*price-card  start --------------------------*/
+.price-area {
+    position: relative;
+    z-index: 2;
+
+    &:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        width: 100%;
+        height: 585px;
+        background-color: $title-color;
+        z-index: -1;
+    }
+}
+
+.price-card {
+    position: relative;
+    background-color: $white-color;
+    border-radius: 16px;
+    z-index: 2;
+
+    .box-content {
+        background-color: #FFF2F2;
+        border-radius: 16px 16px 0 0;
+        padding: 40px;
+
+        @include xxl {
+            padding: 30px;
+        }
+    }
+
+    .box-title {
+        font-weight: 600;
+        font-size: 18px;
+        letter-spacing: 0.02em;
+        margin-bottom: 0;
+    }
+
+    .box-price {
+        margin-bottom: 5px;
+    }
+
+    .box-text {
+        margin-bottom: -0.3rem;
+
+    }
+
+    .available-list {
+        border-width: 0px 1px 1px 1px;
+        border-style: solid;
+        border-color: rgba(92, 95, 113, 0.2);
+        border-radius: 0px 0px 16px 16px;
+        padding: 40px;
+
+        @include xxl {
+            padding: 30px;
+        }
+        ul {            
+            margin-bottom: 40px;
+        }
+
+        li {
+            padding-left: 30px;
+
+            &:after {
+                content: url("data:image/svg+xml,%3Csvg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg clip-path='url(%23clip0_703_8014)'%3E%3Cpath d='M17.4849 2.46079C17.2201 2.19553 16.7904 2.19508 16.5256 2.45966L8.38722 10.5766L5.4509 7.38748C5.19718 7.11207 4.7682 7.09421 4.49233 7.34789C4.21667 7.60162 4.19902 8.0308 4.45274 8.30646L7.86733 12.0148C7.99238 12.1507 8.16739 12.2296 8.35192 12.2335C8.35688 12.2337 8.36166 12.2337 8.36641 12.2337C8.54574 12.2337 8.71825 12.1624 8.84534 12.0358L17.4835 3.42024C17.749 3.15569 17.7495 2.72604 17.4849 2.46079Z' fill='%231C2359'/%3E%3Cpath d='M17.3216 8.32159C16.9469 8.32159 16.6432 8.62527 16.6432 9C16.6432 13.2146 13.2146 16.6432 9 16.6432C4.78561 16.6432 1.35679 13.2146 1.35679 9C1.35679 4.78561 4.78561 1.35679 9 1.35679C9.3747 1.35679 9.67841 1.05311 9.67841 0.67841C9.67841 0.30368 9.3747 0 9 0C4.03734 0 0 4.03734 0 9C0 13.9624 4.03734 18 9 18C13.9624 18 18 13.9624 18 9C18 8.6253 17.6963 8.32159 17.3216 8.32159Z' fill='%231C2359'/%3E%3C/g%3E%3Cdefs%3E%3CclipPath id='clip0_703_8014'%3E%3Crect width='18' height='18' fill='white'/%3E%3C/clipPath%3E%3C/defs%3E%3C/svg%3E%0A");
+
+            }
+        }
+    }
+
+    .offer-tag {
+        background-color: $theme-color;
+        border-radius: 48px;
+        padding: 9px 16px;
+        font-weight: 500;
+        font-size: 16px;
+        letter-spacing: 0.02em;
+        color: $white-color;
+        position: absolute;
+        top: 32px;
+        right: 32px;
+        opacity: 0;
+        visibility: hidden;
+
+
+    }
+
+    .th-btn {
+        background-color: #F2F3FC;
+        border: none;
+    }
+
+    &.active {
+        .offer-tag {
+            opacity: 1;
+            visibility: visible;
+        }
+    }
+    &.style2 {
+        .box-content {
+            padding: 40px 40px 30px;
+        }
+        .box-price {
+            font-size: 40px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            margin-top: -0.1em;
+            margin-bottom: 0;
+            .duration {
+                font-size: 18px;
+                font-weight: 400;
+                color: $body-color;
+            }
+        }
+        .box-text {
+            line-height: 1.75em;
+            letter-spacing: 0.02em;
+        }
+        .available-list {
+            border: 0;
+        }
+        .th-btn {
+            margin: 0 -16px -16px;
+            width: -webkit-fill-available;
+            @include ml {
+                margin: 0;
+            }
+        }
+    }
+}
+
+/* price grid -------------------------------*/
+.price-grid {
+    background-color: $smoke-color2;
+    border: 1px solid $smoke-color;
+    border-radius: 50px;
+    padding: 60px;
+    transition: all 0.4s ease-in-out;
+
+    @include xl {
+        padding: 30px;
+        border-radius: 30px;
+    }
+
+    .box-title {
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+
+    .price-title-wrap {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        @include vxs {
+            display: block;
+        }
+    }
+
+    .available-list {
+
+        ul {
+
+            li {
+                padding: 0;
+                font-size: 16px;
+                text-transform: none;
+                padding-left: 30px;
+
+                &:before {
+                    content: "\f058";
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    font-family: $icon-font;
+                    font-weight: 700;
+                    color: $theme-color;
+                    font-size: 18px;
+                }
+
+                i {
+                    font-size: 18px;
+                    color: $theme-color;
+                    margin-right: 10px;
+                }
+
+                &:after {
+                    display: none;
+                }
+
+                span {
+                    display: block;
+                }
+            }
+        }
+    }
+
+    .box-text {
+        font-weight: 500;
+        font-size: 18px;
+        line-height: 26px;
+        color: $body-color;
+        border-bottom: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        gap: 20px;
+
+        @media(max-width: 480px) {
+            display: block;
+        }
+
+        span {
+            background: #FFE4E9;
+            border-radius: 30px;
+            padding: 2px 15px;
+            color: $theme-color;
+            font-size: 14px;
+            font-weight: 500;
+
+        }
+    }
+
+    .box-price {
+        font-size: 54px;
+        font-weight: 500;
+        margin-top: 12px;
+        border-bottom: 1px solid $smoke-color;
+        margin-bottom: 40px;
+        padding-bottom: 20px;
+
+        @media(max-width: 480px) {
+            margin: 10px 0;
+        }
+
+        del {
+            font-size: 20px;
+            font-weight: 500;
+            color: #A2ABBA;
+        }
+    }
+
+    .th-btn {
+        margin-top: 35px;
+    }
+}
+
+/* price item start ------------------------*/
+.price-item {
+    border: 1px solid #DEDFE3;
+    border-radius: 16px;
+    padding: 32px;
+
+    @include xxl {
+        padding: 25px;
+    }
+
+    .box-title {
+        max-width: 270px;
+
+        @include ml {
+            font-size: 21px;
+        }
+    }
+
+    .subtitle {
+        font-weight: 500;
+        font-size: 18px;
+        letter-spacing: 0.02em;
+        color: #5C5F71;
+
+
+    }
+
+    .btn-group {
+        margin-top: 24px;
+        justify-content: space-between;
+        align-items: end;
+    }
+
+    .box-price {
+        font-family: $title-font;
+        font-weight: 500;
+        font-size: 40px;
+        line-height: 50px;
+        letter-spacing: 0.02em;
+        color: $title-color;
+        margin-bottom: 0;
+        text-align: right;
+
+        @include ml {
+            text-align: left;
+        }
+
+        @include xl {
+            font-size: 30px;
+            line-height: 40px;
+        }
+    }
+
+    .price {
+        font-family: $title-font;
+        font-size: 18px;
+        line-height: 28px;
+        letter-spacing: 0.02em;
+        color: rgba(92, 95, 113, 0.5);
+
+    }
+
+    del {
+        display: block;
+        font-weight: 400;
+    }
+
+    .th-btn {
+        padding: 15px 24px;
+    }
+}
+
+/* price item end ------------------------*/
+.price-image {
+    border-radius: 16px;
+    height: 100%;
+    @include ml {
+        height: 500px;
+    }
+    img {
+        width: 100%;
+        height: 100%;
+        border-radius: 16px;
+    }
+}
+
+/* price grid -------------------------------*/
+.pricing-tab-wrap5 {
+    border: 1px solid $border-color;
+    border-radius: 8px;
+    display: inline-flex;
+    gap: 16px;
+    padding: 8px;
+    margin-bottom: 45px;
+    @include vxs {
+        display: flex;
+    }
+    .nav-link {
+        min-width: 220px;
+        border: 0;
+        background: $smoke-color2;
+        font-size: 18px;
+        font-weight: 600;
+        font-family: $title-font;
+        letter-spacing: 0.02em;
+        color: $title-color;
+        margin-bottom: 0;
+        border-radius: 8px;
+        padding: 15px 40px;
+        &.active {
+            background: $theme-color;
+            color: $white-color;
+        }
+        @include xl {
+            min-width: auto;
+        }
+        @include vxs {
+            width: 100%;
+        }
+    }
+}
+.pricing-text5 {
+    font-size: 18px;
+    letter-spacing: 0.02em;
+    color: $title-color;
+    margin-bottom: 0;
+    a {
+        color: $title-color;
+        font-size: 24px;
+        font-weight: 600;
+        font-family: $title-font;
+        letter-spacing: 0.02em;
+        text-decoration: underline;
+        &:hover {
+            color: $theme-color;
+        }
+    }
+}
+.price-card2 {
+    display: flex;
+    border-radius: 24px;
+    padding: 40px;
+    align-items: center;
+    @include xl {
+        padding: 30px;
+    }
+    @include sm {
+        display: block;
+    }
+    .price-box-content {
+        flex: 0 0 50%;
+        border-right: 1px solid $border-color;
+        padding-right: 48px;
+        margin-right: 48px;
+        position: relative;
+        @include ml {
+            padding-right: 38px;
+            margin-right: 38px;
+        }
+        @include xl {
+            padding-right: 30px;
+            margin-right: 30px;
+        }
+        @include sm {
+            border-right: 0;
+            padding-right: 0;
+            margin-right: 0;
+            margin-bottom: 35px;
+        }
+        .box-icon {
+            position: absolute;
+            top: 0;
+            right: 48px;
+            @include ml {
+                position: relative;
+                right: 0;
+                margin-bottom: 40px;
+            }
+        }
+    }
+    .box-title {
+        font-size: 18px;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        display: inline-block;
+        padding: 11px 32px;
+        border-radius: 8px;
+        margin-bottom: 34px;
+        @include xl {
+            margin-bottom: 24px;
+        }
+    }
+    .box-price {
+        font-size: 56px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        margin-bottom: -0.1em;
+        @include lg {
+            font-size: 48px;
+        }
+        @include md {
+            font-size: 42px;
+            margin-bottom: 0;
+        }
+        @include sm {
+            font-size: 38px;
+        }
+        @include xs {
+            font-size: 36px;
+        }
+    }
+    .box-text {
+        font-size: 18px;
+        letter-spacing: 0.02em;
+        margin-bottom: 46px;
+        @include xl {
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+    }
+    .available-list li {
+        padding-left: 26px;
+        &:after {
+            content: url("data:image/svg+xml,%3Csvg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg clip-path='url(%23clip0_342_2076)'%3E%3Cpath d='M17.4854 2.46097C17.2206 2.19572 16.7909 2.19526 16.5261 2.45985L8.38771 10.5768L5.45139 7.38766C5.19766 7.11225 4.76869 7.09439 4.49282 7.34808C4.21716 7.6018 4.19951 8.03099 4.45323 8.30665L7.86782 12.015C7.99287 12.1509 8.16788 12.2298 8.35241 12.2336C8.35737 12.2338 8.36215 12.2338 8.3669 12.2338C8.54623 12.2338 8.71874 12.1626 8.84583 12.036L17.484 3.42042C17.7495 3.15587 17.75 2.72623 17.4854 2.46097Z' fill='%231C2359'/%3E%3Cpath d='M17.3216 8.32159C16.9469 8.32159 16.6432 8.62527 16.6432 9C16.6432 13.2146 13.2146 16.6432 9 16.6432C4.78561 16.6432 1.35679 13.2146 1.35679 9C1.35679 4.78561 4.78561 1.35679 9 1.35679C9.3747 1.35679 9.67841 1.05311 9.67841 0.67841C9.67841 0.30368 9.3747 0 9 0C4.03734 0 0 4.03734 0 9C0 13.9624 4.03734 18 9 18C13.9624 18 18 13.9624 18 9C18 8.6253 17.6963 8.32159 17.3216 8.32159Z' fill='%231C2359'/%3E%3C/g%3E%3Cdefs%3E%3CclipPath id='clip0_342_2076'%3E%3Crect width='18' height='18' fill='white'/%3E%3C/clipPath%3E%3C/defs%3E%3C/svg%3E");
+        }
+    }
+}
