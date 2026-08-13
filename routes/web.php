@@ -880,6 +880,7 @@ Route::group(["middleware" => ["auth", "setlocale"], 'prefix' => 'admin', 'names
         Route::get('clinic-details/{clinic_id}', 'ClinicsController@clinic_details')->name('clinic-details');
         Route::get('doctor-details/{clinic_id}', 'ClinicsController@doctor_details')->name('doctor-details');
         Route::post('update-clinic/{id}', 'ClinicsController@update_clinic')->name('update-clinic');
+        Route::post('update-clinic-seo/{id}', 'ClinicsController@update_clinic_seo')->name('update-clinic-seo');
         Route::delete('destroy-clinic/{id}', 'ClinicsController@destroy_clinic')->name('destroy-clinic');
         Route::get('update-status-clinic/{id}/{status}', 'ClinicsController@update_status_clinic')->name('update-status-clinic');
         Route::get('/load-tab-content/{app_id}/{clinic_id}', 'ClinicsController@loadTabContent')->name('load-tab-content');

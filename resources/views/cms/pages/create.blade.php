@@ -16,7 +16,7 @@
 		</div>
 	</div>
 
-	<form action="{{ route('cms.pages.store') }}" method="POST">
+	<form action="{{ route('cms.pages.store') }}" method="POST" enctype="multipart/form-data">
 		@csrf
 
 		<div class="row">
@@ -174,6 +174,11 @@
 				</div>
 			</div>
 		</div>
+
+		@include('components.seo-form', [
+			'languages' => $languages,
+			'seo' => null,
+		])
 	</form>
 </div>
 @endsection

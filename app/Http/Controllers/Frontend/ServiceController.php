@@ -5,15 +5,20 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\CmsPage;
+use App\Services\Seo\SeoResolver;
 
 class ServiceController extends Controller
 {
-    //
+    public function __construct(private SeoResolver $seoResolver)
+    {
+    }
+
     public function index()
     {
         $cmsPage = CmsPage::query()
             ->where('slug', 'services')
             ->where('is_active', true)
+            ->with(['seoMeta.translations', 'translations'])
             ->first();
 
         $cmsPageSections = collect();
@@ -38,6 +43,8 @@ class ServiceController extends Controller
                 ->get();
         }
 
-        return view('frontend.pages.services.index', compact('cmsPage', 'cmsPageSections'));
+        $seo = $this->seoResolver->resolveForCmsSlug('services', 'frontend.services', __('main.services'));
+
+        return view('frontend.pages.services.index', compact('cmsPage', 'cmsPageSections', 'seo'));
     }
 }

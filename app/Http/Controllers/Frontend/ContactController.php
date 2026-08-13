@@ -8,14 +8,20 @@ use Illuminate\Http\Request;
 use App\Models\CmsPage;
 use App\Models\ContactUs;
 use App\Models\DemoRequest;
+use App\Services\Seo\SeoResolver;
+
 class ContactController extends Controller
 {
-    //
+    public function __construct(private SeoResolver $seoResolver)
+    {
+    }
+
 	public function index()
     {
         $cmsPage = CmsPage::query()
             ->where('slug', 'contact')
             ->where('is_active', true)
+            ->with(['seoMeta.translations', 'translations'])
             ->first();
 
         $cmsPageSections = collect();
@@ -40,7 +46,9 @@ class ContactController extends Controller
                 ->get();
         }
 
-        return view('frontend.pages.contact.index', compact('cmsPage', 'cmsPageSections'));
+        $seo = $this->seoResolver->resolveForCmsSlug('contact', 'frontend.contact', __('main.contact_us'));
+
+        return view('frontend.pages.contact.index', compact('cmsPage', 'cmsPageSections', 'seo'));
     }
 
     public function bookDemo(Request $request)

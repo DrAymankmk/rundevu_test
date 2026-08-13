@@ -1,0 +1,30 @@
+@php
+    $googleSiteVerification = preg_replace('/[^A-Za-z0-9_-]/', '', (string) config('services.google.site_verification'));
+    $googleAnalyticsId = preg_replace('/[^A-Za-z0-9-]/', '', (string) config('services.google.analytics_id'));
+    $googleTagManagerId = preg_replace('/[^A-Za-z0-9-]/', '', (string) config('services.google.tag_manager_id'));
+@endphp
+
+@if($googleSiteVerification !== '')
+<meta name="google-site-verification" content="{{ $googleSiteVerification }}">
+@endif
+
+@if($googleTagManagerId !== '')
+<script>
+window.dataLayer = window.dataLayer || [];
+</script>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','{{ $googleTagManagerId }}');</script>
+@endif
+
+@if($googleAnalyticsId !== '')
+<script async src="https://www.googletagmanager.com/gtag/js?id={{ $googleAnalyticsId }}"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', '{{ $googleAnalyticsId }}');
+</script>
+@endif

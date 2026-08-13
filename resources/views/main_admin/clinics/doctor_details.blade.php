@@ -368,6 +368,12 @@
                 </div>
             </div>
         </div>
+
+        @include('components.seo-form', [
+            'languages' => $languages,
+            'seo' => $doctor->seoMeta,
+            'formAction' => route('update-clinic-seo', $doctor->id),
+        ])
     </div>
 
 @endsection

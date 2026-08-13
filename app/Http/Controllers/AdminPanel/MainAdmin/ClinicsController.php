@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AppType;
 use App\Models\City;
 use App\Models\Clinic;
+use App\Models\CmsLanguage;
 use App\Models\ClinicContract;
 use App\Models\ClinicRating;
 use App\Models\ClinicSpecialist;
@@ -13,6 +14,7 @@ use App\Models\InsuranceClasses;
 use App\Models\Package;
 use App\Models\Specialty;
 use App\Models\SubscriptionsPackageClinic;
+use App\Services\Seo\SeoSyncService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
@@ -64,22 +66,25 @@ class ClinicsController extends Controller
             'specialties',
             'currentPackage',
             'contract',
+            'seoMeta.translations',
         ])
             ->withCount(['clinic_points', 'posts'])
             ->whereId($clinic_id)
             ->first();
         $app_types = AppType::whereIn('id', [2,3,5,8,9,10,25,26,27])->get();
         $data['rating'] = ClinicRating::where('clinic_id', $clinic_id)->where('comment', '!=', null)->avg('rate_value');
-        return view('main_admin.clinics.details', compact('clinic','data','app_types'));
+        $languages = CmsLanguage::active()->ordered()->get();
+        return view('main_admin.clinics.details', compact('clinic','data','app_types', 'languages'));
     }
 
     // doctor details
     function doctor_details($doctor_id)
     {
-        $doctor = Clinic::with('specialties')->withCount('complaints','reservations_done','reservations_cancel','condition')->whereId($doctor_id)->first();
+        $doctor = Clinic::with(['specialties', 'seoMeta.translations'])->withCount('complaints','reservations_done','reservations_cancel','condition')->whereId($doctor_id)->first();
         $groupedReservations = $doctor->reservations->groupBy('status_id'); // Or name_en based on locale
+        $languages = CmsLanguage::active()->ordered()->get();
 
-        return view('main_admin.clinics.doctor_details', compact('doctor','groupedReservations'));
+        return view('main_admin.clinics.doctor_details', compact('doctor','groupedReservations', 'languages'));
     }
 
     public function update_clinic($id, Request $request)
@@ -95,6 +100,19 @@ class ClinicsController extends Controller
         $edit_clinic->update($data);
         $this->syncContract($edit_clinic, $request);
         session()->flash('success', trans('messages.updated'));
+        return redirect()->back();
+    }
+
+    public function update_clinic_seo($id, Request $request, SeoSyncService $seoSync)
+    {
+        $clinic = Clinic::findOrFail($id);
+
+        $request->validate(SeoSyncService::validationRules());
+
+        $seoSync->sync($clinic, $request);
+
+        session()->flash('success', trans('messages.updated'));
+
         return redirect()->back();
     }
 

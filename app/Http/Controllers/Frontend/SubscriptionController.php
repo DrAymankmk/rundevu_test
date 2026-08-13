@@ -9,6 +9,7 @@ use App\Models\ClinicSpecialist;
 use App\Models\CmsPage;
 use App\Models\Package;
 use App\Models\SubscriptionsPackageClinic;
+use App\Services\Seo\SeoResolver;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -23,11 +24,16 @@ use Illuminate\Validation\ValidationException;
 
 class SubscriptionController extends Controller
 {
+    public function __construct(private SeoResolver $seoResolver)
+    {
+    }
+
     public function index(Request $request)
     {
         $cmsPage = CmsPage::query()
             ->where('slug', 'subscription')
             ->where('is_active', true)
+            ->with(['seoMeta.translations', 'translations'])
             ->first();
 
         $cmsPageSections = collect();
@@ -62,12 +68,15 @@ class SubscriptionController extends Controller
             ? $packages->firstWhere('id', $selectedPackageId)
             : null;
 
+        $seo = $this->seoResolver->resolveForCmsSlug('subscription', 'frontend.subscription', __('main.subscription'));
+
         return view('frontend.pages.subscription.index', compact(
             'cmsPage',
             'cmsPageSections',
             'packages',
             'selectedPackage',
-            'selectedPackageId'
+            'selectedPackageId',
+            'seo'
         ));
     }
 

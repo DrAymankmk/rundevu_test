@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use App\Services\Seo\SeoResolver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -57,6 +58,12 @@ class AppServiceProvider extends ServiceProvider
             }
 
             $view->with('unreadContactUsCount', $unreadContactUsCount);
+        });
+
+        View::composer('frontend.layout.app', function ($view) {
+            if (! array_key_exists('seo', $view->getData())) {
+                $view->with('seo', app(SeoResolver::class)->defaults());
+            }
         });
     }
 }

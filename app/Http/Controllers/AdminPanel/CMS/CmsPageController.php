@@ -4,6 +4,7 @@ namespace App\Http\Controllers\AdminPanel\CMS;
 
 use App\Models\CmsPage;
 use App\Models\CmsLanguage;
+use App\Services\Seo\SeoSyncService;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
@@ -93,9 +94,9 @@ class CmsPageController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, SeoSyncService $seoSync)
     {
-        $validated = $request->validate([
+        $validated = $request->validate(array_merge([
             'slug' => 'required|string|max:255|unique:cms_pages,slug',
             'name' => 'required|string|max:255',
             'is_active' => 'boolean',
@@ -104,7 +105,7 @@ class CmsPageController extends Controller
             'translations.*.title' => 'required|string|max:255',
             'translations.*.meta_description' => 'nullable|string',
             'translations.*.meta_keywords' => 'nullable|string|max:255',
-        ]);
+        ], SeoSyncService::validationRules()));
 
         $page = CmsPage::create([
             'slug' => $validated['slug'],
@@ -122,6 +123,8 @@ class CmsPageController extends Controller
                 'meta_keywords' => $translationData['meta_keywords'] ?? null,
             ]);
         }
+
+        $seoSync->sync($page, $request);
 
         return redirect()->route('cms.pages.index')
             ->with('success', __('Page created successfully'));
@@ -146,17 +149,17 @@ class CmsPageController extends Controller
         $languages = CmsLanguage::active()->ordered()->get();
         $page->load(['translations', 'sections' => function($query) {
             $query->orderBy('order');
-        }, 'sections.translations']);
+        }, 'sections.translations', 'seoMeta.translations']);
         return view('cms.pages.edit', compact('page', 'languages'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id, SeoSyncService $seoSync)
     {
         $page = CmsPage::findOrFail($id);
-        $validated = $request->validate([
+        $validated = $request->validate(array_merge([
             'slug' => 'required|string|max:255|unique:cms_pages,slug,' . $page->id,
             'name' => 'required|string|max:255',
             'is_active' => 'boolean',
@@ -165,7 +168,7 @@ class CmsPageController extends Controller
             'translations.*.title' => 'required|string|max:255',
             'translations.*.meta_description' => 'nullable|string',
             'translations.*.meta_keywords' => 'nullable|string|max:255',
-        ]);
+        ], SeoSyncService::validationRules()));
 
         $page->update([
             'slug' => $validated['slug'],
@@ -185,6 +188,8 @@ class CmsPageController extends Controller
                 ]
             );
         }
+
+        $seoSync->sync($page, $request);
 
         return redirect()->route('cms.pages.index')
             ->with('success', __('Page updated successfully'));
