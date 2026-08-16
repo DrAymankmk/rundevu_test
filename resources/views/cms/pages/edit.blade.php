@@ -21,7 +21,7 @@
 		</div>
 	</div>
 
-	<form action="{{ route('cms.pages.update', $page->id) }}" method="POST">
+	<form action="{{ route('cms.pages.update', $page->id) }}" method="POST" enctype="multipart/form-data">
 		@csrf
 		@method('PUT')
 
@@ -210,6 +210,11 @@
 				</div>
 			</div>
 		</div>
+
+		@include('components.seo-form', [
+			'languages' => $languages,
+			'seo' => $page->seoMeta,
+		])
 	</form>
 </div>
 @endsection

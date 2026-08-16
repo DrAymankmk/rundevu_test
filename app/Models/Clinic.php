@@ -7,13 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
-
+use App\Traits\HasSeo;
 class Clinic extends Authenticatable
 {
-    use HasFactory,HasRoles;
+    use HasFactory,HasRoles,HasSeo;
     protected $fillable = [
         'name', 'email', 'password', 'phone', 'image', 'qr_code', 'status', 'app_type', 'parent_id', 'city_id', 'lat', 'lng', 'address',
-        'gender', 'date_created','package_end_date', 'communication_officer','communication_officer_phone', 'specialization', 'firebase_token', 'platform', 'device_token', 'jwt_token', 'info', 'degree_id', 'ID_Number',
+        'gender', 'date_created','package_end_date', 'communication_officer','communication_officer_phone', 'specialization', 'firebase_token', 'platform', 'device_token', 'jwt_token', 'info', 'info_ar', 'consultation_price', 'degree_id', 'ID_Number',
         'facebook_url', 'instagram_url', 'tiktok_url', 'snapchat_url', 'youtube_url'
         ,'is_manager','nursing_point_id','notes','role_id','points_enabled','points_category','enabled_modules',
         'license_number','medical_commercial_license','alternative_phone'
@@ -22,6 +22,7 @@ class Clinic extends Authenticatable
     protected $casts = [
         'enabled_modules' => 'array',
         'points_enabled' => 'boolean',
+        'consultation_price' => 'decimal:2',
     ];
 
     public function contractOwner()
@@ -214,7 +215,15 @@ class Clinic extends Authenticatable
     {
         return $this->hasMany(Clinic::class, 'parent_id')
             ->where('app_type', 3)
-            ->select('id', 'parent_id', 'name', 'phone', 'image', 'info', 'info_ar');
+            ->select('id', 'parent_id', 'name', 'phone', 'image', 'info', 'info_ar', 'consultation_price');
+    }
+
+    function branches()
+    {
+        return $this->hasMany(Clinic::class, 'parent_id')
+            ->where('app_type', 7)
+            ->where('status', 1)
+            ->select('id', 'parent_id', 'app_type', 'name', 'email', 'phone', 'image', 'lat', 'lng', 'address', 'status');
     }
 
 

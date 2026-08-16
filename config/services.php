@@ -44,4 +44,10 @@ return [
         'timeout' => env('FOURJAWALY_TIMEOUT', 30),
     ],
 
+    'google' => [
+        'site_verification' => env('GOOGLE_SITE_VERIFICATION'),
+        'analytics_id' => env('GOOGLE_ANALYTICS_ID'),
+        'tag_manager_id' => env('GOOGLE_TAG_MANAGER_ID'),
+    ],
+
 ];

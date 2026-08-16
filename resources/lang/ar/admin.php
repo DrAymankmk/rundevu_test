@@ -1215,6 +1215,12 @@ return [
     'document' => 'Document',
     'audio' => 'Audio',
     'video' => 'Video',
+    'consultation_price' => 'سعر الكشف',
+    'doctor_bio_ar' => 'نبذة مختصرة عربي',
+    'doctor_bio_en' => 'نبذة مختصرة إنجليزي',
+    'enter_consultation_price' => 'ادخل سعر الكشف',
+    'enter_doctor_bio_ar' => 'ادخل نبذة مختصرة عربي',
+    'enter_doctor_bio_en' => 'ادخل نبذة مختصرة إنجليزي',
 
 
 

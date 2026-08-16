@@ -19,6 +19,9 @@ class ClinicDoctorsResource extends JsonResource
             'image' => $this->image,
             'name' => $this->name,
             'phone' => $this->phone,
+            'bio_ar' => (string) ($this->info_ar ?? ''),
+            'bio_en' => (string) ($this->info ?? ''),
+            'consultation_price' => (string) ($this->consultation_price ?? '0'),
             'specialties' => $this->specialtyNames($this, $request->header('lang')),
             'specialty_id' => optional($this->specialty->first())->specialty_id,
             'sub_specialties' => $this->sub_specialties->map(function ($item) {

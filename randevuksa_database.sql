@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Aug 11, 2026 at 07:30 PM
+-- Generation Time: Aug 16, 2026 at 06:53 PM
 -- Server version: 8.0.46
 -- PHP Version: 8.4.24
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `randevuksa_test`
+-- Database: `randevuksa_database`
 --
 
 -- --------------------------------------------------------
@@ -218,13 +218,6 @@ CREATE TABLE `attendance_settings` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Dumping data for table `attendance_settings`
---
-
-INSERT INTO `attendance_settings` (`id`, `clinic_id`, `attendance_period`, `leaving_period`, `extra_time`, `created_at`, `updated_at`) VALUES
-(2, 1, 4, 4, 8, '2023-08-19 07:41:35', '2023-08-19 07:41:35');
-
 -- --------------------------------------------------------
 
 --
@@ -289,11 +282,11 @@ CREATE TABLE `clinics` (
   `post_number` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `fax` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `website` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `facebook_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `instagram_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `tiktok_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `snapchat_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `youtube_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `facebook_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `instagram_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `tiktok_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `snapchat_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `youtube_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `monitor_username` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `monitor_password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `qr_code` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -304,7 +297,7 @@ CREATE TABLE `clinics` (
   `package_end_date` date DEFAULT NULL,
   `communication_officer` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `communication_officer_phone` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `alternative_phone` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `alternative_phone` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `lat` double DEFAULT '0',
   `lng` double DEFAULT '0',
   `address` varchar(191) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -312,17 +305,18 @@ CREATE TABLE `clinics` (
   `specialization` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `status` tinyint NOT NULL DEFAULT '1',
   `points_enabled` tinyint NOT NULL DEFAULT '0',
-  `points_category` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `enabled_modules` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `points_category` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `enabled_modules` longtext COLLATE utf8mb4_unicode_ci,
   `platform` tinyint NOT NULL DEFAULT '1' COMMENT '1 android ,2 ios',
   `device_token` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `jwt_token` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `info` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `info_ar` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `consultation_price` decimal(10,2) DEFAULT NULL,
   `degree_id` bigint DEFAULT NULL,
   `ID_Number` int DEFAULT NULL,
-  `license_number` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `medical_commercial_license` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `license_number` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `medical_commercial_license` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `condition` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `firebase_token` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `tax` int NOT NULL DEFAULT '15',
@@ -338,39 +332,25 @@ CREATE TABLE `clinics` (
 -- Dumping data for table `clinics`
 --
 
-INSERT INTO `clinics` (`id`, `name`, `email`, `phone`, `password`, `image`, `post_number`, `fax`, `website`, `facebook_url`, `instagram_url`, `tiktok_url`, `snapchat_url`, `youtube_url`, `monitor_username`, `monitor_password`, `qr_code`, `app_type`, `parent_id`, `city_id`, `date_created`, `package_end_date`, `communication_officer`, `communication_officer_phone`, `alternative_phone`, `lat`, `lng`, `address`, `gender`, `specialization`, `status`, `points_enabled`, `points_category`, `enabled_modules`, `platform`, `device_token`, `jwt_token`, `info`, `info_ar`, `degree_id`, `ID_Number`, `license_number`, `medical_commercial_license`, `condition`, `firebase_token`, `tax`, `is_manager`, `nursing_point_id`, `notes`, `role_id`, `created_at`, `updated_at`) VALUES
-(1, 'Al Hayah Hospital', 'clinic@gmail.com', '0522212369', '$2y$12$4iZV6G9DJMYwSY2wZdGj2eDM4oRYt8rNsq7dBBR57S.41Ev0VLvKm', '16850300511957.jpg', NULL, NULL, NULL, 'https://www.facebook.com/Alhayatalgadidahospital/?_rdr', 'https://www.instagram.com/hnhgrooup', NULL, NULL, 'https://www.youtube.com/channel/UCueDME1ckhHWNJOtT41n4XQ', NULL, NULL, '16850262478092.jpg', 1, 1, 5, '1970-01-01', NULL, 'دكتور احمد', NULL, NULL, 24.4412804, 39.6198035, 'مستشفى الحياة الوطني، طريق الهجرة الفرعي، المدينة المنورة السعودية', 1, NULL, 1, 1, NULL, '[\"points\",\"clinic_admin\"]', 1, '2134', 'nVBQ6w8i32ALah9wccEgup2Zlxyj3VHXIxzsvsgf1HEBlzLPMC1673301726', 'مستشفى الحياة طريق الهجره', NULL, NULL, 930230712, NULL, NULL, NULL, '2134', 15, 0, NULL, NULL, NULL, '2022-07-03 04:44:23', '2026-07-18 11:28:47'),
-(189, 'مدير المشروع', 'admin@gmail.com', '01221274700', '$2y$12$4iZV6G9DJMYwSY2wZdGj2eDM4oRYt8rNsq7dBBR57S.41Ev0VLvKm', '16850300511957.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '16850262478092.jpg', 6, 1, 5, '1970-01-01', NULL, 'دكتور احمد', NULL, NULL, 24.4412804, 39.6198035, 'مستشفى الحياة الوطني، طريق الهجرة الفرعي، المدينة المنورة السعودية', 1, NULL, 1, 0, NULL, NULL, 1, '2134', 'nVBQ6w8i32ALah9wccEgup2Zlxyj3VHXIxzsvsgf1HEBlzLPMC1673301725', 'مستشفى الحياة طريق الهجره', NULL, NULL, 930230712, NULL, NULL, NULL, '2134', 15, 0, NULL, NULL, NULL, '2022-07-03 04:44:23', '2026-05-13 21:17:49'),
-(194, 'reception', 'rec@gmail.com', '01221274712', '$2y$12$4iZV6G9DJMYwSY2wZdGj2eDM4oRYt8rNsq7dBBR57S.41Ev0VLvKm', '17659851225359.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 2, 1, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 1, NULL, 1, 0, NULL, NULL, 1, NULL, 'ykqSa2hJMy0KYxHTFjW5V0Tosxj53FOgewtlkxilyqjkDxavNrce2Y8aHvqXwO9r8mhVEWXsG8q', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 15, 0, NULL, NULL, NULL, '2025-12-17 15:25:22', '2025-12-17 15:25:22'),
-(196, 'Rasel', 'recepr60@gmail.com', '0544615283', '$2y$12$4iZV6G9DJMYwSY2wZdGj2eDM4oRYt8rNsq7dBBR57S.41Ev0VLvKm', '17790489788359.png', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 2, 1, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 2, NULL, 1, 0, NULL, NULL, 1, NULL, 'wDtcLZfR3IAZEb5mcHVBCHeGb4Uv4wCRPO3jprjyFOLsmFu3oNfYNMRq2gOChUZmuJgeuFPXjV9', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 15, 0, NULL, NULL, NULL, '2025-12-22 09:23:01', '2026-05-18 22:32:32'),
-(197, 'test', 'test@gmail.com', '0111122223355', '$2y$12$4iZV6G9DJMYwSY2wZdGj2eDM4oRYt8rNsq7dBBR57S.41Ev0VLvKm', '17663965814125.jpeg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 7, 1, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 1, NULL, 1, 0, NULL, NULL, 1, NULL, 'Dz2XtsoS16XNtC0tUgHAVWAw4MzIFlVAwgBEY4b3zOnDkP6r0S7KoGxPAq3xGL3sSfus7gVSgEH', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 15, 0, NULL, NULL, NULL, '2025-12-22 09:43:01', '2026-05-17 13:53:33'),
-(200, 'مستشفى المواساة', 'info@mouwasat.com', '+966 920 004 477', '$2y$12$4iZV6G9DJMYwSY2wZdGj2eDM4oRYt8rNsq7dBBR57S.41Ev0VLvKm', '17711467056383.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 200, 1, NULL, '2026-06-15', NULL, NULL, NULL, 24.3450512, 54.7460581, 'مدينة الرياض - Abu Dhabi - United Arab Emirates', 1, NULL, 1, 0, NULL, NULL, 1, NULL, 'o7AMWV2IcbHUjnF46upPVYQd1XfveVjD7lJlPjca8n0LMmXsTtdxXUZDzSnMjcm4jdX8Zdjs2sU', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 15, 0, NULL, NULL, NULL, '2026-02-15 09:11:45', '2026-02-15 09:11:45'),
-(201, 'مستشفي السلام', 'Elslam@gmail.com', '01020685285', '$2y$12$4iZV6G9DJMYwSY2wZdGj2eDM4oRYt8rNsq7dBBR57S.41Ev0VLvKm', '17711682619617.png', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 201, 1, '1970-01-01', '2028-02-05', NULL, NULL, NULL, 24.7135517, 46.6752957, 'الرياض Saudi Arabia', 1, NULL, 1, 0, NULL, NULL, 1, NULL, 'VJDRRjW9MHJ1hKe1o9ge1XwLMW7iHehYHWbclGXwfAotvq9CSkoDvpj8ZW18W2JhP2Ev6UNAEMg', 'تفاصيل العيادة', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 15, 0, NULL, NULL, NULL, '2026-02-15 15:11:01', '2026-03-25 16:17:25'),
-(202, 'احمد علي', 'ahmed1@hospital.com', '01010000001', '$2y$12$4iZV6G9DJMYwSY2wZdGj2eDM4oRYt8rNsq7dBBR57S.41Ev0VLvKm', '17711710607276.jpeg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, 1, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 1, NULL, 1, 0, NULL, NULL, 1, NULL, 'FBrWK3w57nLKvkGerTc4S1UAqKuBdm6VC5c2iL9nekaGmkBiQVWZA7Ya89mhlYi85Ex65XxzMfq', NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, 15, 0, NULL, NULL, NULL, '2026-02-15 15:57:40', '2026-02-15 15:57:40'),
-(203, 'محمود حسن', 'mahmoud2@hospital.com', '01010000002', '$2y$12$4iZV6G9DJMYwSY2wZdGj2eDM4oRYt8rNsq7dBBR57S.41Ev0VLvKm', '17711712183876.jpeg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, 1, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 1, NULL, 1, 0, NULL, NULL, 1, NULL, '5N5gzneogRevZTd1QWdYFtbGCb1PpiOqQtjPXCWnON3tdd9ERIQR9HJPMUmmQf0ssURPReK4JYv', NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, 15, 0, NULL, NULL, NULL, '2026-02-15 16:00:18', '2026-02-15 16:00:18'),
-(204, 'كريم محمد', 'karim3@hospital.com', '01010000003', '$2y$12$4iZV6G9DJMYwSY2wZdGj2eDM4oRYt8rNsq7dBBR57S.41Ev0VLvKm', '17711714959013.jpeg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, 1, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 1, NULL, 1, 0, NULL, NULL, 1, NULL, 'WwcvaQ3MTF7tonjNObosxJxoW0P6TXdCQ2a7xQzSuih6dw8BhQQ0cVsYx8HsBDviUBcsx82aZjo', NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, 15, 0, NULL, NULL, NULL, '2026-02-15 16:04:55', '2026-02-15 16:04:55'),
-(205, 'اسلام سيد', 'islam4@hospital.com', '01010000004', '$2y$12$4iZV6G9DJMYwSY2wZdGj2eDM4oRYt8rNsq7dBBR57S.41Ev0VLvKm', '17711716507776.jpeg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, 1, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 1, NULL, 1, 0, NULL, NULL, 1, NULL, '3h39hImmi12dWl95RBpOXJCO08Okikep4Kwf3F5J0NQG2d0AHsCQVZanj95CDEj5Sblyz6Yw6zD', NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, 15, 0, NULL, NULL, NULL, '2026-02-15 16:07:30', '2026-02-15 16:07:30'),
-(206, 'يوسف خالد', 'youssef5@hospital.com', '01010000005', '$2y$12$4iZV6G9DJMYwSY2wZdGj2eDM4oRYt8rNsq7dBBR57S.41Ev0VLvKm', '17711717349460.jpeg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, 1, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 1, NULL, 1, 0, NULL, NULL, 1, NULL, 'KtiPv9JeVp0lcY2kefP44zgns3OIbKTMg9Gi0c8SeROzYf0leOcvi5fBW2N8vMfFfJtJ4dLTmOp', NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, 15, 0, NULL, NULL, NULL, '2026-02-15 16:08:54', '2026-02-15 16:08:54'),
-(207, 'محمد فؤاد', 'cardio6@hospital.com', '01010000006', '$2y$12$4iZV6G9DJMYwSY2wZdGj2eDM4oRYt8rNsq7dBBR57S.41Ev0VLvKm', '17711718303783.jpeg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, 1, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 1, NULL, 1, 0, NULL, NULL, 1, NULL, 'jEgp9B3xcw7ww00PVxXuWMHI0KB8DDTGljhxZVlmkIJmohbfUPLd5WLqxBh3rkSJUVVRqJdCQ4S', NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, 15, 0, NULL, NULL, NULL, '2026-02-15 16:10:30', '2026-02-15 16:10:30'),
-(208, 'شريف عادل', 'cardio7@hospital.com', '01010000007', '$2y$12$4iZV6G9DJMYwSY2wZdGj2eDM4oRYt8rNsq7dBBR57S.41Ev0VLvKm', '17711718945445.jpeg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, 1, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 1, NULL, 1, 0, NULL, NULL, 1, NULL, 'rYQKeXC1itwW79ztExNNCmS0EI1jwYlLgejzL5v6neR07CdVZqaOHneluy7TxVSGOTzZgsI9CMA', NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, 15, 0, NULL, NULL, NULL, '2026-02-15 16:11:34', '2026-02-15 16:11:34'),
-(209, 'عمرو سامي', 'cardio8@hospital.com', '01010000008', '$2y$12$4iZV6G9DJMYwSY2wZdGj2eDM4oRYt8rNsq7dBBR57S.41Ev0VLvKm', '17711719446553.jpeg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, 1, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 1, NULL, 1, 0, NULL, NULL, 1, NULL, 'KOdigdHzXW8Uk3gYADTlaa2PEKrQymCboe9qs1xkVvvEieTJD0pk5DZYu6Pr28GBRZRzJtFLyRJ', NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, 15, 0, NULL, NULL, NULL, '2026-02-15 16:12:24', '2026-02-15 16:12:24'),
-(210, 'تامر زكي', 'cardio9@hospital.com', '01010000009', '$2y$12$4iZV6G9DJMYwSY2wZdGj2eDM4oRYt8rNsq7dBBR57S.41Ev0VLvKm', '17711719956716.jpeg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, 1, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 1, NULL, 1, 0, NULL, NULL, 1, NULL, 'lp1t8ONEY2DHxE6i7JQ4Jdud4KwXdfTv0GDBMBOJTxzW0uIbxwvac6ch0NUSpRzDyQXdASzMS5X', NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, 15, 0, NULL, NULL, NULL, '2026-02-15 16:13:15', '2026-02-15 16:13:15'),
-(211, 'حسام لطفي', 'cardio10@hospital.com', '01010000010', '$2y$12$4iZV6G9DJMYwSY2wZdGj2eDM4oRYt8rNsq7dBBR57S.41Ev0VLvKm', '17711720466060.jpeg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, 1, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 1, NULL, 1, 0, NULL, NULL, 1, NULL, 'tGhwrpArEA2l832x6mCcWPL88AsQxJCMilVkNLNv8F0Ar2UMkGIf2fWCxTEcWC8A4Jb3K8GKby5', NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, 15, 0, NULL, NULL, NULL, '2026-02-15 16:14:06', '2026-02-15 16:14:06'),
-(213, 'test test', 'testtesttest@gmail.com', '01234567802', '$2y$12$4iZV6G9DJMYwSY2wZdGj2eDM4oRYt8rNsq7dBBR57S.41Ev0VLvKm', '17751695233774.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, 1, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 1, NULL, 1, 0, NULL, NULL, 1, NULL, 'WROZd8QTrc5usfuUJkZxMGURytWOUbhYDjOfigqt5gRo0ovDuWpFtuodrX1BJRGLyWW74UKcTmS', NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, 15, 0, NULL, NULL, NULL, '2026-04-02 22:38:43', '2026-04-02 22:38:43'),
-(215, 'مريم محمد', 'reem.doctor12@gmail.com', '01221334717', NULL, '17776770535109.png', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, 1, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 2, NULL, 1, 0, NULL, NULL, 1, NULL, 'Tst51MUZFdr46sKivcNo3CTM28XVFWwtkh98upWIDnBSrjevFYgyZH6nUm7gqW4HS38r04qNCTB', NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, 15, 0, NULL, NULL, NULL, '2026-05-01 23:10:53', '2026-05-22 12:47:42'),
-(221, 'MD soltan', 'clinic55@gmail.com', '05446623', '$2y$10$ImxHJ8JRezKtyIkt4xMyy.w6A7ZZmu7I25/w4xcX73ZoPSkOVGxnW', '17795306044162.jpeg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 11, 1, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 1, NULL, 1, 0, NULL, NULL, 1, NULL, 'TqR59lxZiILIzyp4ZL8z6nv2nVYmoYNG6GwSsCMNTZUg3jFnt3hva1SqTtYGPAb5w2WrySlUlhQ', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 15, 0, NULL, NULL, NULL, '2026-05-16 15:45:34', '2026-05-23 10:03:24'),
-(224, 'عيادات الحياة فرع خريص', 'hyyat-khorass@gmail.com', '011252525', '$2y$10$4gDDwAoNF7AMsp33sQpNMOkqk.IGZyKxrotQEITZubBkWWU7qnnQq', '17792814492447.jpeg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 7, 1, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 1, NULL, 1, 0, NULL, NULL, 1, NULL, 'ZES0vqcrgGYgZ23j0FHzCfceNbFPzyQj83gNGG99z6IN8DG66lubyOLyb6YaYRV2cu4EK8DGGyO', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 15, 0, NULL, NULL, NULL, '2026-05-20 12:50:49', '2026-07-01 06:18:03'),
-(225, 'Ahmed Shahin', 'magdywork961@gmail.com', '01144010937', '$2y$10$9plvARherojS8.aP7JqjaOOYYwFljuiTBly2Ky7DZd.B9mt00Daye', '17792920388994.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 2, 1, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 1, NULL, 1, 0, NULL, NULL, 1, NULL, 'quw9optz52UcBtYlXgVnxRN5Mz3TXKgMTCyDa5ZIORNV1QnP3ub7pRillMNTLpPI2EzFlaKjFh9', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 15, 0, NULL, NULL, NULL, '2026-05-20 15:47:18', '2026-05-30 20:11:46'),
-(226, 'hanan', 'clinic-manager@gmail.com', '0544515273', '$2y$10$ygde/i8H85YiufCXsSXGve89yKHkoE6BPqOaBqdxFGO4LhPI4TItW', '17795308663162.webp', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 11, 1, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 1, NULL, 0, 0, NULL, NULL, 1, NULL, 'WMeRkd7zCo7xBpyBi8w4pgbnyFwPURzQ1UQCxegjNWh2GDMhqkxS2yibSuEzR1rTf56USwyxG4h', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 15, 0, NULL, NULL, NULL, '2026-05-23 10:07:46', '2026-06-07 08:38:19'),
-(227, 'راكان   الشمرى', 'rakan.shamria@gmail.com', '0544665583', NULL, '17803189629994.jpeg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, 1, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 1, NULL, 1, 0, NULL, NULL, 1, NULL, 'yF7NdjIKpKqVIpW8IwJeeN1MdsVv815a8TcibwAo2ikRIcDC9mDzRiZyOGN2u7LgapawZjGSemS', NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, 15, 0, NULL, NULL, NULL, '2026-06-01 13:02:42', '2026-06-02 08:38:48'),
-(234, 'احمد علي', 'ahmad@gmail.com', '09925586040', '$2y$10$MTAAgLqFWG0Do4ZLv2cvde5sFEmLaqJcrehd/.j2nFM0O2D0osFEG', '17827384762939.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, 1, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 1, NULL, 1, 0, NULL, NULL, 1, NULL, 'Ca2Gp5UYursEgnci5kwOZo1v5TNtjd0SgyCNoKyrKFbzHOtbhJgdvyp3tOUuhxD8JL8LN0FKzIX', NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, 15, 0, NULL, NULL, NULL, '2026-06-29 13:07:56', '2026-06-29 13:07:56'),
-(235, 'اية شعبان', 'ayashaban123@gmail.com', '0096369935886045', NULL, '17827387811303.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, 1, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 2, NULL, 1, 0, NULL, NULL, 1, NULL, 'EMO8X1oNK6dpGGNq39xeEiMFEIKdF0UOSzYDnRiOsAsg2Lf5COkRKQzjjc3tHMnVLOVAtjQgaD8', NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, 15, 0, NULL, NULL, NULL, '2026-06-29 13:13:01', '2026-08-10 12:08:09'),
-(243, 'مستشفى الامل', 'alamalhospital@gmail.com', '0096675488321', '$2y$10$RCfNiIXp9uCKz7zz5G24ru4lGr0DaKoqmU.Kf7gZi/VDriV5vfDf.', '17829402287125.jpeg', NULL, NULL, NULL, 'https://www.instagram.com/aya_shaban68?igsh=MWp2cHExZThoNTll', 'https://www.instagram.com/aya_shaban68?igsh=MWp2cHExZThoNTll', 'https://www.instagram.com/aya_shaban68?igsh=MWp2cHExZThoNTll', 'https://www.instagram.com/aya_shaban68?igsh=MWp2cHExZThoNTll', 'https://www.instagram.com/aya_shaban68?igsh=MWp2cHExZThoNTll', NULL, NULL, '17830775393578.jpeg', 1, 243, 1, '1970-01-01', '2027-06-27', 'اية الخالد', '09966547812', NULL, 21.485811, 39.192505, 'الرياض', 1, NULL, 1, 0, NULL, NULL, 1, NULL, 'JBuvyFc5c0p5stUYztZwhFCCyd3cA5D1tFtNp6zh6KclMeYYUGbr7X59gaL0dnPSRwQQQGtU5O9', 'منشأة طبية تجمع عدة تخصصات', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 15, 0, NULL, NULL, NULL, '2026-07-01 21:10:28', '2026-07-03 11:18:59'),
-(245, 'نور الحمدان', 'nour1245@gmail.com', '009665471234', '$2y$10$7m0EjkJOVmsp4wbE0kez5esppsi0SfpqUbG6rgnXQsJvKDIimJFWG', '17831703646579.jpeg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, 243, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 2, NULL, 1, 0, NULL, NULL, 1, NULL, '8zKVzy6aS3JQZpm52KfWILlpWEIqhaFyTSv6XB6riHJ6ZDnrACjDroPnVl8AUaHmVi8JaiYbaY0', NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, 15, 0, NULL, NULL, NULL, '2026-07-04 13:06:04', '2026-07-04 13:06:04'),
-(246, 'خالد العايدي', 'khaled2245@gmail.com', '009668236518', '$2y$10$BO7Joi9B7O5wf62DyRdZA.RVFFf20MTrTd/Q7rfIuF10krSSQn3eS', '17833477617103.jpeg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, 243, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 1, NULL, 1, 0, NULL, NULL, 1, NULL, 'J5OUVohcbU4PeUgppUXGl7aF14KqSgVqi6rMQJZG3pJFdJXttSXIFfoykXMPOe0hBXj3klEXK8x', NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, 15, 0, NULL, NULL, NULL, '2026-07-06 14:22:41', '2026-07-06 14:22:41'),
-(247, 'مايا الخاني', 'mayaalkhany33@gmail.com', '009966588334', '$2y$10$I6lIV/QiQf1tIHmAZHR7YeN7NoAc.tyYyL8PGQYRhNnQntBsws/.C', '17833487582752.jpeg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 2, 243, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 2, NULL, 1, 0, NULL, NULL, 1, NULL, 'MRGMBmeMPpMGNM7vWtsPQeEmSNG0nm5uZ0AY2RKfdbynWrUcesNU0dzMzANs3qavkYK5oSVOir3', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 15, 0, NULL, NULL, NULL, '2026-07-06 14:39:18', '2026-07-06 14:39:18'),
-(248, 'مستشفى الامل', 'alamalhospital22@gmail.com', '00996643776455', '$2y$10$bD5S1ggDNDZ8iG04NJnpzOzlj.foVnqpCLi8HQqAMoQQBFXZaHPeO', '17833582979660.jpeg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 7, 243, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 1, NULL, 1, 0, NULL, NULL, 1, NULL, 'rOtEbZdNCSDyJBTkWjyQB9i5s5CUHCZqMwfgoi1W6y85t9ZmUAYpEKJYhWJ0I505G32qVA3Ll1n', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 15, 0, NULL, NULL, NULL, '2026-07-06 17:18:17', '2026-07-06 17:18:17'),
-(249, 'asssss', 'y@gmail.com', '+201221274986', '$2y$10$sWDkbemR2f8uDgBfbLuSse9YSlh6IuRvlKGIe6P5a.krxgpmZSFii', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 249, NULL, '2026-07-31', '2027-08-26', NULL, NULL, NULL, 0, 0, 'sssssss', 1, NULL, 0, 0, NULL, NULL, 1, NULL, 'UnxPsB9rHCE7Q3u2yBYiTrrssTeYjqRuNifcBzwTi7ysUESirBUHVRiofEPmt9cwunIVknWVAD4', NULL, NULL, NULL, NULL, '422344555433223', '1785520673_GCynJadI.jpg', NULL, NULL, 15, 0, NULL, NULL, NULL, '2026-07-31 17:57:53', '2026-07-31 17:57:53');
+INSERT INTO `clinics` (`id`, `name`, `email`, `phone`, `password`, `image`, `post_number`, `fax`, `website`, `facebook_url`, `instagram_url`, `tiktok_url`, `snapchat_url`, `youtube_url`, `monitor_username`, `monitor_password`, `qr_code`, `app_type`, `parent_id`, `city_id`, `date_created`, `package_end_date`, `communication_officer`, `communication_officer_phone`, `alternative_phone`, `lat`, `lng`, `address`, `gender`, `specialization`, `status`, `points_enabled`, `points_category`, `enabled_modules`, `platform`, `device_token`, `jwt_token`, `info`, `info_ar`, `consultation_price`, `degree_id`, `ID_Number`, `license_number`, `medical_commercial_license`, `condition`, `firebase_token`, `tax`, `is_manager`, `nursing_point_id`, `notes`, `role_id`, `created_at`, `updated_at`) VALUES
+(1, 'مدير المشروع', 'admin@gmail.com', '0530377588', '$2y$12$4iZV6G9DJMYwSY2wZdGj2eDM4oRYt8rNsq7dBBR57S.41Ev0VLvKm', '16850300511957.jpg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '16850262478092.jpg', 6, NULL, 1, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 1, NULL, 1, 0, NULL, NULL, 1, NULL, 'nVBQ6w8i32ALah9wccEgup2Zlxyj3VHXIxzsvsgf1HEBlzLPMC1673301725', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 15, 0, NULL, NULL, NULL, NULL, NULL),
+(2, 'ELNARJIS CLINIC', 'Elnarjisclinic@gmail.com', '00966550753222', '$2y$10$V6DIvfIGKG1O57oBCCZwNuRousJxAy7HfkkWosK3lSqFqD01sfkga', '17862664734162.jpeg', NULL, NULL, NULL, NULL, 'https://www.instagram.com/alnarjis_clinic?igsh=MWE2NWllZzZsOTBtOQ%3D%3D&utm_source=qr', 'https://www.tiktok.com/@alnarjis_clinic?_r=1&_t=ZS-98lwhRylELS', 'https://snapchat.com/t/emL7VZlK', NULL, NULL, NULL, NULL, 1, 2, 1, '1970-01-01', '2027-08-04', 'عبد الوهاب', '00966550753222', NULL, 21.485811, 39.192505, 'https://maps.app.goo.gl/qLhagmCciS9LVhU78?g_st=aw', 1, NULL, 1, 0, NULL, NULL, 1, NULL, 'ckLglfQ6hEv3tsfTlQlu8fFZfir61dViXJEEmpHOLxivDZZcoNQsC6Enrqw0C9N43VpxOywxP2g', 'عيادات النرجس لطب وتقويم الأسنان تقدم رعاية متكاملة لصحة وجمال الأسنان، بأحدث التقنيات وعلى يد فريق متخصص، مع الحرص على تقديم تجربة علاجية مريحة وآمنة لجميع أفراد العائلة.\r\nالتخصصات والخدمات:\r\nطب الأسنان العام\r\n طب أسنان الأطفال\r\n الحشوات التجميلية\r\n تقويم الأسنان\r\n تبييض الأسنان\r\n تركيبات الأسنان\r\n زراعة الأسنان\r\n جراحة الفم والأسنان', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 15, 0, NULL, NULL, NULL, '2026-08-09 09:07:53', '2026-08-12 07:16:47'),
+(4, 'Bella Clinics', 'BellaClinic@gmail.com', '0096655477480', '$2y$10$fNmx.tRcAjeKEP.GqrMnIeo.FKXpsTFNeAgDpOrDZ7/Ypr09apc4u', '17865216708650.jpeg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 4, 1, '1970-01-01', '2027-02-08', 'د. اريج', '00966547232780', NULL, 21.485811, 39.192505, 'شارع عائشة بنت أبي بكر، الرياض Saudi Arabia', 1, NULL, 1, 0, NULL, NULL, 1, NULL, 'qKjDnNudmAzyXsQHrNNn7VJdm5WP7ASOZwip71q8uGTaAugZXgFIGJ8qFd2HWgVyBbG0ptCmjSV', 'عيادات بيلا هي مجمع عيادات طبية متخصصة في طب الأسنان والجلدية، تقدم خدمات علاجية وتجميلية متكاملة وفق أعلى معايير الجودة، وبإشراف نخبة من الأطباء ذوي الخبرة والكفاءة. نسعى في عيادات بيلا إلى توفير رعاية صحية متميزة تجمع بين أحدث التقنيات الطبية والتعامل الإنساني، لنمنح مرضانا نتائج فعّالة وتجربة علاجية آمنة ومريحة', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 15, 0, NULL, NULL, NULL, '2026-08-12 08:01:10', '2026-08-12 08:07:57'),
+(5, 'German Specialied medical center company', 'German_Specialied_medical@gmail.com', '00966582251131', '$2y$10$xYbfdv/4Y6njSV3SnRnxa.vz1DB2ehIG0xcz0TgzgWqdfzhHn7LTq', '17867824801451.jpeg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '17867830237938.jpeg', 1, 5, 1, '1970-01-01', '2027-02-11', 'احمد سعيد', '009966582251131', NULL, 24.747928006542416, 46.74102985659181, 'Riyadh Saudi Arabia https://maps.google.com/maps/search/%D8%A7%D9%84%D9%85%D8%B1%D9%83%D8%B2%20%D8%A7%D9%84%D8%A3%D9%84%D9%85%D8%A7%D9%86%D9%8A%20%D8%A7%D9%84%D8', 1, NULL, 1, 0, NULL, NULL, 1, NULL, '4OfqJpbi7tidME3GKce1Afk7nr0Pwi9kynMGmvHmkKRKT9mjakKVhfo2Vde1mPbMge4ymuRXWng', 'يعد مركز الألماني التخصصي الطبي أحد المراكز الطبية المتخصصة في مدينة الرياض, ويقدم خدمات صحية متكاملة وفق معايير الجودة والسلامة الطبية, من خلال نخبة من الأطباء والاستشاريين ذوي الخبرة والكفاءة في مختلف التخصصات.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 15, 0, NULL, NULL, NULL, '2026-08-15 08:28:00', '2026-08-16 14:00:39'),
+(7, 'شادي عبد اللطيف', 'info@gsmc.sa', '00966558495926', '12345678', '17868027395358.jpeg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, 5, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 1, NULL, 1, 0, NULL, NULL, 1, NULL, '8y2EmL21fQJUoOjH5u2T240cwrDBxQPsnCixVcC03H7bmbpI76ANgfhZ4fs2moqWCIXLijIIDKf', NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, 15, 0, NULL, NULL, NULL, '2026-08-15 14:05:39', '2026-08-16 09:55:05'),
+(9, 'ربى النجار', 'robaalnajar@gmail.com', '00966567332456', '12345678', '17868049049348.jpeg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, 5, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 2, NULL, 1, 0, NULL, NULL, 1, NULL, 'PHIxryEeTXk3jWThU0pj1Cer16xTvcmw1qZWkIAadCUL4BEJbwg2ehJbNaL6VctOV6jo17ZripH', NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, 15, 0, NULL, NULL, NULL, '2026-08-15 14:41:44', '2026-08-16 09:52:33'),
+(10, 'رامي جلال', 'rami@gmail.com', '00966554634523', '12345678', '17868072306094.jpeg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, 5, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 1, NULL, 1, 0, NULL, NULL, 1, NULL, 'wa8lZQGHVT1V80q5SNVOGvGI18TNP1wOCUjpEcqZMGAqrnHir8io8RdptuSh895HvHWg2UBDJfA', NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, 15, 0, NULL, NULL, NULL, '2026-08-15 15:20:30', '2026-08-16 09:52:19'),
+(11, 'هبة الذهبي', 'hibaalthazhabi@gmail.com', '00966545443259', '12345678', '17868653581534.jpeg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, 5, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 2, NULL, 1, 0, NULL, NULL, 1, NULL, '4qeEV4XGaR08ctvSKfgHaHTsyzv7TRTsVL6ihs2qZsWlQZv0EvEk3wLm36FhebihtvPpERi64qT', NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, 15, 0, NULL, NULL, NULL, '2026-08-16 07:29:18', '2026-08-16 09:52:06'),
+(12, 'آية السيد محمد', 'ayaalsaeed@gmail.com', '00966556547898', '12345678', '17868657033894.jpeg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, 5, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 2, NULL, 1, 0, NULL, NULL, 1, NULL, '5sll3ffGn9ACK5BcDaGeV4s6mneMeoTgCcCcB1l8Og9bJGPSAmlRL9p9UjIdVWxfbgb0fRgOb2q', NULL, NULL, NULL, 2, NULL, NULL, NULL, NULL, NULL, 15, 0, NULL, NULL, NULL, '2026-08-16 07:35:03', '2026-08-16 09:51:49'),
+(13, 'مجمع لين الشرق الطبي', 'lynneastcentre@gmail.com', '00966566988937', '$2y$10$fbjtsxznqdTYBVoDrkshqOE.DnlWXB9dxVQiI9b69AhVPNAVyC/xK', '17868680891908.jpeg', NULL, NULL, NULL, NULL, 'https://www.instagram.com/leen_alsharq_clinics?igsh=MWxqbGN4ejBxcGJ6Nw==', 'http://www.tiktok.com/@leen_alsharq1com/@leen_alsharq1', 'https://snapchat.com/t/BW1PuISs', NULL, NULL, NULL, '17868679533909.jpeg', 1, 13, 1, '1970-01-01', '2027-02-12', 'د. خلود عوض العنزي', '00966988937', NULL, 24.5722802, 46.6221673, 'السويدي الغربي، Riyadh Saudi Arabia', 1, NULL, 1, 0, NULL, NULL, 1, NULL, 'ibj18JCLg0rgZGs0Vp6tqb0gmg71xxDXJmcc6C552NABwY2gkSFMeK62aKRC15KVUcswc7fWHU9', 'نهتم بجمالك من أول استشارة إلى النتيجة التي تطمحين لها, من خلال خدمات متخصصة في الجلدية, الليزر,التجميل والعناية بالبشرة, بأجهزة وتقنيات حديثة وفريق طبي متخصص. \r\nلين الشرق... عناية متكاملة لجمال يليق بك.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 15, 0, NULL, NULL, NULL, '2026-08-16 07:58:04', '2026-08-16 13:59:41'),
+(14, 'خلود سلطان جاب الله', 'kholoud@gmail.com', '00966565437897', '12345678', '17868676583031.jpeg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, 13, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 2, NULL, 1, 0, NULL, NULL, 1, NULL, 'ZIgIbzwcqhq6LWTD5sP4osdKOlV1BdWlfgLpRlRRZJPjhC8muMIVaXRPY51ZuoEh5gTs6Lctbf4', NULL, NULL, NULL, 2, NULL, NULL, NULL, NULL, NULL, 15, 0, NULL, NULL, NULL, '2026-08-16 08:07:38', '2026-08-16 14:05:12'),
+(15, 'مركز الالماني التخصصي فرع الملز', 'AlMalaz_medical@gmail.com', '9665822116107', '$2y$10$SOPBUX1ESLuWJghkLqxt8O2ZO8UkxIfjQPlP4xrCga8OfLpL9lgyW', '17868856058672.jpeg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 7, 5, 1, '1970-01-01', NULL, 'احمد سعيد', '00966582251131', NULL, 0.3435004041766719, 0.5357551574707031, 'https://maps.app.goo.gl/ssM1RKMYnMPUGqa88?g_st=iw', 1, NULL, 1, 0, NULL, NULL, 1, NULL, 'svWD0bLsu4zMAuYHtookqqR0aB0nOtoVVf82UcWVPHaYFyWNs7En0mtXCINEphyTFlbnUznVsXc', 'المركز الألماني التخصصي الطبي فرع الملز هو مركز طبي متكامل يقدّم خدمات الرعاية الصحية الأساسية والتخصصية ضمن بيئة طبية متطورة، ويضم نخبة من الأطباء في مختلف الاختصاصات، إلى جانب خدمات الطوارئ، المختبر، الأشعة التشخيصية والصيدلية.\r\nنسعى إلى تقديم رعاية صحية شاملة وآمنة، مع التركيز على دقة التشخيص، جودة العلاج، وراحة المريض.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 15, 0, NULL, NULL, NULL, '2026-08-16 10:17:25', '2026-08-16 13:06:45'),
+(16, 'طارق فوزي عبد العزيز', 'tarekfawzy@gmail.com', '00966543873298', '12345678', '17868860859476.jpeg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, 15, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 1, NULL, 1, 0, NULL, NULL, 1, NULL, '8DSt4n58WOoAm8JRryD3O2kc1MgKkESE1PLw4lNHQLtPT1LsQGHW2ozlChnIVqerl7301UaEagA', NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, 15, 0, NULL, NULL, NULL, '2026-08-16 13:13:08', '2026-08-16 13:14:45'),
+(17, 'منال حسن ابراهيم', 'manalhasan@gmail.com', '009966565644329', '12345678', '17868863667389.jpeg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, 15, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 2, NULL, 1, 0, NULL, NULL, 1, NULL, 'SdkF2TlITk87w8PLEFKOVhWmbnCWPdthEtXSAojrnNUV5RJHGcC5GFuI0yNySCAJf9EOHh05D2u', NULL, NULL, NULL, 2, NULL, NULL, NULL, NULL, NULL, 15, 0, NULL, NULL, NULL, '2026-08-16 13:19:26', '2026-08-16 14:04:21'),
+(18, 'معاذ مالك', 'mouaamalik@gmail.com', '00966565543872', '12345678', '17868866917132.jpeg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, 15, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 1, NULL, 1, 0, NULL, NULL, 1, NULL, 'Di9GGXOp41EA23qYaQlSYO9u8eHyfZYHaLfwZHrOBDMsV5XHJwZ7NkWDToTDoB38p7kylSsWpiQ', NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, 15, 0, NULL, NULL, NULL, '2026-08-16 13:24:51', '2026-08-16 13:44:56'),
+(19, 'مصطفى فتحية', 'moustafafathea@gmail.com', '009966565438873', '$2y$10$gUUtp0PfEezfVCxvOYZP7.mcut13MiCEE2rzb4shyXuhRaccp954e', '17868869961367.jpeg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, 15, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 1, NULL, 1, 0, NULL, NULL, 1, NULL, '2hJBhKeTmmcRw3Z5tcg4Ymal5VCVW5CfiUcrrRJsPS8tCqqhUjECw0ZZwLfyJDPZstrT6qozln8', NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, 15, 0, NULL, NULL, NULL, '2026-08-16 13:29:56', '2026-08-16 13:29:56'),
+(20, 'أحمد المعداوي', 'ahmadalmaadawy@gmail.com', '00966559983343', '$2y$10$pflaby9xxsVRd5Bw2jFTDOTlOCTWM4dlbENv8wGQSOENTPnBuoF9O', '17868872617064.jpeg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, 15, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 1, NULL, 1, 0, NULL, NULL, 1, NULL, 'psyVVO8STsFYWGyNZ2szHur80zLRO85hyaqWgvownDerpmsz2TLZm8z9CMWAPF2K8O8Jp91fbk0', NULL, NULL, NULL, 2, NULL, NULL, NULL, NULL, NULL, 15, 0, NULL, NULL, NULL, '2026-08-16 13:34:21', '2026-08-16 13:34:21'),
+(21, 'شيماء سعد أمين', 'shaimaa@gmail.com', '00966565488762', '$2y$10$GD53YlxJsTFj13qCSlD02O1Wf24Kh0S3De/kpmOXYhJeqmsE6z5X2', '17868874705549.jpeg', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, 15, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, 2, NULL, 1, 0, NULL, NULL, 1, NULL, 'tXOBnQSclbRAN0cNSsyxJoTrK5DPWbHjGeWj8Kge22YI5Bc9xwh2vDehksSAJxXkP7Ki63VDTHj', NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, 15, 0, NULL, NULL, NULL, '2026-08-16 13:37:50', '2026-08-16 13:37:50');
 
 -- --------------------------------------------------------
 
@@ -397,7 +377,7 @@ CREATE TABLE `clinics_permissions` (
 CREATE TABLE `clinic_contracts` (
   `id` bigint UNSIGNED NOT NULL,
   `clinic_id` bigint UNSIGNED NOT NULL,
-  `contract_model` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'cash_commission',
+  `contract_model` varchar(40) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'cash_commission',
   `commission_rate` decimal(5,2) NOT NULL DEFAULT '0.00',
   `annual_subscription_amount` decimal(10,2) DEFAULT NULL,
   `annual_subscription_starts_at` date DEFAULT NULL,
@@ -406,17 +386,6 @@ CREATE TABLE `clinic_contracts` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `clinic_contracts`
---
-
-INSERT INTO `clinic_contracts` (`id`, `clinic_id`, `contract_model`, `commission_rate`, `annual_subscription_amount`, `annual_subscription_starts_at`, `annual_subscription_ends_at`, `rendezvous_badge_enabled`, `created_at`, `updated_at`) VALUES
-(1, 1, 'cash_commission', 0.00, NULL, NULL, NULL, 0, '2026-08-03 11:05:23', '2026-08-03 11:05:23'),
-(2, 194, 'cash_commission', 0.00, NULL, NULL, NULL, 0, '2026-08-03 11:05:23', '2026-08-03 11:05:23'),
-(3, 197, 'cash_commission', 0.00, NULL, NULL, NULL, 0, '2026-08-03 11:05:23', '2026-08-03 11:05:23'),
-(4, 196, 'cash_commission', 0.00, NULL, NULL, NULL, 0, '2026-08-03 11:05:23', '2026-08-03 11:05:23'),
-(8, 201, 'annual_subscription', 0.00, 5000.00, '2026-08-01', '2027-08-01', 1, '2026-08-10 17:44:11', '2026-08-10 17:44:11');
 
 -- --------------------------------------------------------
 
@@ -454,35 +423,6 @@ CREATE TABLE `clinic_offers` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Dumping data for table `clinic_offers`
---
-
-INSERT INTO `clinic_offers` (`id`, `title_en`, `title_ar`, `clinic_id`, `specialty_id`, `discount`, `start_date`, `end_date`, `status`, `deleted_at`, `created_at`, `updated_at`) VALUES
-(1, 'public offer', 'خصومات عامة', 1, NULL, 5, NULL, NULL, 1, '2022-08-04 15:16:41', '2022-07-25 23:52:02', '2022-08-04 15:16:41'),
-(2, 'Eid discount 222', 'ssss ssss', 1, NULL, 20, NULL, NULL, 1, '2022-08-05 01:12:06', '2022-07-25 23:53:53', '2022-08-05 01:12:06'),
-(3, 'The New Doctor', 'الاطباء الجدد', 1, NULL, 10, NULL, NULL, 1, '2022-07-25 23:59:03', '2022-07-25 23:58:38', '2022-07-25 23:59:03'),
-(4, 'The New Doctor', 'الاطباء الجدد', 1, NULL, 10, NULL, NULL, 1, '2022-12-19 05:21:40', '2022-08-04 13:27:18', '2022-12-19 05:21:40'),
-(5, 'The New Doctor', 'الاطباء الجدد', 1, NULL, 10, NULL, NULL, 1, NULL, '2022-08-04 13:27:24', '2022-08-04 13:27:24'),
-(6, 'new offer', 'aa', 1, NULL, 99, NULL, NULL, 1, '2023-04-12 17:12:58', '2022-08-04 14:44:44', '2023-04-12 17:12:58'),
-(7, 'treetment', 'الادوية', 1, 17, 20, NULL, NULL, 1, NULL, '2022-08-04 14:49:53', '2026-04-07 06:16:30'),
-(8, 'ddddd', 'sss', 1, NULL, 22, NULL, NULL, 1, '2022-08-05 16:17:49', '2022-08-05 01:11:01', '2022-08-05 16:17:49'),
-(9, 'optecs', 'البصريات', 1, 18, 60, NULL, NULL, 1, NULL, '2022-08-05 16:17:36', '2026-04-07 06:16:22'),
-(10, 'test', 'tesr', 1, NULL, 20, NULL, NULL, 1, '2022-08-25 01:03:47', '2022-08-25 01:03:36', '2022-08-25 01:03:47'),
-(12, 'The New Doctor', 'الاطباء الجدد', 1, 24, 10, NULL, NULL, 1, NULL, '2022-09-05 05:02:09', '2026-04-07 06:16:09'),
-(15, 'new', 'عرض جديد', 1, NULL, 63, NULL, NULL, 1, '2023-03-12 06:30:47', '2023-03-12 06:29:56', '2023-03-12 06:30:47'),
-(16, 'Scaling & polishing', 'ازالة الجير', 1, 25, 20, NULL, NULL, 1, NULL, '2023-03-13 07:29:15', '2026-04-07 06:15:55'),
-(17, 'One day surgery', 'اليوم الواحد', 1, NULL, 15, NULL, NULL, 1, '2023-05-24 14:33:20', '2023-04-12 17:13:45', '2023-05-24 14:33:20'),
-(18, 'rrrrr', 'rrr', 1, NULL, 34, NULL, NULL, 1, '2023-05-25 06:31:20', '2023-05-25 06:31:08', '2023-05-25 06:31:20'),
-(21, 'skin', 'الجلديه', 1, 19, 10, NULL, NULL, 1, NULL, '2025-12-22 09:41:57', '2026-04-28 21:23:08'),
-(22, 'new pat', 'مرضي الجدد', 1, 25, 50, NULL, NULL, 1, '2026-04-28 21:08:56', '2026-04-28 21:08:45', '2026-04-28 21:08:56'),
-(23, 'test', 'تيست', 1, 22, 20, '2026-05-10', '2026-05-30', 1, '2026-05-13 21:26:18', '2026-05-13 21:24:52', '2026-05-13 21:26:18'),
-(24, 'test', 'تيست', 1, 25, 20, '2026-05-17', '2026-05-31', 1, '2026-05-17 13:52:37', '2026-05-17 13:52:06', '2026-05-17 13:52:37'),
-(25, 'Al Ragihi bank', 'خصم منسوبي بنك الراجحي', 1, 17, 5, '2026-05-20', '2026-06-20', 1, NULL, '2026-05-20 12:42:53', '2026-05-20 12:43:08'),
-(26, 'kkkk', 'lll', 1, 15, 50, '2026-05-20', '2026-05-28', 1, NULL, '2026-05-20 15:51:26', '2026-05-20 15:51:26'),
-(27, 'Al Ragihi bank', 'خصم منسوبي بنك الراجحي', 1, 15, 5, '2026-05-20', NULL, 1, NULL, '2026-05-20 17:02:42', '2026-05-20 17:02:42'),
-(28, 'Al Ragihi bank', 'بنك الراجى', 1, 22, 5, '2026-06-22', '2026-06-25', 1, NULL, '2026-05-20 17:02:42', '2026-07-01 08:37:37');
-
 -- --------------------------------------------------------
 
 --
@@ -505,26 +445,9 @@ CREATE TABLE `clinic_points` (
 --
 
 INSERT INTO `clinic_points` (`id`, `clinic_id`, `content_ar`, `content_en`, `point`, `status`, `created_at`, `updated_at`) VALUES
-(1, 1, 'رد على شكوى خاصه بعميل ', 'Answer question reply on user', 5, 1, '2022-08-10 13:54:15', NULL),
-(8, 1, 'thanks', 'thanks', 5, 1, '2024-12-18 13:50:59', '2024-12-18 13:50:59'),
-(9, 1, 'ddddddddd', 'ddddddddd', 5, 1, '2025-07-05 08:50:40', '2025-07-05 08:50:40'),
-(10, 1, 'ok', 'ok', 5, 1, '2025-12-22 09:45:07', '2025-12-22 09:45:07'),
-(11, 1, 'test', 'test', 5, 1, '2026-02-05 22:44:07', '2026-02-05 22:44:07'),
-(12, 1, 'تمام', 'تمام', 5, 1, '2026-03-26 22:11:15', '2026-03-26 22:11:15'),
-(13, 1, 'test', 'test', 5, 1, '2026-03-27 19:53:40', '2026-03-27 19:53:40'),
-(14, 1, 'تم النظر في التعليق \r\n\r\nالكلام لا يصل منسق ولكن كامل', 'تم النظر في التعليق \r\n\r\nالكلام لا يصل منسق ولكن كامل', 5, 1, '2026-03-31 08:31:58', '2026-03-31 08:31:58'),
-(15, 1, 'تمام\r\nتمام\r\nتمام', 'تمام\r\nتمام\r\nتمام', 5, 1, '2026-03-31 21:22:17', '2026-03-31 21:22:17'),
-(16, 1, 'تمام \r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\nتمام', 'تمام \r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\nتمام', 5, 1, '2026-03-31 21:24:54', '2026-03-31 21:24:54'),
-(17, 204, 'تيست ادمن \r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\nتيست كريم ادمن', 'تيست ادمن \r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\nتيست كريم ادمن', 5, 1, '2026-03-31 21:30:53', '2026-03-31 21:30:53'),
-(18, 1, 'تمام \r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\nتمام', 'تمام \r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\nتمام', 5, 1, '2026-04-01 22:43:14', '2026-04-01 22:43:14'),
-(19, 1, 'تمام\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\nتمام', 'تمام\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\nتمام', 5, 1, '2026-04-03 22:31:39', '2026-04-03 22:31:39'),
 (20, NULL, 'test', 'test', 5, 1, '2026-04-15 14:22:15', '2026-04-15 14:22:15'),
-(21, 1, 'تمام\r\n\r\n\r\n\r\n\r\n\r\nتمام', 'تمام\r\n\r\n\r\n\r\n\r\n\r\nتمام', 5, 1, '2026-04-15 22:22:59', '2026-04-15 22:22:59'),
 (22, NULL, 'okkkk okkkk\r\n\r\n\r\n\r\n\r\n\r\n\r\nok ok', 'okkkk okkkk\r\n\r\n\r\n\r\n\r\n\r\n\r\nok ok', 5, 1, '2026-04-15 22:29:51', '2026-04-15 22:29:51'),
-(23, 1, 'هيتم التواصل مع حضرتك في اقرب وقت', 'هيتم التواصل مع حضرتك في اقرب وقت', 5, 1, '2026-04-28 21:18:17', '2026-04-28 21:18:17'),
 (24, NULL, 'تماممممم', 'تماممممم', 5, 1, '2026-05-03 15:50:58', '2026-05-03 15:50:58'),
-(25, 1, 'ما هي الشكوي\r\n\r\n\r\n\r\n\r\n\r\nممكن توضيح', 'ما هي الشكوي\r\n\r\n\r\n\r\n\r\n\r\nممكن توضيح', 5, 1, '2026-05-03 16:01:55', '2026-05-03 16:01:55'),
-(26, 1, 'تم الرد', 'تم الرد', 5, 1, '2026-05-13 21:17:21', '2026-05-13 21:17:21'),
 (27, NULL, 'ما هي الشكوي\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\nاوك', 'ما هي الشكوي\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\nاوك', 5, 1, '2026-05-17 14:56:09', '2026-05-17 14:56:09'),
 (28, NULL, 'ماهي الشكوي \r\n\r\n\r\n\r\n\r\n\r\nجديد', 'ماهي الشكوي \r\n\r\n\r\n\r\n\r\n\r\nجديد', 5, 1, '2026-05-17 14:59:43', '2026-05-17 14:59:43');
 
@@ -543,14 +466,6 @@ CREATE TABLE `clinic_point_nursings` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `clinic_point_nursings`
---
-
-INSERT INTO `clinic_point_nursings` (`id`, `name_en`, `name_ar`, `status`, `clinic_id`, `created_at`, `updated_at`) VALUES
-(3, 'point A', 'نقطه أ', 1, 1, NULL, NULL),
-(4, 'point B', 'نقطه ب', 1, 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -596,19 +511,6 @@ CREATE TABLE `clinic_ratings` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Dumping data for table `clinic_ratings`
---
-
-INSERT INTO `clinic_ratings` (`id`, `clinic_id`, `user_id`, `rating_id`, `comment`, `rate_value`, `status`, `deleted_at`, `created_at`, `updated_at`) VALUES
-(16, 1, 28, 1, 'جيد جدا \n\n\n\n\n\n\nجيد جدا', '4', 1, NULL, '2026-03-29 15:25:31', '2026-04-01 22:40:57'),
-(17, 1, 28, 2, 'جيد جدا \n\n\n\n\n\n\nجيد جدا', '4', 1, NULL, '2026-03-29 15:25:31', '2026-04-01 22:40:57'),
-(18, 1, 4, 1, '', '5', 1, NULL, '2026-05-03 16:02:36', '2026-05-30 20:54:30'),
-(19, 1, 4, 2, '', '5', 1, NULL, '2026-05-03 16:02:36', '2026-06-26 00:39:55'),
-(20, 201, 73, 1, 'This is a detailed visit review with enough words to trigger the loyalty rating rule for testing purposes only.', '5', 1, NULL, '2026-07-03 16:35:45', '2026-07-03 16:35:45'),
-(21, 201, 76, 1, 'This is a detailed visit review with enough words to trigger the loyalty rating rule for testing purposes only.', '5', 1, NULL, '2026-07-19 11:27:30', '2026-07-19 11:27:30'),
-(22, 201, 54, 1, 'This is a detailed visit review with enough words to trigger the loyalty rating rule for testing purposes only.', '5', 1, NULL, '2026-07-29 10:44:39', '2026-07-29 10:44:39');
-
 -- --------------------------------------------------------
 
 --
@@ -650,84 +552,90 @@ CREATE TABLE `clinic_specialists` (
 --
 
 INSERT INTO `clinic_specialists` (`id`, `specialty_id`, `clinic_id`, `type`, `status`, `deleted_at`, `created_at`, `updated_at`) VALUES
-(156, 4, 200, 1, 1, NULL, '2026-02-15 09:11:45', '2026-02-15 09:11:45'),
-(157, 3, 200, 1, 1, NULL, '2026-02-15 09:11:45', '2026-02-15 09:11:45'),
-(158, 2, 200, 1, 1, NULL, '2026-02-15 09:11:45', '2026-02-15 09:11:45'),
-(171, 25, 201, 1, 1, NULL, '2026-02-15 15:11:01', '2026-02-15 15:11:01'),
-(172, 24, 201, 1, 1, NULL, '2026-02-15 15:11:01', '2026-02-15 15:11:01'),
-(173, 23, 201, 1, 1, NULL, '2026-02-15 15:11:01', '2026-02-15 15:11:01'),
-(174, 22, 201, 1, 1, NULL, '2026-02-15 15:11:01', '2026-02-15 15:11:01'),
-(175, 21, 201, 1, 1, NULL, '2026-02-15 15:11:01', '2026-02-15 15:11:01'),
-(176, 20, 201, 1, 1, NULL, '2026-02-15 15:11:01', '2026-02-15 15:11:01'),
-(177, 19, 201, 1, 1, NULL, '2026-02-15 15:11:01', '2026-02-15 15:11:01'),
-(178, 18, 201, 1, 1, NULL, '2026-02-15 15:11:01', '2026-02-15 15:11:01'),
-(179, 17, 201, 1, 1, NULL, '2026-02-15 15:11:01', '2026-02-15 15:11:01'),
-(180, 15, 201, 1, 1, NULL, '2026-02-15 15:11:01', '2026-02-15 15:11:01'),
-(181, 4, 201, 1, 1, NULL, '2026-02-15 15:11:01', '2026-02-15 15:11:01'),
-(182, 3, 201, 1, 1, NULL, '2026-02-15 15:11:01', '2026-02-15 15:11:01'),
-(183, 2, 201, 1, 1, NULL, '2026-02-15 15:11:01', '2026-02-15 15:11:01'),
-(184, 1, 201, 1, 1, NULL, '2026-02-15 15:11:01', '2026-02-15 15:11:01'),
-(186, 25, 202, 1, 1, NULL, '2026-02-15 15:57:40', '2026-02-15 15:57:40'),
-(187, 30, 202, 2, 1, NULL, '2026-02-15 15:57:40', '2026-02-15 15:57:40'),
-(188, 28, 202, 2, 1, NULL, '2026-02-15 15:57:40', '2026-02-15 15:57:40'),
-(189, 26, 202, 2, 1, NULL, '2026-02-15 15:57:40', '2026-02-15 15:57:40'),
-(190, 25, 203, 1, 1, NULL, '2026-02-15 16:00:18', '2026-02-15 16:00:18'),
-(191, 29, 203, 2, 1, NULL, '2026-02-15 16:00:18', '2026-02-15 16:00:18'),
-(192, 27, 203, 2, 1, NULL, '2026-02-15 16:00:18', '2026-02-15 16:00:18'),
-(193, 25, 204, 1, 1, NULL, '2026-02-15 16:04:55', '2026-02-15 16:04:55'),
-(194, 31, 204, 2, 1, NULL, '2026-02-15 16:04:55', '2026-02-15 16:04:55'),
-(195, 28, 204, 2, 1, NULL, '2026-02-15 16:04:55', '2026-02-15 16:04:55'),
-(196, 25, 205, 1, 1, NULL, '2026-02-15 16:07:30', '2026-02-15 16:07:30'),
-(197, 31, 205, 2, 1, NULL, '2026-02-15 16:07:30', '2026-02-15 16:07:30'),
-(198, 30, 205, 2, 1, NULL, '2026-02-15 16:07:30', '2026-02-15 16:07:30'),
-(199, 29, 205, 2, 1, NULL, '2026-02-15 16:07:30', '2026-02-15 16:07:30'),
-(200, 25, 206, 1, 1, NULL, '2026-02-15 16:08:54', '2026-02-15 16:08:54'),
-(201, 29, 206, 2, 1, NULL, '2026-02-15 16:08:54', '2026-02-15 16:08:54'),
-(202, 28, 206, 2, 1, NULL, '2026-02-15 16:08:54', '2026-02-15 16:08:54'),
-(203, 26, 206, 2, 1, NULL, '2026-02-15 16:08:54', '2026-02-15 16:08:54'),
-(204, 24, 207, 1, 1, NULL, '2026-02-15 16:10:30', '2026-02-15 16:10:30'),
-(205, 34, 207, 2, 1, NULL, '2026-02-15 16:10:30', '2026-02-15 16:10:30'),
-(206, 32, 207, 2, 1, NULL, '2026-02-15 16:10:30', '2026-02-15 16:10:30'),
-(207, 24, 208, 1, 1, NULL, '2026-02-15 16:11:34', '2026-02-15 16:11:34'),
-(208, 37, 208, 2, 1, NULL, '2026-02-15 16:11:34', '2026-02-15 16:11:34'),
-(209, 35, 208, 2, 1, NULL, '2026-02-15 16:11:34', '2026-02-15 16:11:34'),
-(210, 32, 208, 2, 1, NULL, '2026-02-15 16:11:34', '2026-02-15 16:11:34'),
-(211, 24, 209, 1, 1, NULL, '2026-02-15 16:12:24', '2026-02-15 16:12:24'),
-(212, 42, 209, 2, 1, NULL, '2026-02-15 16:12:24', '2026-02-15 16:12:24'),
-(213, 41, 209, 2, 1, NULL, '2026-02-15 16:12:24', '2026-02-15 16:12:24'),
-(214, 40, 209, 2, 1, NULL, '2026-02-15 16:12:24', '2026-02-15 16:12:24'),
-(215, 24, 210, 1, 1, NULL, '2026-02-15 16:13:15', '2026-02-15 16:13:15'),
-(216, 39, 210, 2, 1, NULL, '2026-02-15 16:13:15', '2026-02-15 16:13:15'),
-(217, 38, 210, 2, 1, NULL, '2026-02-15 16:13:15', '2026-02-15 16:13:15'),
-(218, 36, 210, 2, 1, NULL, '2026-02-15 16:13:15', '2026-02-15 16:13:15'),
-(219, 24, 211, 1, 1, NULL, '2026-02-15 16:14:06', '2026-02-15 16:14:06'),
-(220, 35, 211, 2, 1, NULL, '2026-02-15 16:14:06', '2026-02-15 16:14:06'),
-(221, 33, 211, 2, 1, NULL, '2026-02-15 16:14:06', '2026-02-15 16:14:06'),
-(222, 32, 211, 2, 1, NULL, '2026-02-15 16:14:06', '2026-02-15 16:14:06'),
-(223, 25, 213, 1, 1, NULL, '2026-04-02 22:38:43', '2026-04-02 22:38:43'),
-(224, 30, 213, 2, 1, NULL, '2026-04-02 22:38:43', '2026-04-02 22:38:43'),
-(225, 25, 215, 1, 1, NULL, '2026-05-01 23:10:53', '2026-05-01 23:10:53'),
-(226, 30, 215, 2, 1, NULL, '2026-05-01 23:10:53', '2026-05-01 23:10:53'),
-(227, 26, 215, 2, 1, NULL, '2026-05-01 23:10:53', '2026-05-01 23:10:53'),
-(231, 3, 227, 1, 1, NULL, '2026-06-01 13:02:42', '2026-06-01 13:02:42'),
-(232, 7, 227, 2, 1, NULL, '2026-06-01 13:02:42', '2026-06-01 13:02:42'),
-(251, 21, 234, 1, 1, NULL, '2026-06-29 13:07:56', '2026-06-29 13:07:56'),
-(252, 136, 234, 2, 1, NULL, '2026-06-29 13:07:56', '2026-06-29 13:07:56'),
-(253, 21, 1, 1, 1, NULL, '2026-06-29 13:12:31', '2026-06-29 13:12:31'),
-(254, 21, 235, 1, 1, NULL, '2026-06-29 13:13:01', '2026-06-29 13:13:01'),
-(255, 136, 235, 2, 1, NULL, '2026-06-29 13:13:01', '2026-06-29 13:13:01'),
-(270, 160, 243, 1, 1, NULL, '2026-07-01 21:10:28', '2026-07-01 21:10:28'),
-(273, 20, 243, 1, 1, NULL, '2026-07-04 13:04:12', '2026-07-04 13:04:12'),
-(275, 20, 245, 1, 1, NULL, '2026-07-04 13:06:04', '2026-07-04 13:06:04'),
-(276, 139, 245, 2, 1, NULL, '2026-07-04 13:06:04', '2026-07-04 13:06:04'),
-(277, 23, 243, 1, 1, NULL, '2026-07-06 14:19:08', '2026-07-06 14:19:08'),
-(279, 23, 246, 1, 1, NULL, '2026-07-06 14:22:41', '2026-07-06 14:22:41'),
-(280, 47, 246, 2, 1, NULL, '2026-07-06 14:22:41', '2026-07-06 14:22:41'),
-(281, 4, 243, 1, 1, NULL, '2026-07-07 09:37:29', '2026-07-07 09:37:29'),
-(282, 22, 1, 1, 1, NULL, '2026-07-07 09:52:16', '2026-07-07 09:52:16'),
-(283, 20, 1, 1, 1, NULL, '2026-07-07 09:52:16', '2026-07-07 09:52:16'),
-(284, 18, 1, 1, 1, NULL, '2026-07-07 09:52:16', '2026-07-07 09:52:16'),
-(285, 2, 249, 1, 1, NULL, '2026-07-31 17:57:53', '2026-07-31 17:57:53');
+(286, 25, 2, 1, 1, NULL, '2026-08-09 09:07:53', '2026-08-09 09:07:53'),
+(288, 19, 4, 1, 1, NULL, '2026-08-12 08:01:10', '2026-08-12 08:01:10'),
+(289, 15, 5, 1, 1, NULL, '2026-08-15 08:28:00', '2026-08-15 08:28:00'),
+(290, 25, 5, 1, 1, NULL, '2026-08-15 08:30:22', '2026-08-15 08:30:22'),
+(291, 22, 5, 1, 1, NULL, '2026-08-15 08:30:22', '2026-08-15 08:30:22'),
+(292, 21, 5, 1, 1, NULL, '2026-08-15 08:30:22', '2026-08-15 08:30:22'),
+(293, 18, 5, 1, 1, NULL, '2026-08-15 08:30:22', '2026-08-15 08:30:22'),
+(296, 165, 5, 1, 1, NULL, '2026-08-15 13:53:26', '2026-08-15 13:53:26'),
+(297, 164, 5, 1, 1, NULL, '2026-08-15 13:53:26', '2026-08-15 13:53:26'),
+(298, 163, 5, 1, 1, NULL, '2026-08-15 13:53:26', '2026-08-15 13:53:26'),
+(299, 162, 5, 1, 1, NULL, '2026-08-15 13:53:26', '2026-08-15 13:53:26'),
+(300, 166, 5, 1, 1, NULL, '2026-08-15 13:57:38', '2026-08-15 13:57:38'),
+(301, 22, 7, 1, 1, NULL, '2026-08-15 14:05:39', '2026-08-15 14:05:39'),
+(302, 49, 7, 2, 1, NULL, '2026-08-15 14:05:39', '2026-08-15 14:05:39'),
+(309, 22, 9, 1, 1, NULL, '2026-08-15 14:41:44', '2026-08-15 14:41:44'),
+(310, 148, 9, 2, 1, NULL, '2026-08-15 14:41:44', '2026-08-15 14:41:44'),
+(311, 146, 9, 2, 1, NULL, '2026-08-15 14:41:44', '2026-08-15 14:41:44'),
+(312, 52, 9, 2, 1, NULL, '2026-08-15 14:41:44', '2026-08-15 14:41:44'),
+(313, 51, 9, 2, 1, NULL, '2026-08-15 14:41:44', '2026-08-15 14:41:44'),
+(314, 50, 9, 2, 1, NULL, '2026-08-15 14:41:44', '2026-08-15 14:41:44'),
+(315, 49, 9, 2, 1, NULL, '2026-08-15 14:41:44', '2026-08-15 14:41:44'),
+(316, 25, 10, 1, 1, NULL, '2026-08-15 15:20:30', '2026-08-15 15:20:30'),
+(317, 31, 10, 2, 1, NULL, '2026-08-15 15:20:30', '2026-08-15 15:20:30'),
+(318, 28, 10, 2, 1, NULL, '2026-08-15 15:20:30', '2026-08-15 15:20:30'),
+(319, 27, 10, 2, 1, NULL, '2026-08-15 15:20:30', '2026-08-15 15:20:30'),
+(320, 167, 5, 1, 1, NULL, '2026-08-15 15:40:53', '2026-08-15 15:40:53'),
+(321, 21, 11, 1, 1, NULL, '2026-08-16 07:29:18', '2026-08-16 07:29:18'),
+(322, 136, 11, 2, 1, NULL, '2026-08-16 07:29:18', '2026-08-16 07:29:18'),
+(323, 57, 11, 2, 1, NULL, '2026-08-16 07:29:18', '2026-08-16 07:29:18'),
+(324, 15, 12, 1, 1, NULL, '2026-08-16 07:35:03', '2026-08-16 07:35:03'),
+(325, 145, 12, 2, 1, NULL, '2026-08-16 07:35:03', '2026-08-16 07:35:03'),
+(326, 103, 12, 2, 1, NULL, '2026-08-16 07:35:03', '2026-08-16 07:35:03'),
+(327, 102, 12, 2, 1, NULL, '2026-08-16 07:35:03', '2026-08-16 07:35:03'),
+(329, 169, 13, 1, 1, NULL, '2026-08-16 08:03:38', '2026-08-16 08:03:38'),
+(330, 19, 13, 1, 1, NULL, '2026-08-16 08:03:38', '2026-08-16 08:03:38'),
+(331, 19, 14, 1, 1, NULL, '2026-08-16 08:07:38', '2026-08-16 08:07:38'),
+(332, 70, 14, 2, 1, NULL, '2026-08-16 08:07:38', '2026-08-16 08:07:38'),
+(333, 25, 13, 1, 1, NULL, '2026-08-16 08:19:23', '2026-08-16 08:19:23'),
+(334, 21, 7, 1, 1, NULL, '2026-08-16 09:55:05', '2026-08-16 09:55:05'),
+(335, 136, 7, 2, 1, NULL, '2026-08-16 09:55:05', '2026-08-16 09:55:05'),
+(336, 168, 15, 1, 1, NULL, '2026-08-16 13:09:38', '2026-08-16 13:09:38'),
+(337, 25, 15, 1, 1, NULL, '2026-08-16 13:09:38', '2026-08-16 13:09:38'),
+(338, 22, 15, 1, 1, NULL, '2026-08-16 13:09:38', '2026-08-16 13:09:38'),
+(339, 21, 15, 1, 1, NULL, '2026-08-16 13:09:38', '2026-08-16 13:09:38'),
+(340, 15, 15, 1, 1, NULL, '2026-08-16 13:09:38', '2026-08-16 13:09:38'),
+(341, 21, 16, 1, 1, NULL, '2026-08-16 13:13:08', '2026-08-16 13:13:08'),
+(342, 59, 16, 2, 1, NULL, '2026-08-16 13:13:08', '2026-08-16 13:13:08'),
+(343, 58, 16, 2, 1, NULL, '2026-08-16 13:13:08', '2026-08-16 13:13:08'),
+(344, 57, 16, 2, 1, NULL, '2026-08-16 13:13:08', '2026-08-16 13:13:08'),
+(345, 56, 16, 2, 1, NULL, '2026-08-16 13:13:08', '2026-08-16 13:13:08'),
+(346, 55, 16, 2, 1, NULL, '2026-08-16 13:13:08', '2026-08-16 13:13:08'),
+(347, 25, 17, 1, 1, NULL, '2026-08-16 13:19:26', '2026-08-16 13:19:26'),
+(348, 155, 17, 2, 1, NULL, '2026-08-16 13:19:26', '2026-08-16 13:19:26'),
+(349, 154, 17, 2, 1, NULL, '2026-08-16 13:19:26', '2026-08-16 13:19:26'),
+(350, 31, 17, 2, 1, NULL, '2026-08-16 13:19:26', '2026-08-16 13:19:26'),
+(351, 30, 17, 2, 1, NULL, '2026-08-16 13:19:26', '2026-08-16 13:19:26'),
+(352, 28, 17, 2, 1, NULL, '2026-08-16 13:19:26', '2026-08-16 13:19:26'),
+(353, 27, 17, 2, 1, NULL, '2026-08-16 13:19:26', '2026-08-16 13:19:26'),
+(354, 21, 18, 1, 1, NULL, '2026-08-16 13:24:51', '2026-08-16 13:24:51'),
+(355, 135, 18, 2, 1, NULL, '2026-08-16 13:24:51', '2026-08-16 13:24:51'),
+(356, 25, 19, 1, 1, NULL, '2026-08-16 13:29:56', '2026-08-16 13:29:56'),
+(357, 153, 19, 2, 1, NULL, '2026-08-16 13:29:56', '2026-08-16 13:29:56'),
+(358, 31, 19, 2, 1, NULL, '2026-08-16 13:29:56', '2026-08-16 13:29:56'),
+(359, 15, 20, 1, 1, NULL, '2026-08-16 13:34:21', '2026-08-16 13:34:21'),
+(360, 143, 20, 2, 1, NULL, '2026-08-16 13:34:21', '2026-08-16 13:34:21'),
+(361, 142, 20, 2, 1, NULL, '2026-08-16 13:34:21', '2026-08-16 13:34:21'),
+(362, 103, 20, 2, 1, NULL, '2026-08-16 13:34:21', '2026-08-16 13:34:21'),
+(363, 102, 20, 2, 1, NULL, '2026-08-16 13:34:21', '2026-08-16 13:34:21'),
+(364, 16, 20, 2, 1, NULL, '2026-08-16 13:34:21', '2026-08-16 13:34:21'),
+(365, 22, 21, 1, 1, NULL, '2026-08-16 13:37:50', '2026-08-16 13:37:50'),
+(366, 148, 21, 2, 1, NULL, '2026-08-16 13:37:50', '2026-08-16 13:37:50'),
+(367, 147, 21, 2, 1, NULL, '2026-08-16 13:37:50', '2026-08-16 13:37:50'),
+(368, 146, 21, 2, 1, NULL, '2026-08-16 13:37:50', '2026-08-16 13:37:50'),
+(369, 52, 21, 2, 1, NULL, '2026-08-16 13:37:50', '2026-08-16 13:37:50'),
+(370, 51, 21, 2, 1, NULL, '2026-08-16 13:37:50', '2026-08-16 13:37:50'),
+(371, 50, 21, 2, 1, NULL, '2026-08-16 13:37:50', '2026-08-16 13:37:50'),
+(372, 49, 21, 2, 1, NULL, '2026-08-16 13:37:50', '2026-08-16 13:37:50'),
+(373, 167, 15, 1, 1, NULL, '2026-08-16 13:38:54', '2026-08-16 13:38:54'),
+(374, 166, 15, 1, 1, NULL, '2026-08-16 13:38:54', '2026-08-16 13:38:54'),
+(375, 17, 15, 1, 1, NULL, '2026-08-16 13:43:42', '2026-08-16 13:43:42'),
+(376, 136, 18, 2, 1, NULL, '2026-08-16 13:44:56', '2026-08-16 13:44:56'),
+(377, 59, 18, 2, 1, NULL, '2026-08-16 13:44:56', '2026-08-16 13:44:56'),
+(378, 56, 18, 2, 1, NULL, '2026-08-16 13:44:56', '2026-08-16 13:44:56'),
+(379, 55, 18, 2, 1, NULL, '2026-08-16 13:44:56', '2026-08-16 13:44:56');
 
 -- --------------------------------------------------------
 
@@ -738,15 +646,15 @@ INSERT INTO `clinic_specialists` (`id`, `specialty_id`, `clinic_id`, `type`, `st
 CREATE TABLE `cms_items` (
   `id` bigint UNSIGNED NOT NULL,
   `cms_section_id` bigint UNSIGNED NOT NULL,
-  `type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'default',
-  `slug` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'default',
+  `slug` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `settings` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
   `order` int NOT NULL DEFAULT '0',
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ;
 
 --
 -- Dumping data for table `cms_items`
@@ -803,10 +711,7 @@ INSERT INTO `cms_items` (`id`, `cms_section_id`, `type`, `slug`, `settings`, `or
 (48, 15, 'contact', 'contact-3', '[]', 3, 1, '2026-05-22 23:00:04', '2026-05-22 23:00:04', NULL),
 (49, 6, 'default', 'google', NULL, 0, 1, '2026-07-13 14:19:22', '2026-07-13 14:19:22', NULL),
 (50, 6, 'default', 'apple', NULL, 0, 1, '2026-07-13 14:23:06', '2026-07-13 14:23:06', NULL),
-(51, 16, 'default', 'item-1', NULL, 0, 1, '2026-07-16 15:23:18', '2026-07-16 15:23:18', NULL),
-(52, 17, 'default', 'HealthـCompanion', NULL, 1, 1, '2026-08-05 19:30:20', '2026-08-05 19:30:20', NULL),
-(53, 17, 'default', 'ManagementـDashboard', NULL, 2, 1, '2026-08-05 19:33:46', '2026-08-05 19:33:46', NULL),
-(54, 17, 'default', 'CommittedـQuality', NULL, 3, 1, '2026-08-05 19:33:46', '2026-08-05 19:33:46', NULL);
+(51, 16, 'default', 'item-1', NULL, 0, 1, '2026-07-16 15:23:18', '2026-07-16 15:23:18', NULL);
 
 -- --------------------------------------------------------
 
@@ -817,11 +722,11 @@ INSERT INTO `cms_items` (`id`, `cms_section_id`, `type`, `slug`, `settings`, `or
 CREATE TABLE `cms_item_translations` (
   `id` bigint UNSIGNED NOT NULL,
   `cms_item_id` bigint UNSIGNED NOT NULL,
-  `locale` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `sub_title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `icon` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `locale` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `sub_title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `content` text COLLATE utf8mb4_unicode_ci,
+  `icon` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -831,14 +736,14 @@ CREATE TABLE `cms_item_translations` (
 --
 
 INSERT INTO `cms_item_translations` (`id`, `cms_item_id`, `locale`, `title`, `sub_title`, `content`, `icon`, `created_at`, `updated_at`) VALUES
-(1, 1, 'en', 'Master Your Time. Secure Your Health', NULL, '<p><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">Randivo is an advanced ecosystem designed to digitize the entire patient journey, ensuring administrative excellence for doctors and a seamless experience for patients through:</span></p><p><br></p><p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• End-to-End Patient Digitization:&nbsp;</strong></p><p><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">Seamless management from doctor discovery to final service evaluation.</span></p><p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• Real-time Communication:&nbsp;</strong></p><p><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">Direct instant link between patients and front-desk staff to minimize wait times.</span></p><p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• Smart Clinic Tools:</strong></p><p><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">&nbsp;Professional dashboard for organizing appointments, shifts, and medical staff efficiently.</span></p><p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• Quality Oversight:&nbsp;</strong></p><p><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">Integrated system to monitor overall performance and resolve complaints instantly.</span></p><p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• Verified Ratings:&nbsp;</strong></p><p><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">Distinct evaluation system for doctors based on authentic patient experiences to build trust.</span></p><p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">Why Randivo?</strong></p><p><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">We bridge the gap between Operational Efficiency and Patient Comfort in one platform, empowering your medical practice to lead in the digital health era.</span></p><p><br></p><p><br></p>', 'fa-solid fa-home', '2026-05-22 23:00:03', '2026-08-05 19:38:36'),
-(2, 1, 'ar', 'رانديفو: المنصة المتكاملة لإدارة العيادات ورقمنة الخدمات الطبية', NULL, '<p class=\"ql-direction-rtl\"><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">نظام رانديفو هو حل تقني متطور يهدف إلى أتمتة رحلة المريض بالكامل، مما يضمن كفاءة إدارية للأطباء وتجربة سلسة للمرضى من خلال:</span></p><p><br></p><p class=\"ql-direction-rtl\"><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• رقمنة رحلة المريض:</strong></p><p class=\"ql-direction-rtl\"><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">&nbsp;إدارة متكاملة تبدأ من البحث عن الطبيب حتى تقييم الخدمة.</span></p><p class=\"ql-direction-rtl\"><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• تواصل لحظي:&nbsp;</strong></p><p class=\"ql-direction-rtl\"><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">ربط مباشر بين المريض والاستقبال لسرعة التنسيق وتقليل وقت الانتظار.</span></p><p class=\"ql-direction-rtl\"><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• إدارة ذكية للعيادات:</strong></p><p class=\"ql-direction-rtl\"><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">&nbsp;لوحة تحكم احترافية لتنظيم المواعيد، الورديات، والكوادر الطبية.</span></p><p class=\"ql-direction-rtl\"><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• رقابة وجودة:</strong></p><p class=\"ql-direction-rtl\"><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">&nbsp;نظام لمراقبة الأداء، معالجة الشكاوى فوراً، وضمان الشفافية.</span></p><p class=\"ql-direction-rtl\"><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• تقييم موثوق:&nbsp;</strong></p><p class=\"ql-direction-rtl\"><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">نظام تقييم منفصل للأطباء يعتمد على تجارب حقيقية لتعزيز المصداقية.</span></p><p class=\"ql-direction-rtl\"><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">لماذا رانديفو؟</strong></p><p class=\"ql-direction-rtl\"><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">نجمع بين كفاءة الإدارة و راحة المريض في منصة واحدة تضمن لك الريادة في القطاع الصحي الرقمي.</span></p><p><br></p>', 'fa-solid fa-home', '2026-05-22 23:00:03', '2026-08-05 19:38:36'),
+(1, 1, 'en', 'Master Your Time. Secure Your Health', NULL, 'Stop wasting hours in waiting rooms. Experience the future of healthcare with Randivo the only app that offers real-time queue tracking and guaranteed 1:1 booking precision.', 'fa-solid fa-home', '2026-05-22 23:00:03', '2026-06-03 17:07:08'),
+(2, 1, 'ar', 'النص الرئيسي تسيت', 'تيست', 'مرحبا بك في موقعنا', 'fa-solid fa-home', '2026-05-22 23:00:03', '2026-07-16 13:58:29'),
 (3, 2, 'en', 'Hero Text 2', NULL, 'Welcome to our website 2', 'fa-solid fa-home', '2026-05-22 23:00:03', '2026-05-22 23:00:03'),
 (4, 2, 'ar', 'النص الرئيسي 2', NULL, 'مرحبا بك في موقعنا 2', 'fa-solid fa-home', '2026-05-22 23:00:03', '2026-05-22 23:00:03'),
 (5, 3, 'en', 'Hero Text 3', NULL, 'Welcome to our website 3', 'fa-solid fa-home', '2026-05-22 23:00:03', '2026-05-22 23:00:03'),
 (6, 3, 'ar', 'النص الرئيسي 3', NULL, 'مرحبا بك في موقعنا 3', 'fa-solid fa-home', '2026-05-22 23:00:03', '2026-05-22 23:00:03'),
 (7, 4, 'en', 'The Patient Experience (iOS & Android App)', 'Your Health Companion, Right in Your Pocket.', 'Feature 1 descriptionWe designed the Randivo app to be your gateway to a life without waiting. Search for your doctor, book your appointment with precision, chat with your clinic, and share your verified feedback  all at the touch of a button.', NULL, '2026-05-22 23:00:03', '2026-06-02 22:35:15'),
-(8, 4, 'ar', 'تجربة المريض (تطبيق iOS & Android)', 'رفيقك الصحي.. في جيبك.', 'صممنا تطبيق رنديفو ليكون بوابتك لحياة بلا انتظار. ابحث عن طبيبك، احجز موعدك بدقة، دردش مع عيادتك، وشاركنا تقييمك الحقيقي.. كل هذا بضغطة زر.', NULL, '2026-05-22 23:00:03', '2026-08-05 13:43:50'),
+(8, 4, 'ar', 'تجربة المريض (تطبيق iOS & Android)', 'رفيقك الصحي.. في جيبك.', 'صممنا تطبيق رانديفو ليكون بوابتك لحياة بلا انتظار. ابحث عن طبيبك، احجز موعدك بدقة، دردش مع عيادتك، وشاركنا تقييمك الحقيقي.. كل هذا بضغطة زر.', NULL, '2026-05-22 23:00:03', '2026-06-02 22:35:15'),
 (9, 5, 'en', 'Clinic Management Dashboard', 'Manage Your Clinic Smarter, From One Place.', '<p>Transform your clinic’s administration into a fully digital experience. Take total control over doctor schedules, organize shifts, monitor performance, and resolve patient inquiries in real-time to ensure peak operational efficiency.</p>', NULL, '2026-05-22 23:00:03', '2026-07-23 20:47:33'),
 (10, 5, 'ar', 'لوحة تحكم العيادة (Clinic Dashboard)', 'أدر عيادتك بذكاء.. من مكان واحد.', '<p>حوّل إدارة عيادتك إلى تجربة رقمية بالكامل. تحكّم في جداول الأطباء، نظّم الورديات، وراقب أداء العيادة ومعالجة الملاحظات لحظة بلحظة لضمان أعلى مستويات الكفاءة.</p>', NULL, '2026-05-22 23:00:03', '2026-07-23 20:47:34'),
 (11, 6, 'en', 'Quality Assurance & Oversight', 'Committed to Quality, Dedicated to Excellence.', '<p>Behind every successful booking is a technical team ensuring quality. Our system administrators monitor operations, resolve technical challenges, and guarantee immediate responses to all inquiries to maintain a seamless ecosystem.</p>', NULL, '2026-05-22 23:00:03', '2026-07-23 20:39:45'),
@@ -856,17 +761,17 @@ INSERT INTO `cms_item_translations` (`id`, `cms_item_id`, `locale`, `title`, `su
 (23, 12, 'en', 'Role-Specific Dashboards', NULL, 'Custom-tailored interfaces for every professional role (Doctors, Receptionists, and Managers) to ensure high-speed performance, ease of use, and data accuracy.', NULL, '2026-05-22 23:00:03', '2026-06-02 23:02:09'),
 (24, 12, 'ar', 'لوحات تحكم تخصصية (Dashboards)', NULL, 'واجهات مخصصة لكل دور وظيفي (طبيب، موظف استقبال، مدير) لضمان سرعة الإنجاز، سهولة الاستخدام، ودقة البيانات', NULL, '2026-05-22 23:00:03', '2026-06-02 23:02:09'),
 (25, 13, 'en', 'Chaos-Free Organization', NULL, 'Say goodbye to paper logs. From doctor schedules to patient records, everything is accessible at your fingertips, boosting operational efficiency.', NULL, '2026-05-22 23:00:03', '2026-06-03 14:23:47'),
-(26, 13, 'ar', 'تنظيم ذكي.. بلا فوضى', NULL, 'ودّع زمن السجلات الورقية والملفات الضائعة. مع رنديفو، كل شيء من جداول الأطباء إلى سجلات المرضى متاح بين يديك بضغطة زر، مما يرفع كفاءة العمل بنسبة 100%.', NULL, '2026-05-22 23:00:03', '2026-08-05 13:43:50'),
+(26, 13, 'ar', 'تنظيم ذكي.. بلا فوضى', NULL, 'ودّع زمن السجلات الورقية والملفات الضائعة. مع رانديفو، كل شيء من جداول الأطباء إلى سجلات المرضى متاح بين يديك بضغطة زر، مما يرفع كفاءة العمل بنسبة 100%.', NULL, '2026-05-22 23:00:03', '2026-06-03 14:23:47'),
 (27, 14, 'en', 'Enhanced Trust & Credibility', NULL, 'Through our transparent rating and complaint systems, we build a bridge of trust between you and your patients, cementing your professional reputation.', NULL, '2026-05-22 23:00:03', '2026-06-03 14:23:47'),
 (28, 14, 'ar', 'بناء جسور الثقة والمصداقية', NULL, 'نظام التقييمات الشفاف ومعالجة الشكاوى الفورية يحول مريضك إلى \"شريك\"، ويبني لعيادتك سمعة رقمية قوية تجذب المزيد من العملاء.', NULL, '2026-05-22 23:00:03', '2026-06-03 14:23:47'),
 (29, 15, 'en', 'Seamless Communication', NULL, 'Eliminate communication barriers with integrated Live Chat, significantly reducing appointment cancellations and \"no-shows.\"', NULL, '2026-05-22 23:00:03', '2026-06-03 14:23:47'),
 (30, 15, 'ar', 'تواصل فعال يُنهي المواعيد الضائعة', NULL, 'نلغي حواجز الاتصال التقليدية عبر الشات المباشر، مما يقلل من نسب إلغاء المواعيد (No-shows) ويوفر وقت موظفي الاستقبال.', NULL, '2026-05-22 23:00:03', '2026-06-03 14:23:47'),
 (31, 16, 'en', 'Comprehensive Family Management', NULL, 'Our unique \"Dependent Management\" feature makes Randivo the top choice for parents, allowing them to manage their children’s health easily.', NULL, '2026-05-22 23:00:03', '2026-06-03 14:23:47'),
-(32, 16, 'ar', 'الخيار الأول للعائلات', NULL, 'ميزة إضافة \"المرافقين القُصّر\" تجعل رنديفو التطبيق المفضل للأهالي، مما يوسع قاعدة عملائك لتشمل العائلة بالكامل بسهولة ويسر.', NULL, '2026-05-22 23:00:03', '2026-08-05 13:43:50'),
+(32, 16, 'ar', 'الخيار الأول للعائلات', NULL, 'ميزة إضافة \"المرافقين القُصّر\" تجعل رانديفو التطبيق المفضل للأهالي، مما يوسع قاعدة عملائك لتشمل العائلة بالكامل بسهولة ويسر.', NULL, '2026-05-22 23:00:03', '2026-06-03 14:23:47'),
 (33, 17, 'en', 'Performance Analytics', NULL, 'Advanced dashboards provide clinic managers with clear insights into staff efficiency and patient satisfaction levels, enabling data-driven growth.', NULL, '2026-05-22 23:00:03', '2026-06-03 14:23:47'),
 (34, 17, 'ar', 'رؤية تحليلية شاملة (Insights)', NULL, 'لوحات تحكم متقدمة تمنح مدير العيادة رؤية كاملة حول كفاءة الأطباء، مستوى الرضا، ونمو العيادة لاتخاذ قرارات مبنية على بيانات دقيقة.', NULL, '2026-05-22 23:00:03', '2026-06-03 14:23:47'),
 (35, 18, 'en', 'Randivo Patient App (iOS & Android)', NULL, 'Your digital gateway to finding top-rated doctors and booking appointments with precision. Experience a seamless journey with live chat, real-time queue tracking, and verified reviews for better healthcare.', NULL, '2026-05-22 23:00:03', '2026-06-03 15:28:01'),
-(36, 18, 'ar', 'تطبيق رنديفو للمرضى (iOS & Android)', NULL, 'بوابتك الذكية للبحث عن أفضل الأطباء وحجز موعدك بالدقيقة. استمتع بتجربة مستخدم سلسة تشمل المحادثة الفورية، تتبع الدور، وتقييم الخدمة لضمان أفضل رعاية صحية.', NULL, '2026-05-22 23:00:03', '2026-08-05 13:30:43'),
+(36, 18, 'ar', 'تطبيق رانديفو للمرضى (iOS & Android)', NULL, 'بوابتك الذكية للبحث عن أفضل الأطباء وحجز موعدك بالدقيقة. استمتع بتجربة مستخدم سلسة تشمل المحادثة الفورية، تتبع الدور، وتقييم الخدمة لضمان أفضل رعاية صحية.', NULL, '2026-05-22 23:00:03', '2026-06-03 15:28:01'),
 (37, 19, 'en', 'Clinic Management Dashboard', NULL, 'The ultimate tool for clinic automation. Manage doctor schedules, organize shifts, and handle patient feedback from a single, intuitive interface designed to boost operational efficiency.', NULL, '2026-05-22 23:00:03', '2026-06-03 15:28:01'),
 (38, 19, 'ar', 'لوحة تحكم إدارة العيادات (Clinic Dashboard)', NULL, 'الحل الأمثل لأتمتة عيادتك. أدر جداول الأطباء، نظّم الورديات، وتابع شكاوى المرضى من واجهة ذكية واحدة تضمن لك كفاءة التشغيل وزيادة الإنتاجية.', NULL, '2026-05-22 23:00:03', '2026-06-03 15:28:01'),
 (39, 20, 'en', 'System Administration & Support', NULL, 'Ensuring excellence and system integrity. Our dedicated admin layer monitors global operations, resolves technical issues, and provides immediate support to maintain a flawless experience.', NULL, '2026-05-22 23:00:03', '2026-06-03 15:28:01'),
@@ -874,7 +779,7 @@ INSERT INTO `cms_item_translations` (`id`, `cms_item_id`, `locale`, `title`, `su
 (41, 21, 'en', 'Full Administrative Automation', NULL, 'We digitize appointment management to eliminate human error and paper-based logs, ensuring perfectly synchronized doctor shifts and organized clinic flow.', NULL, '2026-05-22 23:00:03', '2026-06-03 16:30:14'),
 (42, 21, 'ar', 'أتمتة العمليات الإدارية (Zero-Error Operations)', NULL, 'نستهدف رقمنة إدارة المواعيد بالكامل لإنهاء عصر السجلات الورقية، مما يضمن تنظيم ورديات الأطباء بدقة ويمنع تداخل المواعيد أو ازدحام العيادات.', NULL, '2026-05-22 23:00:03', '2026-06-03 16:30:14'),
 (43, 22, 'en', 'Patient-Centric Experience', NULL, 'Streamlining the patient journey with a 3-click booking process. Our \"Dependent Management\" feature makes Randivo the go-to family app for managing children\'s appointments from a single account.', NULL, '2026-05-22 23:00:03', '2026-06-03 16:30:14'),
-(44, 22, 'ar', 'تجربة مريض محورها الراحة (Patient-Centric Approach)', NULL, 'نسهل رحلة المريض عبر منصة موحدة للبحث والحجز في ثوانٍ. وبفضل ميزة \"إدارة المرافقين\"، أصبح رنديفو التطبيق العائلي الأول لإدارة مواعيد الأطفال من حساب واحد.', NULL, '2026-05-22 23:00:03', '2026-08-05 13:30:43'),
+(44, 22, 'ar', 'تجربة مريض محورها الراحة (Patient-Centric Approach)', NULL, 'نسهل رحلة المريض عبر منصة موحدة للبحث والحجز في ثوانٍ. وبفضل ميزة \"إدارة المرافقين\"، أصبح رانديفو التطبيق العائلي الأول لإدارة مواعيد الأطفال من حساب واحد.', NULL, '2026-05-22 23:00:03', '2026-06-03 16:30:14'),
 (45, 23, 'en', 'Real-Time Communication Excellence', NULL, 'Closing the gap between patients and clinics via \"Live Chat,\" reducing phone call congestion and providing instant answers that enhance patient engagement.', NULL, '2026-05-22 23:00:03', '2026-06-03 16:30:14'),
 (46, 23, 'ar', 'تواصل لحظي وفعّال (Instant Connectivity)', NULL, 'سد الفجوة بين المريض والعيادة عبر \"الشات المباشر\"، مما يقلل الضغط على المكالمات الهاتفية ويوفر استجابة فورية ترفع من ولاء المريض.', NULL, '2026-05-22 23:00:03', '2026-06-03 16:30:14'),
 (47, 24, 'en', 'Transparency & Quality Control', NULL, 'Creating a competitive healthcare environment through a dual-rating system (Doctor & Clinic), providing real-time data to optimize service quality and patient satisfaction.', NULL, '2026-05-22 23:00:03', '2026-06-03 16:30:14'),
@@ -882,13 +787,13 @@ INSERT INTO `cms_item_translations` (`id`, `cms_item_id`, `locale`, `title`, `su
 (49, 25, 'en', 'Empowering Clinic Management', NULL, 'Providing a comprehensive dashboard that acts as a \"Smart Administrative Assistant,\" allowing managers to monitor staff performance and resolve complaints professionally.', NULL, '2026-05-22 23:00:03', '2026-06-03 16:30:14'),
 (50, 25, 'ar', 'تمكين الإدارة الطبية تقنياً (Smart Management)', NULL, 'نقدم لوحة تحكم تعمل كـ \"مساعد إداري ذكي\" لمراقبة الأداء، إدارة الجداول، ومعالجة الشكاوى بأسلوب مؤسسي احترافي.', NULL, '2026-05-22 23:00:03', '2026-06-03 16:30:14'),
 (51, 26, 'en', 'Accelerating Growth & Visibility', NULL, 'Acting as a \"Medical Marketplace\" that boosts clinic visibility, helping small and large practices reach a wider patient base and increase overall revenue.', NULL, '2026-05-22 23:00:03', '2026-06-03 16:30:14'),
-(52, 26, 'ar', 'دفع عجلة النمو والانتشار (Market Expansion)', NULL, 'رنديفو ليس مجرد نظام، بل هو \"سوق طبي\" يزيد من فرص ظهور العيادات ووصولها لشريحة أكبر من المرضى، مما يضمن زيادة الحجوزات ونمو العوائد.', NULL, '2026-05-22 23:00:03', '2026-08-05 13:30:43'),
+(52, 26, 'ar', 'دفع عجلة النمو والانتشار (Market Expansion)', NULL, 'رانديفو ليس مجرد نظام، بل هو \"سوق طبي\" يزيد من فرص ظهور العيادات ووصولها لشريحة أكبر من المرضى، مما يضمن زيادة الحجوزات ونمو العوائد.', NULL, '2026-05-22 23:00:03', '2026-06-03 16:30:14'),
 (53, 27, 'en', 'Smart Appointment Management', NULL, 'A flexible system that allows patients to select the perfect doctor and time slot based on pre-defined shifts, eliminating scheduling chaos.', NULL, '2026-05-22 23:00:03', '2026-06-03 16:40:36'),
 (54, 27, 'ar', 'إدارة الحجز الذكي (Smart Booking)', NULL, 'نظام مرن يتيح للمريض اختيار الطبيب والموعد بدقة بناءً على ورديات مُحددة مسبقاً، مما ينهي فوضى المواعيد ويضمن كفاءة التشغيل.', NULL, '2026-05-22 23:00:03', '2026-06-03 16:40:36'),
 (55, 28, 'en', 'Patient-Centric Experience', NULL, 'Streamlining the healthcare journey via a unified platform to search clinics, compare doctors through verified reviews, and secure bookings in seconds.', NULL, '2026-05-22 23:00:03', '2026-06-03 16:40:36'),
 (56, 28, 'ar', 'تجربة مريض محورها الراحة (Patient Centricity)', NULL, 'تسهيل رحلة المريض عبر منصة موحدة للبحث عن العيادات، المفاضلة بين الأطباء بناءً على تقييمات حقيقية، وإتمام الحجز في ثوانٍ معدودة.', NULL, '2026-05-22 23:00:03', '2026-06-03 16:40:36'),
 (57, 29, 'en', 'Dependent & Minor Management', NULL, '<p>A unique feature allowing patients to add up to 3 children (under 18) per account, making family healthcare coordination simpler than ever.</p>', NULL, '2026-05-22 23:00:03', '2026-07-25 16:43:37'),
-(58, 29, 'ar', 'نظام إدارة المرافقين والقُصّر', NULL, '<p>ميزة حصرية تسمح بإضافة حتى 3 أبناء (تحت 18 عاماً) لكل حساب مريض، مما يجعل \"رنديفو\" التطبيق المثالي لإدارة حجوزات العائلة من مكان واحد.</p>', NULL, '2026-05-22 23:00:03', '2026-08-05 13:36:23'),
+(58, 29, 'ar', 'نظام إدارة المرافقين والقُصّر', NULL, '<p>ميزة حصرية تسمح بإضافة حتى 3 أبناء (تحت 18 عاماً) لكل حساب مريض، مما يجعل \"رانديفو\" التطبيق المثالي لإدارة حجوزات العائلة من مكان واحد.</p>', NULL, '2026-05-22 23:00:03', '2026-07-25 16:43:37'),
 (59, 30, 'en', 'Instant Communication (Live Chat)', NULL, 'Direct messaging with clinic receptionists for quick inquiries and booking coordination, reducing phone call wait times and enhancing engagement.', NULL, '2026-05-22 23:00:03', '2026-06-03 16:40:36'),
 (60, 30, 'ar', 'التواصل اللحظي (Live Chat', NULL, 'قنوات دردشة مباشرة مع موظفي الاستقبال للاستفسارات السريعة وتنسيق الحجوزات، مما يقلل الضغط على الهاتف ويزيد سرعة الاستجابة.', NULL, '2026-05-22 23:00:03', '2026-06-03 16:40:36'),
 (61, 31, 'en', 'Multi-Channel Complaint Management', NULL, 'Dedicated feedback loops that ensure patient concerns reach the right person—Clinic Managers for medical issues or App Admins for technical support.', NULL, '2026-05-22 23:00:03', '2026-06-03 16:40:36'),
@@ -902,7 +807,7 @@ INSERT INTO `cms_item_translations` (`id`, `cms_item_id`, `locale`, `title`, `su
 (69, 35, 'en', 'How can I book an appointment with a specific doctor?', NULL, 'It’s easy: open the app, select your clinic, and browse the list of doctors. Once you choose a doctor, you’ll see the available time slots (shifts). Select your preferred time and click \"Confirm Booking.\"', NULL, '2026-05-22 23:00:03', '2026-06-03 16:48:07'),
 (70, 35, 'ar', 'كيف يمكنني حجز موعد مع طبيب محدد؟', NULL, 'الأمر بسيط؛ قم بفتح التطبيق، اختر العيادة، ثم تصفح قائمة الأطباء المتاحين. بعد اختيار الطبيب، ستظهر لك المواعيد المتاحة (الورديات)، اختر الموعد الذي يناسبك ثم اضغط على \"تأكيد الحجز\".', NULL, '2026-05-22 23:00:03', '2026-06-03 16:48:07'),
 (71, 36, 'en', 'Can I book appointments for family members?', NULL, 'Yes. Rundevo allows you to add up to 3 dependents (children or minors under 18) to your profile, enabling you to manage and book their medical appointments directly from your account.', NULL, '2026-05-22 23:00:03', '2026-06-03 16:49:55'),
-(72, 36, 'ar', 'هل يمكنني حجز موعد لأفراد عائلتي؟', NULL, 'نعم، يتيح لك رنديفو إضافة حتى 3 مرافقين (أطفال أو قُصّر تحت 18 عاماً) إلى ملفك الشخصي، مما يمكنك من إدارة وحجز مواعيدهم الطبية بسهولة من حسابك.', NULL, '2026-05-22 23:00:03', '2026-08-06 16:20:53'),
+(72, 36, 'ar', 'هل يمكنني حجز موعد لأفراد عائلتي؟', NULL, 'نعم، يتيح لك رانديفو إضافة حتى 3 مرافقين (أطفال أو قُصّر تحت 18 عاماً) إلى ملفك الشخصي، مما يمكنك من إدارة وحجز مواعيدهم الطبية بسهولة من حسابك.', NULL, '2026-05-22 23:00:03', '2026-06-03 16:48:07'),
 (73, 37, 'en', 'How do I contact the clinic for booking inquiries?', NULL, 'Once your booking is confirmed, you can use the \"Live Chat\" feature within the app to talk directly to the clinic\'s receptionist. You can also send an inquiry via the clinic’s page, and their staff will respond promptly.', NULL, '2026-05-22 23:00:03', '2026-06-03 16:48:07'),
 (74, 37, 'ar', 'كيف أتواصل مع العيادة للاستفسار عن تفاصيل الحجز؟', NULL, 'بمجرد إتمام الحجز، تتوفر لك ميزة \"الدردشة الفورية\" داخل التطبيق للتحدث مباشرة مع موظف الاستقبال. كما يمكنك إرسال استفسارك من خلال صفحة العيادة وسيقوم الفريق بالرد عليك في أقرب وقت.', NULL, '2026-05-22 23:00:03', '2026-06-03 16:48:08'),
 (75, 38, 'en', 'What should I do if I encounter a technical issue with the app?', NULL, 'Our technical team is here to help. You can submit a report directly to the \"App Admin\" via the Technical Support section, and we will resolve the issue immediately.', NULL, '2026-05-22 23:00:03', '2026-06-03 16:48:08'),
@@ -932,13 +837,7 @@ INSERT INTO `cms_item_translations` (`id`, `cms_item_id`, `locale`, `title`, `su
 (99, 50, 'en', 'apple', NULL, 'https://apps.apple.com/us/app/randevu-%D8%B1%D8%A7%D9%86%D8%AF%D9%8A%D9%81%D9%88/id6761128352', NULL, '2026-07-13 14:23:06', '2026-07-13 14:23:06'),
 (100, 50, 'ar', 'apple', NULL, 'https://apps.apple.com/us/app/randevu-%D8%B1%D8%A7%D9%86%D8%AF%D9%8A%D9%81%D9%88/id6761128352', NULL, '2026-07-13 14:23:06', '2026-07-13 14:23:06'),
 (101, 51, 'en', 'item 1', 'item 1', 'item 1', NULL, '2026-07-16 15:23:18', '2026-07-16 15:23:18'),
-(102, 51, 'ar', 'عنصر 1', 'عنصر 1', 'عنصر 1', NULL, '2026-07-16 15:23:18', '2026-07-16 15:23:18'),
-(103, 52, 'en', 'Your Health Companion, Right in Your Pocket.', NULL, 'We designed the Randivo app to be your gateway to a life without waiting. Search for your doctor, book your appointment with precision, chat with your clinic, and share your verified feedback  all at the touch of a button.', NULL, '2026-08-05 19:30:20', '2026-08-05 19:30:20'),
-(104, 52, 'ar', 'رفيقك الصحي.. في جيبك.', NULL, 'صممنا تطبيق رانديفو ليكون بوابتك لحياة بلا انتظار. ابحث عن طبيبك، احجز موعدك بدقة، دردش مع عيادتك، وشاركنا تقييمك الحقيقي.. كل هذا بضغطة زر.', NULL, '2026-08-05 19:30:20', '2026-08-05 19:30:20'),
-(105, 53, 'en', 'Manage Your Clinic Smarter, From One Place', NULL, 'Transform your clinic’s administration into a fully digital experience. Take total control over doctor schedules, organize shifts, monitor performance, and resolve patient inquiries in real-time to ensure peak operational efficiency.', NULL, '2026-08-05 19:33:46', '2026-08-05 19:33:46'),
-(106, 53, 'ar', 'أدر عيادتك بذكاء.. من مكان واحد.', NULL, 'حوّل إدارة عيادتك إلى تجربة رقمية بالكامل. تحكّم في جداول الأطباء، نظّم الورديات، وراقب أداء العيادة ومعالجة الملاحظات لحظة بلحظة لضمان أعلى مستويات الكفاءة.', NULL, '2026-08-05 19:33:46', '2026-08-05 19:33:46'),
-(107, 54, 'en', 'Committed to Quality, Dedicated to Excellence.', NULL, 'Behind every successful booking is a technical team ensuring quality. Our system administrators monitor operations, resolve technical challenges, and guarantee immediate responses to all inquiries to maintain a seamless ecosystem.', NULL, '2026-08-05 19:33:46', '2026-08-05 19:33:46'),
-(108, 54, 'ar', 'ضمان الجودة.. والتزام بالتميز.', NULL, 'خلف كل حجز ناجح فريق تقني يضمن لك الجودة. يعمل مديرو النظام على مراقبة سلاسة العمليات، معالجة أي تحديات تقنية، وضمان استجابة فورية لكافة الاستفسارات.', NULL, '2026-08-05 19:33:46', '2026-08-05 19:33:46');
+(102, 51, 'ar', 'عنصر 1', 'عنصر 1', 'عنصر 1', NULL, '2026-07-16 15:23:18', '2026-07-16 15:23:18');
 
 -- --------------------------------------------------------
 
@@ -948,11 +847,11 @@ INSERT INTO `cms_item_translations` (`id`, `cms_item_id`, `locale`, `title`, `su
 
 CREATE TABLE `cms_languages` (
   `id` bigint UNSIGNED NOT NULL,
-  `code` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `native_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `direction` varchar(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'ltr',
-  `flag` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `code` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `native_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `direction` varchar(3) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'ltr',
+  `flag` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `is_default` tinyint(1) NOT NULL DEFAULT '0',
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
   `order` int NOT NULL DEFAULT '0',
@@ -976,14 +875,14 @@ INSERT INTO `cms_languages` (`id`, `code`, `name`, `native_name`, `direction`, `
 
 CREATE TABLE `cms_links` (
   `id` bigint UNSIGNED NOT NULL,
-  `linkable_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `linkable_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `linkable_id` bigint UNSIGNED NOT NULL,
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `link` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `route_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `icon` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `target` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '_self',
-  `type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `link` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `route_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `icon` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `target` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '_self',
+  `type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `order` int NOT NULL DEFAULT '0',
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
@@ -999,8 +898,8 @@ CREATE TABLE `cms_links` (
 CREATE TABLE `cms_link_translations` (
   `id` bigint UNSIGNED NOT NULL,
   `cms_link_id` bigint UNSIGNED NOT NULL,
-  `locale` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `locale` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -1013,8 +912,8 @@ CREATE TABLE `cms_link_translations` (
 
 CREATE TABLE `cms_pages` (
   `id` bigint UNSIGNED NOT NULL,
-  `slug` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `slug` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
   `order` int NOT NULL DEFAULT '0',
   `created_at` timestamp NULL DEFAULT NULL,
@@ -1043,10 +942,10 @@ INSERT INTO `cms_pages` (`id`, `slug`, `name`, `is_active`, `order`, `created_at
 CREATE TABLE `cms_page_translations` (
   `id` bigint UNSIGNED NOT NULL,
   `cms_page_id` bigint UNSIGNED NOT NULL,
-  `locale` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `meta_description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `meta_keywords` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `locale` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `meta_description` text COLLATE utf8mb4_unicode_ci,
+  `meta_keywords` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -1056,8 +955,8 @@ CREATE TABLE `cms_page_translations` (
 --
 
 INSERT INTO `cms_page_translations` (`id`, `cms_page_id`, `locale`, `title`, `meta_description`, `meta_keywords`, `created_at`, `updated_at`) VALUES
-(1, 1, 'en', 'Home', 'Home page', 'home, page', '2026-05-22 23:00:03', '2026-05-22 23:00:03'),
-(2, 1, 'ar', 'الصفحة الرئيسية', 'الصفحة الرئيسية', 'الصفحة الرئيسية', '2026-05-22 23:00:03', '2026-05-22 23:00:03'),
+(1, 1, 'en', 'Home', '<p>Home page</p>', 'home, page', '2026-05-22 23:00:03', '2026-08-16 15:24:27'),
+(2, 1, 'ar', 'الصفحة الرئيسية', '<p>الصفحة الرئيسية</p>', 'الصفحة الرئيسية', '2026-05-22 23:00:03', '2026-08-16 15:24:27'),
 (3, 2, 'en', 'About Us', 'About Us description', 'About Us description', '2026-05-22 23:00:03', '2026-05-22 23:00:03'),
 (4, 2, 'ar', 'عن النظام', 'عن النظام', 'عن النظام, النظام', '2026-05-22 23:00:03', '2026-05-22 23:00:03'),
 (5, 3, 'en', 'Services', 'Services description', 'Services keywords', '2026-05-22 23:00:03', '2026-05-22 23:00:03'),
@@ -1078,26 +977,26 @@ INSERT INTO `cms_page_translations` (`id`, `cms_page_id`, `locale`, `title`, `me
 CREATE TABLE `cms_sections` (
   `id` bigint UNSIGNED NOT NULL,
   `cms_page_id` bigint UNSIGNED NOT NULL,
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `template` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `section_layout` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `template` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `section_layout` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `settings` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
   `order` int NOT NULL DEFAULT '0',
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ;
 
 --
 -- Dumping data for table `cms_sections`
 --
 
 INSERT INTO `cms_sections` (`id`, `cms_page_id`, `name`, `type`, `template`, `section_layout`, `settings`, `order`, `is_active`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 1, 'عنا', 'about-us', NULL, 'style_1', NULL, 1, 1, '2026-05-22 23:00:03', '2026-08-06 08:25:06', NULL),
-(2, 1, 'الخدمات', 'default', NULL, 'default', NULL, 2, 0, '2026-05-22 23:00:03', '2026-08-06 08:14:38', NULL),
-(3, 1, 'About Us', 'default', NULL, 'default', NULL, 4, 1, '2026-05-22 23:00:03', '2026-08-06 05:55:11', '2026-08-06 05:55:11'),
+(1, 1, 'عنا', 'about-us', NULL, 'style_1', NULL, 1, 1, '2026-05-22 23:00:03', '2026-07-16 15:19:48', NULL),
+(2, 1, 'الخدمات', 'services', NULL, 'style_1', NULL, 2, 1, '2026-05-22 23:00:03', '2026-07-16 15:19:48', NULL),
+(3, 1, 'About Us', 'about-us', NULL, 'style_1', NULL, 4, 1, '2026-05-22 23:00:03', '2026-06-02 22:29:06', NULL),
 (4, 1, 'Services', 'services', NULL, 'style_1', NULL, 5, 1, '2026-05-22 23:00:03', '2026-06-02 22:29:06', NULL),
 (5, 1, 'Why Choose Us', 'why-choose-us', NULL, 'style_1', NULL, 7, 1, '2026-05-22 23:00:03', '2026-06-02 22:29:06', NULL),
 (6, 1, 'Download App', 'download-app', NULL, 'style_1', NULL, 8, 1, '2026-05-22 23:00:03', '2026-06-02 22:29:06', NULL),
@@ -1122,10 +1021,10 @@ INSERT INTO `cms_sections` (`id`, `cms_page_id`, `name`, `type`, `template`, `se
 CREATE TABLE `cms_section_translations` (
   `id` bigint UNSIGNED NOT NULL,
   `cms_section_id` bigint UNSIGNED NOT NULL,
-  `locale` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `subtitle` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `locale` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `subtitle` text COLLATE utf8mb4_unicode_ci,
+  `description` text COLLATE utf8mb4_unicode_ci,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -1135,30 +1034,30 @@ CREATE TABLE `cms_section_translations` (
 --
 
 INSERT INTO `cms_section_translations` (`id`, `cms_section_id`, `locale`, `title`, `subtitle`, `description`, `created_at`, `updated_at`) VALUES
-(1, 1, 'en', 'Rundevu: The All-in-One Digital Platform for Clinic Management', 'About Us', '<p><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">Runevu is an advanced ecosystem designed to digitize the entire patient journey, ensuring administrative excellence for doctors and a seamless experience for patients through:</span></p><p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• End-to-End Patient Digitization:&nbsp;</strong></p><p><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">Seamless management from doctor discovery to final service evaluation.</span></p><p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• Real-time Communication:&nbsp;</strong></p><p><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">Direct instant link between patients and front-desk staff to minimize wait times.</span></p><p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• Smart Clinic Tools:</strong></p><p><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">&nbsp;Professional dashboard for organizing appointments, shifts, and medical staff efficiently.</span></p><p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• Quality Oversight:&nbsp;</strong></p><p><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">Integrated system to monitor overall performance and resolve complaints instantly.</span></p><p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• Verified Ratings:&nbsp;</strong></p><p><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">Distinct evaluation system for doctors based on authentic patient experiences to build trust.</span></p><p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">Why Rundevu?</strong></p><p><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">We bridge the gap between Operational Efficiency and Patient Comfort in one platform, empowering your medical practice to lead in the digital health era.</span></p>', '2026-05-22 23:00:03', '2026-08-06 08:18:25'),
-(2, 1, 'ar', 'رنديفو: المنصة المتكاملة لإدارة العيادات ورقمنة الخدمات الطبية', 'من نحن', '<p class=\"ql-direction-rtl\"><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">نظام رنديفو هو حل تقني متطور يهدف إلى أتمتة رحلة المريض بالكامل، مما يضمن كفاءة إدارية للأطباء وتجربة سلسة للمرضى من خلال:</span></p><p class=\"ql-direction-rtl\"><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• رقمنة رحلة المريض:</strong></p><p class=\"ql-direction-rtl\"><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">&nbsp;إدارة متكاملة تبدأ من البحث عن الطبيب حتى تقييم الخدمة.</span></p><p class=\"ql-direction-rtl\"><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• تواصل لحظي:&nbsp;</strong></p><p class=\"ql-direction-rtl\"><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">ربط مباشر بين المريض والاستقبال لسرعة التنسيق وتقليل وقت الانتظار.</span></p><p class=\"ql-direction-rtl\"><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• إدارة ذكية للعيادات:</strong></p><p class=\"ql-direction-rtl\"><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">&nbsp;لوحة تحكم احترافية لتنظيم المواعيد، الورديات، والكوادر الطبية.</span></p><p class=\"ql-direction-rtl\"><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• رقابة وجودة:</strong></p><p class=\"ql-direction-rtl\"><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">&nbsp;نظام لمراقبة الأداء، معالجة الشكاوى فوراً، وضمان الشفافية.</span></p><p class=\"ql-direction-rtl\"><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• تقييم موثوق:&nbsp;</strong></p><p class=\"ql-direction-rtl\"><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">نظام تقييم منفصل للأطباء يعتمد على تجارب حقيقية لتعزيز المصداقية.</span></p><p class=\"ql-direction-rtl\"><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">لماذا رانديفو؟</strong></p><p class=\"ql-direction-rtl\"><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">نجمع بين كفاءة الإدارة و راحة المريض في منصة واحدة تضمن لك الريادة في القطاع الصحي الرقمي.</span></p>', '2026-05-22 23:00:03', '2026-08-06 16:25:30'),
+(1, 1, 'en', 'Master Your Time. Secure Your Health', NULL, '<p><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">Stop wasting hours in waiting rooms. Experience the future of healthcare with Rundevo the only app that offers real-time queue tracking and guaranteed 100% booking precision.</span></p>', '2026-05-22 23:00:03', '2026-07-16 12:59:07'),
+(2, 1, 'ar', 'الصفحة الرئيسية', 'الصفحة الرئيسية', '<p>الصفحة الرئيسية</p>', '2026-05-22 23:00:03', '2026-07-16 12:57:31'),
 (3, 2, 'en', 'The Randivo Intelligent Ecosystem', NULL, '<p>(Integrated Solutions)</p>', '2026-05-22 23:00:03', '2026-06-03 15:59:14'),
-(4, 2, 'ar', 'بوابة رنديفو الذكية', NULL, '<p>&nbsp;(الأنظمة المتكاملة)</p>', '2026-05-22 23:00:03', '2026-08-05 13:46:51'),
-(5, 3, 'en', 'Rundevo: The All-in-One Digital Platform for Smart Clinic Management', 'ِAbout Rundevo', '<p><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">Rundevu is an advanced ecosystem designed to digitize the entire patient journey, ensuring administrative excellence for doctors and a seamless experience for patients through:</span></p><p><br></p><p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• End-to-End Patient Digitization:&nbsp;</strong></p><p><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">Seamless management from doctor discovery to final service evaluation.</span></p><p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• Real-time Communication:&nbsp;</strong></p><p><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">Direct instant link between patients and front-desk staff to minimize wait times.</span></p><p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• Smart Clinic Tools:</strong></p><p><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">&nbsp;Professional dashboard for organizing appointments, shifts, and medical staff efficiently.</span></p><p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• Quality Oversight:&nbsp;</strong></p><p><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">Integrated system to monitor overall performance and resolve complaints instantly.</span></p><p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• Verified Ratings:&nbsp;</strong></p><p><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">Distinct evaluation system for doctors based on authentic patient experiences to build trust.</span></p><p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">Why Randivo?</strong></p><p><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">We bridge the gap between Operational Efficiency and Patient Comfort in one platform, empowering your medical practice to lead in the digital health era.</span></p>', '2026-05-22 23:00:03', '2026-08-05 19:42:17'),
-(6, 3, 'ar', 'رنديفو.. المنصة المتكاملة لإدارة العيادات والتحول الرقمي الطبي', 'عن رنديفو', '<p class=\"ql-direction-rtl\"><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">نظام رانديفو هو حل تقني متطور يهدف إلى أتمتة رحلة المريض بالكامل، مما يضمن كفاءة إدارية للأطباء وتجربة سلسة للمرضى من خلال:</span></p><p><br></p><p class=\"ql-direction-rtl\"><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• رقمنة رحلة المريض:</strong></p><p class=\"ql-direction-rtl\"><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">&nbsp;إدارة متكاملة تبدأ من البحث عن الطبيب حتى تقييم الخدمة.</span></p><p class=\"ql-direction-rtl\"><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• تواصل لحظي:&nbsp;</strong></p><p class=\"ql-direction-rtl\"><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">ربط مباشر بين المريض والاستقبال لسرعة التنسيق وتقليل وقت الانتظار.</span></p><p class=\"ql-direction-rtl\"><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• إدارة ذكية للعيادات:</strong></p><p class=\"ql-direction-rtl\"><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">&nbsp;لوحة تحكم احترافية لتنظيم المواعيد، الورديات، والكوادر الطبية.</span></p><p class=\"ql-direction-rtl\"><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• رقابة وجودة:</strong></p><p class=\"ql-direction-rtl\"><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">&nbsp;نظام لمراقبة الأداء، معالجة الشكاوى فوراً، وضمان الشفافية.</span></p><p class=\"ql-direction-rtl\"><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• تقييم موثوق:&nbsp;</strong></p><p class=\"ql-direction-rtl\"><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">نظام تقييم منفصل للأطباء يعتمد على تجارب حقيقية لتعزيز المصداقية.</span></p><p class=\"ql-direction-rtl\"><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">لماذا رانديفو؟</strong></p><p class=\"ql-direction-rtl\"><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">نجمع بين كفاءة الإدارة و راحة المريض في منصة واحدة تضمن لك الريادة في القطاع الصحي الرقمي.</span></p>', '2026-05-22 23:00:03', '2026-08-05 19:42:17'),
+(4, 2, 'ar', 'بوابة رانديفو الذكية', NULL, '<p>&nbsp;(الأنظمة المتكاملة)</p>', '2026-05-22 23:00:03', '2026-06-03 15:59:14'),
+(5, 3, 'en', 'Rundevo: The All-in-One Digital Platform for Smart Clinic Management', 'ِAbout Rundevo', '<p><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">Randevo is a comprehensive digital ecosystem built to digitize the patient journey. We empower medical centers to automate operations from the initial doctor search to the final service review, utilizing high-end features:</span></p><p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• Instant Patient-Clinic Connection</strong></p><p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• Smart Administrative Tools</strong></p><p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• Seamless &amp; Transparent Experience</strong></p><p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• Performance Monitoring &amp; Quality Control</strong></p><p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• Verified Doctor Ratings</strong></p><p><br></p><p><br></p>', '2026-05-22 23:00:03', '2026-06-03 18:23:25'),
+(6, 3, 'ar', 'رنديفو.. المنصة المتكاملة لإدارة العيادات والتحول الرقمي الطبي', 'عن رنديفو', '<p class=\"ql-direction-rtl\"><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">نظام رنديفو هو حل تقني شامل صُمم خصيصاً للمراكز الطبية والعيادات الذكية، بهدف رقمنة رحلة المريض بالكامل وتحويلها إلى تجربة رقمية تفاعلية تبدأ من البحث عن الطبيب وتنتهي بتقييم الخدمة، من خلال الميزات التالية:</span></p><p><br></p><p>\r\n		</p><p><br></p>', '2026-05-22 23:00:03', '2026-06-02 23:02:09'),
 (7, 4, 'en', 'Smart & Integrated Solutions for Digital Healthcare', 'Rundevo Services', '<p><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">The Rundevo ecosystem offers a suite of innovative technical services designed to guarantee operational efficiency and patient comfort simultaneously:</span></p>', '2026-05-22 23:00:03', '2026-06-02 23:02:09'),
-(8, 4, 'ar', 'حلول ذكية ومتكاملة للرعاية الصحية الرقمية', 'خدمات رنديفو', '<p><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">يقدم نظام رنديفو مجموعة من الخدمات التقنية المبتكرة التي تضمن كفاءة التشغيل وراحة المريض في آن واحد</span></p>', '2026-05-22 23:00:03', '2026-08-05 13:43:50'),
+(8, 4, 'ar', 'حلول ذكية ومتكاملة للرعاية الصحية الرقمية', 'خدمات رنديفو', '<p><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">يقدم نظام رانديفو مجموعة من الخدمات التقنية المبتكرة التي تضمن كفاءة التشغيل وراحة المريض في آن واحد</span></p>', '2026-05-22 23:00:03', '2026-06-02 23:02:09'),
 (9, 5, 'en', 'Why Choose Us', 'Why Rundevo', '<p><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">We don’t just provide a booking app; we are your strategic tech partner in driving your clinic’s success.</span></p>', '2026-05-22 23:00:03', '2026-06-03 14:23:47'),
 (10, 5, 'ar', 'لماذا تختارنا', 'لماذا رنديفو', '<p><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">نحن لا نقدم مجرد تطبيق للحجز، بل نكون شريكك التقني لضمان نجاح عيادتك ونمو أعمالك.</span></p>', '2026-05-22 23:00:03', '2026-06-03 14:23:47'),
 (11, 6, 'en', 'Join the Future of Healthcare Today!', 'Download App', '<p>Whether you\'re looking for the best doctors or want to manage your family\'s appointments intelligently, our app provides everything you need in one place.</p>', '2026-05-22 23:00:03', '2026-06-03 14:47:20'),
 (12, 6, 'ar', 'انضم إلى مستقبل الرعاية الطبية الآن!', 'تحميل التطبيق', '<p>سواء كنت تبحث عن أفضل الأطباء أو ترغب في إدارة مواعيد عائلتك بذكاء، تطبيقنا يوفر لك كل ما تحتاجه في مكان واحد</p>', '2026-05-22 23:00:03', '2026-06-03 14:47:20'),
 (13, 7, 'en', 'Rundevo Subscription Packages', 'Packages', '<p>Choose the plan that best fits your business needs and join the Rendezvous Smart Healthcare Network.</p>', '2026-05-22 23:00:03', '2026-06-03 14:47:20'),
-(14, 7, 'ar', 'باقات رنديفو: استثمر في مستقبل عيادتك الرقمي', 'الخطط', '<p><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">اختر الخطة المناسبة لحجم أعمالك وانضم إلى شبكة رنديفو الطبية الذكية.</span></p>', '2026-05-22 23:00:03', '2026-08-05 13:43:50'),
+(14, 7, 'ar', 'باقات رنديفو: استثمر في مستقبل عيادتك الرقمي', 'الخطط', '<p><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">اختر الخطة المناسبة لحجم أعمالك وانضم إلى شبكة رانديفو الطبية الذكية.</span></p>', '2026-05-22 23:00:03', '2026-06-03 14:47:20'),
 (15, 8, 'en', 'About Rundevo', 'About Us', '<p><strong style=\"color: rgb(0, 0, 0); background-color: transparent;\">Rundevo: The All-in-One Digital Platform for Smart Clinic Management</strong></p><p><span style=\"color: rgb(0, 0, 0); background-color: transparent;\">Randivo is a comprehensive digital ecosystem built to digitize the patient journey. We empower medical centers to automate operations from the initial doctor search to the final service review, utilizing high-end features:</span></p><p><br></p><p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• Instant Patient-Clinic Connection:&nbsp;</strong></p><p><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">Real-time communication channels between patients and receptionists to streamline booking and inquiries.</span></p><p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• Smart Administrative Tools:&nbsp;</strong></p><p><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">Advanced dashboards giving clinic managers full control over medical staff scheduling and appointment flow.</span></p><p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• Seamless &amp; Transparent Experience:</strong></p><p><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">&nbsp;A structured medical journey that enhances operational efficiency and builds patient trust.</span></p><p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• Performance Monitoring &amp; Quality Control:&nbsp;</strong></p><p><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">Integrated tools to track overall performance and resolve complaints instantly to maintain excellence.</span></p><p><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• Verified Doctor Ratings:&nbsp;</strong></p><p><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">A specialized system for independent physician evaluations, ensuring transparency based on authentic patient feedback.</span></p>', '2026-05-22 23:00:03', '2026-06-03 15:17:54'),
-(16, 8, 'ar', 'عن رنديفو', 'عنا', '<p class=\"ql-direction-rtl ql-align-right\"><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">العنوان: رنديفو.. المنصة المتكاملة لإدارة العيادات والتحول الرقمي الطبي</strong></p><p class=\"ql-direction-rtl ql-align-right\"><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">نظام رانديفو هو حل تقني شامل صُمم خصيصاً للمراكز الطبية والعيادات الذكية، بهدف رقمنة رحلة المريض بالكامل وتحويلها إلى تجربة رقمية تفاعلية تبدأ من البحث عن الطبيب وتنتهي بتقييم الخدمة، من خلال الميزات التالية:</span></p><p class=\"ql-direction-rtl ql-align-right\"><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• ربط فوري وفعّال:&nbsp;</strong></p><p class=\"ql-direction-rtl ql-align-right\"><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">قنوات تواصل لحظية بين المريض وموظفي الاستقبال لتقليل وقت الانتظار وتنسيق الحجوزات بمرونة.</span></p><p class=\"ql-direction-rtl ql-align-right\"><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• إدارة ذكية للموارد:</strong></p><p class=\"ql-direction-rtl ql-align-right\"><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">&nbsp;لوحات تحكم متطورة تمنح مديري العيادات القدرة على إدارة الكوادر الطبية والمواعيد بدقة متناهية.</span></p><p class=\"ql-direction-rtl ql-align-right\"><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• كفاءة تشغيلية وشفافية:&nbsp;</strong></p><p class=\"ql-direction-rtl ql-align-right\"><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">يضمن نظامنا تجربة طبية منظمة ترفع من مستوى رضا المرضى وتزيد من إنتاجية الفريق الطبي.</span></p><p class=\"ql-direction-rtl ql-align-right\"><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• رقابة وتحليل الأداء:</strong></p><p class=\"ql-direction-rtl ql-align-right\"><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">&nbsp;أدوات لمراقبة الأداء العام للمنشأة ومعالجة الشكاوى فوراً لضمان أعلى معايير الجودة.</span></p><p class=\"ql-direction-rtl ql-align-right\"><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• نظام تقييم دقيق:&nbsp;</strong></p><p class=\"ql-direction-rtl ql-align-right\"><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">توفير تقييمات منفصلة وموثوقة للأطباء بناءً على تجارب المرضى الحقيقية لتعزيز&nbsp;</span></p>', '2026-05-22 23:00:03', '2026-08-05 13:30:43'),
+(16, 8, 'ar', 'عن رنديفو', 'عنا', '<p class=\"ql-direction-rtl ql-align-right\"><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">العنوان: رانديفو.. المنصة المتكاملة لإدارة العيادات والتحول الرقمي الطبي</strong></p><p class=\"ql-direction-rtl ql-align-right\"><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">نظام رانديفو هو حل تقني شامل صُمم خصيصاً للمراكز الطبية والعيادات الذكية، بهدف رقمنة رحلة المريض بالكامل وتحويلها إلى تجربة رقمية تفاعلية تبدأ من البحث عن الطبيب وتنتهي بتقييم الخدمة، من خلال الميزات التالية:</span></p><p class=\"ql-direction-rtl ql-align-right\"><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• ربط فوري وفعّال:&nbsp;</strong></p><p class=\"ql-direction-rtl ql-align-right\"><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">قنوات تواصل لحظية بين المريض وموظفي الاستقبال لتقليل وقت الانتظار وتنسيق الحجوزات بمرونة.</span></p><p class=\"ql-direction-rtl ql-align-right\"><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• إدارة ذكية للموارد:</strong></p><p class=\"ql-direction-rtl ql-align-right\"><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">&nbsp;لوحات تحكم متطورة تمنح مديري العيادات القدرة على إدارة الكوادر الطبية والمواعيد بدقة متناهية.</span></p><p class=\"ql-direction-rtl ql-align-right\"><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• كفاءة تشغيلية وشفافية:&nbsp;</strong></p><p class=\"ql-direction-rtl ql-align-right\"><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">يضمن نظامنا تجربة طبية منظمة ترفع من مستوى رضا المرضى وتزيد من إنتاجية الفريق الطبي.</span></p><p class=\"ql-direction-rtl ql-align-right\"><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• رقابة وتحليل الأداء:</strong></p><p class=\"ql-direction-rtl ql-align-right\"><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">&nbsp;أدوات لمراقبة الأداء العام للمنشأة ومعالجة الشكاوى فوراً لضمان أعلى معايير الجودة.</span></p><p class=\"ql-direction-rtl ql-align-right\"><strong style=\"background-color: transparent; color: rgb(0, 0, 0);\">• نظام تقييم دقيق:&nbsp;</strong></p><p class=\"ql-direction-rtl ql-align-right\"><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">توفير تقييمات منفصلة وموثوقة للأطباء بناءً على تجارب المرضى الحقيقية لتعزيز&nbsp;</span></p>', '2026-05-22 23:00:03', '2026-06-03 15:17:54'),
 (17, 9, 'en', 'Rundevo Smart Solutions', NULL, '<p>A Comprehensive Ecosystem for Healthcare</p>', '2026-05-22 23:00:03', '2026-06-03 15:28:01'),
-(18, 9, 'ar', 'حلول رنديفو الذكية', NULL, '<p><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">منظومة متكاملة لخدمة القطاع الطبي</span></p>', '2026-05-22 23:00:03', '2026-08-05 13:30:43'),
+(18, 9, 'ar', 'حلول رانديفو الذكية', NULL, '<p><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">منظومة متكاملة لخدمة القطاع الطبي</span></p>', '2026-05-22 23:00:03', '2026-06-03 15:28:01'),
 (19, 10, 'en', 'Shaping the Future of Digital Healthcare', 'Our Vision', '<p><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">\"Our goal is to transform medical booking from an administrative burden into a seamless, transparent, and professional digital experience for everyone.\"</span></p>', '2026-05-22 23:00:03', '2026-06-03 16:01:14'),
 (20, 10, 'ar', 'صياغة مستقبل الرعاية الصحية الرقمية', 'رؤيتنا', '<p><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">\"هدفنا هو تحويل الحجز الطبي من عبء إداري إلى تجربة رقمية تتسم بالسهولة، الشفافية، والاحترافية لجميع الأطراف.\"</span></p>', '2026-05-22 23:00:03', '2026-06-03 16:01:14'),
 (21, 11, 'en', 'Rundevo Features', 'Our Services', '<p><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">&nbsp;Smart Solutions for Integrated Clinic Management</span></p>', '2026-05-22 23:00:03', '2026-06-03 16:40:36'),
 (22, 11, 'ar', 'مميزات رنديفو', 'خدماتنا', '<p>حلول ذكية لإدارة العيادات المتكاملة</p>', '2026-05-22 23:00:03', '2026-06-03 16:40:36'),
 (23, 12, 'en', 'Frequently Ask Questions', 'Patient Frequently Ask Questions', '<p><br></p>', '2026-05-22 23:00:03', '2026-06-03 16:48:07'),
-(24, 12, 'ar', 'الأسئلة الشائعة', 'الأسئلة الشائعة للمرضى', '<p><br></p>', '2026-05-22 23:00:03', '2026-08-06 16:20:53'),
+(24, 12, 'ar', 'الأسئلة الشائعة', 'الأسئلة الشائعة للمرضى', NULL, '2026-05-22 23:00:03', '2026-05-24 20:44:03'),
 (25, 13, 'en', 'Frequently Ask Questions', 'Clinic Frequently Ask Questions', '<p><br></p>', '2026-05-22 23:00:03', '2026-06-03 16:48:08'),
 (26, 13, 'ar', 'الأسئلة الشائعة', 'الأسئلة الشائعة للعيادات', '<p><br></p>', '2026-05-22 23:00:03', '2026-06-03 16:56:07'),
 (27, 14, 'en', 'Your First Step Toward Digital Excellence', 'Join Now', '<p><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">Your First Step Toward Digital Excellence.</span></p><p><span style=\"background-color: transparent; color: rgb(0, 0, 0);\">Welcome as our Success Partner. You are moments away from providing your patients with an exceptional booking experience. One step separates you from fully automating your clinic and joining the elite league of smart medical centers.. Let’s get started.</span></p><p><br></p><p><br></p>', '2026-05-22 23:00:04', '2026-06-03 16:59:00'),
@@ -1166,9 +1065,9 @@ INSERT INTO `cms_section_translations` (`id`, `cms_section_id`, `locale`, `title
 (29, 15, 'en', 'Contact', 'Contact', 'Contact description', '2026-05-22 23:00:04', '2026-05-22 23:00:04'),
 (30, 15, 'ar', 'اتصل بنا', 'اتصل بنا', 'اتصل بنا', '2026-05-22 23:00:04', '2026-05-22 23:00:04'),
 (31, 16, 'en', NULL, NULL, '<p><br></p>', '2026-07-16 14:55:13', '2026-07-16 14:55:13'),
-(32, 16, 'ar', NULL, NULL, '<p><br></p>', '2026-07-16 14:55:13', '2026-08-05 13:43:50'),
-(33, 17, 'en', 'Features', NULL, '<p><br></p>', '2026-07-16 14:55:13', '2026-08-05 19:30:20'),
-(34, 17, 'ar', 'المميزات', NULL, '<p><br></p>', '2026-07-16 14:55:13', '2026-08-05 19:30:20');
+(32, 16, 'ar', NULL, NULL, NULL, '2026-07-16 14:55:13', '2026-07-16 14:55:13'),
+(33, 17, 'en', NULL, NULL, '<p><br></p>', '2026-07-16 14:55:13', '2026-07-16 14:55:13'),
+(34, 17, 'ar', NULL, NULL, NULL, '2026-07-16 14:55:13', '2026-07-16 14:55:13');
 
 -- --------------------------------------------------------
 
@@ -1188,52 +1087,6 @@ CREATE TABLE `complaint_boxes` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Dumping data for table `complaint_boxes`
---
-
-INSERT INTO `complaint_boxes` (`id`, `user_id`, `clinic_id`, `image`, `complain`, `reply`, `type`, `created_at`, `updated_at`) VALUES
-(8, 11, NULL, NULL, 'send complain to admin', NULL, 1, '2022-10-16 23:40:30', '2022-10-16 23:40:30'),
-(33, 4, NULL, NULL, 'test', NULL, 1, '2023-03-19 16:54:23', '2023-03-19 16:54:23'),
-(47, 4, NULL, NULL, 'welcome 🤗🤗', NULL, 1, '2023-12-29 14:44:42', '2023-12-29 14:44:42'),
-(48, 4, NULL, NULL, 'qas', NULL, 1, '2023-12-29 14:46:10', '2023-12-29 14:46:10'),
-(51, 4, NULL, NULL, 'twgg', NULL, 1, '2023-12-29 14:53:23', '2023-12-29 14:53:23'),
-(71, 28, 210, NULL, 'تمام', NULL, 1, '2026-03-29 15:24:09', '2026-03-29 15:24:09'),
-(73, 28, 1, '17749458554544.jpg', 'اختبار لوصول الرسائل \n\nوللتنسيق \n\n\nand languages\n\n\n\n\n\n\n\nthank you', 'تم النظر في التعليق \r\n\r\nالكلام لا يصل منسق ولكن كامل \r\n\r\nالتنسيق ممتاز في التطبيق ولكن في الداش بورد  يراكم الكلام على بعض \r\n\r\n\r\nب استثناء في التطبيق الرساله الطويله لا تظهر للاخر  لعدم وجود سكرول', 1, '2026-03-31 08:30:55', '2026-03-31 08:34:27'),
-(77, 28, 204, NULL, 'تيست كريم', 'تيست ادمن \r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\nتيست كريم ادمن', 1, '2026-03-31 21:30:06', '2026-03-31 21:30:53'),
-(78, 28, 204, NULL, 'تيست \n\n\n\n\n\n\n\n\n\n\n\n\n\nتيست', NULL, 1, '2026-03-31 21:31:42', '2026-03-31 21:31:42'),
-(79, 28, NULL, NULL, 'تيست \n\n\n\n\n\n\n\n\n\n\nتيست', NULL, 1, '2026-04-01 22:25:02', '2026-04-01 22:25:02'),
-(82, 28, NULL, NULL, 'نص سكوي\n\n\n\n\n\n\n\n\n\nنص شكوي', NULL, 1, '2026-04-01 22:44:30', '2026-04-01 22:44:30'),
-(83, 28, NULL, NULL, 'نص شكوي \n\n\n\n\n\n\n\n\n\n\n\nنص شكوي', NULL, 1, '2026-04-01 22:45:10', '2026-04-01 22:45:10'),
-(85, 4, NULL, NULL, 'test complain description', NULL, 1, '2026-04-03 18:01:00', '2026-04-03 18:01:00'),
-(87, 4, 211, NULL, 'test for doctor hossam', NULL, 1, '2026-04-03 18:09:51', '2026-04-03 18:09:51'),
-(102, 4, 211, '17756485606498.jpg', 'تجربة ٧', NULL, 1, '2026-04-08 11:42:40', '2026-04-08 11:42:40'),
-(104, 3, NULL, NULL, 'test message to clinic', NULL, 1, '2026-04-08 20:37:16', '2026-04-08 20:37:16'),
-(105, 3, NULL, NULL, 'gfgjff', NULL, 1, '2026-04-08 20:37:56', '2026-04-08 20:37:56'),
-(112, 4, NULL, '17778233967844.jpg', 'تيست \n\n\n\n\n\n\n\n\n\n\n\n\nتيست', 'تماممممم', 1, '2026-05-03 15:49:56', '2026-05-03 15:50:58'),
-(113, 4, 1, '17778240812817.jpg', 'شكوي كبيره', 'ما هي الشكوي\r\n\r\n\r\n\r\n\r\n\r\nممكن توضيح', 1, '2026-05-03 16:01:21', '2026-05-03 16:01:55'),
-(114, 4, NULL, NULL, 'تيست', 'ما هي الشكوي\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\nاوك', 1, '2026-05-17 14:54:05', '2026-05-17 14:56:09'),
-(115, 4, NULL, '17790299247514.jpg', 'شكوي جديده', 'ماهي الشكوي \r\n\r\n\r\n\r\n\r\n\r\nجديد', 1, '2026-05-17 14:58:44', '2026-05-17 14:59:43'),
-(116, 65, NULL, NULL, 'مرحبا مستشفي الحياة', NULL, 1, '2026-06-17 12:26:41', '2026-06-17 12:26:41'),
-(117, 65, NULL, NULL, 'مرحبا مستشفي الحياة', NULL, 1, '2026-06-17 12:27:42', '2026-06-17 12:27:42'),
-(118, 65, NULL, NULL, 'مرحبا مستشفي الحياة', NULL, 1, '2026-06-17 12:28:06', '2026-06-17 12:28:06'),
-(120, 4, NULL, NULL, 'لم يتم الرد علي بسرعة', NULL, 1, '2026-06-25 22:04:24', '2026-06-25 22:04:24'),
-(121, 4, NULL, '17824251766529.png', 'مو موجود دكاترة', NULL, 1, '2026-06-25 22:06:16', '2026-06-25 22:06:16'),
-(122, 4, NULL, NULL, 'ما عم يتم ارفاق صورة', NULL, 1, '2026-06-25 22:06:42', '2026-06-25 22:06:42'),
-(123, 10, NULL, NULL, 'شكوى تيست', NULL, 1, '2026-06-26 13:15:13', '2026-06-26 13:15:13'),
-(124, 10, NULL, NULL, 'مرحبا', NULL, 1, '2026-06-29 14:41:33', '2026-06-29 14:41:33'),
-(125, 10, NULL, NULL, 'هل يوجد مواعيد؟', NULL, 1, '2026-06-29 14:41:50', '2026-06-29 14:41:50'),
-(127, 10, 1, '17831680431989.jpg', 'تيست', NULL, 1, '2026-07-04 12:27:23', '2026-07-04 12:27:23'),
-(128, 10, NULL, NULL, 'تيست', NULL, 1, '2026-07-04 12:27:40', '2026-07-04 12:27:40'),
-(129, 10, NULL, NULL, 'تيست', NULL, 1, '2026-07-04 12:29:03', '2026-07-04 12:29:03'),
-(130, 10, NULL, NULL, 'تيست', NULL, 1, '2026-07-04 12:29:19', '2026-07-04 12:29:19'),
-(131, 10, NULL, NULL, 'تيست', NULL, 1, '2026-07-04 12:29:40', '2026-07-04 12:29:40'),
-(132, 10, NULL, NULL, 'مشكلة تيست', NULL, 1, '2026-07-04 12:41:39', '2026-07-04 12:41:39'),
-(133, 10, NULL, NULL, 'تواصل', NULL, 1, '2026-07-08 13:24:16', '2026-07-08 13:24:16'),
-(134, 10, NULL, NULL, 'تيست', NULL, 1, '2026-07-09 03:18:49', '2026-07-09 03:18:49'),
-(135, 10, NULL, NULL, 'تم عمل شكوى لمعرفة متابعة الشكاوى \nيوم الجمعه ٨ مساء\n\nعند قراءة الشكوى يتم التواصل معي', NULL, 1, '2026-07-10 16:43:39', '2026-07-10 16:43:39'),
-(136, 10, NULL, NULL, 'تيست', NULL, 1, '2026-07-18 04:53:42', '2026-07-18 04:53:42');
-
 -- --------------------------------------------------------
 
 --
@@ -1242,30 +1095,15 @@ INSERT INTO `complaint_boxes` (`id`, `user_id`, `clinic_id`, `image`, `complain`
 
 CREATE TABLE `contact_us` (
   `id` bigint UNSIGNED NOT NULL,
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `phone` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `message` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `phone` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `message` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `is_read` tinyint(1) NOT NULL DEFAULT '0',
   `read_by` bigint UNSIGNED DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `contact_us`
---
-
-INSERT INTO `contact_us` (`id`, `name`, `email`, `phone`, `message`, `is_read`, `read_by`, `created_at`, `updated_at`) VALUES
-(1, 'iiiiiiii', 'uu@w', 'uuuuuuuuuu', 'iiiii', 0, NULL, '2026-05-23 01:11:34', '2026-05-23 01:11:34'),
-(2, 'Noemi Hux', 'domains@search-rundevo.net', '7848928227', 'Hey\r\n\r\nRegister rundevo.net in GoogleSearchIndex to be visible in online search results!\r\n\r\nEnlist rundevo.net now: https://searchregister.info', 0, NULL, '2026-05-26 17:22:00', '2026-05-26 17:22:00'),
-(3, 'Nichol Meekin', 'domains@search-rundevo.net', '695677606', 'Hi\r\n\r\nFeature rundevo.net in GoogleSearchIndex and have it be visible in google search results!\r\n\r\nEnlist rundevo.net now: https://searchregister.net', 0, NULL, '2026-05-27 18:34:04', '2026-05-27 18:34:04'),
-(4, 'Clark Hoy', 'domains@search-rundevo.net', '3405338132', 'Dear Sir/Madam\r\n\r\nInsert rundevo.net in GoogleSearchIndex so it can show up in google search results!\r\n\r\nAdd rundevo.net now: https://searchregister.org', 0, NULL, '2026-05-28 16:18:50', '2026-05-28 16:18:50'),
-(5, 'Ashlee Muecke', 'domains@search-randevuksa.com', '2604758683', 'Hi\r\n\r\nInclude randevuksa.com in GoogleSearchIndex so it can be visible in web search results!\r\n\r\nFeature randevuksa.com now: https://searchregister.live', 1, 189, '2026-05-29 15:10:08', '2026-06-01 21:42:31'),
-(6, 'Rickie Swanton', 'domains@search-rundevo.net', '7804745564', 'Hi\r\n\r\nInclude rundevo.net in GoogleSearchIndex so it can show up in google search results!\r\n\r\nEnlist rundevo.net now: https://searchregister.info', 0, NULL, '2026-06-08 17:25:44', '2026-06-08 17:25:44'),
-(7, 'Mishra', 'anaya.dgtlsolution@gmail.com', '7072666014', 'Hi,\r\n\r\nI noticed your website http://randevuksa.com is newly launched—congratulations on getting it live!\r\n\r\nAt this stage, setting up a strong SEO foundation is crucial so search engines can properly crawl, index, and understand your site.\r\n\r\nI help new websites with essential SEO setup including keyword structure, meta tags, technical SEO, sitemap indexing, and Google Search Console configuration.\r\n\r\nWould you like me to share a few quick recommendations to improve your website’s early visibility?\r\n\r\nBest regards,\r\nAnaya', 0, NULL, '2026-06-17 08:24:41', '2026-06-17 08:24:41'),
-(8, 'Ginger Dowling', 'domains@search-rundevo.net', '327926310', 'Greetings\r\n\r\nInclude rundevo.net in GoogleSearchIndex to appear in web search results!\r\n\r\nAdd rundevo.net now: https://searchregister.pro', 0, NULL, '2026-06-18 15:07:20', '2026-06-18 15:07:20'),
-(9, 'Mishra', 'anaya.dgtlsolution@gmail.com', '353596302', 'Hi there, \r\n\r\nI recently came across http://randevuksa.com and wanted to get in touch. Your website has good potential, and with the right SEO strategy, it could reach more customers through Google.\r\n\r\nOur SEO services are customized to improve rankings, increase organic traffic, and help businesses generate consistent leads.\r\n\r\nIf this is something you\'d be interested in, let me know, and I\'ll send our SEO strategies along with our package details.\r\n\r\nBest regards,\r\nAnaya', 0, NULL, '2026-07-24 12:40:12', '2026-07-24 12:40:12');
 
 -- --------------------------------------------------------
 
@@ -1383,10 +1221,10 @@ INSERT INTO `days` (`id`, `name_en`, `name_ar`, `status`, `deleted_at`, `created
 
 CREATE TABLE `demo_requests` (
   `id` bigint UNSIGNED NOT NULL,
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `clinic_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `phone` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `clinic_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `phone` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -1411,8 +1249,7 @@ INSERT INTO `demo_requests` (`id`, `name`, `clinic_name`, `email`, `phone`, `cre
 (13, 'AYMAN K ABOUFOUL', 'المهيدب', 'dr_aymankmk@hotmail.com', '547872256+966', '2026-07-31 18:05:54', '2026-07-31 18:05:54'),
 (14, 'Kareem Shaban Abdelmonam', 'kareem clinic', 'shabankareem919@gmail.com', '01090537394', '2026-07-31 19:26:01', '2026-07-31 19:26:01'),
 (15, 'عمار الرفاعي', 'الدولي الطبي', 'dr_aymankmk@hotmail.com', '+966547872256', '2026-08-03 09:46:54', '2026-08-03 09:46:54'),
-(16, 'عمار الرفاعي', 'الدولي الطبي', 'dr_aymankmk@hotmail.com', '+966547872256', '2026-08-03 09:56:17', '2026-08-03 09:56:17'),
-(17, 'مستشفى الامل', 'الأمل', 'alamalhospital@gmail.com', '00963996057001', '2026-08-04 13:57:51', '2026-08-04 13:57:51');
+(16, 'عمار الرفاعي', 'الدولي الطبي', 'dr_aymankmk@hotmail.com', '+966547872256', '2026-08-03 09:56:17', '2026-08-03 09:56:17');
 
 -- --------------------------------------------------------
 
@@ -1475,23 +1312,18 @@ CREATE TABLE `doctor_conditions` (
 --
 
 INSERT INTO `doctor_conditions` (`id`, `doctor_id`, `appointments_online`, `appointments_reception`, `number_patients`, `condition`, `consultation_duration`, `status`, `created_at`, `updated_at`) VALUES
-(6, 202, 30, 30, 30, '', 30, 1, '2026-02-15 15:57:40', '2026-02-15 15:57:40'),
-(7, 203, 30, 30, 30, '', 30, 1, '2026-02-15 16:00:18', '2026-02-15 16:00:18'),
-(8, 204, 50, 50, 30, '', 30, 1, '2026-02-15 16:04:55', '2026-02-15 16:04:55'),
-(9, 205, 50, 50, 30, '', 30, 1, '2026-02-15 16:07:30', '2026-02-15 16:07:30'),
-(10, 206, 30, 30, 30, '', 30, 1, '2026-02-15 16:08:54', '2026-02-15 16:08:54'),
-(11, 207, 30, 30, 30, '', 30, 1, '2026-02-15 16:10:30', '2026-02-15 16:10:30'),
-(12, 208, 30, 30, 30, '', 30, 1, '2026-02-15 16:11:34', '2026-02-15 16:11:34'),
-(13, 209, 30, 30, 30, '', 30, 1, '2026-02-15 16:12:24', '2026-02-15 16:12:24'),
-(14, 210, 30, 30, 30, '', 30, 1, '2026-02-15 16:13:15', '2026-02-15 16:13:15'),
-(15, 211, 30, 30, 30, '', 30, 1, '2026-02-15 16:14:06', '2026-02-15 16:14:06'),
-(16, 213, 60, 20, 0, '', 15, 1, '2026-04-02 22:38:43', '2026-04-02 22:38:43'),
-(17, 215, 15, 15, 0, '', 30, 1, '2026-05-01 23:10:53', '2026-05-01 23:10:53'),
-(19, 227, 50, 50, 0, '', 15, 1, '2026-06-01 13:02:42', '2026-06-01 13:02:42'),
-(20, 234, 50, 50, 0, '', 15, 1, '2026-06-29 13:07:56', '2026-06-29 13:07:56'),
-(21, 235, 50, 50, 0, '', 15, 1, '2026-06-29 13:13:01', '2026-06-29 13:13:01'),
-(24, 245, 50, 50, 0, '', 15, 1, '2026-07-04 13:06:04', '2026-07-04 13:06:04'),
-(25, 246, 50, 50, 0, '', 15, 1, '2026-07-06 14:22:41', '2026-07-06 14:22:41');
+(27, 7, 50, 50, 0, '', 19, 1, '2026-08-15 14:05:39', '2026-08-15 14:05:39'),
+(29, 9, 50, 50, 0, '', 20, 1, '2026-08-15 14:41:44', '2026-08-15 14:41:44'),
+(30, 10, 50, 50, 0, '', 20, 1, '2026-08-15 15:20:30', '2026-08-15 15:20:30'),
+(31, 11, 50, 50, 0, '', 20, 1, '2026-08-16 07:29:18', '2026-08-16 07:29:18'),
+(32, 12, 50, 50, 0, '', 20, 1, '2026-08-16 07:35:03', '2026-08-16 07:35:03'),
+(33, 14, 50, 50, 0, '', 60, 1, '2026-08-16 08:07:38', '2026-08-16 08:07:38'),
+(34, 16, 50, 50, 0, '', 20, 1, '2026-08-16 13:13:08', '2026-08-16 13:13:08'),
+(35, 17, 50, 50, 0, '', 20, 1, '2026-08-16 13:19:26', '2026-08-16 13:19:26'),
+(36, 18, 50, 50, 0, '', 20, 1, '2026-08-16 13:24:51', '2026-08-16 13:24:51'),
+(37, 19, 50, 50, 0, '', 20, 1, '2026-08-16 13:29:56', '2026-08-16 13:29:56'),
+(38, 20, 50, 50, 0, '', 20, 1, '2026-08-16 13:34:21', '2026-08-16 13:34:21'),
+(39, 21, 50, 50, 0, '', 20, 1, '2026-08-16 13:37:50', '2026-08-16 13:37:50');
 
 -- --------------------------------------------------------
 
@@ -1675,26 +1507,19 @@ CREATE TABLE `emergencies` (
 
 CREATE TABLE `emergency_hospitals` (
   `id` bigint UNSIGNED NOT NULL,
-  `name_ar` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name_en` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `phone` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `image` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `name_ar` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name_en` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `phone` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `city_id` bigint UNSIGNED NOT NULL,
   `region_id` bigint UNSIGNED DEFAULT NULL,
-  `address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `address` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `lat` double DEFAULT '0',
   `lng` double DEFAULT '0',
   `status` tinyint NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `emergency_hospitals`
---
-
-INSERT INTO `emergency_hospitals` (`id`, `name_ar`, `name_en`, `phone`, `image`, `city_id`, `region_id`, `address`, `lat`, `lng`, `status`, `created_at`, `updated_at`) VALUES
-(1, 'مستشفى التجمع', 'tagamo3', '01221274710', '17816023361443.png', 1, 14, 'مصر الجديدة، Al Matar, El Nozha, Egypt', 30.112315, 31.3438507, 1, '2026-06-16 09:32:16', '2026-06-16 09:49:12');
 
 -- --------------------------------------------------------
 
@@ -1758,14 +1583,6 @@ CREATE TABLE `insurance_classes` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Dumping data for table `insurance_classes`
---
-
-INSERT INTO `insurance_classes` (`id`, `company_id`, `insurance_id`, `clinic_id`, `name_en`, `name_ar`, `discount`, `status`, `deleted_at`, `created_at`, `updated_at`) VALUES
-(3, 2, NULL, 1, 'CC', 'CC+', 0, 1, NULL, '2024-02-14 23:46:29', '2024-02-14 23:46:29'),
-(4, 2, NULL, 1, 'DD', 'DD+', 0, 1, NULL, '2024-02-14 23:46:29', '2024-02-14 23:46:29');
-
 -- --------------------------------------------------------
 
 --
@@ -1797,13 +1614,6 @@ CREATE TABLE `insurance_companies` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `insurance_companies`
---
-
-INSERT INTO `insurance_companies` (`id`, `name_en`, `name_ar`, `insurance_id`, `clinic_id`, `phone`, `fax`, `email`, `website`, `code`, `provider_id`, `type`, `amount`, `status`, `insurance_company_id`, `claims_management_company`, `tax`, `policy_number`, `date_from`, `date_to`, `deleted_at`, `created_at`, `updated_at`) VALUES
-(2, 'Bubba', 'بوبا', NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, 1, 50, 1, NULL, NULL, 1, NULL, NULL, NULL, NULL, '2024-02-14 23:43:45', '2024-02-14 23:43:45');
 
 -- --------------------------------------------------------
 
@@ -1905,23 +1715,6 @@ CREATE TABLE `invoices` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Dumping data for table `invoices`
---
-
-INSERT INTO `invoices` (`id`, `invoice_number`, `payment_number`, `user_id`, `reception_id`, `doctor_id`, `reservation_id`, `payment_method`, `company_id`, `payment_status`, `total_price`, `discount`, `patient_tax`, `company_tax`, `company_total_deductible`, `total_amount_paid`, `other_info`, `status`, `created_at`, `updated_at`) VALUES
-(5, 'INV-00005', NULL, 28, 196, 210, 48, NULL, NULL, 'un_paid', '200', '', '0', '0', '0', '100', NULL, 0, '2026-03-25 15:16:41', '2026-03-25 15:16:41'),
-(6, 'INV-00006', NULL, 28, 196, 209, 56, NULL, NULL, 'un_paid', '200', '', '0', '0', '0', '100', NULL, 0, '2026-03-26 21:53:04', '2026-03-26 21:53:04'),
-(7, 'INV-00007', NULL, 28, 196, 205, 60, NULL, NULL, 'un_paid', '200', '', '0', '0', '0', '100', NULL, 0, '2026-03-27 21:42:28', '2026-03-27 21:42:28'),
-(8, 'INV-00008', NULL, 28, 196, 202, 65, NULL, NULL, 'paid', '200', '', '0', '0', '0', '100', NULL, 0, '2026-03-28 21:31:24', '2026-03-28 21:31:24'),
-(9, 'INV-00009', NULL, 28, 196, 202, 66, NULL, NULL, 'paid', '200', '', '0', '0', '0', '100', NULL, 0, '2026-03-28 21:40:22', '2026-03-28 21:40:22'),
-(10, 'INV-000010', NULL, 28, 196, 203, 69, NULL, NULL, 'un_paid', '200', '', '0', '0', '0', '100', NULL, 0, '2026-03-29 15:04:08', '2026-03-29 15:04:08'),
-(11, 'INV-000011', NULL, 28, 196, 204, 70, NULL, NULL, 'un_paid', '200', '', '0', '0', '0', '100', NULL, 0, '2026-03-29 15:08:10', '2026-03-29 15:08:10'),
-(12, 'INV-000012', NULL, 53, 196, 202, 84, NULL, NULL, 'un_paid', '200', '', '0', '0', '0', '100', NULL, 0, '2026-04-01 22:55:18', '2026-04-01 22:55:18'),
-(13, 'INV-000013', NULL, 28, 196, 202, 97, NULL, NULL, 'un_paid', '200', '', '0', '0', '0', '100', NULL, 0, '2026-04-02 21:37:06', '2026-04-02 21:37:06'),
-(14, 'INV-000014', NULL, 28, 196, 209, 98, NULL, NULL, 'un_paid', '200', '', '0', '0', '0', '100', NULL, 0, '2026-04-02 21:47:09', '2026-04-02 21:47:09'),
-(15, 'INV-000015', NULL, 28, 196, 204, 100, NULL, NULL, 'un_paid', '200', '', '0', '0', '0', '100', NULL, 0, '2026-04-02 22:43:41', '2026-04-02 22:43:41');
-
 -- --------------------------------------------------------
 
 --
@@ -1974,10 +1767,10 @@ CREATE TABLE `loyalty_coupon_redemptions` (
   `coupon_id` bigint UNSIGNED NOT NULL,
   `user_id` bigint UNSIGNED NOT NULL,
   `clinic_id` bigint UNSIGNED NOT NULL,
-  `code` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `otp_code` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `code` varchar(40) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `otp_code` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `points_spent` int UNSIGNED NOT NULL,
-  `status` enum('pending','otp_sent','used','cancelled','expired') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'pending',
+  `status` enum('pending','otp_sent','used','cancelled','expired') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'pending',
   `otp_expires_at` timestamp NULL DEFAULT NULL,
   `used_at` timestamp NULL DEFAULT NULL,
   `confirmed_by` bigint UNSIGNED DEFAULT NULL,
@@ -2001,9 +1794,9 @@ INSERT INTO `loyalty_coupon_redemptions` (`id`, `coupon_id`, `user_id`, `clinic_
 
 CREATE TABLE `loyalty_point_rules` (
   `id` bigint UNSIGNED NOT NULL,
-  `key` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name_ar` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name_en` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name_ar` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name_en` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `points` int NOT NULL DEFAULT '0',
   `max_per_day` int UNSIGNED DEFAULT NULL,
   `min_words` int UNSIGNED DEFAULT NULL,
@@ -2037,13 +1830,13 @@ CREATE TABLE `loyalty_point_transactions` (
   `user_id` bigint UNSIGNED NOT NULL,
   `clinic_id` bigint UNSIGNED DEFAULT NULL,
   `reservation_id` bigint UNSIGNED DEFAULT NULL,
-  `source_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `source_type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `source_id` bigint UNSIGNED DEFAULT NULL,
-  `rule_key` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `type` enum('earn','spend','reversal','expire','adjustment') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'earn',
+  `rule_key` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `type` enum('earn','spend','reversal','expire','adjustment') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'earn',
   `points` int NOT NULL,
-  `description_ar` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `description_en` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description_ar` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description_en` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `expires_at` timestamp NULL DEFAULT NULL,
   `expired_at` timestamp NULL DEFAULT NULL,
   `status` tinyint NOT NULL DEFAULT '1',
@@ -2068,14 +1861,8 @@ INSERT INTO `loyalty_point_transactions` (`id`, `user_id`, `clinic_id`, `reserva
 (10, 78, NULL, NULL, 'App\\Models\\User', 78, 'welcome', 'earn', 50, 'هدية الترحيب', 'Welcome gift', '2027-08-01 14:39:43', NULL, 1, '2026-08-01 14:39:43', '2026-08-01 14:39:43'),
 (11, 1, NULL, NULL, 'App\\Models\\LoyaltyShareLog', 2, 'share', 'earn', 5, 'مشاركة التطبيق', 'App share', '2027-08-03 13:39:00', NULL, 1, '2026-08-03 13:39:00', '2026-08-03 13:39:00'),
 (12, 1, NULL, NULL, 'App\\Models\\LoyaltyShareLog', 3, 'share', 'earn', 5, 'مشاركة التطبيق', 'App share', '2027-08-03 13:39:04', NULL, 1, '2026-08-03 13:39:04', '2026-08-03 13:39:04'),
-(13, 1, NULL, NULL, 'App\\Models\\LoyaltyShareLog', 4, 'share', 'earn', 5, 'مشاركة التطبيق', 'App share', '2027-08-04 14:30:43', NULL, 1, '2026-08-04 14:30:43', '2026-08-04 14:30:43'),
-(14, 4, NULL, NULL, 'App\\Models\\LoyaltyShareLog', 5, 'share', 'earn', 5, 'مشاركة التطبيق', 'App share', '2027-08-04 14:55:08', NULL, 1, '2026-08-04 14:55:08', '2026-08-04 14:55:08'),
-(15, 4, NULL, NULL, 'App\\Models\\LoyaltyShareLog', 6, 'share', 'earn', 5, 'مشاركة التطبيق', 'App share', '2027-08-04 14:58:23', NULL, 1, '2026-08-04 14:58:23', '2026-08-04 14:58:23'),
-(16, 1, NULL, NULL, 'App\\Models\\LoyaltyShareLog', 9, 'share', 'earn', 5, 'مشاركة التطبيق', 'App share', '2027-08-04 15:03:28', NULL, 1, '2026-08-04 15:03:28', '2026-08-04 15:03:28'),
-(17, 4, NULL, NULL, 'App\\Models\\LoyaltyShareLog', 15, 'share', 'earn', 5, 'مشاركة التطبيق', 'App share', '2027-08-04 21:14:50', NULL, 1, '2026-08-04 21:14:50', '2026-08-04 21:14:50'),
-(18, 4, NULL, NULL, 'App\\Models\\LoyaltyShareLog', 16, 'share', 'earn', 5, 'مشاركة التطبيق', 'App share', '2027-08-04 21:14:58', NULL, 1, '2026-08-04 21:14:58', '2026-08-04 21:14:58'),
-(19, 10, NULL, NULL, 'App\\Models\\LoyaltyShareLog', 17, 'share', 'earn', 5, 'مشاركة التطبيق', 'App share', '2027-08-04 21:20:00', NULL, 1, '2026-08-04 21:20:00', '2026-08-04 21:20:00'),
-(20, 10, NULL, NULL, 'App\\Models\\LoyaltyShareLog', 18, 'share', 'earn', 5, 'مشاركة التطبيق', 'App share', '2027-08-04 21:20:43', NULL, 1, '2026-08-04 21:20:43', '2026-08-04 21:20:43');
+(13, 4, NULL, NULL, 'App\\Models\\LoyaltyShareLog', 4, 'share', 'earn', 5, 'مشاركة التطبيق', 'App share', '2027-08-14 19:16:42', NULL, 1, '2026-08-14 19:16:42', '2026-08-14 19:16:42'),
+(14, 79, NULL, NULL, 'App\\Models\\User', 79, 'welcome', 'earn', 50, 'هدية الترحيب', 'Welcome gift', '2027-08-15 10:13:20', NULL, 1, '2026-08-15 10:13:20', '2026-08-15 10:13:20');
 
 -- --------------------------------------------------------
 
@@ -2086,12 +1873,12 @@ INSERT INTO `loyalty_point_transactions` (`id`, `user_id`, `clinic_id`, `reserva
 CREATE TABLE `loyalty_reward_coupons` (
   `id` bigint UNSIGNED NOT NULL,
   `clinic_id` bigint UNSIGNED NOT NULL,
-  `service_name_ar` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `service_name_en` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `details_ar` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `details_en` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `service_name_ar` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `service_name_en` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `details_ar` text COLLATE utf8mb4_unicode_ci,
+  `details_en` text COLLATE utf8mb4_unicode_ci,
   `price_before_discount` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `discount_type` enum('percentage','fixed') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'percentage',
+  `discount_type` enum('percentage','fixed') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'percentage',
   `discount_value` decimal(10,2) NOT NULL DEFAULT '0.00',
   `price_after_discount` decimal(10,2) NOT NULL DEFAULT '0.00',
   `points_required` int UNSIGNED NOT NULL,
@@ -2102,7 +1889,7 @@ CREATE TABLE `loyalty_reward_coupons` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ;
 
 --
 -- Dumping data for table `loyalty_reward_coupons`
@@ -2123,7 +1910,7 @@ CREATE TABLE `loyalty_share_logs` (
   `id` bigint UNSIGNED NOT NULL,
   `user_id` bigint UNSIGNED NOT NULL,
   `clinic_id` bigint UNSIGNED DEFAULT NULL,
-  `shareable_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `shareable_type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `shareable_id` bigint UNSIGNED DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -2137,21 +1924,7 @@ INSERT INTO `loyalty_share_logs` (`id`, `user_id`, `clinic_id`, `shareable_type`
 (1, 76, 201, 'clinic', 201, '2026-07-19 11:27:12', '2026-07-19 11:27:12'),
 (2, 1, NULL, 'app', NULL, '2026-08-03 13:39:00', '2026-08-03 13:39:00'),
 (3, 1, NULL, 'app', NULL, '2026-08-03 13:39:04', '2026-08-03 13:39:04'),
-(4, 1, NULL, 'app', NULL, '2026-08-04 14:30:43', '2026-08-04 14:30:43'),
-(5, 4, NULL, 'app', NULL, '2026-08-04 14:55:08', '2026-08-04 14:55:08'),
-(6, 4, NULL, 'app', NULL, '2026-08-04 14:58:23', '2026-08-04 14:58:23'),
-(7, 4, NULL, 'app', NULL, '2026-08-04 14:58:50', '2026-08-04 14:58:50'),
-(8, 4, NULL, 'app', NULL, '2026-08-04 15:02:03', '2026-08-04 15:02:03'),
-(9, 1, NULL, 'app', NULL, '2026-08-04 15:03:28', '2026-08-04 15:03:28'),
-(10, 1, NULL, 'app', NULL, '2026-08-04 15:03:37', '2026-08-04 15:03:37'),
-(11, 4, NULL, 'app', NULL, '2026-08-04 15:07:40', '2026-08-04 15:07:40'),
-(12, 4, NULL, 'app', NULL, '2026-08-04 15:07:46', '2026-08-04 15:07:46'),
-(13, 4, 1, 'clinic', 1, '2026-08-04 15:16:38', '2026-08-04 15:16:38'),
-(14, 4, NULL, 'app', NULL, '2026-08-04 20:07:05', '2026-08-04 20:07:05'),
-(15, 4, NULL, 'app', NULL, '2026-08-04 21:14:50', '2026-08-04 21:14:50'),
-(16, 4, NULL, 'app', NULL, '2026-08-04 21:14:58', '2026-08-04 21:14:58'),
-(17, 10, NULL, 'app', NULL, '2026-08-04 21:20:00', '2026-08-04 21:20:00'),
-(18, 10, NULL, 'app', NULL, '2026-08-04 21:20:43', '2026-08-04 21:20:43');
+(4, 4, NULL, 'app', NULL, '2026-08-14 19:16:42', '2026-08-14 19:16:42');
 
 -- --------------------------------------------------------
 
@@ -2161,15 +1934,15 @@ INSERT INTO `loyalty_share_logs` (`id`, `user_id`, `clinic_id`, `shareable_type`
 
 CREATE TABLE `media` (
   `id` bigint UNSIGNED NOT NULL,
-  `model_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `model_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `model_id` bigint UNSIGNED NOT NULL,
-  `uuid` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `collection_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `file_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `mime_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `disk` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `conversions_disk` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `uuid` char(36) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `collection_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `file_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `mime_type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `disk` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `conversions_disk` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `size` bigint UNSIGNED NOT NULL,
   `manipulations` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `custom_properties` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
@@ -2178,7 +1951,7 @@ CREATE TABLE `media` (
   `order_column` int UNSIGNED DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ;
 
 --
 -- Dumping data for table `media`
@@ -2200,6 +1973,8 @@ INSERT INTO `media` (`id`, `model_type`, `model_id`, `uuid`, `collection_name`, 
 (36, 'App\\Models\\CmsSection', 8, '2963e9ab-bd9f-4048-8eaf-d34be734886c', 'images', 'WhatsApp Image 2026-07-13 at 2.42.06 PM', 'WhatsApp-Image-2026-07-13-at-2.42.06-PM.jpeg', 'image/jpeg', 'public', 'public', 43714, '[]', '[]', '{\"thumb\":true,\"preview\":true}', '[]', 21, '2026-07-16 14:38:01', '2026-07-16 14:38:01'),
 (37, 'App\\Models\\CmsItem', 1, '34200411-d4e0-4954-a785-a8df4007d48d', 'images_ar', 'WhatsApp Image 2026-07-13 at 2.42.06 PM', 'WhatsApp-Image-2026-07-13-at-2.42.06-PM.jpeg', 'image/jpeg', 'public', 'public', 43714, '[]', '[]', '[]', '[]', 22, '2026-07-16 14:55:13', '2026-07-16 14:55:13'),
 (38, 'App\\Models\\CmsItem', 2, '1d4e3a1f-4c76-4251-b441-0b22caea7557', 'images_en', 'WhatsApp Image 2026-07-13 at 2.46.54 PM', 'WhatsApp-Image-2026-07-13-at-2.46.54-PM.jpeg', 'image/jpeg', 'public', 'public', 68234, '[]', '[]', '[]', '[]', 23, '2026-07-16 14:55:13', '2026-07-16 14:55:13'),
+(40, 'App\\Models\\CmsSection', 1, '09376bf5-86c7-4e36-a761-bd3b911d976a', 'gallery', 'NoteGPT_Image_20260714202109', 'NoteGPT_Image_20260714202109.png', 'image/png', 'public', 'public', 993108, '[]', '[]', '{\"thumb\":true,\"preview\":true}', '[]', 25, '2026-07-16 15:03:14', '2026-07-16 15:03:19'),
+(41, 'App\\Models\\CmsSection', 1, '127bf1ea-6c35-40d9-9064-7ec599c76b87', 'images', 'NoteGPT_Image_20260714202109', 'NoteGPT_Image_20260714202109.png', 'image/png', 'public', 'public', 993108, '[]', '[]', '{\"thumb\":true,\"preview\":true}', '[]', 25, '2026-07-16 15:03:20', '2026-07-16 15:03:26'),
 (42, 'App\\Models\\CmsItem', 51, '5c6178de-e730-4b62-8d4e-e1c99f5cef0a', 'images_en', 'WhatsApp-Image-2026-07-12-at-7.11.44-PM-thumb', 'WhatsApp-Image-2026-07-12-at-7.11.44-PM-thumb.jpg', 'image/jpeg', 'public', 'public', 24433, '[]', '[]', '[]', '[]', 26, '2026-07-16 15:23:18', '2026-07-16 15:23:18'),
 (43, 'App\\Models\\CmsItem', 51, '7c83e776-d87d-4548-adc6-90a675301dcf', 'images_ar', 'WhatsApp-Image-2026-07-12-at-7.11.44-PM-thumb', 'WhatsApp-Image-2026-07-12-at-7.11.44-PM-thumb.jpg', 'image/jpeg', 'public', 'public', 24433, '[]', '[]', '[]', '[]', 27, '2026-07-16 15:23:18', '2026-07-16 15:23:18'),
 (44, 'App\\Models\\CmsItem', 6, 'f744167a-f9aa-4be3-98b0-cca0d4e0801a', 'images_en', '300x336 EN', '300x336-EN.jpg', 'image/jpeg', 'public', 'public', 366173, '[]', '[]', '[]', '[]', 28, '2026-07-23 20:39:45', '2026-07-23 20:39:45'),
@@ -2217,9 +1992,7 @@ INSERT INTO `media` (`id`, `model_type`, `model_id`, `uuid`, `collection_name`, 
 (57, 'App\\Models\\CmsItem', 8, '69d61e9a-3b35-4d48-9c67-3bd2db36e770', 'images_ar', 'WhatsApp Image 2026-08-01 at 4.31.36 PM', 'WhatsApp-Image-2026-08-01-at-4.31.36-PM.jpeg', 'image/jpeg', 'public', 'public', 50645, '[]', '[]', '[]', '[]', 41, '2026-08-03 11:48:06', '2026-08-03 11:48:06'),
 (58, 'App\\Models\\CmsItem', 11, 'd5817da5-05ad-4e10-bcfa-cc6f364357cd', 'images_en', 'WhatsApp Image 2026-08-01 at 4.33.21 PM', 'WhatsApp-Image-2026-08-01-at-4.33.21-PM.jpeg', 'image/jpeg', 'public', 'public', 50017, '[]', '[]', '[]', '[]', 42, '2026-08-03 11:52:09', '2026-08-03 11:52:09'),
 (59, 'App\\Models\\CmsItem', 11, 'ca98553d-3fdc-4cdd-85bf-7a5c25b43aef', 'images_ar', 'WhatsApp Image 2026-08-01 at 4.32.59 PM', 'WhatsApp-Image-2026-08-01-at-4.32.59-PM.jpeg', 'image/jpeg', 'public', 'public', 46908, '[]', '[]', '[]', '[]', 43, '2026-08-03 11:52:09', '2026-08-03 11:52:09'),
-(60, 'App\\Models\\CmsSection', 3, '5425d6d7-0459-4673-b2ec-4e18e628dc78', 'images_en', 'WhatsApp-Image-2026-07-13-at-2.42.06-PM', 'WhatsApp-Image-2026-07-13-at-2.42.06-PM.jpeg', 'image/jpeg', 'public', 'public', 43714, '[]', '[]', '[]', '[]', 44, '2026-08-05 19:43:48', '2026-08-05 19:43:48'),
-(61, 'App\\Models\\CmsItem', 10, '21d2857b-5b13-4009-b422-c2e093e69b43', 'images_en', '315×132 - 8 EN.jpg', '315×132---8-EN.jpg.jpeg', 'image/jpeg', 'public', 'public', 70979, '[]', '[]', '[]', '[]', 45, '2026-08-08 08:55:42', '2026-08-08 08:55:42'),
-(62, 'App\\Models\\CmsItem', 10, 'bc6920f4-974c-410e-8df6-20f10bbe0234', 'images_ar', '315×132 - 8 AR.jpg', '315×132---8-AR.jpg.jpeg', 'image/jpeg', 'public', 'public', 68279, '[]', '[]', '[]', '[]', 46, '2026-08-08 08:55:42', '2026-08-08 08:55:42');
+(60, 'App\\Models\\SeoMeta', 1, 'fad50167-e275-49a0-a46f-8f2074099cbd', 'og_image', 'NoteGPT_Image_20260814161815', 'NoteGPT_Image_20260814161815.png', 'image/png', 'public', 'public', 1103683, '[]', '[]', '[]', '[]', 44, '2026-08-16 15:24:27', '2026-08-16 15:24:27');
 
 -- --------------------------------------------------------
 
@@ -2537,168 +2310,6 @@ CREATE TABLE `notifications` (
   `flag` int NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Dumping data for table `notifications`
---
-
-INSERT INTO `notifications` (`id`, `admin_id`, `clinic_id`, `user_id`, `receiver_id`, `type`, `title_en`, `title_ar`, `message_en`, `message_ar`, `app_type`, `url`, `coupon_status`, `image`, `is_read`, `deleted_at`, `created_at`, `updated_at`, `flag`) VALUES
-(1, 1, 1, NULL, 1, 0, 'Welcome to our Randevu Medical Family! 🩺', 'أهلاً بك في عائلتنا الطبية رنديفو! 🩺', 'We\'re delighted to have you join us. Now you can easily book appointments for yourself and your family, and contact your preferred clinic anytime. Your journey to easier healthcare starts here!', ' يسعدنا انضمامك إلينا. الآن يمكنك حجز مواعيدك ومواعيد عائلتك بسهولة، والتواصل مع عيادتك المفضلة في أي وقت. رحلتك نحو رعاية صحية أسهل تبدأ من هنا!', 1, NULL, 0, NULL, 0, NULL, '2025-05-07 07:09:39', NULL, 1),
-(5, NULL, 1, 45, 45, 1, 'Booking rejected', 'تم رفض الحجز', 'Booking #310696980 has been rejected. No available slots.', 'تم رفض الحجز رقم 310696980', 1, NULL, 0, NULL, 0, NULL, '2026-05-17 12:42:29', '2026-05-17 12:42:29', 1),
-(7, NULL, 1, 61, 61, 1, 'Booking rejected', 'تم رفض الحجز', 'Booking #287141415 has been rejected. No available slots.', 'تم رفض الحجز رقم 287141415', 1, NULL, 0, NULL, 0, NULL, '2026-05-18 04:05:59', '2026-05-18 04:05:59', 1),
-(8, NULL, 1, NULL, 1, 2, 'New message', 'New message', 'You have a new booking message.', 'You have a new booking message.', 7, NULL, 0, NULL, 0, NULL, '2026-06-17 11:28:30', '2026-06-17 11:28:30', 1),
-(9, NULL, 1, NULL, 1, 2, 'New message', 'New message', 'You have a new booking message.', 'You have a new booking message.', 7, NULL, 0, NULL, 0, NULL, '2026-06-17 11:28:59', '2026-06-17 11:28:59', 1),
-(10, NULL, 1, NULL, 1, 2, 'New message', 'New message', 'You have a new booking message.', 'You have a new booking message.', 7, NULL, 0, NULL, 0, NULL, '2026-06-17 11:32:44', '2026-06-17 11:32:44', 1),
-(11, NULL, 1, NULL, 1, 2, 'New message', 'New message', 'You have a new booking message.', 'You have a new booking message.', 7, NULL, 0, NULL, 0, NULL, '2026-06-17 11:37:45', '2026-06-17 11:37:45', 1),
-(12, NULL, 1, NULL, 1, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #647983653 needs confirmation.', 'يوجد حجز جديد رقم 647983653 يحتاج تأكيد.', 7, NULL, 0, NULL, 0, NULL, '2026-06-17 11:38:15', '2026-06-17 11:38:15', 1),
-(13, NULL, 1, NULL, 194, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #647983653 needs confirmation.', 'يوجد حجز جديد رقم 647983653 يحتاج تأكيد.', 2, NULL, 0, NULL, 0, NULL, '2026-06-17 11:38:15', '2026-06-17 11:38:15', 1),
-(14, NULL, 1, NULL, 1, 2, 'New message', 'New message', 'You have a new booking message.', 'You have a new booking message.', 7, NULL, 0, NULL, 0, NULL, '2026-06-17 12:17:53', '2026-06-17 12:17:53', 1),
-(15, NULL, 1, NULL, 194, 2, 'New message', 'New message', 'You have a new booking message.', 'You have a new booking message.', 2, NULL, 0, NULL, 0, NULL, '2026-06-17 12:17:53', '2026-06-17 12:17:53', 1),
-(16, NULL, 1, NULL, 196, 2, 'New message', 'New message', 'You have a new booking message.', 'You have a new booking message.', 2, NULL, 0, NULL, 0, NULL, '2026-06-17 12:17:53', '2026-06-17 12:17:53', 1),
-(17, NULL, 1, NULL, 225, 2, 'New message', 'New message', 'You have a new booking message.', 'You have a new booking message.', 2, NULL, 0, NULL, 0, NULL, '2026-06-17 12:17:53', '2026-06-17 12:17:53', 1),
-(18, NULL, 1, NULL, 1, 2, 'New message', 'New message', 'You have a new booking message.', 'You have a new booking message.', 7, NULL, 0, NULL, 0, NULL, '2026-06-17 12:18:19', '2026-06-17 12:18:19', 1),
-(19, NULL, 1, NULL, 194, 2, 'New message', 'New message', 'You have a new booking message.', 'You have a new booking message.', 2, NULL, 0, NULL, 0, NULL, '2026-06-17 12:18:19', '2026-06-17 12:18:19', 1),
-(20, NULL, 1, NULL, 196, 2, 'New message', 'New message', 'You have a new booking message.', 'You have a new booking message.', 2, NULL, 0, NULL, 0, NULL, '2026-06-17 12:18:19', '2026-06-17 12:18:19', 1),
-(21, NULL, 1, NULL, 225, 2, 'New message', 'New message', 'You have a new booking message.', 'You have a new booking message.', 2, NULL, 0, NULL, 0, NULL, '2026-06-17 12:18:19', '2026-06-17 12:18:19', 1),
-(22, NULL, 1, NULL, 1, 2, 'New message', 'New message', 'مرحبا', 'مرحبا', 7, NULL, 0, NULL, 0, NULL, '2026-06-17 12:24:37', '2026-06-17 12:24:37', 1),
-(23, NULL, 1, NULL, 194, 2, 'New message', 'New message', 'مرحبا', 'مرحبا', 2, NULL, 0, NULL, 0, NULL, '2026-06-17 12:24:37', '2026-06-17 12:24:37', 1),
-(24, NULL, 1, NULL, 196, 2, 'New message', 'New message', 'مرحبا', 'مرحبا', 2, NULL, 0, NULL, 0, NULL, '2026-06-17 12:24:37', '2026-06-17 12:24:37', 1),
-(25, NULL, 1, NULL, 225, 2, 'New message', 'New message', 'مرحبا', 'مرحبا', 2, NULL, 0, NULL, 0, NULL, '2026-06-17 12:24:37', '2026-06-17 12:24:37', 1),
-(26, NULL, 1, NULL, 1, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #601039788 needs confirmation.', 'يوجد حجز جديد رقم 601039788 يحتاج تأكيد.', 7, NULL, 0, NULL, 0, NULL, '2026-06-17 12:25:11', '2026-06-17 12:25:11', 1),
-(27, NULL, 1, NULL, 194, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #601039788 needs confirmation.', 'يوجد حجز جديد رقم 601039788 يحتاج تأكيد.', 2, NULL, 0, NULL, 0, NULL, '2026-06-17 12:25:11', '2026-06-17 12:25:11', 1),
-(28, NULL, 1, NULL, 1, 2, 'New complaint', 'New complaint', 'A new complaint has been sent from the mobile app.', 'A new complaint has been sent from the mobile app.', 7, NULL, 0, NULL, 0, NULL, '2026-06-17 12:28:51', '2026-06-17 12:28:51', 1),
-(29, NULL, 1, NULL, 194, 2, 'New complaint', 'New complaint', 'A new complaint has been sent from the mobile app.', 'A new complaint has been sent from the mobile app.', 2, NULL, 0, NULL, 0, NULL, '2026-06-17 12:28:51', '2026-06-17 12:28:51', 1),
-(30, NULL, 1, NULL, 196, 2, 'New complaint', 'New complaint', 'A new complaint has been sent from the mobile app.', 'A new complaint has been sent from the mobile app.', 2, NULL, 0, NULL, 0, NULL, '2026-06-17 12:28:51', '2026-06-17 12:28:51', 1),
-(31, NULL, 1, NULL, 225, 2, 'New complaint', 'New complaint', 'A new complaint has been sent from the mobile app.', 'A new complaint has been sent from the mobile app.', 2, NULL, 0, NULL, 0, NULL, '2026-06-17 12:28:51', '2026-06-17 12:28:51', 1),
-(32, NULL, 1, NULL, 1, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #774820741 needs confirmation.', 'يوجد حجز جديد رقم 774820741 يحتاج تأكيد.', 7, NULL, 0, NULL, 0, NULL, '2026-06-17 12:41:27', '2026-06-17 12:41:27', 1),
-(33, NULL, 1, NULL, 194, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #774820741 needs confirmation.', 'يوجد حجز جديد رقم 774820741 يحتاج تأكيد.', 2, NULL, 0, NULL, 0, NULL, '2026-06-17 12:41:27', '2026-06-17 12:41:27', 1),
-(34, NULL, 1, NULL, 1, 2, 'New message', 'رسالة جديدة', 'مرحبا', 'مرحبا', 7, NULL, 0, NULL, 0, NULL, '2026-06-17 12:42:16', '2026-06-17 12:42:16', 1),
-(35, NULL, 1, NULL, 194, 2, 'New message', 'رسالة جديدة', 'مرحبا', 'مرحبا', 2, NULL, 0, NULL, 0, NULL, '2026-06-17 12:42:16', '2026-06-17 12:42:16', 1),
-(36, NULL, 1, NULL, 196, 2, 'New message', 'رسالة جديدة', 'مرحبا', 'مرحبا', 2, NULL, 0, NULL, 0, NULL, '2026-06-17 12:42:16', '2026-06-17 12:42:16', 1),
-(37, NULL, 1, NULL, 225, 2, 'New message', 'رسالة جديدة', 'مرحبا', 'مرحبا', 2, NULL, 0, NULL, 0, NULL, '2026-06-17 12:42:16', '2026-06-17 12:42:16', 1),
-(38, NULL, 1, NULL, 1, 2, 'New message', 'رسالة جديدة', 'اهلا وسهلا', 'اهلا وسهلا', 7, NULL, 0, NULL, 0, NULL, '2026-06-17 12:43:06', '2026-06-17 12:43:06', 1),
-(39, NULL, 1, NULL, 194, 2, 'New message', 'رسالة جديدة', 'اهلا وسهلا', 'اهلا وسهلا', 2, NULL, 0, NULL, 0, NULL, '2026-06-17 12:43:06', '2026-06-17 12:43:06', 1),
-(40, NULL, 1, NULL, 196, 2, 'New message', 'رسالة جديدة', 'اهلا وسهلا', 'اهلا وسهلا', 2, NULL, 0, NULL, 0, NULL, '2026-06-17 12:43:06', '2026-06-17 12:43:06', 1),
-(41, NULL, 1, NULL, 225, 2, 'New message', 'رسالة جديدة', 'اهلا وسهلا', 'اهلا وسهلا', 2, NULL, 0, NULL, 0, NULL, '2026-06-17 12:43:06', '2026-06-17 12:43:06', 1),
-(42, NULL, 1, NULL, 1, 2, 'New message', 'رسالة جديدة', 'اهلا', 'اهلا', 7, NULL, 0, NULL, 0, NULL, '2026-06-17 12:54:32', '2026-06-17 12:54:32', 1),
-(43, NULL, 1, NULL, 194, 2, 'New message', 'رسالة جديدة', 'اهلا', 'اهلا', 2, NULL, 0, NULL, 0, NULL, '2026-06-17 12:54:32', '2026-06-17 12:54:32', 1),
-(44, NULL, 1, NULL, 196, 2, 'New message', 'رسالة جديدة', 'اهلا', 'اهلا', 2, NULL, 0, NULL, 0, NULL, '2026-06-17 12:54:32', '2026-06-17 12:54:32', 1),
-(45, NULL, 1, NULL, 225, 2, 'New message', 'رسالة جديدة', 'اهلا', 'اهلا', 2, NULL, 0, NULL, 0, NULL, '2026-06-17 12:54:32', '2026-06-17 12:54:32', 1),
-(46, NULL, 1, NULL, 1, 2, 'New message', 'رسالة جديدة', 'اهلا', 'اهلا', 7, NULL, 0, NULL, 0, NULL, '2026-06-17 12:54:49', '2026-06-17 12:54:49', 1),
-(47, NULL, 1, NULL, 194, 2, 'New message', 'رسالة جديدة', 'اهلا', 'اهلا', 2, NULL, 0, NULL, 0, NULL, '2026-06-17 12:54:49', '2026-06-17 12:54:49', 1),
-(48, NULL, 1, NULL, 196, 2, 'New message', 'رسالة جديدة', 'اهلا', 'اهلا', 2, NULL, 0, NULL, 0, NULL, '2026-06-17 12:54:49', '2026-06-17 12:54:49', 1),
-(49, NULL, 1, NULL, 225, 2, 'New message', 'رسالة جديدة', 'اهلا', 'اهلا', 2, NULL, 0, NULL, 0, NULL, '2026-06-17 12:54:49', '2026-06-17 12:54:49', 1),
-(50, NULL, 1, NULL, 1, 2, 'New message', 'رسالة جديدة', 'تيست', 'تيست', 7, NULL, 0, NULL, 0, NULL, '2026-06-17 12:55:04', '2026-06-17 12:55:04', 1),
-(51, NULL, 1, NULL, 194, 2, 'New message', 'رسالة جديدة', 'تيست', 'تيست', 2, NULL, 0, NULL, 0, NULL, '2026-06-17 12:55:04', '2026-06-17 12:55:04', 1),
-(52, NULL, 1, NULL, 196, 2, 'New message', 'رسالة جديدة', 'تيست', 'تيست', 2, NULL, 0, NULL, 0, NULL, '2026-06-17 12:55:04', '2026-06-17 12:55:04', 1),
-(53, NULL, 1, NULL, 225, 2, 'New message', 'رسالة جديدة', 'تيست', 'تيست', 2, NULL, 0, NULL, 0, NULL, '2026-06-17 12:55:04', '2026-06-17 12:55:04', 1),
-(54, NULL, 1, NULL, 1, 2, 'New message', 'رسالة جديدة', 'ا', 'ا', 7, NULL, 0, NULL, 0, NULL, '2026-06-17 12:55:58', '2026-06-17 12:55:58', 1),
-(55, NULL, 1, NULL, 194, 2, 'New message', 'رسالة جديدة', 'ا', 'ا', 2, NULL, 0, NULL, 0, NULL, '2026-06-17 12:55:58', '2026-06-17 12:55:58', 1),
-(56, NULL, 1, NULL, 196, 2, 'New message', 'رسالة جديدة', 'ا', 'ا', 2, NULL, 0, NULL, 0, NULL, '2026-06-17 12:55:58', '2026-06-17 12:55:58', 1),
-(57, NULL, 1, NULL, 225, 2, 'New message', 'رسالة جديدة', 'ا', 'ا', 2, NULL, 0, NULL, 0, NULL, '2026-06-17 12:55:58', '2026-06-17 12:55:58', 1),
-(58, NULL, 1, NULL, 1, 2, 'New message', 'رسالة جديدة', 'يشتغل', 'يشتغل', 7, NULL, 0, NULL, 0, NULL, '2026-06-17 13:00:57', '2026-06-17 13:00:57', 1),
-(59, NULL, 1, NULL, 194, 2, 'New message', 'رسالة جديدة', 'يشتغل', 'يشتغل', 2, NULL, 0, NULL, 0, NULL, '2026-06-17 13:00:57', '2026-06-17 13:00:57', 1),
-(60, NULL, 1, NULL, 196, 2, 'New message', 'رسالة جديدة', 'يشتغل', 'يشتغل', 2, NULL, 0, NULL, 0, NULL, '2026-06-17 13:00:57', '2026-06-17 13:00:57', 1),
-(61, NULL, 1, NULL, 225, 2, 'New message', 'رسالة جديدة', 'يشتغل', 'يشتغل', 2, NULL, 0, NULL, 0, NULL, '2026-06-17 13:00:57', '2026-06-17 13:00:57', 1),
-(62, NULL, 1, NULL, 1, 2, 'New message', 'رسالة جديدة', 'وة', 'وة', 7, NULL, 0, NULL, 0, NULL, '2026-06-17 13:01:13', '2026-06-17 13:01:13', 1),
-(63, NULL, 1, NULL, 194, 2, 'New message', 'رسالة جديدة', 'وة', 'وة', 2, NULL, 0, NULL, 0, NULL, '2026-06-17 13:01:13', '2026-06-17 13:01:13', 1),
-(64, NULL, 1, NULL, 196, 2, 'New message', 'رسالة جديدة', 'وة', 'وة', 2, NULL, 0, NULL, 0, NULL, '2026-06-17 13:01:13', '2026-06-17 13:01:13', 1),
-(65, NULL, 1, NULL, 225, 2, 'New message', 'رسالة جديدة', 'وة', 'وة', 2, NULL, 0, NULL, 0, NULL, '2026-06-17 13:01:13', '2026-06-17 13:01:13', 1),
-(66, NULL, 1, NULL, 1, 2, 'New message', 'رسالة جديدة', 'Kk', 'Kk', 7, NULL, 0, NULL, 0, NULL, '2026-06-17 13:39:20', '2026-06-17 13:39:20', 1),
-(67, NULL, 1, NULL, 194, 2, 'New message', 'رسالة جديدة', 'Kk', 'Kk', 2, NULL, 0, NULL, 0, NULL, '2026-06-17 13:39:20', '2026-06-17 13:39:20', 1),
-(68, NULL, 1, NULL, 196, 2, 'New message', 'رسالة جديدة', 'Kk', 'Kk', 2, NULL, 0, NULL, 0, NULL, '2026-06-17 13:39:20', '2026-06-17 13:39:20', 1),
-(69, NULL, 1, NULL, 225, 2, 'New message', 'رسالة جديدة', 'Kk', 'Kk', 2, NULL, 0, NULL, 0, NULL, '2026-06-17 13:39:20', '2026-06-17 13:39:20', 1),
-(70, NULL, 1, NULL, 1, 2, 'New message', 'رسالة جديدة', 'J', 'J', 7, NULL, 0, NULL, 0, NULL, '2026-06-17 13:39:33', '2026-06-17 13:39:33', 1),
-(71, NULL, 1, NULL, 194, 2, 'New message', 'رسالة جديدة', 'J', 'J', 2, NULL, 0, NULL, 0, NULL, '2026-06-17 13:39:33', '2026-06-17 13:39:33', 1),
-(72, NULL, 1, NULL, 196, 2, 'New message', 'رسالة جديدة', 'J', 'J', 2, NULL, 0, NULL, 0, NULL, '2026-06-17 13:39:33', '2026-06-17 13:39:33', 1),
-(73, NULL, 1, NULL, 225, 2, 'New message', 'رسالة جديدة', 'J', 'J', 2, NULL, 0, NULL, 0, NULL, '2026-06-17 13:39:33', '2026-06-17 13:39:33', 1),
-(76, NULL, 1, NULL, 1, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #129182554 needs confirmation.', 'يوجد حجز جديد رقم 129182554 يحتاج تأكيد.', 7, NULL, 0, NULL, 0, NULL, '2026-06-22 23:42:37', '2026-06-22 23:42:37', 1),
-(77, NULL, 1, NULL, 194, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #129182554 needs confirmation.', 'يوجد حجز جديد رقم 129182554 يحتاج تأكيد.', 2, NULL, 0, NULL, 0, NULL, '2026-06-22 23:42:37', '2026-06-22 23:42:37', 1),
-(78, NULL, 1, NULL, 1, 2, 'New message', 'رسالة جديدة', 'مرحبا هل موجود دكتور حسام لطفي لحجز موعد', 'مرحبا هل موجود دكتور حسام لطفي لحجز موعد', 7, NULL, 0, NULL, 0, NULL, '2026-06-25 22:02:41', '2026-06-25 22:02:41', 1),
-(79, NULL, 1, NULL, 194, 2, 'New message', 'رسالة جديدة', 'مرحبا هل موجود دكتور حسام لطفي لحجز موعد', 'مرحبا هل موجود دكتور حسام لطفي لحجز موعد', 2, NULL, 0, NULL, 0, NULL, '2026-06-25 22:02:41', '2026-06-25 22:02:41', 1),
-(80, NULL, 1, NULL, 196, 2, 'New message', 'رسالة جديدة', 'مرحبا هل موجود دكتور حسام لطفي لحجز موعد', 'مرحبا هل موجود دكتور حسام لطفي لحجز موعد', 2, NULL, 0, NULL, 0, NULL, '2026-06-25 22:02:41', '2026-06-25 22:02:41', 1),
-(81, NULL, 1, NULL, 225, 2, 'New message', 'رسالة جديدة', 'مرحبا هل موجود دكتور حسام لطفي لحجز موعد', 'مرحبا هل موجود دكتور حسام لطفي لحجز موعد', 2, NULL, 0, NULL, 0, NULL, '2026-06-25 22:02:41', '2026-06-25 22:02:41', 1),
-(82, NULL, 1, NULL, 1, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #366307372 needs confirmation.', 'يوجد حجز جديد رقم 366307372 يحتاج تأكيد.', 7, NULL, 0, NULL, 0, NULL, '2026-06-26 13:05:59', '2026-06-26 13:05:59', 1),
-(83, NULL, 1, NULL, 194, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #366307372 needs confirmation.', 'يوجد حجز جديد رقم 366307372 يحتاج تأكيد.', 2, NULL, 0, NULL, 0, NULL, '2026-06-26 13:05:59', '2026-06-26 13:05:59', 1),
-(84, NULL, 1, NULL, 1, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #463616993 needs confirmation.', 'يوجد حجز جديد رقم 463616993 يحتاج تأكيد.', 7, NULL, 0, NULL, 0, NULL, '2026-06-27 11:27:11', '2026-06-27 11:27:11', 1),
-(85, NULL, 1, NULL, 194, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #463616993 needs confirmation.', 'يوجد حجز جديد رقم 463616993 يحتاج تأكيد.', 2, NULL, 0, NULL, 0, NULL, '2026-06-27 11:27:11', '2026-06-27 11:27:11', 1),
-(87, NULL, 1, NULL, 1, 2, 'New complaint', 'شكوى جديدة', 'A new complaint has been sent from the mobile app.', 'لديك شكوى جديدة من التطبيق.', 7, NULL, 0, NULL, 0, NULL, '2026-07-04 12:27:23', '2026-07-04 12:27:23', 1),
-(88, NULL, 1, NULL, 194, 2, 'New complaint', 'شكوى جديدة', 'A new complaint has been sent from the mobile app.', 'لديك شكوى جديدة من التطبيق.', 2, NULL, 0, NULL, 0, NULL, '2026-07-04 12:27:23', '2026-07-04 12:27:23', 1),
-(89, NULL, 1, NULL, 196, 2, 'New complaint', 'شكوى جديدة', 'A new complaint has been sent from the mobile app.', 'لديك شكوى جديدة من التطبيق.', 2, NULL, 0, NULL, 0, NULL, '2026-07-04 12:27:23', '2026-07-04 12:27:23', 1),
-(90, NULL, 1, NULL, 225, 2, 'New complaint', 'شكوى جديدة', 'A new complaint has been sent from the mobile app.', 'لديك شكوى جديدة من التطبيق.', 2, NULL, 0, NULL, 0, NULL, '2026-07-04 12:27:23', '2026-07-04 12:27:23', 1),
-(91, NULL, 1, NULL, 1, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #474268200 needs confirmation.', 'يوجد حجز جديد رقم 474268200 يحتاج تأكيد.', 7, NULL, 0, NULL, 0, NULL, '2026-07-04 12:28:19', '2026-07-04 12:28:19', 1),
-(92, NULL, 1, NULL, 194, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #474268200 needs confirmation.', 'يوجد حجز جديد رقم 474268200 يحتاج تأكيد.', 2, NULL, 0, NULL, 0, NULL, '2026-07-04 12:28:19', '2026-07-04 12:28:19', 1),
-(93, NULL, 1, NULL, 1, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #369561168 needs confirmation.', 'يوجد حجز جديد رقم 369561168 يحتاج تأكيد.', 7, NULL, 0, NULL, 0, NULL, '2026-07-05 14:26:11', '2026-07-05 14:26:11', 1),
-(94, NULL, 1, NULL, 194, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #369561168 needs confirmation.', 'يوجد حجز جديد رقم 369561168 يحتاج تأكيد.', 2, NULL, 0, NULL, 0, NULL, '2026-07-05 14:26:11', '2026-07-05 14:26:11', 1),
-(95, NULL, 1, NULL, 1, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #377807291 needs confirmation.', 'يوجد حجز جديد رقم 377807291 يحتاج تأكيد.', 7, NULL, 0, NULL, 0, NULL, '2026-07-06 14:36:13', '2026-07-06 14:36:13', 1),
-(96, NULL, 1, NULL, 194, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #377807291 needs confirmation.', 'يوجد حجز جديد رقم 377807291 يحتاج تأكيد.', 2, NULL, 0, NULL, 0, NULL, '2026-07-06 14:36:13', '2026-07-06 14:36:13', 1),
-(97, NULL, 1, NULL, 1, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #325586673 needs confirmation.', 'يوجد حجز جديد رقم 325586673 يحتاج تأكيد.', 7, NULL, 0, NULL, 0, NULL, '2026-07-06 16:48:58', '2026-07-06 16:48:58', 1),
-(98, NULL, 1, NULL, 194, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #325586673 needs confirmation.', 'يوجد حجز جديد رقم 325586673 يحتاج تأكيد.', 2, NULL, 0, NULL, 0, NULL, '2026-07-06 16:48:58', '2026-07-06 16:48:58', 1),
-(99, NULL, 1, NULL, 1, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #688230489 needs confirmation.', 'يوجد حجز جديد رقم 688230489 يحتاج تأكيد.', 7, NULL, 0, NULL, 0, NULL, '2026-07-06 17:38:01', '2026-07-06 17:38:01', 1),
-(100, NULL, 1, NULL, 194, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #688230489 needs confirmation.', 'يوجد حجز جديد رقم 688230489 يحتاج تأكيد.', 2, NULL, 0, NULL, 0, NULL, '2026-07-06 17:38:01', '2026-07-06 17:38:01', 1),
-(101, NULL, 1, NULL, 1, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #218507639 needs confirmation.', 'يوجد حجز جديد رقم 218507639 يحتاج تأكيد.', 7, NULL, 0, NULL, 0, NULL, '2026-07-07 08:36:53', '2026-07-07 08:36:53', 1),
-(102, NULL, 1, NULL, 194, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #218507639 needs confirmation.', 'يوجد حجز جديد رقم 218507639 يحتاج تأكيد.', 2, NULL, 0, NULL, 0, NULL, '2026-07-07 08:36:53', '2026-07-07 08:36:53', 1),
-(103, NULL, 1, NULL, 1, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #465912024 needs confirmation.', 'يوجد حجز جديد رقم 465912024 يحتاج تأكيد.', 7, NULL, 0, NULL, 0, NULL, '2026-07-07 09:32:36', '2026-07-07 09:32:36', 1),
-(104, NULL, 1, NULL, 194, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #465912024 needs confirmation.', 'يوجد حجز جديد رقم 465912024 يحتاج تأكيد.', 2, NULL, 0, NULL, 0, NULL, '2026-07-07 09:32:36', '2026-07-07 09:32:36', 1),
-(105, NULL, 1, NULL, 1, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #115273934 needs confirmation.', 'يوجد حجز جديد رقم 115273934 يحتاج تأكيد.', 7, NULL, 0, NULL, 0, NULL, '2026-07-07 11:19:51', '2026-07-07 11:19:51', 1),
-(106, NULL, 1, NULL, 194, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #115273934 needs confirmation.', 'يوجد حجز جديد رقم 115273934 يحتاج تأكيد.', 2, NULL, 0, NULL, 0, NULL, '2026-07-07 11:19:51', '2026-07-07 11:19:51', 1),
-(107, NULL, 1, NULL, 1, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #610639346 needs confirmation.', 'يوجد حجز جديد رقم 610639346 يحتاج تأكيد.', 7, NULL, 0, NULL, 0, NULL, '2026-07-08 15:26:59', '2026-07-08 15:26:59', 1),
-(108, NULL, 1, NULL, 194, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #610639346 needs confirmation.', 'يوجد حجز جديد رقم 610639346 يحتاج تأكيد.', 2, NULL, 0, NULL, 0, NULL, '2026-07-08 15:26:59', '2026-07-08 15:26:59', 1),
-(109, NULL, 1, NULL, 1, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #444429282 needs confirmation.', 'يوجد حجز جديد رقم 444429282 يحتاج تأكيد.', 7, NULL, 0, NULL, 0, NULL, '2026-07-08 16:36:37', '2026-07-08 16:36:37', 1),
-(110, NULL, 1, NULL, 194, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #444429282 needs confirmation.', 'يوجد حجز جديد رقم 444429282 يحتاج تأكيد.', 2, NULL, 0, NULL, 0, NULL, '2026-07-08 16:36:37', '2026-07-08 16:36:37', 1),
-(111, NULL, 1, NULL, 1, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #756207191 needs confirmation.', 'يوجد حجز جديد رقم 756207191 يحتاج تأكيد.', 7, NULL, 0, NULL, 0, NULL, '2026-07-09 03:18:39', '2026-07-09 03:18:39', 1),
-(112, NULL, 1, NULL, 194, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #756207191 needs confirmation.', 'يوجد حجز جديد رقم 756207191 يحتاج تأكيد.', 2, NULL, 0, NULL, 0, NULL, '2026-07-09 03:18:39', '2026-07-09 03:18:39', 1),
-(113, NULL, 1, NULL, 1, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #637108044 needs confirmation.', 'يوجد حجز جديد رقم 637108044 يحتاج تأكيد.', 7, NULL, 0, NULL, 0, NULL, '2026-07-09 10:48:31', '2026-07-09 10:48:31', 1),
-(114, NULL, 1, NULL, 194, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #637108044 needs confirmation.', 'يوجد حجز جديد رقم 637108044 يحتاج تأكيد.', 2, NULL, 0, NULL, 0, NULL, '2026-07-09 10:48:31', '2026-07-09 10:48:31', 1),
-(115, NULL, 1, NULL, 1, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #407655199 needs confirmation.', 'يوجد حجز جديد رقم 407655199 يحتاج تأكيد.', 7, NULL, 0, NULL, 0, NULL, '2026-07-11 09:33:07', '2026-07-11 09:33:07', 1),
-(116, NULL, 1, NULL, 194, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #407655199 needs confirmation.', 'يوجد حجز جديد رقم 407655199 يحتاج تأكيد.', 2, NULL, 0, NULL, 0, NULL, '2026-07-11 09:33:07', '2026-07-11 09:33:07', 1),
-(117, NULL, 1, NULL, 1, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #896642054 needs confirmation.', 'يوجد حجز جديد رقم 896642054 يحتاج تأكيد.', 7, NULL, 0, NULL, 0, NULL, '2026-07-12 08:32:01', '2026-07-12 08:32:01', 1),
-(118, NULL, 1, NULL, 194, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #896642054 needs confirmation.', 'يوجد حجز جديد رقم 896642054 يحتاج تأكيد.', 2, NULL, 0, NULL, 0, NULL, '2026-07-12 08:32:01', '2026-07-12 08:32:01', 1),
-(119, NULL, 1, NULL, 1, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #689592209 needs confirmation.', 'يوجد حجز جديد رقم 689592209 يحتاج تأكيد.', 7, NULL, 0, NULL, 0, NULL, '2026-07-12 09:19:16', '2026-07-12 09:19:16', 1),
-(120, NULL, 1, NULL, 194, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #689592209 needs confirmation.', 'يوجد حجز جديد رقم 689592209 يحتاج تأكيد.', 2, NULL, 0, NULL, 0, NULL, '2026-07-12 09:19:16', '2026-07-12 09:19:16', 1),
-(121, NULL, 1, NULL, 1, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #160771254 needs confirmation.', 'يوجد حجز جديد رقم 160771254 يحتاج تأكيد.', 7, NULL, 0, NULL, 0, NULL, '2026-07-12 12:06:01', '2026-07-12 12:06:01', 1),
-(122, NULL, 1, NULL, 194, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #160771254 needs confirmation.', 'يوجد حجز جديد رقم 160771254 يحتاج تأكيد.', 2, NULL, 0, NULL, 0, NULL, '2026-07-12 12:06:02', '2026-07-12 12:06:02', 1),
-(123, NULL, 1, NULL, 1, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #780445803 needs confirmation.', 'يوجد حجز جديد رقم 780445803 يحتاج تأكيد.', 7, NULL, 0, NULL, 0, NULL, '2026-07-12 18:11:03', '2026-07-12 18:11:03', 1),
-(124, NULL, 1, NULL, 194, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #780445803 needs confirmation.', 'يوجد حجز جديد رقم 780445803 يحتاج تأكيد.', 2, NULL, 0, NULL, 0, NULL, '2026-07-12 18:11:03', '2026-07-12 18:11:03', 1),
-(125, NULL, 1, NULL, 1, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #455976689 needs confirmation.', 'يوجد حجز جديد رقم 455976689 يحتاج تأكيد.', 7, NULL, 0, NULL, 0, NULL, '2026-07-13 07:58:53', '2026-07-13 07:58:53', 1),
-(126, NULL, 1, NULL, 194, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #455976689 needs confirmation.', 'يوجد حجز جديد رقم 455976689 يحتاج تأكيد.', 2, NULL, 0, NULL, 0, NULL, '2026-07-13 07:58:53', '2026-07-13 07:58:53', 1),
-(127, NULL, 1, NULL, 1, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #856876185 needs confirmation.', 'يوجد حجز جديد رقم 856876185 يحتاج تأكيد.', 7, NULL, 0, NULL, 0, NULL, '2026-07-13 12:39:12', '2026-07-13 12:39:12', 1),
-(128, NULL, 1, NULL, 194, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #856876185 needs confirmation.', 'يوجد حجز جديد رقم 856876185 يحتاج تأكيد.', 2, NULL, 0, NULL, 0, NULL, '2026-07-13 12:39:12', '2026-07-13 12:39:12', 1),
-(129, NULL, 1, NULL, 1, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #548962082 needs confirmation.', 'يوجد حجز جديد رقم 548962082 يحتاج تأكيد.', 7, NULL, 0, NULL, 0, NULL, '2026-07-14 13:27:37', '2026-07-14 13:27:37', 1),
-(130, NULL, 1, NULL, 194, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #548962082 needs confirmation.', 'يوجد حجز جديد رقم 548962082 يحتاج تأكيد.', 2, NULL, 0, NULL, 0, NULL, '2026-07-14 13:27:37', '2026-07-14 13:27:37', 1),
-(131, NULL, 1, NULL, 1, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #981859293 needs confirmation.', 'يوجد حجز جديد رقم 981859293 يحتاج تأكيد.', 7, NULL, 0, NULL, 0, NULL, '2026-07-15 11:57:18', '2026-07-15 11:57:18', 1),
-(132, NULL, 1, NULL, 194, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #981859293 needs confirmation.', 'يوجد حجز جديد رقم 981859293 يحتاج تأكيد.', 2, NULL, 0, NULL, 0, NULL, '2026-07-15 11:57:18', '2026-07-15 11:57:18', 1),
-(133, NULL, 1, NULL, 1, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #997372259 needs confirmation.', 'يوجد حجز جديد رقم 997372259 يحتاج تأكيد.', 7, NULL, 0, NULL, 0, NULL, '2026-07-15 17:27:21', '2026-07-15 17:27:21', 1),
-(134, NULL, 1, NULL, 194, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #997372259 needs confirmation.', 'يوجد حجز جديد رقم 997372259 يحتاج تأكيد.', 2, NULL, 0, NULL, 0, NULL, '2026-07-15 17:27:21', '2026-07-15 17:27:21', 1),
-(135, NULL, 1, NULL, 1, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #535960666 needs confirmation.', 'يوجد حجز جديد رقم 535960666 يحتاج تأكيد.', 7, NULL, 0, NULL, 0, NULL, '2026-07-16 10:13:25', '2026-07-16 10:13:25', 1),
-(136, NULL, 1, NULL, 194, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #535960666 needs confirmation.', 'يوجد حجز جديد رقم 535960666 يحتاج تأكيد.', 2, NULL, 0, NULL, 0, NULL, '2026-07-16 10:13:25', '2026-07-16 10:13:25', 1),
-(137, NULL, 1, NULL, 1, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #474030633 needs confirmation.', 'يوجد حجز جديد رقم 474030633 يحتاج تأكيد.', 7, NULL, 0, NULL, 0, NULL, '2026-07-16 17:01:50', '2026-07-16 17:01:50', 1),
-(138, NULL, 1, NULL, 194, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #474030633 needs confirmation.', 'يوجد حجز جديد رقم 474030633 يحتاج تأكيد.', 2, NULL, 0, NULL, 0, NULL, '2026-07-16 17:01:50', '2026-07-16 17:01:50', 1),
-(139, NULL, 1, NULL, 1, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #199861326 needs confirmation.', 'يوجد حجز جديد رقم 199861326 يحتاج تأكيد.', 7, NULL, 0, NULL, 0, NULL, '2026-07-18 04:54:13', '2026-07-18 04:54:13', 1),
-(140, NULL, 1, NULL, 194, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #199861326 needs confirmation.', 'يوجد حجز جديد رقم 199861326 يحتاج تأكيد.', 2, NULL, 0, NULL, 0, NULL, '2026-07-18 04:54:13', '2026-07-18 04:54:13', 1),
-(141, NULL, 1, NULL, 1, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #145988692 needs confirmation.', 'يوجد حجز جديد رقم 145988692 يحتاج تأكيد.', 7, NULL, 0, NULL, 0, NULL, '2026-07-19 16:10:21', '2026-07-19 16:10:21', 1),
-(142, NULL, 1, NULL, 194, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #145988692 needs confirmation.', 'يوجد حجز جديد رقم 145988692 يحتاج تأكيد.', 2, NULL, 0, NULL, 0, NULL, '2026-07-19 16:10:22', '2026-07-19 16:10:22', 1),
-(143, NULL, 1, NULL, 1, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #317111252 needs confirmation.', 'يوجد حجز جديد رقم 317111252 يحتاج تأكيد.', 7, NULL, 0, NULL, 0, NULL, '2026-07-20 08:18:59', '2026-07-20 08:18:59', 1),
-(144, NULL, 1, NULL, 194, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #317111252 needs confirmation.', 'يوجد حجز جديد رقم 317111252 يحتاج تأكيد.', 2, NULL, 0, NULL, 0, NULL, '2026-07-20 08:18:59', '2026-07-20 08:18:59', 1),
-(145, NULL, 1, NULL, 1, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #594931848 needs confirmation.', 'يوجد حجز جديد رقم 594931848 يحتاج تأكيد.', 7, NULL, 0, NULL, 0, NULL, '2026-07-21 08:41:50', '2026-07-21 08:41:50', 1),
-(146, NULL, 1, NULL, 194, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #594931848 needs confirmation.', 'يوجد حجز جديد رقم 594931848 يحتاج تأكيد.', 2, NULL, 0, NULL, 0, NULL, '2026-07-21 08:41:50', '2026-07-21 08:41:50', 1),
-(147, NULL, 1, NULL, 1, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #586044671 needs confirmation.', 'يوجد حجز جديد رقم 586044671 يحتاج تأكيد.', 7, NULL, 0, NULL, 0, NULL, '2026-07-22 12:05:43', '2026-07-22 12:05:43', 1),
-(148, NULL, 1, NULL, 194, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #586044671 needs confirmation.', 'يوجد حجز جديد رقم 586044671 يحتاج تأكيد.', 2, NULL, 0, NULL, 0, NULL, '2026-07-22 12:05:43', '2026-07-22 12:05:43', 1),
-(149, NULL, 1, NULL, 1, 2, 'New message', 'رسالة جديدة', 'ام', 'ام', 7, NULL, 0, NULL, 0, NULL, '2026-07-25 05:32:10', '2026-07-25 05:32:10', 1),
-(150, NULL, 1, NULL, 194, 2, 'New message', 'رسالة جديدة', 'ام', 'ام', 2, NULL, 0, NULL, 0, NULL, '2026-07-25 05:32:10', '2026-07-25 05:32:10', 1),
-(151, NULL, 1, NULL, 196, 2, 'New message', 'رسالة جديدة', 'ام', 'ام', 2, NULL, 0, NULL, 0, NULL, '2026-07-25 05:32:10', '2026-07-25 05:32:10', 1),
-(152, NULL, 1, NULL, 225, 2, 'New message', 'رسالة جديدة', 'ام', 'ام', 2, NULL, 0, NULL, 0, NULL, '2026-07-25 05:32:10', '2026-07-25 05:32:10', 1),
-(153, NULL, 1, NULL, 1, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #508349866 needs confirmation.', 'يوجد حجز جديد رقم 508349866 يحتاج تأكيد.', 7, NULL, 0, NULL, 0, NULL, '2026-07-28 14:04:03', '2026-07-28 14:04:03', 1),
-(154, NULL, 1, NULL, 194, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #508349866 needs confirmation.', 'يوجد حجز جديد رقم 508349866 يحتاج تأكيد.', 2, NULL, 0, NULL, 0, NULL, '2026-07-28 14:04:03', '2026-07-28 14:04:03', 1),
-(155, NULL, 1, NULL, 1, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #411175636 needs confirmation.', 'يوجد حجز جديد رقم 411175636 يحتاج تأكيد.', 7, NULL, 0, NULL, 0, NULL, '2026-07-29 12:50:39', '2026-07-29 12:50:39', 1),
-(156, NULL, 1, NULL, 194, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #411175636 needs confirmation.', 'يوجد حجز جديد رقم 411175636 يحتاج تأكيد.', 2, NULL, 0, NULL, 0, NULL, '2026-07-29 12:50:39', '2026-07-29 12:50:39', 1),
-(157, NULL, 1, NULL, 1, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #501311736 needs confirmation.', 'يوجد حجز جديد رقم 501311736 يحتاج تأكيد.', 7, NULL, 0, NULL, 0, NULL, '2026-07-30 13:15:10', '2026-07-30 13:15:10', 1),
-(158, NULL, 1, NULL, 194, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #501311736 needs confirmation.', 'يوجد حجز جديد رقم 501311736 يحتاج تأكيد.', 2, NULL, 0, NULL, 0, NULL, '2026-07-30 13:15:11', '2026-07-30 13:15:11', 1),
-(159, NULL, 1, 10, 10, 1, 'Rate your booking', 'Rate your booking', 'Booking #501311736 is completed. You can rate it now.', 'Booking #501311736 is completed. You can rate it now.', 1, NULL, 0, NULL, 0, NULL, '2026-07-30 13:39:14', '2026-07-30 13:39:14', 1),
-(160, NULL, 1, NULL, 1, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #375870296 needs confirmation.', 'يوجد حجز جديد رقم 375870296 يحتاج تأكيد.', 7, NULL, 0, NULL, 0, NULL, '2026-07-30 14:48:37', '2026-07-30 14:48:37', 1),
-(161, NULL, 1, NULL, 194, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #375870296 needs confirmation.', 'يوجد حجز جديد رقم 375870296 يحتاج تأكيد.', 2, NULL, 0, NULL, 0, NULL, '2026-07-30 14:48:37', '2026-07-30 14:48:37', 1),
-(162, NULL, 1, NULL, 1, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #741735634 needs confirmation.', 'يوجد حجز جديد رقم 741735634 يحتاج تأكيد.', 7, NULL, 0, NULL, 0, NULL, '2026-08-01 14:53:38', '2026-08-01 14:53:38', 1),
-(163, NULL, 1, NULL, 194, 2, 'New booking needs confirmation', 'حجز جديد يحتاج تأكيد', 'New booking #741735634 needs confirmation.', 'يوجد حجز جديد رقم 741735634 يحتاج تأكيد.', 2, NULL, 0, NULL, 0, NULL, '2026-08-01 14:53:38', '2026-08-01 14:53:38', 1);
-
 -- --------------------------------------------------------
 
 --
@@ -2707,11 +2318,11 @@ INSERT INTO `notifications` (`id`, `admin_id`, `clinic_id`, `user_id`, `receiver
 
 CREATE TABLE `notification_events` (
   `id` bigint UNSIGNED NOT NULL,
-  `key` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name_en` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name_ar` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `description_en` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `description_ar` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name_en` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name_ar` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description_en` text COLLATE utf8mb4_unicode_ci,
+  `description_ar` text COLLATE utf8mb4_unicode_ci,
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -2752,8 +2363,8 @@ INSERT INTO `notification_event_recipient` (`id`, `notification_recipient_id`, `
 
 CREATE TABLE `notification_recipients` (
   `id` bigint UNSIGNED NOT NULL,
-  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `label` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `label` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
@@ -2790,12 +2401,12 @@ CREATE TABLE `packages` (
   `id` bigint UNSIGNED NOT NULL,
   `name_en` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `name_ar` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `features_en` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `features_ar` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `features_en` longtext COLLATE utf8mb4_unicode_ci,
+  `features_ar` longtext COLLATE utf8mb4_unicode_ci,
   `duration` int NOT NULL DEFAULT '5' COMMENT 'days',
   `price` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `discount` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `price_after_discount` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `discount` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `price_after_discount` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `free_months` int DEFAULT '0',
   `status` tinyint NOT NULL DEFAULT '1',
   `deleted_at` timestamp NULL DEFAULT NULL,
@@ -3013,14 +2624,6 @@ CREATE TABLE `payment_methods` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `payment_methods`
---
-
-INSERT INTO `payment_methods` (`id`, `clinic_id`, `name_en`, `name_ar`, `status`, `deleted_at`, `created_at`, `updated_at`) VALUES
-(1, 1, 'Debit Card', 'بطاقة ائتمان', 1, NULL, '2024-02-19 07:19:47', '2024-02-19 07:19:47'),
-(2, 1, 'Gpay', 'Gpay', 1, NULL, '2024-02-19 07:19:47', '2024-02-19 07:19:47');
 
 -- --------------------------------------------------------
 
@@ -3389,24 +2992,6 @@ CREATE TABLE `posts` (
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Dumping data for table `posts`
---
-
-INSERT INTO `posts` (`id`, `clinic_id`, `image`, `content`, `created_at`, `updated_at`) VALUES
-(7, 1, '16595632688036.jpeg', 'sassa as salsjlasasl as', '2023-05-06 05:08:44', '2022-08-04 01:47:48'),
-(9, 1, '16596298669640.jpeg', 'new content', '2023-05-06 05:08:44', '2022-08-04 23:17:46'),
-(10, 1, '16596498531780.jpg', 'new content', '2023-05-06 05:08:44', '2022-08-05 04:50:53'),
-(14, 1, '16596969076110.jpg', 'test', '2023-05-06 05:08:44', '2022-08-05 17:55:07'),
-(15, 1, '16596969838279.jpg', 'تجربه', '2023-05-06 05:08:44', '2022-08-05 17:56:23'),
-(16, 1, '16600647965875.jpg', 'ssss\nssss\n\nas\naasas', '2023-05-06 05:08:44', '2022-12-20 01:50:23'),
-(22, 1, '16805464317652.jpg', 'welcome', '2023-05-06 05:08:44', '2023-04-03 16:27:11'),
-(23, 1, '16805939975814.png', 'new post', '2023-05-06 05:08:44', '2023-04-04 05:39:57'),
-(24, 1, '16805940168292.jpeg', 'bbb', '2023-05-06 05:08:44', '2023-04-04 05:40:16'),
-(26, 1, '16805940532391.jpeg', 'bbb', '2023-05-06 05:08:44', '2023-04-04 05:40:53'),
-(27, 1, '16811936486116.png', 'sdsds', '2023-05-06 05:08:44', '2023-04-11 04:14:08'),
-(41, 1, '16850301207120.jpg', 'مستشفى الحياة الطبي يتشرف ب الانضمام لنظام عوافي الطبي', '2023-05-25 12:55:20', '2023-05-25 12:55:20');
-
 -- --------------------------------------------------------
 
 --
@@ -3698,8 +3283,8 @@ CREATE TABLE `reservations` (
   `doctor_id` bigint UNSIGNED NOT NULL,
   `clinic_id` bigint UNSIGNED NOT NULL,
   `reception_id` bigint UNSIGNED DEFAULT NULL,
-  `date` date DEFAULT NULL,
-  `appointment` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `date` date NOT NULL,
+  `appointment` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `price` int DEFAULT NULL,
   `status_id` bigint UNSIGNED NOT NULL DEFAULT '1',
   `sub_specialist_id` bigint DEFAULT NULL,
@@ -3714,130 +3299,18 @@ CREATE TABLE `reservations` (
   `follow_up` bigint NOT NULL DEFAULT '0',
   `payment_status` int NOT NULL DEFAULT '0',
   `waiting_list` int DEFAULT NULL,
-  `booking_flow` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'instant',
-  `payment_method` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT 'cash',
-  `payment_reference` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `booking_flow` varchar(40) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'instant',
+  `payment_method` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT 'cash',
+  `payment_reference` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `platform_commission_rate` decimal(5,2) NOT NULL DEFAULT '0.00',
   `platform_commission_amount` decimal(10,2) NOT NULL DEFAULT '0.00',
   `clinic_net_amount` decimal(10,2) NOT NULL DEFAULT '0.00',
-  `settlement_direction` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `settlement_direction` varchar(40) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `financial_cycle_date` date DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `reservations`
---
-
-INSERT INTO `reservations` (`id`, `booking_number`, `user_id`, `parent_id`, `doctor_id`, `clinic_id`, `reception_id`, `date`, `appointment`, `price`, `status_id`, `sub_specialist_id`, `diagnosis`, `symptoms`, `clinical_examination`, `recommendations`, `notes`, `schedule_consultation_date`, `schedule_consultation_time`, `type`, `follow_up`, `payment_status`, `waiting_list`, `booking_flow`, `payment_method`, `payment_reference`, `platform_commission_rate`, `platform_commission_amount`, `clinic_net_amount`, `settlement_direction`, `financial_cycle_date`, `deleted_at`, `created_at`, `updated_at`) VALUES
-(32, 176380160, 28, 28, 211, 1, 194, '2026-02-23', '1:16 AM - 1:31 AM', NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-02-22 23:24:58', '2026-02-22 23:24:58'),
-(33, 494786142, 28, 28, 211, 1, 194, '2026-02-23', '1:31 AM - 1:46 AM', NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-02-22 23:25:06', '2026-02-22 23:25:06'),
-(34, 970212715, 28, 28, 211, 1, 194, '2026-02-23', '1:46 AM - 2:01 AM', NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-02-22 23:25:16', '2026-02-22 23:25:16'),
-(37, 350268024, 28, 28, 210, 1, 194, '2026-02-25', '9:31 AM - 9:46 AM', NULL, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-02-25 06:27:06', '2026-03-02 01:42:43'),
-(42, 209502128, 28, 28, 210, 1, 194, '2026-03-05', '11:01 PM - 11:16 PM', NULL, 5, 36, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-03-05 19:55:29', '2026-03-05 19:56:01'),
-(44, 711256147, 4, 4, 211, 1, 194, '2026-03-25', '5:31 PM - 5:46 PM', NULL, 5, 33, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-03-25 14:29:18', '2026-03-25 14:30:22'),
-(45, 255293732, 4, 4, 211, 1, 194, '2026-03-25', '10:46 PM - 11:01 PM', NULL, 5, 32, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-03-25 14:32:36', '2026-03-25 14:34:14'),
-(47, 183410305, 4, 4, 209, 1, 194, '2026-03-25', '9:01 PM - 9:16 PM', NULL, 5, 40, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-03-25 14:34:56', '2026-03-30 08:02:56'),
-(48, 441259595, 28, 28, 210, 1, 196, '2026-03-25', '6:16 PM - 6:31 PM', NULL, 2, 36, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, 1, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-03-25 15:14:11', '2026-03-25 15:16:49'),
-(49, 811129983, 28, 28, 209, 1, 194, '2026-03-25', '7:31 PM - 7:46 PM', NULL, 5, 40, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-03-25 15:20:33', '2026-04-02 21:49:01'),
-(52, 279646814, 4, 4, 210, 1, 194, '2026-03-26', '8:16 PM - 8:31 PM', NULL, 1, 36, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-03-26 16:00:32', '2026-03-26 16:00:32'),
-(56, 262171283, 28, 28, 209, 1, 196, '2026-03-27', '12:01 AM - 12:16 AM', NULL, 6, 40, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, 1, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-03-26 21:49:41', '2026-03-26 22:04:34'),
-(57, 889774765, 28, 28, 209, 1, 194, '2026-03-28', '12:01 AM - 12:16 AM', NULL, 5, 40, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-03-26 21:57:01', '2026-03-26 22:07:51'),
-(60, 502587285, 28, 28, 205, 1, 196, '2026-03-28', '12:16 AM - 12:31 AM', NULL, 6, 29, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, 1, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-03-27 21:39:22', '2026-03-27 21:45:33'),
-(61, 957501522, 28, 28, 205, 1, 194, '2026-03-29', '12:01 AM - 12:16 AM', NULL, 5, 29, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-03-27 21:50:21', '2026-03-27 21:51:04'),
-(65, 458460812, 28, 28, 202, 1, 194, '2026-03-28', '11:31 PM - 11:46 PM', NULL, 5, 26, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-03-28 21:29:14', '2026-03-28 21:41:55'),
-(66, 554152541, 28, 28, 202, 1, 196, '2026-03-29', '12:16 AM - 12:31 AM', NULL, 6, 26, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, 1, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-03-28 21:38:51', '2026-03-28 21:45:18'),
-(69, 839215414, 28, 28, 203, 1, 196, '2026-03-29', '5:16 PM - 5:31 PM', NULL, 6, 27, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, 1, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-03-29 15:03:47', '2026-03-29 15:05:18'),
-(70, 124496408, 28, 28, 204, 1, 196, '2026-03-29', '5:31 PM - 5:46 PM', NULL, 6, 28, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, 1, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-03-29 15:07:20', '2026-03-29 15:08:23'),
-(71, 264028439, 28, 28, 204, 1, 194, '2026-03-29', '5:46 PM - 6:01 PM', NULL, 6, 28, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-03-29 15:08:48', '2026-03-29 15:15:02'),
-(72, 111517154, 28, 28, 210, 1, 194, '2026-03-29', '6:00 PM - 6:15 PM', NULL, 6, 36, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-03-29 15:12:37', '2026-03-29 15:14:43'),
-(73, 803021954, 28, 28, 204, 1, 194, '2026-03-29', '6:16 PM - 6:31 PM', NULL, 6, 28, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-03-29 15:15:21', '2026-04-01 22:54:09'),
-(75, 880032072, 4, 4, 204, 1, 194, '2026-03-30', '5:01 PM - 5:16 PM', NULL, 6, 28, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-03-30 08:02:38', '2026-04-01 22:53:40'),
-(80, 792880923, 28, 28, 202, 1, 194, '2026-03-31', '11:31 PM - 11:46 PM', NULL, 5, 26, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-03-31 21:18:27', '2026-03-31 21:33:22'),
-(81, 271912330, 28, 28, 210, 1, 194, '2026-04-14', '2:00 PM - 2:15 PM', NULL, 5, 36, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-03-31 21:48:29', '2026-04-01 22:09:15'),
-(82, 394407330, 28, 28, 206, 1, 194, '2026-04-01', '7:01 AM - 7:16 AM', NULL, 5, 26, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-04-01 04:59:57', '2026-04-01 22:09:11'),
-(84, 698481213, 53, 28, 202, 1, 196, '2026-04-02', '1:01 AM - 1:16 AM', NULL, 6, 26, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, 1, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-04-01 22:54:49', '2026-04-01 23:02:36'),
-(85, 517403945, 53, 28, 203, 1, 194, '2026-04-02', '1:16 AM - 1:31 AM', NULL, 5, 27, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-04-01 23:04:30', '2026-04-01 23:05:00'),
-(86, 807090563, 53, 28, 204, 1, 194, '2026-04-02', '1:31 AM - 1:46 AM', NULL, 6, 28, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-04-01 23:05:36', '2026-04-01 23:05:45'),
-(90, 710637866, 45, 45, 210, 1, 189, '2026-04-03', '12:31 AM - 1:01 AM', NULL, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 0, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-04-02 04:07:16', '2026-04-02 21:46:10'),
-(92, 715837848, 28, 28, 210, 1, 194, '2026-04-02', '10:31 AM - 11:01 AM', NULL, 1, 36, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-04-02 06:16:33', '2026-04-02 06:16:33'),
-(93, 695684122, 28, 28, 203, 1, 194, '2026-04-02', '11:31 AM - 12:01 PM', NULL, 1, 27, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-04-02 06:16:51', '2026-04-02 06:16:51'),
-(94, 196346320, 4, 4, 209, 1, 194, '2026-04-02', '10:01 PM - 10:31 PM', NULL, 1, 40, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-04-02 18:31:37', '2026-04-02 18:31:37'),
-(95, 406439148, 4, 4, 210, 1, 194, '2026-04-02', '10:01 PM - 10:31 PM', NULL, 1, 36, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-04-02 18:32:46', '2026-04-02 18:32:46'),
-(96, 351491352, 45, 45, 210, 1, 196, '2026-04-03', '1:31 AM - 2:01 AM', NULL, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 0, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-04-02 21:19:33', '2026-04-02 21:46:04'),
-(97, 899768853, 28, 28, 202, 1, 196, '2026-04-03', '12:31 AM - 1:01 AM', NULL, 6, 26, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, 2, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-04-02 21:35:41', '2026-04-02 21:43:13'),
-(98, 952859411, 28, 28, 209, 1, 196, '2026-04-03', '12:31 AM - 1:01 AM', NULL, 6, 40, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, 1, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-04-02 21:46:41', '2026-04-02 21:50:24'),
-(99, 429223535, 45, 45, 202, 1, 196, '2026-04-04', '12:01 AM - 12:31 AM', NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 0, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-04-02 22:21:45', '2026-04-02 22:21:45'),
-(100, 556960905, 28, 28, 204, 1, 196, '2026-04-03', '1:01 AM - 1:31 AM', NULL, 6, 28, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, 1, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-04-02 22:42:58', '2026-04-02 22:44:04'),
-(114, 552777487, 4, 4, 209, 1, 194, '2026-04-05', '12:31 PM - 1:01 PM', NULL, 6, 40, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-04-05 08:03:17', '2026-04-05 08:03:17'),
-(115, 323796673, 4, 4, 211, 1, 194, '2026-04-07', '9:01 AM - 9:31 AM', NULL, 5, 32, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-04-07 04:17:32', '2026-04-09 14:54:12'),
-(116, 494566622, 4, 4, 208, 1, 194, '2026-04-07', '11:01 AM - 11:31 AM', NULL, 5, 32, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-04-07 04:17:49', '2026-04-07 04:18:01'),
-(142, 223022313, 4, 4, 203, 1, 194, '2026-05-04', '12:01 AM - 12:31 AM', NULL, 1, 27, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-05-03 20:31:07', '2026-05-03 20:31:07'),
-(143, 432200033, 4, 4, 204, 1, 196, '2026-05-06', '12:01 AM - 12:31 AM', NULL, 4, 28, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-05-05 20:44:33', '2026-05-06 15:28:45'),
-(145, 342783353, 4, 4, 209, 1, 194, '2026-05-07', '10:31 PM - 11:01 PM', NULL, 1, 40, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-05-07 19:09:59', '2026-05-07 19:09:59'),
-(146, 594166607, 4, 4, 211, 1, 194, '2026-05-07', '10:31 PM - 11:01 PM', NULL, 5, 32, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-05-07 19:14:16', '2026-06-25 22:04:00'),
-(148, 786387695, 45, 45, 202, 1, 196, '2026-05-18', '12:31 PM - 1:01 PM', NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 0, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-05-17 04:07:57', '2026-05-17 04:07:57'),
-(149, 310696980, 45, 45, 202, 1, 196, '2026-05-17', '12:01 PM - 12:31 PM', NULL, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 0, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-05-17 04:09:18', '2026-05-17 12:42:29'),
-(150, 291777647, 57, 57, 203, 1, 196, '2026-05-17', '2:01 PM - 2:31 PM', NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 0, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-05-17 04:10:48', '2026-05-17 04:10:48'),
-(151, 337944163, 58, 58, 205, 1, 196, '2026-05-17', '12:01 PM - 12:31 PM', NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 0, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-05-17 04:12:24', '2026-05-17 04:12:24'),
-(152, 632695526, 58, 58, 202, 1, 196, '2026-05-19', '12:01 AM - 12:31 AM', NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 0, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-05-17 13:07:05', '2026-05-17 13:07:05'),
-(154, 312226145, 61, 61, 202, 1, 196, '2026-05-18', '12:01 AM - 12:31 AM', NULL, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 0, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-05-17 14:18:18', '2026-05-17 14:22:49'),
-(155, 179641687, 4, 4, 205, 1, 194, '2026-05-17', '6:01 PM - 6:31 PM', NULL, 6, 29, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-05-17 14:42:26', '2026-05-17 14:47:56'),
-(156, 296535508, 4, 4, 202, 1, 194, '2026-05-17', '6:01 PM - 6:31 PM', NULL, 5, 26, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-05-17 14:52:00', '2026-05-17 14:52:18'),
-(157, 287141415, 61, 61, 204, 1, 196, '2026-05-18', '8:01 AM - 8:31 AM', NULL, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 0, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-05-18 04:05:40', '2026-05-18 04:06:11'),
-(158, 313063437, 60, 60, 203, 1, 196, '2026-05-18', '8:01 AM - 8:31 AM', NULL, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 0, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-05-18 04:13:12', '2026-05-20 14:26:24'),
-(159, 951918092, 62, 62, 202, 1, 194, '2026-05-19', '3:01 PM - 3:31 PM', NULL, 5, 26, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-05-18 04:26:44', '2026-05-18 04:28:03'),
-(160, 956786649, 68, 68, 202, 1, 196, '2026-05-22', '3:31 PM - 4:01 PM', NULL, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 0, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-05-22 12:59:41', '2026-05-22 12:59:54'),
-(161, 372233367, 68, 68, 202, 1, 196, '2026-05-23', '9:31 PM - 10:01 PM', NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 0, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-05-23 11:52:19', '2026-05-23 11:52:19'),
-(162, 695464234, 68, 68, 203, 1, 196, '2026-05-30', '11:01 PM - 11:31 PM', NULL, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 0, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-05-30 20:06:17', '2026-05-30 20:06:49'),
-(163, 888220342, 67, 67, 203, 1, 196, '2026-05-31', '10:01 PM - 10:31 PM', NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 0, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-05-31 10:44:31', '2026-05-31 10:44:31'),
-(164, 735642548, 65, 65, 203, 1, 196, '2026-05-31', '3:01 PM - 3:31 PM', NULL, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 0, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-05-31 10:44:57', '2026-05-31 10:45:05'),
-(165, 353477877, 65, 65, 209, 1, 194, '2026-06-07', '3:31 PM - 4:01 PM', NULL, 1, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-06-07 11:17:45', '2026-06-07 11:17:45'),
-(166, 878994053, 10, 10, 211, 1, 194, '2026-06-09', '10:01 PM - 10:31 PM', NULL, 5, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-06-09 18:05:30', '2026-06-09 18:06:16'),
-(167, 830694231, 65, 65, 209, 1, 194, '2026-06-17', '4:01 PM - 4:31 PM', NULL, 1, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-06-17 11:31:54', '2026-06-17 11:31:54'),
-(168, 647983653, 65, 65, 211, 1, 194, '2026-06-17', '3:31 PM - 4:01 PM', NULL, 2, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-06-17 11:38:15', '2026-06-17 11:38:15'),
-(169, 601039788, 65, 65, 211, 1, 194, '2026-06-17', '4:31 PM - 5:01 PM', NULL, 2, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-06-17 12:25:11', '2026-06-17 12:25:11'),
-(170, 774820741, 65, 65, 205, 1, 194, '2026-06-17', '4:01 PM - 4:31 PM', NULL, 2, 29, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-06-17 12:41:27', '2026-06-17 12:41:27'),
-(171, 129182554, 72, 72, 203, 1, 194, '2026-06-23', '3:01 AM - 3:31 AM', NULL, 5, 27, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-06-22 23:42:37', '2026-06-22 23:43:49'),
-(172, 366307372, 10, 10, 209, 1, 194, '2026-06-30', '1:31 AM - 2:01 AM', NULL, 5, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-06-26 13:05:59', '2026-06-26 13:10:59'),
-(173, 463616993, 10, 10, 208, 1, 194, '2026-06-27', '2:31 PM - 3:01 PM', NULL, 5, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-06-27 11:27:10', '2026-06-27 11:29:32'),
-(174, 474268200, 10, 10, 209, 1, 194, '2026-07-04', '3:31 PM - 4:01 PM', NULL, 5, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-07-04 12:28:19', '2026-07-04 12:37:23'),
-(175, 296101026, 73, 73, 234, 1, 196, '2026-07-22', '', NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 0, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-07-05 14:19:19', '2026-07-05 14:19:19'),
-(176, 369561168, 10, 10, 210, 1, 194, '2026-07-05', '5:31 PM - 6:01 PM', NULL, 2, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-07-05 14:26:11', '2026-07-05 14:26:11'),
-(177, 377807291, 10, 10, 202, 1, 194, '2026-07-06', '7:01 PM - 7:31 PM', NULL, 2, 26, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-07-06 14:36:13', '2026-07-06 14:36:13'),
-(178, 325586673, 10, 10, 210, 1, 194, '2026-07-06', '9:01 PM - 9:31 PM', NULL, 2, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-07-06 16:48:58', '2026-07-06 16:48:58'),
-(179, 688230489, 10, 10, 211, 1, 194, '2026-07-06', '9:01 PM - 9:31 PM', NULL, 2, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-07-06 17:38:01', '2026-07-06 17:38:01'),
-(180, 218507639, 10, 10, 211, 1, 194, '2026-07-07', '12:01 PM - 12:31 PM', NULL, 2, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-07-07 08:36:53', '2026-07-07 08:36:53'),
-(181, 465912024, 10, 10, 211, 1, 194, '2026-07-07', '2:01 PM - 2:31 PM', NULL, 2, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-07-07 09:32:36', '2026-07-07 09:32:36'),
-(182, 115273934, 10, 10, 211, 1, 194, '2026-07-07', '6:01 PM - 6:31 PM', NULL, 2, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-07-07 11:19:51', '2026-07-07 11:19:51'),
-(183, 610639346, 10, 10, 211, 1, 194, '2026-07-08', '8:31 PM - 9:01 PM', NULL, 2, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-07-08 15:26:59', '2026-07-08 15:26:59'),
-(184, 444429282, 4, 4, 202, 1, 194, '2026-07-08', '8:01 PM - 8:31 PM', NULL, 2, 26, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-07-08 16:36:37', '2026-07-08 16:36:37'),
-(185, 756207191, 10, 10, 210, 1, 194, '2026-07-09', '7:31 AM - 8:01 AM', NULL, 2, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-07-09 03:18:39', '2026-07-09 03:18:39'),
-(186, 637108044, 10, 10, 211, 1, 194, '2026-07-09', '6:31 PM - 7:01 PM', NULL, 2, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-07-09 10:48:31', '2026-07-09 10:48:31'),
-(187, 407655199, 10, 10, 211, 1, 194, '2026-07-11', '2:31 PM - 3:01 PM', NULL, 2, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-07-11 09:33:06', '2026-07-11 09:33:06'),
-(188, 896642054, 10, 10, 211, 1, 194, '2026-07-12', '12:01 PM - 12:31 PM', NULL, 2, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-07-12 08:32:01', '2026-07-12 08:32:01'),
-(189, 689592209, 10, 10, 211, 1, 194, '2026-07-12', '12:31 PM - 1:01 PM', NULL, 2, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-07-12 09:19:16', '2026-07-12 09:19:16'),
-(190, 160771254, 10, 10, 211, 1, 194, '2026-07-12', '4:01 PM - 4:31 PM', NULL, 2, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-07-12 12:06:01', '2026-07-12 12:06:01'),
-(191, 780445803, 10, 10, 211, 1, 194, '2026-07-15', '12:01 AM - 12:31 AM', NULL, 2, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-07-12 18:11:03', '2026-07-12 18:11:03'),
-(192, 455976689, 10, 10, 211, 1, 194, '2026-07-13', '11:01 AM - 11:31 AM', NULL, 2, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-07-13 07:58:53', '2026-07-13 07:58:53'),
-(193, 856876185, 10, 10, 211, 1, 194, '2026-07-14', '12:01 AM - 12:31 AM', NULL, 2, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-07-13 12:39:12', '2026-07-13 12:39:12'),
-(194, 548962082, 10, 10, 211, 1, 194, '2026-07-22', '2:01 AM - 2:31 AM', NULL, 2, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-07-14 13:27:37', '2026-07-14 13:27:37'),
-(195, 981859293, 10, 10, 211, 1, 194, '2026-07-21', '12:31 AM - 1:01 AM', NULL, 2, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-07-15 11:57:18', '2026-07-15 11:57:18'),
-(196, 997372259, 10, 10, 211, 1, 194, '2026-07-22', '12:01 AM - 12:31 AM', NULL, 2, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-07-15 17:27:21', '2026-07-15 17:27:21'),
-(197, 535960666, 10, 10, 210, 1, 194, '2026-07-18', '5:01 AM - 5:31 AM', NULL, 2, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-07-16 10:13:25', '2026-07-16 10:13:25'),
-(198, 474030633, 10, 10, 211, 1, 194, '2026-07-18', '12:01 AM - 12:31 AM', NULL, 2, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-07-16 17:01:50', '2026-07-16 17:01:50'),
-(199, 199861326, 10, 10, 209, 1, 194, '2026-07-18', '9:01 AM - 9:31 AM', NULL, 2, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-07-18 04:54:13', '2026-07-18 04:54:13'),
-(200, 145988692, 10, 10, 211, 1, 194, '2026-07-20', '3:31 AM - 4:01 AM', NULL, 2, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-07-19 16:10:21', '2026-07-19 16:10:21'),
-(201, 317111252, 10, 10, 211, 1, 194, '2026-07-22', '2:31 AM - 3:01 AM', NULL, 2, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-07-20 08:18:59', '2026-07-20 08:18:59'),
-(202, 594931848, 10, 10, 211, 1, 194, '2026-07-23', '1:31 AM - 2:01 AM', NULL, 2, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-07-21 08:41:50', '2026-07-21 08:41:50'),
-(203, 586044671, 10, 10, 210, 1, 194, '2026-07-22', '7:31 PM - 8:01 PM', NULL, 2, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-07-22 12:05:43', '2026-07-22 12:05:43'),
-(204, 508349866, 10, 10, 211, 1, 194, '2026-07-28', '6:01 PM - 6:31 PM', NULL, 2, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-07-28 14:04:03', '2026-07-28 14:04:03'),
-(205, 411175636, 10, 10, 211, 1, 194, '2026-07-29', '5:01 PM - 5:31 PM', NULL, 2, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-07-29 12:50:38', '2026-07-29 12:50:38'),
-(206, 501311736, 10, 10, 211, 1, 194, '2026-07-30', '4:31 PM - 5:01 PM', NULL, 6, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-07-30 13:15:10', '2026-07-30 13:39:14'),
-(207, 375870296, 10, 10, 211, 1, 194, '2026-07-30', '8:01 PM - 8:31 PM', NULL, 2, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-07-30 14:48:37', '2026-07-30 14:48:37'),
-(208, 741735634, 78, 78, 202, 1, 194, '2026-08-01', '6:01 PM - 6:31 PM', NULL, 2, 26, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, 1, NULL, 'instant', 'cash', NULL, 0.00, 0.00, 0.00, NULL, NULL, NULL, '2026-08-01 14:53:38', '2026-08-01 14:53:38');
 
 -- --------------------------------------------------------
 
@@ -3861,100 +3334,6 @@ CREATE TABLE `reservation_chats` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `reservation_chats`
---
-
-INSERT INTO `reservation_chats` (`id`, `user_id`, `sender_id`, `receiver_id`, `reservation_id`, `receiver_type`, `message`, `file`, `record`, `media_flag`, `sender_type`, `is_read`, `created_at`, `updated_at`) VALUES
-(13, 28, 0, 1, 48, NULL, 'بتواصل معكم', NULL, NULL, 1, 1, 0, '2026-03-25 15:18:30', '2026-03-25 15:18:30'),
-(14, 28, 0, 1, 56, NULL, 'بتواصل مع دكتور عمر', NULL, NULL, 1, 1, 0, '2026-03-26 21:51:02', '2026-03-26 21:51:02'),
-(15, 28, 0, 1, 60, NULL, 'سلام عليكم', NULL, NULL, 1, 1, 0, '2026-03-27 21:43:20', '2026-03-27 21:43:20'),
-(16, NULL, 196, 28, 60, NULL, 'ug', NULL, NULL, 1, 2, 0, '2026-03-27 21:43:57', '2026-03-27 21:43:57'),
-(17, NULL, 196, 28, 60, NULL, 'ug', NULL, NULL, 1, 2, 0, '2026-03-27 21:43:57', '2026-03-27 21:43:57'),
-(18, NULL, 196, 28, 60, NULL, 'عليكم السلام', NULL, NULL, 1, 2, 0, '2026-03-27 21:44:13', '2026-03-27 21:44:13'),
-(19, 28, 0, 1, 60, NULL, 'تيست', NULL, NULL, 1, 1, 0, '2026-03-27 21:45:00', '2026-03-27 21:45:00'),
-(22, 28, 0, 1, 65, NULL, 'تمام', NULL, NULL, 1, 1, 0, '2026-03-28 21:31:43', '2026-03-28 21:31:43'),
-(23, 28, 0, 1, 66, NULL, 'تيست', NULL, NULL, 1, 1, 0, '2026-03-28 21:42:19', '2026-03-28 21:42:19'),
-(24, 28, 0, 1, 69, NULL, 'تيست', NULL, NULL, 1, 1, 0, '2026-03-29 15:04:44', '2026-03-29 15:04:44'),
-(25, 4, 0, 1, 52, NULL, 'مرحبا', NULL, NULL, 1, 1, 0, '2026-03-29 15:42:00', '2026-03-29 15:42:00'),
-(29, 28, 0, 1, 80, NULL, 'تيست \nتيست \nتيست', NULL, NULL, 1, 1, 0, '2026-03-31 21:18:56', '2026-03-31 21:18:56'),
-(30, 28, 0, 1, 84, NULL, 'بتواصل معكم', NULL, NULL, 1, 1, 0, '2026-04-01 23:00:53', '2026-04-01 23:00:53'),
-(31, NULL, 196, 28, 60, NULL, 'ييييييي', NULL, NULL, 1, 2, 0, '2026-04-02 04:55:31', '2026-04-02 04:55:31'),
-(32, NULL, 196, 28, 60, NULL, NULL, '69cdff8067f5cمواساه-المدينه-المنوره1.jpg.jpg', NULL, 1, 2, 0, '2026-04-02 05:32:48', '2026-04-02 05:32:48'),
-(33, NULL, 196, 28, 93, NULL, 'السلام عليكم', NULL, NULL, 1, 2, 0, '2026-04-02 07:56:01', '2026-04-02 07:56:01'),
-(34, 4, 0, 1, 95, NULL, 'مرحبا', NULL, NULL, 1, 1, 0, '2026-04-02 18:33:16', '2026-04-02 18:33:16'),
-(35, NULL, 196, 28, 93, NULL, 'test', NULL, NULL, 1, 2, 0, '2026-04-02 21:16:34', '2026-04-02 21:16:34'),
-(36, NULL, 196, 28, 60, NULL, NULL, '69cedef8498b111.jpg.jpg', NULL, 1, 2, 0, '2026-04-02 21:26:16', '2026-04-02 21:26:16'),
-(37, NULL, 196, 28, 60, NULL, 'test', NULL, NULL, 1, 2, 0, '2026-04-02 21:26:26', '2026-04-02 21:26:26'),
-(38, 28, 0, 1, 97, NULL, 'تمام', NULL, NULL, 1, 1, 0, '2026-04-02 21:37:49', '2026-04-02 21:37:49'),
-(39, NULL, 196, 28, 97, NULL, 'jlhl', NULL, NULL, 1, 2, 0, '2026-04-02 21:38:05', '2026-04-02 21:38:05'),
-(40, NULL, 196, 28, 97, NULL, 'الرساله مش ظاهره', NULL, NULL, 1, 2, 0, '2026-04-02 21:38:48', '2026-04-02 21:38:48'),
-(41, 28, 0, 1, 97, NULL, 'ايوه', NULL, NULL, 1, 1, 0, '2026-04-02 21:39:04', '2026-04-02 21:39:04'),
-(42, 28, 0, 1, 49, NULL, 'تمام', NULL, NULL, 1, 1, 0, '2026-04-02 21:48:33', '2026-04-02 21:48:33'),
-(43, NULL, 196, 28, 98, NULL, 'ايه', NULL, NULL, 1, 2, 0, '2026-04-02 21:48:41', '2026-04-02 21:48:41'),
-(44, 28, 0, 1, 98, NULL, 'تمام', NULL, NULL, 1, 1, 0, '2026-04-02 21:49:30', '2026-04-02 21:49:30'),
-(111, 4, 0, 1, 95, NULL, 'مرحبا', NULL, NULL, 1, 1, 0, '2026-05-03 15:53:41', '2026-05-03 15:53:41'),
-(112, 4, 196, 4, 95, NULL, 'مرحبا', NULL, NULL, 1, 2, 0, '2026-05-03 15:54:05', '2026-05-03 15:54:05'),
-(113, 4, 196, 4, 95, NULL, 'مرحبا', NULL, NULL, 1, 2, 0, '2026-05-03 15:54:14', '2026-05-03 15:54:14'),
-(114, 4, 196, 4, 95, NULL, 'مرحبا', NULL, NULL, 1, 2, 0, '2026-05-03 15:54:15', '2026-05-03 15:54:15'),
-(115, 4, 196, 4, 95, NULL, 'مرحبا', NULL, NULL, 1, 2, 0, '2026-05-03 15:54:24', '2026-05-03 15:54:24'),
-(116, 4, 196, 4, 95, NULL, 'مرحبا', NULL, NULL, 1, 2, 0, '2026-05-03 15:54:25', '2026-05-03 15:54:25'),
-(117, 4, 0, 1, 95, NULL, NULL, '69f76ffd1324escaled_1000374582.jpg.jpg', NULL, 1, 1, 0, '2026-05-03 15:55:41', '2026-05-03 15:55:41'),
-(118, 4, 196, 4, 95, NULL, NULL, '69f7700f0457b61dJr4NizcL._AC_SX569_.jpg.jpg', NULL, 1, 2, 0, '2026-05-03 15:55:59', '2026-05-03 15:55:59'),
-(119, 4, 196, 4, 95, NULL, 'هاي', NULL, NULL, 1, 2, 0, '2026-05-03 15:56:45', '2026-05-03 15:56:45'),
-(120, 4, 0, 1, 94, NULL, 'هاي', NULL, NULL, 1, 1, 0, '2026-05-03 15:59:52', '2026-05-03 15:59:52'),
-(121, 4, 196, 4, 94, NULL, 'السلام عليكم', NULL, NULL, 1, 2, 0, '2026-05-03 16:00:16', '2026-05-03 16:00:16'),
-(122, 4, 196, 4, 94, NULL, 'السلام عليكم', NULL, NULL, 1, 2, 0, '2026-05-17 04:13:43', '2026-05-17 04:13:43'),
-(123, 4, 196, 4, 94, NULL, 'السلام عليكم', NULL, NULL, 1, 2, 0, '2026-05-17 04:13:49', '2026-05-17 04:13:49'),
-(124, 4, 196, 4, 94, NULL, 'السلام عليكم', NULL, NULL, 1, 2, 0, '2026-05-17 04:13:50', '2026-05-17 04:13:50'),
-(125, 4, 196, 4, 94, NULL, 'السلام عليكم', NULL, NULL, 1, 2, 0, '2026-05-17 04:13:51', '2026-05-17 04:13:51'),
-(126, 4, 196, 4, 94, NULL, 'السلام عليكم', NULL, NULL, 1, 2, 0, '2026-05-17 04:14:00', '2026-05-17 04:14:00'),
-(127, 4, 196, 4, 94, NULL, 'السلام عليكم', NULL, NULL, 1, 2, 0, '2026-05-17 04:14:00', '2026-05-17 04:14:00'),
-(128, 4, 196, 4, 94, NULL, 'السلام عليكم', NULL, NULL, 1, 2, 0, '2026-05-17 04:14:00', '2026-05-17 04:14:00'),
-(129, 4, 196, 4, 94, NULL, 'السلام عليكم', NULL, NULL, 1, 2, 0, '2026-05-17 04:14:00', '2026-05-17 04:14:00'),
-(130, 61, 196, 61, 154, NULL, 'هاي', NULL, NULL, 1, 2, 0, '2026-05-17 14:20:28', '2026-05-17 14:20:28'),
-(131, 61, 196, 61, 154, NULL, 'هاي', NULL, NULL, 1, 2, 0, '2026-05-17 14:20:38', '2026-05-17 14:20:38'),
-(132, 61, 196, 61, 154, NULL, 'تيست', NULL, NULL, 1, 2, 0, '2026-05-17 14:20:47', '2026-05-17 14:20:47'),
-(133, 61, 196, 61, 154, NULL, 'تيست', NULL, NULL, 1, 2, 0, '2026-05-17 14:20:49', '2026-05-17 14:20:49'),
-(134, 61, 196, 61, 154, NULL, 'بلايبلايبلابالبالبالبالباسلا', NULL, NULL, 1, 2, 0, '2026-05-17 14:22:09', '2026-05-17 14:22:09'),
-(135, 61, 196, 61, 154, NULL, 'بلايبلايبلابالبالبالبالباسلا', NULL, NULL, 1, 2, 0, '2026-05-17 14:22:19', '2026-05-17 14:22:19'),
-(136, 4, 0, 1, 155, NULL, 'هاي', NULL, NULL, 1, 1, 0, '2026-05-17 14:44:02', '2026-05-17 14:44:02'),
-(137, 4, 196, 4, 155, NULL, 'هاي', NULL, NULL, 1, 2, 0, '2026-05-17 14:45:04', '2026-05-17 14:45:04'),
-(138, 4, 196, 4, 155, NULL, 'هاي', NULL, NULL, 1, 2, 0, '2026-05-17 14:45:12', '2026-05-17 14:45:12'),
-(139, 4, 0, 1, 155, NULL, 'عندي استفسار', NULL, NULL, 1, 1, 0, '2026-05-17 14:47:08', '2026-05-17 14:47:08'),
-(140, 4, 196, 4, 155, NULL, 'ما هو', NULL, NULL, 1, 2, 0, '2026-05-17 14:47:25', '2026-05-17 14:47:25'),
-(141, 62, 0, 1, 159, NULL, 'Hi', NULL, NULL, 1, 1, 0, '2026-05-18 04:27:23', '2026-05-18 04:27:23'),
-(142, 4, 196, 4, 155, NULL, 'اتفضل', NULL, NULL, 1, 2, 0, '2026-06-17 11:27:30', '2026-06-17 11:27:30'),
-(143, 65, 0, 1, 165, NULL, 'مرحبا', NULL, NULL, 1, 1, 0, '2026-06-17 11:28:30', '2026-06-17 11:28:30'),
-(144, 65, 0, 1, 165, NULL, 'اهلا', NULL, NULL, 1, 1, 0, '2026-06-17 11:28:59', '2026-06-17 11:28:59'),
-(145, 65, 196, 65, 165, NULL, 'مرحبا', NULL, NULL, 1, 2, 0, '2026-06-17 11:29:13', '2026-06-17 11:29:13'),
-(146, 65, 196, 65, 167, NULL, 'اهلا', NULL, NULL, 1, 2, 0, '2026-06-17 11:32:20', '2026-06-17 11:32:20'),
-(147, 65, 0, 1, 167, NULL, 'مرحبا', NULL, NULL, 1, 1, 0, '2026-06-17 11:32:44', '2026-06-17 11:32:44'),
-(148, 65, 196, 65, 167, NULL, 'ييي', NULL, NULL, 1, 2, 0, '2026-06-17 11:37:27', '2026-06-17 11:37:27'),
-(149, 65, 0, 1, 167, NULL, 'تمام', NULL, NULL, 1, 1, 0, '2026-06-17 11:37:45', '2026-06-17 11:37:45'),
-(150, 65, 0, 1, 168, NULL, 'تيست', NULL, NULL, 1, 1, 0, '2026-06-17 12:17:53', '2026-06-17 12:17:53'),
-(151, 65, 196, 65, 168, NULL, 'مرحبا', NULL, NULL, 1, 2, 0, '2026-06-17 12:18:11', '2026-06-17 12:18:11'),
-(152, 65, 0, 1, 168, NULL, 'نيست', NULL, NULL, 1, 1, 0, '2026-06-17 12:18:19', '2026-06-17 12:18:19'),
-(153, 65, 196, 65, 168, NULL, 'اهلا', NULL, NULL, 1, 2, 0, '2026-06-17 12:24:08', '2026-06-17 12:24:08'),
-(154, 65, 0, 1, 168, NULL, 'مرحبا', NULL, NULL, 1, 1, 0, '2026-06-17 12:24:37', '2026-06-17 12:24:37'),
-(155, 65, 0, 1, 170, NULL, 'مرحبا', NULL, NULL, 1, 1, 0, '2026-06-17 12:42:16', '2026-06-17 12:42:16'),
-(156, 65, 196, 65, 170, NULL, 'اهلا', NULL, NULL, 1, 2, 0, '2026-06-17 12:42:31', '2026-06-17 12:42:31'),
-(157, 65, 196, 65, 170, NULL, 'مرحبا', NULL, NULL, 1, 2, 0, '2026-06-17 12:42:51', '2026-06-17 12:42:51'),
-(158, 65, 0, 1, 170, NULL, 'اهلا وسهلا', NULL, NULL, 1, 1, 0, '2026-06-17 12:43:06', '2026-06-17 12:43:06'),
-(159, 65, 196, 65, 170, NULL, 'هلا', NULL, NULL, 1, 2, 0, '2026-06-17 12:49:46', '2026-06-17 12:49:46'),
-(160, 65, 196, 65, 170, NULL, 'هلااا', NULL, NULL, 1, 2, 0, '2026-06-17 12:54:16', '2026-06-17 12:54:16'),
-(161, 65, 0, 1, 170, NULL, 'اهلا', NULL, NULL, 1, 1, 0, '2026-06-17 12:54:32', '2026-06-17 12:54:32'),
-(162, 65, 0, 1, 170, NULL, 'اهلا', NULL, NULL, 1, 1, 0, '2026-06-17 12:54:49', '2026-06-17 12:54:49'),
-(163, 65, 0, 1, 170, NULL, 'تيست', NULL, NULL, 1, 1, 0, '2026-06-17 12:55:04', '2026-06-17 12:55:04'),
-(164, 65, 0, 1, 170, NULL, 'ا', NULL, NULL, 1, 1, 0, '2026-06-17 12:55:58', '2026-06-17 12:55:58'),
-(165, 65, 0, 1, 170, NULL, 'يشتغل', NULL, NULL, 1, 1, 0, '2026-06-17 13:00:57', '2026-06-17 13:00:57'),
-(166, 65, 0, 1, 170, NULL, 'وة', NULL, NULL, 1, 1, 0, '2026-06-17 13:01:13', '2026-06-17 13:01:13'),
-(167, 65, 0, 1, 170, NULL, 'Kk', NULL, NULL, 1, 1, 0, '2026-06-17 13:39:20', '2026-06-17 13:39:20'),
-(168, 65, 0, 1, 170, NULL, 'J', NULL, NULL, 1, 1, 0, '2026-06-17 13:39:33', '2026-06-17 13:39:33'),
-(169, 4, 0, 1, 146, NULL, 'مرحبا هل موجود دكتور حسام لطفي لحجز موعد', NULL, NULL, 1, 1, 0, '2026-06-25 22:02:41', '2026-06-25 22:02:41'),
-(170, 10, 0, 1, 203, NULL, 'ام', NULL, NULL, 1, 1, 0, '2026-07-25 05:32:10', '2026-07-25 05:32:10'),
-(171, 10, 189, 10, 206, NULL, 'ب انتظارك', NULL, NULL, 1, 2, 0, '2026-07-30 13:34:56', '2026-07-30 13:34:56');
 
 -- --------------------------------------------------------
 
@@ -3993,17 +3372,6 @@ CREATE TABLE `reservation_rates` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `reservation_rates`
---
-
-INSERT INTO `reservation_rates` (`id`, `clinic_id`, `doctor_id`, `reservation_id`, `user_id`, `comment`, `rate_value`, `created_at`, `updated_at`) VALUES
-(6, 1, 209, 56, 28, 'ممتاز', 4, '2026-03-26 22:05:22', '2026-03-26 22:05:22'),
-(7, 1, 205, 60, 28, 'جيد جدا', 5, '2026-03-27 21:46:01', '2026-03-27 21:46:01'),
-(8, 1, 202, 66, 28, 'جيد', 5, '2026-03-28 21:45:37', '2026-03-28 21:45:37'),
-(10, 1, 203, 69, 28, 'جيد', 3, '2026-03-29 15:05:55', '2026-03-29 15:05:55'),
-(18, 1, 205, 155, 4, 'جيد', 5, '2026-05-17 14:48:37', '2026-05-17 14:48:37');
 
 -- --------------------------------------------------------
 
@@ -4180,6 +3548,64 @@ CREATE TABLE `sale_invoice_items` (
   `tax_value` int DEFAULT NULL COMMENT 'net_total_after_discount * tax/100',
   `total_amount` int DEFAULT NULL COMMENT 'net_total_after_discount + tax_value'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `seo_meta`
+--
+
+CREATE TABLE `seo_meta` (
+  `id` bigint UNSIGNED NOT NULL,
+  `seoable_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `seoable_id` bigint UNSIGNED NOT NULL,
+  `canonical_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `robots` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'index,follow',
+  `og_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'website',
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `seo_meta`
+--
+
+INSERT INTO `seo_meta` (`id`, `seoable_type`, `seoable_id`, `canonical_url`, `robots`, `og_type`, `is_active`, `created_at`, `updated_at`) VALUES
+(1, 'App\\Models\\CmsPage', 1, 'https://www.google.com/', 'index,follow', 'website', 1, '2026-08-16 15:24:27', '2026-08-16 15:24:27');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `seo_meta_translations`
+--
+
+CREATE TABLE `seo_meta_translations` (
+  `id` bigint UNSIGNED NOT NULL,
+  `seo_meta_id` bigint UNSIGNED NOT NULL,
+  `locale` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `meta_title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `meta_description` text COLLATE utf8mb4_unicode_ci,
+  `meta_keywords` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `og_title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `og_description` text COLLATE utf8mb4_unicode_ci,
+  `og_image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `twitter_title` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `twitter_description` text COLLATE utf8mb4_unicode_ci,
+  `twitter_image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `twitter_card` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'summary_large_image',
+  `schema_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ;
+
+--
+-- Dumping data for table `seo_meta_translations`
+--
+
+INSERT INTO `seo_meta_translations` (`id`, `seo_meta_id`, `locale`, `meta_title`, `meta_description`, `meta_keywords`, `og_title`, `og_description`, `og_image`, `twitter_title`, `twitter_description`, `twitter_image`, `twitter_card`, `schema_json`, `created_at`, `updated_at`) VALUES
+(1, 1, 'en', 'Home Page', 'Home Description', 'home, page, test', NULL, NULL, NULL, NULL, NULL, NULL, 'summary_large_image', NULL, '2026-08-16 15:24:27', '2026-08-16 15:24:27'),
+(2, 1, 'ar', 'الصفحة الرئيسية', 'وصف الصفحة الرئيسية', 'الصفحة الرئيسية', NULL, NULL, NULL, NULL, NULL, NULL, 'summary_large_image', NULL, '2026-08-16 15:24:27', '2026-08-16 15:24:27');
 
 -- --------------------------------------------------------
 
@@ -4427,25 +3853,14 @@ CREATE TABLE `shifts` (
 --
 
 INSERT INTO `shifts` (`id`, `account_type`, `clinic_id`, `name`, `time_from`, `time_to`, `minute_allow_delay`, `status`, `deleted_at`, `created_at`, `updated_at`) VALUES
-(54, 3, 1, 'شيفت الدكتور مسائي', '14:00:00', '22:00:00', 15, 1, NULL, '2025-12-17 13:09:50', '2026-02-15 15:37:32'),
-(55, 3, 1, 'شيفت الدكتور صباحي', '09:00:00', '17:00:00', 15, 1, NULL, '2025-12-22 09:21:15', '2026-02-15 15:24:45'),
-(56, 3, 1, 'شيفت الدكتور بياتي', '22:00:00', '09:00:00', 15, 1, NULL, '2025-12-22 09:34:00', '2026-02-15 16:01:39'),
-(57, 2, 1, 'شيفت الاستقبال صباحي', '09:00:00', '17:00:00', 15, 1, NULL, '2026-02-15 15:18:55', '2026-02-15 15:18:55'),
-(58, 2, 1, 'شيفت الاستقبال مسائي', '14:00:00', '22:00:00', 15, 1, NULL, '2026-02-15 15:19:51', '2026-02-15 15:19:51'),
-(59, 2, 1, 'شيفت الاستقبال بياتي', '22:00:00', '09:00:00', 15, 1, NULL, '2026-02-15 15:20:27', '2026-05-13 21:35:20'),
-(60, 3, 1, 'شيفت 24', '00:01:00', '23:59:00', 15, 1, NULL, '2026-02-15 16:15:16', '2026-02-15 16:24:55'),
-(61, 3, 1, 'طوارء', '06:00:00', '18:00:00', 10, 1, NULL, '2026-03-31 08:14:11', '2026-04-28 21:22:57'),
-(62, 3, 1, 'شيفت الدكتور', '08:08:00', '16:09:00', 15, 1, NULL, '2026-05-01 23:09:09', '2026-07-08 13:22:53'),
-(65, 3, 1, 'صباحي', '08:00:00', '11:00:00', 5, 1, NULL, '2026-06-29 13:02:55', '2026-06-29 13:02:55'),
-(66, 3, 1, 'صباحي', '08:00:00', '11:00:00', 5, 1, NULL, '2026-06-29 13:02:56', '2026-06-29 13:02:56'),
-(67, 3, 1, 'صباحي', '08:00:00', '11:00:00', 5, 1, NULL, '2026-06-29 13:06:06', '2026-06-29 13:06:06'),
-(68, 3, 1, 'صباحي', '08:00:00', '11:00:00', 5, 1, NULL, '2026-06-29 13:06:07', '2026-06-29 13:06:07'),
-(69, 3, 1, 'صباحي', '08:00:00', '11:00:00', 5, 1, NULL, '2026-06-29 13:10:42', '2026-06-29 13:10:42'),
-(70, 3, 1, 'صباحي', '08:00:00', '11:00:00', 5, 1, NULL, '2026-06-29 13:10:44', '2026-06-29 13:10:44'),
-(74, 3, 243, 'صباحي', '07:00:00', '11:00:00', 5, 1, NULL, '2026-07-04 13:07:26', '2026-07-06 14:40:05'),
-(75, 3, 243, 'مسائي', '12:05:00', '23:11:00', 5, 1, NULL, '2026-07-04 13:07:51', '2026-07-06 14:40:37'),
-(76, 3, 1, 'Main', '10:00:00', '18:00:00', 5, 1, NULL, '2026-07-06 15:59:14', '2026-07-06 15:59:14'),
-(77, 3, 1, 'صباحي', '07:57:00', '19:57:00', 5, 1, NULL, '2026-07-18 04:57:50', '2026-07-18 04:57:50');
+(78, 3, 5, 'صباحي', '09:00:00', '12:00:00', 5, 1, NULL, '2026-08-15 14:17:48', '2026-08-15 14:17:48'),
+(80, 3, 5, 'مسائي', '18:00:00', '23:00:00', 5, 1, NULL, '2026-08-15 14:18:31', '2026-08-15 14:18:31'),
+(81, 3, 5, 'مسائي 2', '14:00:00', '22:00:00', 5, 1, NULL, '2026-08-15 14:43:32', '2026-08-15 14:43:32'),
+(82, 3, 5, 'صباحي 2', '09:00:00', '17:00:00', 5, 1, NULL, '2026-08-15 14:44:14', '2026-08-15 14:44:14'),
+(83, 3, 5, 'مسائي 3', '14:00:00', '22:00:00', 5, 1, NULL, '2026-08-15 15:21:27', '2026-08-15 15:21:27'),
+(84, 3, 5, 'مسائي 4', '13:00:00', '21:00:00', 5, 1, NULL, '2026-08-16 07:31:11', '2026-08-16 07:31:11'),
+(85, 3, 13, 'مسائي', '16:00:00', '22:00:00', 5, 1, NULL, '2026-08-16 08:08:44', '2026-08-16 08:08:51'),
+(86, 3, 15, 'مسائي', '14:00:00', '22:00:00', 5, 1, NULL, '2026-08-16 13:20:28', '2026-08-16 13:20:28');
 
 -- --------------------------------------------------------
 
@@ -4495,262 +3910,79 @@ CREATE TABLE `shift_employees` (
 --
 
 INSERT INTO `shift_employees` (`id`, `account_type`, `clinic_id`, `employee_id`, `shift_id`, `day_id`, `dateA`, `check_in`, `check_out`, `checkin_another_employee`, `checkout_another_employee`, `attendance_status`, `total_delay_minute`, `total_extra_minute`, `status`, `deleted_at`, `created_at`, `updated_at`) VALUES
-(1, 3, 1, 211, 60, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-02-16 10:58:16', '2026-02-16 10:58:16'),
-(2, 3, 1, 211, 60, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-02-16 10:58:16', '2026-02-16 10:58:16'),
-(3, 3, 1, 211, 60, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-02-16 10:58:16', '2026-02-16 10:58:16'),
-(4, 3, 1, 211, 60, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-02-16 10:58:16', '2026-02-16 10:58:16'),
-(5, 3, 1, 211, 60, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-02-16 10:58:16', '2026-02-16 10:58:16'),
-(6, 3, 1, 211, 60, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-02-16 10:58:16', '2026-02-16 10:58:16'),
-(7, 3, 1, 211, NULL, NULL, '2026-02-21', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, '2026-02-16 10:59:01', '2026-02-16 10:59:01'),
-(8, 3, 1, 210, 54, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-02-16 17:22:42', '2026-02-16 17:22:42'),
-(9, 3, 1, 210, 54, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-02-16 17:22:42', '2026-02-16 17:22:42'),
-(10, 3, 1, 210, 54, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-02-16 17:22:42', '2026-02-16 17:22:42'),
-(11, 3, 1, 210, 54, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-02-16 17:22:42', '2026-02-16 17:22:42'),
-(12, 3, 1, 210, 60, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-02-16 17:25:10', '2026-02-16 17:25:10'),
-(14, 3, 1, 211, 60, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-02-25 22:01:23', '2026-02-25 22:01:23'),
-(15, 3, 1, 211, 60, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-02-25 22:01:23', '2026-02-25 22:01:23'),
-(16, 3, 1, 211, 60, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-02-25 22:01:23', '2026-02-25 22:01:23'),
-(17, 3, 1, 211, 60, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-02-25 22:01:23', '2026-02-25 22:01:23'),
-(18, 3, 1, 202, 60, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-02-25 22:03:23', '2026-02-25 22:03:23'),
-(19, 3, 1, 202, 60, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-02-25 22:03:23', '2026-02-25 22:03:23'),
-(20, 3, 1, 202, 60, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-02-25 22:03:23', '2026-02-25 22:03:23'),
-(21, 3, 1, 202, 60, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-02-25 22:03:23', '2026-02-25 22:03:23'),
-(22, 3, 1, 202, 60, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-02-25 22:03:23', '2026-02-25 22:03:23'),
-(23, 3, 1, 210, 60, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-02-25 22:12:26', '2026-02-25 22:12:26'),
-(24, 3, 1, 210, 60, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-02-25 22:12:26', '2026-02-25 22:12:26'),
-(25, 3, 1, 210, 60, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-02-25 22:12:26', '2026-02-25 22:12:26'),
-(26, 3, 1, 210, 60, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-02-25 22:12:26', '2026-02-25 22:12:26'),
-(27, 3, 1, 210, 60, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-02-25 22:12:26', '2026-02-25 22:12:26'),
-(28, 3, 1, 211, 60, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:31:33', '2026-03-25 14:31:33'),
-(29, 3, 1, 211, 60, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:31:33', '2026-03-25 14:31:33'),
-(30, 3, 1, 211, 60, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:31:33', '2026-03-25 14:31:33'),
-(31, 3, 1, 211, 60, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:31:33', '2026-03-25 14:31:33'),
-(32, 3, 1, 211, 60, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:31:33', '2026-03-25 14:31:33'),
-(33, 3, 1, 211, 60, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:31:33', '2026-03-25 14:31:33'),
-(34, 3, 1, 211, 60, 7, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:31:33', '2026-03-25 14:31:33'),
-(35, 3, 1, 210, 60, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:33:04', '2026-03-25 14:33:04'),
-(36, 3, 1, 210, 60, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:33:04', '2026-03-25 14:33:04'),
-(37, 3, 1, 210, 60, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:33:04', '2026-03-25 14:33:04'),
-(38, 3, 1, 210, 60, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:33:04', '2026-03-25 14:33:04'),
-(39, 3, 1, 210, 60, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:33:04', '2026-03-25 14:33:04'),
-(40, 3, 1, 210, 60, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:33:04', '2026-03-25 14:33:04'),
-(41, 3, 1, 210, 60, 7, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:33:04', '2026-03-25 14:33:04'),
-(42, 3, 1, 209, 60, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:33:27', '2026-03-25 14:33:27'),
-(43, 3, 1, 209, 60, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:33:27', '2026-03-25 14:33:27'),
-(44, 3, 1, 209, 60, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:33:27', '2026-03-25 14:33:27'),
-(45, 3, 1, 209, 60, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:33:27', '2026-03-25 14:33:27'),
-(46, 3, 1, 209, 60, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:33:27', '2026-03-25 14:33:27'),
-(47, 3, 1, 209, 60, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:33:27', '2026-03-25 14:33:27'),
-(48, 3, 1, 209, 60, 7, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:33:27', '2026-03-25 14:33:27'),
-(49, 3, 1, 209, 60, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:33:47', '2026-03-25 14:33:47'),
-(50, 3, 1, 209, 60, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:33:47', '2026-03-25 14:33:47'),
-(51, 3, 1, 209, 60, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:33:47', '2026-03-25 14:33:47'),
-(52, 3, 1, 209, 60, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:33:47', '2026-03-25 14:33:47'),
-(53, 3, 1, 209, 60, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:33:47', '2026-03-25 14:33:47'),
-(54, 3, 1, 209, 60, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:33:47', '2026-03-25 14:33:47'),
-(55, 3, 1, 209, 60, 7, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:33:47', '2026-03-25 14:33:47'),
-(56, 3, 1, 208, 60, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:34:10', '2026-03-25 14:34:10'),
-(57, 3, 1, 208, 60, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:34:10', '2026-03-25 14:34:10'),
-(58, 3, 1, 208, 60, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:34:10', '2026-03-25 14:34:10'),
-(59, 3, 1, 208, 60, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:34:10', '2026-03-25 14:34:10'),
-(60, 3, 1, 208, 60, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:34:10', '2026-03-25 14:34:10'),
-(61, 3, 1, 208, 60, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:34:10', '2026-03-25 14:34:10'),
-(62, 3, 1, 208, 60, 7, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:34:10', '2026-03-25 14:34:10'),
-(63, 3, 1, 208, 60, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:34:29', '2026-03-25 14:34:29'),
-(64, 3, 1, 208, 60, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:34:29', '2026-03-25 14:34:29'),
-(65, 3, 1, 208, 60, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:34:29', '2026-03-25 14:34:29'),
-(66, 3, 1, 208, 60, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:34:29', '2026-03-25 14:34:29'),
-(67, 3, 1, 208, 60, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:34:29', '2026-03-25 14:34:29'),
-(68, 3, 1, 208, 60, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:34:29', '2026-03-25 14:34:29'),
-(69, 3, 1, 208, 60, 7, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:34:29', '2026-03-25 14:34:29'),
-(70, 3, 1, 207, 60, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:34:53', '2026-03-25 14:34:53'),
-(71, 3, 1, 207, 60, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:34:53', '2026-03-25 14:34:53'),
-(72, 3, 1, 207, 60, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:34:53', '2026-03-25 14:34:53'),
-(73, 3, 1, 207, 60, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:34:53', '2026-03-25 14:34:53'),
-(74, 3, 1, 207, 60, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:34:53', '2026-03-25 14:34:53'),
-(75, 3, 1, 207, 60, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:34:53', '2026-03-25 14:34:53'),
-(76, 3, 1, 207, 60, 7, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:34:53', '2026-03-25 14:34:53'),
-(77, 3, 1, 206, 60, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:35:29', '2026-03-25 14:35:29'),
-(78, 3, 1, 206, 60, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:35:29', '2026-03-25 14:35:29'),
-(79, 3, 1, 206, 60, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:35:29', '2026-03-25 14:35:29'),
-(80, 3, 1, 206, 60, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:35:29', '2026-03-25 14:35:29'),
-(81, 3, 1, 206, 60, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:35:29', '2026-03-25 14:35:29'),
-(82, 3, 1, 206, 60, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:35:29', '2026-03-25 14:35:29'),
-(83, 3, 1, 206, 60, 7, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:35:29', '2026-03-25 14:35:29'),
-(84, 3, 1, 205, 60, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:35:52', '2026-03-25 14:35:52'),
-(85, 3, 1, 205, 60, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:35:52', '2026-03-25 14:35:52'),
-(86, 3, 1, 205, 60, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:35:52', '2026-03-25 14:35:52'),
-(87, 3, 1, 205, 60, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:35:52', '2026-03-25 14:35:52'),
-(88, 3, 1, 205, 60, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:35:52', '2026-03-25 14:35:52'),
-(89, 3, 1, 205, 60, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:35:52', '2026-03-25 14:35:52'),
-(90, 3, 1, 205, 60, 7, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:35:52', '2026-03-25 14:35:52'),
-(91, 3, 1, 202, 60, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:36:23', '2026-03-25 14:36:23'),
-(92, 3, 1, 202, 60, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:36:23', '2026-03-25 14:36:23'),
-(93, 3, 1, 202, 60, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:36:23', '2026-03-25 14:36:23'),
-(94, 3, 1, 202, 60, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:36:23', '2026-03-25 14:36:23'),
-(95, 3, 1, 202, 60, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:36:23', '2026-03-25 14:36:23'),
-(96, 3, 1, 202, 60, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:36:23', '2026-03-25 14:36:23'),
-(97, 3, 1, 202, 60, 7, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:36:23', '2026-03-25 14:36:23'),
-(98, 3, 1, 203, 60, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:36:49', '2026-03-25 14:36:49'),
-(99, 3, 1, 203, 60, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:36:49', '2026-03-25 14:36:49'),
-(100, 3, 1, 203, 60, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:36:49', '2026-03-25 14:36:49'),
-(101, 3, 1, 203, 60, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:36:49', '2026-03-25 14:36:49'),
-(102, 3, 1, 203, 60, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:36:49', '2026-03-25 14:36:49'),
-(103, 3, 1, 203, 60, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:36:49', '2026-03-25 14:36:49'),
-(104, 3, 1, 203, 60, 7, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:36:49', '2026-03-25 14:36:49'),
-(105, 3, 1, 204, 60, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:37:21', '2026-03-25 14:37:21'),
-(106, 3, 1, 204, 60, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:37:21', '2026-03-25 14:37:21'),
-(107, 3, 1, 204, 60, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:37:21', '2026-03-25 14:37:21'),
-(108, 3, 1, 204, 60, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:37:21', '2026-03-25 14:37:21'),
-(109, 3, 1, 204, 60, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:37:21', '2026-03-25 14:37:21'),
-(110, 3, 1, 204, 60, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:37:21', '2026-03-25 14:37:21'),
-(111, 3, 1, 204, 60, 7, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-25 14:37:21', '2026-03-25 14:37:21'),
-(112, 3, 1, 209, 60, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-26 21:40:38', '2026-03-26 21:40:38'),
-(113, 3, 1, 209, 60, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-26 21:40:38', '2026-03-26 21:40:38'),
-(114, 3, 1, 209, 60, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-26 21:40:38', '2026-03-26 21:40:38'),
-(115, 3, 1, 209, 60, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-26 21:40:38', '2026-03-26 21:40:38'),
-(116, 3, 1, 209, 60, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-26 21:40:38', '2026-03-26 21:40:38'),
-(117, 3, 1, 209, 60, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-26 21:40:38', '2026-03-26 21:40:38'),
-(118, 3, 1, 209, 60, 7, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-26 21:40:38', '2026-03-26 21:40:38'),
-(119, 3, 1, 211, 60, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:39:39', '2026-03-31 21:39:39'),
-(120, 3, 1, 211, 60, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:39:39', '2026-03-31 21:39:39'),
-(121, 3, 1, 211, 60, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:39:39', '2026-03-31 21:39:39'),
-(122, 3, 1, 211, 60, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:39:39', '2026-03-31 21:39:39'),
-(123, 3, 1, 211, 60, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:39:39', '2026-03-31 21:39:39'),
-(124, 3, 1, 211, 60, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:39:39', '2026-03-31 21:39:39'),
-(125, 3, 1, 211, 60, 7, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:39:39', '2026-03-31 21:39:39'),
-(126, 3, 1, 210, 60, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:40:39', '2026-03-31 21:40:39'),
-(127, 3, 1, 210, 60, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:40:39', '2026-03-31 21:40:39'),
-(128, 3, 1, 210, 60, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:40:39', '2026-03-31 21:40:39'),
-(129, 3, 1, 210, 60, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:40:39', '2026-03-31 21:40:39'),
-(130, 3, 1, 210, 60, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:40:39', '2026-03-31 21:40:39'),
-(131, 3, 1, 210, 60, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:40:39', '2026-03-31 21:40:39'),
-(132, 3, 1, 210, 60, 7, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:40:39', '2026-03-31 21:40:39'),
-(133, 3, 1, 209, 60, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:40:59', '2026-03-31 21:40:59'),
-(134, 3, 1, 209, 60, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:40:59', '2026-03-31 21:40:59'),
-(135, 3, 1, 209, 60, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:40:59', '2026-03-31 21:40:59'),
-(136, 3, 1, 209, 60, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:40:59', '2026-03-31 21:40:59'),
-(137, 3, 1, 209, 60, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:40:59', '2026-03-31 21:40:59'),
-(138, 3, 1, 209, 60, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:40:59', '2026-03-31 21:40:59'),
-(139, 3, 1, 209, 60, 7, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:40:59', '2026-03-31 21:40:59'),
-(140, 3, 1, 209, 60, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:40:59', '2026-03-31 21:40:59'),
-(141, 3, 1, 209, 60, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:40:59', '2026-03-31 21:40:59'),
-(142, 3, 1, 209, 60, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:40:59', '2026-03-31 21:40:59'),
-(143, 3, 1, 209, 60, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:40:59', '2026-03-31 21:40:59'),
-(144, 3, 1, 209, 60, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:40:59', '2026-03-31 21:40:59'),
-(145, 3, 1, 209, 60, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:40:59', '2026-03-31 21:40:59'),
-(146, 3, 1, 209, 60, 7, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:40:59', '2026-03-31 21:40:59'),
-(147, 3, 1, 208, 60, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:41:15', '2026-03-31 21:41:15'),
-(148, 3, 1, 208, 60, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:41:15', '2026-03-31 21:41:15'),
-(149, 3, 1, 208, 60, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:41:15', '2026-03-31 21:41:15'),
-(150, 3, 1, 208, 60, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:41:15', '2026-03-31 21:41:15'),
-(151, 3, 1, 208, 60, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:41:15', '2026-03-31 21:41:15'),
-(152, 3, 1, 208, 60, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:41:15', '2026-03-31 21:41:15'),
-(153, 3, 1, 208, 60, 7, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:41:15', '2026-03-31 21:41:15'),
-(154, 3, 1, 207, 60, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:41:49', '2026-03-31 21:41:49'),
-(155, 3, 1, 207, 60, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:41:49', '2026-03-31 21:41:49'),
-(156, 3, 1, 207, 60, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:41:49', '2026-03-31 21:41:49'),
-(157, 3, 1, 207, 60, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:41:49', '2026-03-31 21:41:49'),
-(158, 3, 1, 207, 60, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:41:49', '2026-03-31 21:41:49'),
-(159, 3, 1, 207, 60, 7, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:41:49', '2026-03-31 21:41:49'),
-(160, 3, 1, 206, 60, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:42:08', '2026-03-31 21:42:08'),
-(161, 3, 1, 206, 60, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:42:08', '2026-03-31 21:42:08'),
-(162, 3, 1, 206, 60, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:42:08', '2026-03-31 21:42:08'),
-(163, 3, 1, 206, 60, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:42:08', '2026-03-31 21:42:08'),
-(164, 3, 1, 206, 60, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:42:08', '2026-03-31 21:42:08'),
-(165, 3, 1, 206, 60, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:42:08', '2026-03-31 21:42:08'),
-(166, 3, 1, 206, 60, 7, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:42:08', '2026-03-31 21:42:08'),
-(167, 3, 1, 205, 60, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:42:37', '2026-03-31 21:42:37'),
-(168, 3, 1, 205, 60, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:42:37', '2026-03-31 21:42:37'),
-(169, 3, 1, 205, 60, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:42:37', '2026-03-31 21:42:37'),
-(170, 3, 1, 205, 60, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:42:37', '2026-03-31 21:42:37'),
-(171, 3, 1, 205, 60, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:42:37', '2026-03-31 21:42:37'),
-(172, 3, 1, 205, 60, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:42:37', '2026-03-31 21:42:37'),
-(173, 3, 1, 205, 60, 7, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:42:37', '2026-03-31 21:42:37'),
-(174, 3, 1, 204, 60, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:42:56', '2026-03-31 21:42:56'),
-(175, 3, 1, 204, 60, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:42:56', '2026-03-31 21:42:56'),
-(176, 3, 1, 204, 60, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:42:56', '2026-03-31 21:42:56'),
-(177, 3, 1, 204, 60, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:42:56', '2026-03-31 21:42:56'),
-(178, 3, 1, 204, 60, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:42:56', '2026-03-31 21:42:56'),
-(179, 3, 1, 204, 60, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:42:56', '2026-03-31 21:42:56'),
-(180, 3, 1, 204, 60, 7, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:42:56', '2026-03-31 21:42:56'),
-(181, 3, 1, 203, 60, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:43:18', '2026-03-31 21:43:18'),
-(182, 3, 1, 203, 60, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:43:18', '2026-03-31 21:43:18'),
-(183, 3, 1, 203, 60, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:43:18', '2026-03-31 21:43:18'),
-(184, 3, 1, 203, 60, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:43:18', '2026-03-31 21:43:18'),
-(185, 3, 1, 203, 60, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:43:18', '2026-03-31 21:43:18'),
-(186, 3, 1, 203, 60, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:43:18', '2026-03-31 21:43:18'),
-(187, 3, 1, 203, 60, 7, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:43:18', '2026-03-31 21:43:18'),
-(188, 3, 1, 202, 60, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:43:40', '2026-03-31 21:43:40'),
-(189, 3, 1, 202, 60, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:43:40', '2026-03-31 21:43:40'),
-(190, 3, 1, 202, 60, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:43:40', '2026-03-31 21:43:40'),
-(191, 3, 1, 202, 60, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:43:40', '2026-03-31 21:43:40'),
-(192, 3, 1, 202, 60, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:43:40', '2026-03-31 21:43:40'),
-(193, 3, 1, 202, 60, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:43:40', '2026-03-31 21:43:40'),
-(194, 3, 1, 202, 60, 7, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-03-31 21:43:40', '2026-03-31 21:43:40'),
-(197, 3, 1, 211, 60, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-04-02 22:23:23', '2026-04-02 22:23:23'),
-(198, 3, 1, 211, 60, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-04-02 22:23:23', '2026-04-02 22:23:23'),
-(199, 3, 1, 211, 60, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-04-02 22:23:23', '2026-04-02 22:23:23'),
-(200, 3, 1, 211, 60, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-04-02 22:23:23', '2026-04-02 22:23:23'),
-(201, 3, 1, 211, 60, 7, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-04-02 22:23:23', '2026-04-02 22:23:23'),
-(202, 3, 1, 215, 62, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-05-01 23:11:16', '2026-05-01 23:11:16'),
-(203, 3, 1, 215, 62, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-05-01 23:11:16', '2026-05-01 23:11:16'),
-(204, 3, 1, 215, 62, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-05-01 23:11:16', '2026-05-01 23:11:16'),
-(205, 3, 1, 215, 62, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-05-01 23:11:16', '2026-05-01 23:11:16'),
-(206, 3, 1, 215, 62, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-05-01 23:11:16', '2026-05-01 23:11:16'),
-(214, 3, 1, 215, 54, 7, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-05-16 21:30:03', '2026-05-16 21:30:03'),
-(216, 3, 1, 215, 61, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-05-20 12:31:52', '2026-05-20 12:31:52'),
-(217, 3, 1, 215, 54, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-05-22 12:50:54', '2026-05-22 12:50:54'),
-(218, 3, 1, 213, 54, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-05-22 12:52:48', '2026-05-22 12:52:48'),
-(219, 3, 1, 213, 54, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-05-22 12:52:48', '2026-05-22 12:52:48'),
-(220, 3, 1, 213, 55, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-05-22 12:53:00', '2026-05-22 12:53:00'),
-(221, 3, 1, 213, 55, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-05-22 12:53:00', '2026-05-22 12:53:00'),
-(224, 3, 1, 213, 57, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-05-30 20:21:44', '2026-05-30 20:21:44'),
-(230, 3, 1, 227, 55, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-06-01 14:57:35', '2026-06-01 14:57:35'),
-(231, 3, 1, 227, 55, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-06-01 14:57:35', '2026-06-01 14:57:35'),
-(232, 3, 1, 227, 55, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-06-01 14:57:35', '2026-06-01 14:57:35'),
-(233, 3, 1, 227, 55, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-06-01 14:57:35', '2026-06-01 14:57:35'),
-(234, 3, 1, 227, 55, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-06-01 14:57:35', '2026-06-01 14:57:35'),
-(235, 3, 1, 227, 55, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-06-01 14:57:35', '2026-06-01 14:57:35'),
-(243, 3, 243, 245, 75, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-07-04 13:08:34', '2026-07-04 13:08:34'),
-(244, 3, 243, 245, 75, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-07-04 13:08:34', '2026-07-04 13:08:34'),
-(245, 3, 243, 245, 75, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-07-04 13:08:34', '2026-07-04 13:08:34'),
-(246, 3, 243, 245, 74, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-07-04 13:08:52', '2026-07-04 13:08:52'),
-(247, 3, 243, 245, 74, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-07-04 13:08:52', '2026-07-04 13:08:52'),
-(248, 3, 1, 235, 62, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-07-05 14:36:21', '2026-07-05 14:36:21'),
-(249, 3, 1, 235, 62, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-07-05 14:36:21', '2026-07-05 14:36:21'),
-(250, 3, 1, 235, 62, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-07-05 14:36:21', '2026-07-05 14:36:21'),
-(251, 3, 1, 235, 62, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-07-05 14:36:21', '2026-07-05 14:36:21'),
-(252, 3, 1, 235, 62, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-07-05 14:36:21', '2026-07-05 14:36:21'),
-(253, 3, 1, 235, 62, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-07-05 14:36:21', '2026-07-05 14:36:21'),
-(254, 3, 243, 246, 74, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-07-06 14:23:23', '2026-07-06 14:23:23'),
-(255, 3, 243, 246, 74, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-07-06 14:23:23', '2026-07-06 14:23:23'),
-(256, 3, 243, 246, 74, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-07-06 14:23:23', '2026-07-06 14:23:23'),
-(257, 3, 243, 246, 75, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-07-06 14:23:43', '2026-07-06 14:23:43'),
-(258, 3, 243, 246, 75, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-07-06 14:23:43', '2026-07-06 14:23:43'),
-(259, 3, 243, 246, 75, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-07-06 14:23:43', '2026-07-06 14:23:43'),
-(260, 3, 243, 246, 75, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-07-06 14:44:27', '2026-07-06 14:44:27'),
-(261, 3, 1, 234, 76, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-07-06 16:00:12', '2026-07-06 16:00:12'),
-(262, 3, 1, 234, 76, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-07-06 16:00:12', '2026-07-06 16:00:12'),
-(263, 3, 1, 234, 70, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-07-06 16:27:01', '2026-07-06 16:27:01'),
-(264, 3, 1, 234, 70, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-07-06 16:27:01', '2026-07-06 16:27:01'),
-(265, 3, 1, 234, 70, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-07-06 16:27:01', '2026-07-06 16:27:01'),
-(266, 3, 1, 234, 70, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-07-06 16:27:01', '2026-07-06 16:27:01'),
-(267, 3, 1, 234, 70, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-07-06 16:27:01', '2026-07-06 16:27:01'),
-(268, 3, 1, 235, 70, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-07-06 17:43:56', '2026-07-06 17:43:56'),
-(269, 3, 1, 235, 70, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-07-06 17:43:56', '2026-07-06 17:43:56'),
-(270, 3, 1, 235, 68, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-07-07 04:57:18', '2026-07-07 04:57:18'),
-(271, 3, 1, 235, 70, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-07-07 05:35:10', '2026-07-07 05:35:10'),
-(272, 3, 1, 235, 54, 7, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-07-07 08:41:18', '2026-07-07 08:41:18'),
-(273, 3, 1, 235, 60, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-07-08 17:06:40', '2026-07-08 17:06:40'),
-(274, 3, 1, 235, 60, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-07-12 09:24:37', '2026-07-12 09:24:37'),
-(275, 3, 1, 235, 61, 7, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-07-12 12:13:41', '2026-07-12 12:13:41'),
-(276, 3, 1, 235, NULL, NULL, '2026-07-12', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, '2026-07-12 18:09:35', '2026-07-12 18:09:35'),
-(277, 3, 1, 235, NULL, NULL, '2026-07-13', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, '2026-07-12 18:09:35', '2026-07-12 18:09:35'),
-(278, 3, 1, 234, NULL, NULL, '2026-07-14', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, '2026-07-13 12:47:28', '2026-07-13 12:47:28'),
-(279, 3, 1, 234, NULL, NULL, '2026-07-15', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, '2026-07-13 12:47:28', '2026-07-13 12:47:28'),
-(280, 3, 1, 234, NULL, NULL, '2026-07-29', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, '2026-07-29 12:55:33', '2026-07-29 12:55:33'),
-(281, 3, 1, 234, NULL, NULL, '2026-07-30', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, '2026-07-29 12:55:33', '2026-07-29 12:55:33');
+(282, 3, 5, 7, 78, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-15 14:19:08', '2026-08-15 14:19:08'),
+(283, 3, 5, 7, 78, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-15 14:19:08', '2026-08-15 14:19:08'),
+(284, 3, 5, 7, 78, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-15 14:19:08', '2026-08-15 14:19:08'),
+(285, 3, 5, 7, 78, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-15 14:19:08', '2026-08-15 14:19:08'),
+(286, 3, 5, 7, 78, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-15 14:19:08', '2026-08-15 14:19:08'),
+(287, 3, 5, 7, 78, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-15 14:19:08', '2026-08-15 14:19:08'),
+(288, 3, 5, 7, 80, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-15 14:19:36', '2026-08-15 14:19:36'),
+(289, 3, 5, 7, 80, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-15 14:19:36', '2026-08-15 14:19:36'),
+(290, 3, 5, 7, 80, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-15 14:19:36', '2026-08-15 14:19:36'),
+(291, 3, 5, 7, 80, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-15 14:19:36', '2026-08-15 14:19:36'),
+(292, 3, 5, 7, 80, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-15 14:19:36', '2026-08-15 14:19:36'),
+(293, 3, 5, 7, 80, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-15 14:19:36', '2026-08-15 14:19:36'),
+(294, 3, 5, 9, 81, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-15 14:44:47', '2026-08-15 14:44:47'),
+(295, 3, 5, 9, 81, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-15 14:44:47', '2026-08-15 14:44:47'),
+(296, 3, 5, 9, 81, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-15 14:44:47', '2026-08-15 14:44:47'),
+(297, 3, 5, 9, 81, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-15 14:44:47', '2026-08-15 14:44:47'),
+(298, 3, 5, 9, 82, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-15 14:44:58', '2026-08-15 14:44:58'),
+(299, 3, 5, 9, 82, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-15 14:44:58', '2026-08-15 14:44:58'),
+(300, 3, 5, 9, NULL, NULL, '2026-08-15', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, '2026-08-15 14:45:34', '2026-08-15 14:45:34'),
+(301, 3, 5, 10, 83, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-15 15:21:59', '2026-08-15 15:21:59'),
+(302, 3, 5, 10, 83, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-15 15:21:59', '2026-08-15 15:21:59'),
+(303, 3, 5, 10, 83, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-15 15:21:59', '2026-08-15 15:21:59'),
+(304, 3, 5, 10, 83, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-15 15:21:59', '2026-08-15 15:21:59'),
+(305, 3, 5, 10, 83, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-15 15:21:59', '2026-08-15 15:21:59'),
+(306, 3, 5, 10, 83, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-15 15:21:59', '2026-08-15 15:21:59'),
+(307, 3, 5, 11, 84, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 07:31:58', '2026-08-16 07:31:58'),
+(308, 3, 5, 11, 84, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 07:31:58', '2026-08-16 07:31:58'),
+(309, 3, 5, 11, 84, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 07:31:58', '2026-08-16 07:31:58'),
+(310, 3, 5, 11, 84, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 07:31:58', '2026-08-16 07:31:58'),
+(311, 3, 5, 11, 84, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 07:31:58', '2026-08-16 07:31:58'),
+(312, 3, 5, 11, 84, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 07:31:58', '2026-08-16 07:31:58'),
+(313, 3, 5, 12, 81, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 07:37:32', '2026-08-16 07:37:32'),
+(314, 3, 5, 12, 81, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 07:37:32', '2026-08-16 07:37:32'),
+(315, 3, 5, 12, 81, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 07:37:32', '2026-08-16 07:37:32'),
+(316, 3, 5, 12, 81, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 07:37:32', '2026-08-16 07:37:32'),
+(317, 3, 5, 12, 81, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 07:37:32', '2026-08-16 07:37:32'),
+(318, 3, 5, 12, 84, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 07:37:42', '2026-08-16 07:37:42'),
+(319, 3, 13, 14, 85, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 08:09:26', '2026-08-16 08:09:26'),
+(320, 3, 13, 14, 85, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 08:09:26', '2026-08-16 08:09:26'),
+(321, 3, 13, 14, 85, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 08:09:26', '2026-08-16 08:09:26'),
+(322, 3, 13, 14, 85, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 08:09:26', '2026-08-16 08:09:26'),
+(323, 3, 13, 14, 85, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 08:09:26', '2026-08-16 08:09:26'),
+(324, 3, 13, 14, 85, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 08:09:26', '2026-08-16 08:09:26'),
+(325, 3, 15, 17, 86, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 13:21:12', '2026-08-16 13:21:12'),
+(326, 3, 15, 17, 86, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 13:21:12', '2026-08-16 13:21:12'),
+(327, 3, 15, 17, 86, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 13:21:12', '2026-08-16 13:21:12'),
+(328, 3, 15, 17, 86, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 13:21:12', '2026-08-16 13:21:12'),
+(329, 3, 15, 17, 86, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 13:21:12', '2026-08-16 13:21:12'),
+(330, 3, 15, 17, 86, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 13:21:12', '2026-08-16 13:21:12'),
+(331, 3, 15, 19, 86, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 13:30:28', '2026-08-16 13:30:28'),
+(332, 3, 15, 19, 86, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 13:30:28', '2026-08-16 13:30:28'),
+(333, 3, 15, 19, 86, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 13:30:28', '2026-08-16 13:30:28'),
+(334, 3, 15, 19, 86, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 13:30:28', '2026-08-16 13:30:28'),
+(335, 3, 15, 19, 86, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 13:30:28', '2026-08-16 13:30:28'),
+(336, 3, 15, 19, 86, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 13:30:28', '2026-08-16 13:30:28'),
+(337, 3, 15, 20, 86, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 13:34:56', '2026-08-16 13:34:56'),
+(338, 3, 15, 20, 86, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 13:34:56', '2026-08-16 13:34:56'),
+(339, 3, 15, 20, 86, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 13:34:56', '2026-08-16 13:34:56'),
+(340, 3, 15, 20, 86, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 13:34:56', '2026-08-16 13:34:56'),
+(341, 3, 15, 20, 86, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 13:34:56', '2026-08-16 13:34:56'),
+(342, 3, 15, 20, 86, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 13:34:56', '2026-08-16 13:34:56'),
+(343, 3, 15, 21, 86, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 13:38:06', '2026-08-16 13:38:06'),
+(344, 3, 15, 21, 86, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 13:38:06', '2026-08-16 13:38:06'),
+(345, 3, 15, 21, 86, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 13:38:06', '2026-08-16 13:38:06'),
+(346, 3, 15, 21, 86, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 13:38:06', '2026-08-16 13:38:06'),
+(347, 3, 15, 21, 86, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 13:38:06', '2026-08-16 13:38:06'),
+(348, 3, 15, 21, 86, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 13:38:06', '2026-08-16 13:38:06'),
+(349, 3, 15, 18, 86, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 13:41:28', '2026-08-16 13:41:28'),
+(350, 3, 15, 18, 86, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 13:41:28', '2026-08-16 13:41:28'),
+(351, 3, 15, 18, 86, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 13:41:28', '2026-08-16 13:41:28'),
+(352, 3, 15, 18, 86, 4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 13:41:28', '2026-08-16 13:41:28'),
+(353, 3, 15, 18, 86, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 13:41:28', '2026-08-16 13:41:28'),
+(354, 3, 15, 18, 86, 6, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2026-08-16 13:41:28', '2026-08-16 13:41:28');
 
 -- --------------------------------------------------------
 
@@ -4969,7 +4201,15 @@ INSERT INTO `specialties` (`id`, `name_en`, `name_ar`, `status`, `parent_id`, `c
 (158, 'Cardiac Surgery', 'جراحة القلب', 1, NULL, 189, '2026-06-29 14:19:51', '2026-06-29 11:44:26', '2026-06-29 14:19:51'),
 (159, 'Nerves', 'الاعصاب', 1, NULL, 189, '2026-06-29 14:19:47', '2026-06-29 14:14:14', '2026-06-29 14:19:47'),
 (160, 'Nerves', 'الاعصاب', 1, NULL, 189, NULL, '2026-06-29 14:14:15', '2026-06-29 14:14:15'),
-(161, 'jjj', 'jjj', 1, NULL, 189, '2026-07-03 09:03:39', '2026-07-03 09:03:35', '2026-07-03 09:03:39');
+(161, 'jjj', 'jjj', 1, NULL, 189, '2026-07-03 09:03:39', '2026-07-03 09:03:35', '2026-07-03 09:03:39'),
+(162, 'Microbiology', 'الاحياء الدقيقة', 1, NULL, 1, NULL, '2026-08-15 13:47:48', '2026-08-15 13:47:48'),
+(163, 'Hematology', 'أمراض الدم', 1, NULL, 1, NULL, '2026-08-15 13:48:42', '2026-08-15 13:48:42'),
+(164, 'Genetics', 'علم الوراثة', 1, NULL, 1, NULL, '2026-08-15 13:49:28', '2026-08-15 13:49:28'),
+(165, 'Viruses', 'فيروسات', 1, NULL, 1, NULL, '2026-08-15 13:50:35', '2026-08-15 13:50:35'),
+(166, 'Family Medicine', 'طب اسرة', 1, NULL, 1, NULL, '2026-08-15 13:56:41', '2026-08-15 13:56:41'),
+(167, 'General Medicine', 'طب عام', 1, NULL, 1, NULL, '2026-08-15 15:40:31', '2026-08-15 15:40:31'),
+(168, 'General Internal Medicine', 'الباطنية العامة', 1, NULL, 1, NULL, '2026-08-16 07:26:06', '2026-08-16 07:26:06'),
+(169, 'Leaser Department', 'قسم الليزر', 1, NULL, 1, NULL, '2026-08-16 08:01:27', '2026-08-16 08:01:27');
 
 -- --------------------------------------------------------
 
@@ -5060,10 +4300,10 @@ CREATE TABLE `subscriptions_package_clinics` (
 --
 
 INSERT INTO `subscriptions_package_clinics` (`id`, `clinic_id`, `package_id`, `start_date`, `end_date`, `status`, `created_at`, `updated_at`) VALUES
-(3, 200, 1, '2026-02-15', '2026-06-15', 1, '2026-02-15 09:11:45', '2026-02-15 09:11:45'),
-(4, 201, 2, '2026-02-15', '2028-02-05', 1, '2026-02-15 15:11:01', '2026-02-15 15:11:01'),
-(13, 243, 1, '2026-07-02', '2027-06-27', 1, '2026-07-01 21:10:28', '2026-07-01 21:10:28'),
-(15, 249, 1, '2026-07-31', '2027-08-26', 1, '2026-07-31 17:57:53', '2026-07-31 17:57:53');
+(16, 2, 1, '2026-08-09', '2027-08-04', 1, '2026-08-09 09:07:53', '2026-08-09 09:07:53'),
+(18, 4, 2, '2026-08-12', '2027-02-08', 1, '2026-08-12 08:01:10', '2026-08-12 08:01:10'),
+(19, 5, 2, '2026-08-15', '2027-02-11', 1, '2026-08-15 08:28:00', '2026-08-15 08:28:00'),
+(20, 13, 2, '2026-08-16', '2027-02-12', 1, '2026-08-16 07:58:04', '2026-08-16 07:58:04');
 
 -- --------------------------------------------------------
 
@@ -5245,10 +4485,10 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`id`, `name`, `email`, `phone`, `password`, `image`, `ID_Number`, `referral_code`, `nationality_id`, `country_id`, `gover_id`, `city_id`, `region_id`, `address_1`, `address_2`, `postal_code`, `mobile_number`, `national_id`, `file_number`, `bill_number`, `insurance_card_number`, `card_expiry_date`, `company_id`, `class_id`, `reception_id`, `dob`, `lat`, `lng`, `address`, `gender`, `parent_id`, `active`, `status`, `platform`, `device_token`, `jwt_token`, `info`, `package_id`, `expired_date`, `firebase_token`, `remember_token`, `created_at`, `updated_at`, `deleted_at`) VALUES
 (1, 'Muhammed Ahmed', 'muhammed@gmail.com', '546411356', '$2y$12$4iZV6G9DJMYwSY2wZdGj2eDM4oRYt8rNsq7dBBR57S.41Ev0VLvKm', NULL, '32652145', NULL, 1, 1, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1991-01-01', 0, 0, NULL, 1, NULL, 0, 1, 1, NULL, NULL, NULL, 3, '2025-01-19', NULL, NULL, '2022-07-12 12:22:53', '2022-07-12 12:22:53', NULL),
 (3, 'amgad78', 'user4@gmail.com', '01221274765', '$2y$12$4iZV6G9DJMYwSY2wZdGj2eDM4oRYt8rNsq7dBBR57S.41Ev0VLvKm', '16641878538032.png', '1123444544', 'user1234', 1, 1, NULL, 1, NULL, NULL, NULL, NULL, NULL, '128885458', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2005-06-28', 30.1624474, 31.4325935, 'العبور, القليوبية, 11785, مصر', 1, NULL, 0, 1, 1, 'device token', 'ung0Q31OWTmDaNfny5GNRtDMt8Zjkvi4YxmLelKfm1dowzuvRc1777976091', NULL, 3, '2025-01-10', NULL, NULL, '2022-09-26 17:24:13', '2026-05-05 10:14:51', NULL),
-(4, 'amgad', 'user2@gmail.com', '+201234567890', '$2y$12$4iZV6G9DJMYwSY2wZdGj2eDM4oRYt8rNsq7dBBR57S.41Ev0VLvKm', '16655259507426.png', '11234445443', 'user1234', 1, 1, NULL, 1, NULL, NULL, NULL, NULL, NULL, '٢٠٠٠', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2005-06-28', 12.0999889, 13.018833, 'egypt-masr elswdan', 1, NULL, 0, 1, 1, 'device token', 'r175MWEkPMA7P5wD3ATNoaVkjv9pcXIwJa62FD1h6KjX9gwj2f1786225651', NULL, 3, '2024-03-26', NULL, NULL, '2022-10-12 05:05:50', '2026-08-08 21:47:31', NULL),
+(4, 'amgad', 'user3@gmail.com', '+201234567890', '$2y$12$4iZV6G9DJMYwSY2wZdGj2eDM4oRYt8rNsq7dBBR57S.41Ev0VLvKm', '16655259507426.png', '11234445443', 'user1234', 1, 1, NULL, 1, NULL, NULL, NULL, NULL, NULL, '٢٠٠٠', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2005-06-28', 12.0999889, 13.018833, 'egypt-masr elswdan', 1, NULL, 0, 1, 1, 'device token', 'SoQis3eIWFzhcqKNsHw8BK7Zv9huN9ORXwZrErzXav6V43hwg91786892949', NULL, 3, '2024-03-26', NULL, NULL, '2022-10-12 05:05:50', '2026-08-16 15:09:09', NULL),
 (6, 'eslam mohamed', 'eslam.smaz@gmail.com', '+201122334455', '$2y$12$4iZV6G9DJMYwSY2wZdGj2eDM4oRYt8rNsq7dBBR57S.41Ev0VLvKm', '16656368755948.jpg', '6120672521', '123456', 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1993-11-01', 29.9669637, 31.2611865, '12 El-Salam, Ezbet Nafie, Maadi, Cairo Governorate 4230004, Egypt', 1, NULL, 0, 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2022-10-13 11:54:35', '2022-10-13 11:55:23', NULL),
 (9, 'eslam mohamed', 'eslam5@gmail.com', '+201122334488', '$2y$12$4iZV6G9DJMYwSY2wZdGj2eDM4oRYt8rNsq7dBBR57S.41Ev0VLvKm', '16656799968193.png', '1234560', '123456', 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1996-12-10', 29.9670153, 31.2608792, 'صلاح سالم، البساتين، محافظة القاهرة‬،، X786+R92, Ezbet Nafie, El Basatin, Cairo Governorate 4230010, Egypt', 1, NULL, 0, 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2022-10-13 23:53:16', '2022-10-13 23:53:34', NULL),
-(10, 'a', 'dr_aymankmk@hotmail.com', '547872256', '$2y$10$oIqdb6l2hXff.Lf/C2HMPuKVhW1huhS.ZIOxPtdwepyYSMwspEkf.', '16656867955727.jpg', '201609', '1', 1, 1, NULL, 5, NULL, NULL, NULL, NULL, NULL, '201609', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1984-01-13', 24.448693, 39.5001123, '8731-8755 يحيى بن اسماعيل المهاجر، As Sikkah Al Hadid, Medina 42377, Saudi Arabia', 1, NULL, 0, 1, 1, NULL, 'duscc8U7MR8zX8phhZx3PxSfHnuWGNj1Jg8ZPFdFoZrqccBmcP1786462341', NULL, 3, '2029-04-11', NULL, NULL, '2022-10-14 01:46:35', '2026-08-11 15:32:21', NULL),
+(10, 'a', 'dr_aymankmk@hotmail.com', '547872256', '$2y$10$oIqdb6l2hXff.Lf/C2HMPuKVhW1huhS.ZIOxPtdwepyYSMwspEkf.', '16656867955727.jpg', '201609', '1', 1, 1, NULL, 5, NULL, NULL, NULL, NULL, NULL, '201609', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1984-01-13', 24.448693, 39.5001123, '8731-8755 يحيى بن اسماعيل المهاجر، As Sikkah Al Hadid, Medina 42377, Saudi Arabia', 1, NULL, 0, 1, 1, NULL, 'KX2kF1kiuRlcniDvP3kjjR2Fsrvs3CgKW5pHENIYsPAeNlHOTj1786891056', NULL, 3, '2029-04-11', NULL, NULL, '2022-10-14 01:46:35', '2026-08-16 14:37:36', NULL),
 (11, 'amgad782', 'amgad@gmail.com', '012212747651', '$2y$12$4iZV6G9DJMYwSY2wZdGj2eDM4oRYt8rNsq7dBBR57S.41Ev0VLvKm', '16659379559444.png', '1123444544', 'user1234', 1, 1, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2005-06-28', 12.0999889, 13.018833, 'egypt-masr elswdan', 1, NULL, 0, 1, 1, 'device token', NULL, NULL, NULL, NULL, NULL, NULL, '2022-10-16 23:32:35', '2022-11-08 20:34:03', NULL),
 (12, 'eslam mohamed', 'eslam7@gmail.com', '+201122334499', '$2y$12$4iZV6G9DJMYwSY2wZdGj2eDM4oRYt8rNsq7dBBR57S.41Ev0VLvKm', '16660235905110.jpg', '12345', NULL, 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2012-01-01', 29.9670153, 31.2608792, 'صلاح سالم، البساتين، محافظة القاهرة‬،، X786+R92, Ezbet Nafie, El Basatin, Cairo Governorate 4230010, Egypt', 1, NULL, 0, 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2022-10-17 23:19:50', '2022-10-17 23:19:50', NULL),
 (13, 'esllam', 'eslam8@gmail.com', '+201122334400', '$2y$12$4iZV6G9DJMYwSY2wZdGj2eDM4oRYt8rNsq7dBBR57S.41Ev0VLvKm', '16660238569526.jpg', '123456', NULL, 1, 1, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2012-01-01', 29.9670153, 31.2608792, 'صلاح سالم، البساتين، محافظة القاهرة‬،، X786+R92, Ezbet Nafie, El Basatin, Cairo Governorate 4230010, Egypt', 1, NULL, 0, 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2022-10-17 23:24:16', '2022-10-17 23:24:16', NULL),
@@ -5260,24 +4500,19 @@ INSERT INTO `users` (`id`, `name`, `email`, `phone`, `password`, `image`, `ID_Nu
 (30, 'خليل', NULL, NULL, '$2y$12$4iZV6G9DJMYwSY2wZdGj2eDM4oRYt8rNsq7dBBR57S.41Ev0VLvKm', NULL, '624182963', NULL, 1, 1, NULL, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-03-15', 24.448693, 39.5001123, '8731-8755 يحيى بن اسماعيل المهاجر، As Sikkah Al Hadid, Medina 42377, Saudi Arabia', 1, 10, 0, 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-03-16 16:57:35', '2023-03-16 16:57:35', NULL),
 (32, 'seif', NULL, NULL, '$2y$12$4iZV6G9DJMYwSY2wZdGj2eDM4oRYt8rNsq7dBBR57S.41Ev0VLvKm', '16792523546452.heic', '981710925', NULL, 1, 1, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2014-11-03', 12.0999889, 13.018833, 'egypt-masr elswdan', 1, 4, 0, 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-03-19 16:59:14', '2023-03-19 16:59:14', NULL),
 (40, 'ايمان', 'imaneriyade1@gmail.com', '+966560452425', '$2y$12$4iZV6G9DJMYwSY2wZdGj2eDM4oRYt8rNsq7dBBR57S.41Ev0VLvKm', '16874806624538.jpg', '2007985555', NULL, 1, 1, NULL, 5, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1987-04-05', 24.4229469, 39.5770271, 'القصواء, المدينة المنورة, محافظة المدينة المنورة, منطقة المدينة المنورة, 42318, السعودية', 2, NULL, 0, 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2023-06-22 21:37:42', '2023-06-22 21:42:00', NULL),
-(45, 'besan-ahmed-hassan-ahmed', 'besan@gmail.com', '000012345', '$2y$12$4iZV6G9DJMYwSY2wZdGj2eDM4oRYt8rNsq7dBBR57S.41Ev0VLvKm', NULL, 'QaWH7Canr8', NULL, 1, NULL, NULL, 1, 7, 'الرياض شارع الجامع', '15 شارع الرحمن', '11311', '000012345', NULL, '2', NULL, NULL, NULL, NULL, NULL, 196, '2005-06-22', 0, 0, NULL, 2, NULL, 0, 1, 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-12-22 09:29:35', '2025-12-22 09:29:35', NULL),
 (47, 'ليلي عبدالرحمن حلمي', NULL, NULL, '$2y$12$4iZV6G9DJMYwSY2wZdGj2eDM4oRYt8rNsq7dBBR57S.41Ev0VLvKm', '17744520091663.jpg', '668409593', NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, '554886', '544555', NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-03', 24.448693, 39.5001123, '8731-8755 يحيى بن اسماعيل المهاجر، As Sikkah Al Hadid, Medina 42377, Saudi Arabia', 2, 28, 0, 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-25 15:20:09', '2026-03-25 15:20:09', NULL),
 (48, 'ليلي عبدالرحمن حلمي', NULL, NULL, '$2y$12$4iZV6G9DJMYwSY2wZdGj2eDM4oRYt8rNsq7dBBR57S.41Ev0VLvKm', '17744521079978.jpg', '328449744', NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, '55458', '55447', NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-03', 24.448693, 39.5001123, '8731-8755 يحيى بن اسماعيل المهاجر، As Sikkah Al Hadid, Medina 42377, Saudi Arabia', 2, 28, 0, 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-25 15:21:47', '2026-03-25 15:21:47', NULL),
 (50, 'eslam', NULL, NULL, '$2y$12$4iZV6G9DJMYwSY2wZdGj2eDM4oRYt8rNsq7dBBR57S.41Ev0VLvKm', '17747287042992.jpg', '721721413', NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-26', 12.0999889, 13.018833, 'egypt-masr elswdan', 1, 4, 0, 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-28 20:11:44', '2026-03-28 20:11:44', NULL),
 (51, 'eslam2', NULL, NULL, '$2y$12$4iZV6G9DJMYwSY2wZdGj2eDM4oRYt8rNsq7dBBR57S.41Ev0VLvKm', '17747287495781.jpg', '996528207', NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-18', 12.0999889, 13.018833, 'egypt-masr elswdan', 1, 4, 0, 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-03-28 20:12:29', '2026-04-09 14:53:58', NULL),
 (53, 'مروه بدوي علي', NULL, NULL, '$2y$12$4iZV6G9DJMYwSY2wZdGj2eDM4oRYt8rNsq7dBBR57S.41Ev0VLvKm', '17750837563401.jpg', '660752641', NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, '0102068528', '1234538', NULL, NULL, NULL, NULL, NULL, NULL, '2010-04-01', 24.448693, 39.5001123, '8731-8755 يحيى بن اسماعيل المهاجر، As Sikkah Al Hadid, Medina 42377, Saudi Arabia', 2, 28, 0, 1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-04-01 22:49:16', '2026-04-01 22:49:16', NULL),
-(54, 'Eslam Mohamed', 'eslam.smaz2@gmail.com', '966510510510', '$2y$12$4iZV6G9DJMYwSY2wZdGj2eDM4oRYt8rNsq7dBBR57S.41Ev0VLvKm', '17752384976464.jpg', '2479001576', NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2016-04-05', 29.9667836, 31.2608088, '8L, Omran Alley, Ma‘adi Al Khahiri, Cairo, 11634, Egypt', 1, NULL, 0, 1, 1, NULL, 'oEzHcXQHgojpmqmAlVY26qnAvjDGZQMg9HEz8x0zV2Z0RSK9sb1785867076', NULL, NULL, '2026-04-03', NULL, NULL, '2026-04-03 17:48:17', '2026-08-04 18:11:16', NULL),
+(54, 'Eslam Mohamed', 'eslam.smaz2@gmail.com', '966510510510', '$2y$12$4iZV6G9DJMYwSY2wZdGj2eDM4oRYt8rNsq7dBBR57S.41Ev0VLvKm', '17752384976464.jpg', '2479001576', NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2016-04-05', 29.9667836, 31.2608088, '8L, Omran Alley, Ma‘adi Al Khahiri, Cairo, 11634, Egypt', 1, NULL, 0, 1, 1, NULL, 'rkD8eptn1V8yz9D1l3yLsvDOEmV7OCbKvy2sYAYJcnyaSnMRai1785321762', NULL, NULL, '2026-04-03', NULL, NULL, '2026-04-03 17:48:17', '2026-07-29 10:42:42', NULL),
 (55, 'test', NULL, NULL, '$2y$12$4iZV6G9DJMYwSY2wZdGj2eDM4oRYt8rNsq7dBBR57S.41Ev0VLvKm', '17763466443237.jpg', '209811192', NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, '2011', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-04-09', 0, 0, NULL, 1, 1, 0, 1, 1, NULL, 'IVIXRrXDE1Zh6Htg9ImzWqmmtrIgruuxA3gqlW68Z70LtSNwdzRuT7SHGHm6UsaOhsX6hpxdkJn', NULL, NULL, NULL, NULL, NULL, '2026-04-16 13:37:24', '2026-04-16 13:37:24', NULL),
-(56, 'مصطفي-محمد-احمد-علي', 'most@gmail.com', '0102055285', NULL, NULL, '1qtkbxMO0R', NULL, 1, NULL, NULL, 1, 6, 'الرياض شارع الجامع', '15 شارع الرحمن', '11311', '0126594963', NULL, '1', NULL, NULL, NULL, NULL, NULL, 196, '2017-02-02', 0, 0, NULL, 1, NULL, 0, 1, 3, NULL, 'FjPijDqFnwZ7mcBQPK2f0rkMT2mrbelV3ml2UGKoKke9UupJi3oFN9Ekn2db7o3loqDM7KofDJw', NULL, NULL, NULL, NULL, NULL, '2026-05-01 23:17:20', '2026-05-01 23:17:20', NULL),
-(57, 'مصطفي-محمد-احمد-علي', 'mosty60@gmail.com', '01020685285', NULL, NULL, 'CkDcj4zaWf', NULL, 1, NULL, NULL, 1, 6, 'الرياض شارع الجامع', '15 شارع الرحمن', '11311', '01020685285', NULL, '1', NULL, NULL, NULL, NULL, NULL, 196, '2017-02-02', 0, 0, NULL, 1, NULL, 0, 1, 3, NULL, 'NHdLLcBEJYWYbDpN5FYzw3moyxdgn2fXNzgeyvtLvVStIXIrB6MXNv9I6ZJUFprJBWpPdyoqf8R', NULL, NULL, NULL, NULL, NULL, '2026-05-01 23:19:38', '2026-05-01 23:19:38', NULL),
-(58, 'Ahmed Shahin-Shahin-ahmed-shahin', 'magdywork961@gmail.com', '01155122222', NULL, NULL, 'I1LNirDSv8', NULL, 1, NULL, NULL, NULL, 25, '10th Hosny Othman\'s st., El-Sefarat, Nasr City', 'ggggggg', '11178', '01145555555', NULL, '1', NULL, NULL, NULL, NULL, NULL, 196, '1994-05-05', 0, 0, NULL, 1, NULL, 0, 1, 3, NULL, 'gL4Gq5t7bdRQh44ifj56PporWUwDsFjCkTvKuhUUTUaIiuoEBiGBluDehae3SnqvxJy7kFPPnQb', NULL, NULL, NULL, NULL, NULL, '2026-05-05 13:57:53', '2026-05-05 13:57:53', NULL),
 (60, 'ايمن زين', 'ceo@quantum-technical.com', '966580161257', '$2y$10$Si0vGH79MX3vf38.fqDh..lqOB3Bvmyb95NNk1JrvGyj53a8zcYhS', NULL, '2016276459', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1986-05-14', 24.4226359, 39.577157, 'القصواء, المدينة المنورة, محافظة المدينة المنورة, منطقة المدينة المنورة, 42315, السعودية', 1, NULL, 0, 1, 1, NULL, 'SAE7UF3iUTAumxEhL6TpIpXJ8JotAUOmtS1AgAgT6RhYVhJRxC1779121764', NULL, NULL, '2026-05-17', NULL, NULL, '2026-05-17 13:59:06', '2026-05-18 16:29:24', NULL),
-(61, 'سهيله-مصطفي-احمد-محمد', 'suhil@gmail.com', '01020685585', NULL, NULL, 'O4spCKDnOo', NULL, 1, NULL, NULL, 1, 6, 'الرياض شارع الجامع', '15 شارع الرحمن', '11311', '01020655285', NULL, '2', NULL, NULL, NULL, NULL, NULL, 196, '2021-01-03', 0, 0, NULL, 2, NULL, 0, 1, 3, NULL, 'UypDvkKMiIewOC60TzFBRRftsz0qdRtpRpffORB80MbIPNEtJXHcTIsRu3iXgDkkgFpf1qafECy', NULL, NULL, NULL, NULL, NULL, '2026-05-17 14:15:28', '2026-05-17 14:15:28', NULL),
 (62, 'ahmed', 'ahmedr@gmail.com', '966570001146', '$2y$10$VP1nMMXlt4ql4FvGjBEtGuT96USNyCohw5tsFyqeibnEPs7LJ0v3C', NULL, '1234568896', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2016-05-19', 25.622542027718673, 42.35282517060525, 'محافظة النبهانيه, منطقة القصيم, السعودية', 1, NULL, 0, 1, 1, NULL, 'dPyn322fTl2MM0Homk1f416XXGFvcNfkw8s1soPe6um3lPXiHH1779078264', NULL, NULL, '2026-05-17', NULL, NULL, '2026-05-17 18:13:17', '2026-05-18 04:24:24', NULL),
 (63, 'mohamed', NULL, NULL, '$2y$10$VP1nMMXlt4ql4FvGjBEtGuT96USNyCohw5tsFyqeibnEPs7LJ0v3C', '17790785385921.jpg', '848657411', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2026-05-12', 25.622542027719, 42.352825170605, 'محافظة النبهانيه, منطقة القصيم, السعودية', 1, 62, 0, 1, 1, NULL, 'dWHhLOUHWKa8aibIXmIO4r7KIjmqJdxBIs6VSjwiDOrBEKYu4XJ5ba3PsIK6nAdTHgKh3EZsdJy', NULL, NULL, NULL, NULL, NULL, '2026-05-18 04:28:58', '2026-05-18 04:28:58', NULL),
 (65, 'test one', 'w@gmail.com', '966512345698', '$2y$10$J70H3qBv0hZ0qMLPXoyIEeG0aW3WqQse.q1jLW9.K91rMdyCa6CDS', '17791447012201.jpg', '2648363826', 'we', NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, '12346578645', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2016-05-10', 30.1677404, 31.446443, 'مساكن القاهرة, العبور, القليوبية, 11785, مصر', 1, NULL, 0, 1, 1, NULL, 'Cg6xuSyA52Zvb4I2ejmCXHkETCZXGD5Z5fR7B9ctxVHXo6OyOz1782741074', NULL, NULL, '2026-05-19', NULL, NULL, '2026-05-18 22:51:41', '2026-06-29 13:51:14', NULL),
 (66, 'Eslam Mohamed', 'eslam.smaz3@gmail.com', '966510510511', '$2y$10$h70F92lIqbcWYPfhLKIoDukuZRgc1Bu2qTUYN9e2ZFptOAySYTHyO', '17793012877788.png', '2415256754', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2016-05-17', 24.7136, 46.6753, 'طريق العروبة, الورود, الرياض, محافظة الرياض, منطقة الرياض, 11355, السعودية', 1, NULL, 0, 1, 1, NULL, 'MR80WuOZCtmBUPi5MCQyc1CVExtEc8EVzZ5aba9dCqPzO9cPFM1779301386', NULL, NULL, '2026-05-20', NULL, NULL, '2026-05-20 18:21:27', '2026-05-20 18:23:06', NULL),
-(67, 'Eslam Mohamed', 'eslam.smaz4@gmail.com', '966512512512', '$2y$10$VEwPqSVl35wDI2dqZEsEOOcbHp2niZ5g59IHHcy4tVE1lAOg8JoB6', '17793019839404.png', '2342342345', NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2016-05-18', 24.7136, 46.6753, 'طريق العروبة, الورود, الرياض, محافظة الرياض, منطقة الرياض, 11355, السعودية', 1, NULL, 0, 1, 1, NULL, 'SQx76roZ8V5h8u47f3aFribd88vYtuNxCspShK42BjbCm20qF31786027038', NULL, NULL, '2026-05-20', NULL, NULL, '2026-05-20 18:33:03', '2026-08-06 14:37:18', NULL),
+(67, 'Eslam Mohamed', 'eslam.smaz4@gmail.com', '966512512512', '$2y$10$VEwPqSVl35wDI2dqZEsEOOcbHp2niZ5g59IHHcy4tVE1lAOg8JoB6', '17793019839404.png', '2342342345', NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2016-05-18', 24.7136, 46.6753, 'طريق العروبة, الورود, الرياض, محافظة الرياض, منطقة الرياض, 11355, السعودية', 1, NULL, 0, 1, 1, NULL, 'yoa6oErJpGQMks2BDNQBdcbmgOd0kv5n427cWcCppojUjtrjSm1783194932', NULL, NULL, '2026-05-20', NULL, NULL, '2026-05-20 18:33:03', '2026-07-04 19:55:32', NULL),
 (68, 'ahmed farouk', 'ahmedf@gmail.com', '966580825090', '$2y$10$ySlNUx6I1suwL1mBEG9cnugRENOoJVrwuK4Bd3z5XJatK/hVJKlfC', '17794457281198.jpg', '2467688974', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1981-05-22', 24.7136, 46.6753, 'Al Uaroba Road, Al Wuroud District, Riyadh, Riyadh governorate, Riyadh Region, 11355, Saudi Arabia', 1, NULL, 0, 1, 1, NULL, 'fti0sdlm1z0l2VIMdTkaK8pZO7g0wbzsbEnW9SMBRNiU8voVeg1779633579', NULL, NULL, '2026-05-22', NULL, NULL, '2026-05-22 10:28:48', '2026-05-24 14:39:39', NULL),
 (69, 'Wael Ali', 'newhalfa2020@gmail.com', '966559658981', '$2y$10$OgliG2w858ovUhioutVR4OQJlP..XM9vQh0yMgs6bYP/sMwLxeHqG', NULL, '2634662858', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1984-05-06', 24.7136, 46.6753, 'Al Uaroba Road, Al Wuroud District, Riyadh, Riyadh governorate, Riyadh Region, 11355, Saudi Arabia', 1, NULL, 0, 1, 1, NULL, 'FS0MvBiFlNY9Hjnxillhx69MXuI1oj1VoCKEpOj4hh3F8onM6i1780801850', NULL, NULL, '2026-06-07', NULL, NULL, '2026-06-07 03:10:21', '2026-06-07 03:10:50', NULL),
 (70, 'Khalid Rashwan', 'Khalidirashwan@gmail.com', '966503307121', '$2y$10$CG0a07szkyYWIPQV4d6F1.OXUkNzNteBIA7hwYZArRUb8rU.qi1c2', NULL, '2539805768', NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1988-02-10', 24.7136, 46.6753, 'طريق العروبة, الورود, الرياض, محافظة الرياض, منطقة الرياض, 11355, السعودية', 1, NULL, 0, 1, 1, NULL, 'iVVXDzhHqym99vsLFeCEKX7RCirLOD2zX7daq3Hnb2XPgeRIZ81781165410', NULL, NULL, '2026-06-11', NULL, NULL, '2026-06-11 08:09:49', '2026-06-11 08:10:10', NULL),
@@ -5286,9 +4521,10 @@ INSERT INTO `users` (`id`, `name`, `email`, `phone`, `password`, `image`, `ID_Nu
 (73, 'amgad782', 'amgad12@gmail.com', '012212747652', '$2y$10$rkXOGvSLYhCxuyZD9ddfO.jubQVDWUO/tMRY6Rr.j03vcUXf6FImG', NULL, '1123444544', 'user1234', NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2005-06-28', 12.0999889, 13.018833, 'egypt-masr elswdan', 1, NULL, 0, 1, 1, 'device token', 'L7l6NRlWfLUowqYgfPXTtIIc9G1KHonT3pxoG7YZMALghAeArGpUkuOLEaag1TY7kSsvGuotwMb', NULL, NULL, '2026-07-03', 'token', NULL, '2026-07-03 16:03:28', '2026-07-03 16:03:28', NULL),
 (74, 'ahmed', 'ahmedrouka@gmail.com', '966538119328', '$2y$10$aMAOXEh3daZN10cB9nSD/e9nkkypKOsFYUs8e1V1JaF3MOvejXpxG', NULL, '2346788805', NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1981-10-22', 24.7136, 46.6753, 'Al Uaroba Road, Al Wuroud District, Riyadh, Riyadh governorate, Riyadh Region, 11355, Saudi Arabia', 1, NULL, 0, 1, 1, NULL, 'qLePZcIyk4hXia7qBA41P7WB8gZv7lcObdEULloxMqURPp8RQ51784838544', NULL, NULL, '2026-07-04', NULL, NULL, '2026-07-04 20:38:39', '2026-07-23 20:29:04', NULL),
 (75, 'عبدالوهاب', 'wahbi14@gmail.com', '966548600413', '$2y$10$XfS5uOIUhGzx4KMVEcny1umvn3PIPnwC.zs3PlZb4UQ5etpaFRQIO', NULL, '1075617512', NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1988-01-20', 24.7136, 46.6753, 'طريق العروبة, الورود, الرياض, محافظة الرياض, منطقة الرياض, 11355, السعودية', 1, NULL, 0, 1, 1, NULL, 'YcOgmMlWhaEeXeny6c2rEMiaQr9260xw3FoBtIBeNH0JA8jj9u1783429641', NULL, NULL, '2026-07-07', NULL, NULL, '2026-07-07 13:05:42', '2026-07-07 13:07:21', NULL),
-(76, 'amgad782', 'amgad4@gmail.com', '012212747650', '$2y$10$ZQxt9yTxtUO5TVbsvSRmVefzwBfxbIBvXm/CcbHLZr5hkc3iGmufG', NULL, '1123444544', 'user1234', NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2005-06-28', 12.0999889, 13.018833, 'egypt-masr elswdan', 1, NULL, 0, 1, 1, 'device token', '3FM0Cjumoa7lRzKPuyTAZjdiz7ViUEfpEIHHzPcPrCtIRtRh2g1786389024', NULL, NULL, '2026-07-19', NULL, NULL, '2026-07-19 11:08:01', '2026-08-10 19:10:24', NULL),
+(76, 'amgad782', 'amgad4@gmail.com', '012212747650', '$2y$10$ZQxt9yTxtUO5TVbsvSRmVefzwBfxbIBvXm/CcbHLZr5hkc3iGmufG', NULL, '1123444544', 'user1234', NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2005-06-28', 12.0999889, 13.018833, 'egypt-masr elswdan', 1, NULL, 0, 1, 1, 'device token', '20qHeXAKFHA0BYPQdVaVWTftlN1HK0YTBqJDPTJHq1twnyQuPk1786811033', NULL, NULL, '2026-07-19', NULL, NULL, '2026-07-19 11:08:01', '2026-08-15 16:23:53', NULL),
 (77, 'amgad782', 'amgad5@gmail.com', '012212747623', '$2y$10$dBkzR6IKgwrYjSUvZg8igeaTvzl5aPh9DqlmlsWWo35Z1VFjfanoy', NULL, '1123444544', 'user1234', NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2005-06-28', 12.0999889, 13.018833, 'egypt-masr elswdan', 1, NULL, 0, 1, 1, 'device token', 'tF78MFIHPusK2Lt8jrUK9FGeyfr86a3zXoOoxyhBxBILydGEUuDj0Ib5Cd4waqOIodakQpExXiC', NULL, NULL, '2026-07-19', 'token', NULL, '2026-07-19 11:56:21', '2026-07-19 11:56:21', NULL),
-(78, 'amgad782', 'amgad6@gmail.com', '01050730355', '$2y$10$w/r1vY9MYcuafUMTibFICu7JRPr4LFLZgMsXex6kbvY/JIsPWWS1i', NULL, '1123444544', 'user1234', NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2005-06-28', 12.0999889, 13.018833, 'egypt-masr elswdan', 1, NULL, 0, 1, 1, 'device token', '966yHtkIsrSpiPcFw4IF2We65c3dklzUx2awBbac1sjmLqOeFB1785595663', NULL, NULL, '2026-08-01', NULL, NULL, '2026-08-01 14:39:43', '2026-08-01 14:47:43', NULL);
+(78, 'amgad782', 'amgad6@gmail.com', '01050730355', '$2y$10$w/r1vY9MYcuafUMTibFICu7JRPr4LFLZgMsXex6kbvY/JIsPWWS1i', NULL, '1123444544', 'user1234', NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2005-06-28', 12.0999889, 13.018833, 'egypt-masr elswdan', 1, NULL, 0, 1, 1, 'device token', '966yHtkIsrSpiPcFw4IF2We65c3dklzUx2awBbac1sjmLqOeFB1785595663', NULL, NULL, '2026-08-01', NULL, NULL, '2026-08-01 14:39:43', '2026-08-01 14:47:43', NULL),
+(79, 'وضحى اليامي', 'wdhmmm445@gmail.com', '966575071269', '$2y$10$kSx1/wYeCVwz0XVTAeiGceFsrUqp8ebfFkkWPrr2Sn.GJAYXtT/vu', NULL, '1085230769', NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1987-08-17', 18.086202856789793, 46.35561829837307, 'محافظة شروره, منطقة نجران, السعودية', 2, NULL, 0, 1, 1, NULL, 'bUbErps8CmwyDShQ1HyMi8L7yoAa5wF6LUfXQnNx30itpWpcgSMi5k9F5lGEcrhE2p7Z0PDEDBO', NULL, NULL, '2026-08-15', 'e8Tmqw-gQ2OTNI28QZLgPb:APA91bHBnhFKwwV8lTK3Lz31pZjY0KXLpPEjsaNOTXJLw9z1lFc5KcAMOMJNN-UkphGYj9hu2855RDoem6Ynyppgm9vRt8_2I-cTWItBthywuYN6vwNxk0Q', NULL, '2026-08-15 10:13:20', '2026-08-15 10:13:20', NULL);
 
 -- --------------------------------------------------------
 
@@ -5397,7 +4633,9 @@ INSERT INTO `verification_codes` (`id`, `user_id`, `type_verify`, `phone`, `code
 (38, NULL, 'reset_password', '548600413', 931364, '2026-07-07 16:16:36', 1, NULL, '2026-07-07 13:06:46'),
 (39, NULL, 'active', '582251131', 361671, '2026-07-14 16:34:33', 1, NULL, '2026-07-14 13:29:45'),
 (40, NULL, 'active', '512345678', 520612, '2026-07-26 06:31:26', 0, NULL, NULL),
-(41, NULL, 'active', '501234567', 701796, '2026-08-07 10:08:25', 0, NULL, NULL);
+(41, NULL, 'active', '569773982', 800755, '2026-08-14 04:58:06', 0, NULL, NULL),
+(42, NULL, 'active', '575071269', 899174, '2026-08-15 13:15:22', 1, NULL, '2026-08-15 10:11:10'),
+(43, NULL, 'active', '501917654', 747181, '2026-08-16 18:06:02', 0, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -6334,6 +5572,23 @@ ALTER TABLE `sale_invoice_items`
   ADD KEY `sale_invoice_items_drug_id_index` (`drug_id`);
 
 --
+-- Indexes for table `seo_meta`
+--
+ALTER TABLE `seo_meta`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `seo_meta_seoable_id_seoable_type_unique` (`seoable_id`,`seoable_type`),
+  ADD KEY `seo_meta_seoable_type_seoable_id_index` (`seoable_type`,`seoable_id`),
+  ADD KEY `seo_meta_is_active_index` (`is_active`);
+
+--
+-- Indexes for table `seo_meta_translations`
+--
+ALTER TABLE `seo_meta_translations`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `seo_meta_translations_seo_meta_id_locale_unique` (`seo_meta_id`,`locale`),
+  ADD KEY `seo_meta_translations_locale_index` (`locale`);
+
+--
 -- Indexes for table `services`
 --
 ALTER TABLE `services`
@@ -6605,7 +5860,7 @@ ALTER TABLE `cities`
 -- AUTO_INCREMENT for table `clinics`
 --
 ALTER TABLE `clinics`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=250;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `clinics_permissions`
@@ -6617,7 +5872,7 @@ ALTER TABLE `clinics_permissions`
 -- AUTO_INCREMENT for table `clinic_contracts`
 --
 ALTER TABLE `clinic_contracts`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `clinic_device_tokens`
@@ -6665,19 +5920,19 @@ ALTER TABLE `clinic_services`
 -- AUTO_INCREMENT for table `clinic_specialists`
 --
 ALTER TABLE `clinic_specialists`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=286;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=380;
 
 --
 -- AUTO_INCREMENT for table `cms_items`
 --
 ALTER TABLE `cms_items`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `cms_item_translations`
 --
 ALTER TABLE `cms_item_translations`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=109;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=103;
 
 --
 -- AUTO_INCREMENT for table `cms_languages`
@@ -6713,7 +5968,7 @@ ALTER TABLE `cms_page_translations`
 -- AUTO_INCREMENT for table `cms_sections`
 --
 ALTER TABLE `cms_sections`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `cms_section_translations`
@@ -6725,13 +5980,13 @@ ALTER TABLE `cms_section_translations`
 -- AUTO_INCREMENT for table `complaint_boxes`
 --
 ALTER TABLE `complaint_boxes`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=137;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `contact_us`
 --
 ALTER TABLE `contact_us`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `countries`
@@ -6761,7 +6016,7 @@ ALTER TABLE `days`
 -- AUTO_INCREMENT for table `demo_requests`
 --
 ALTER TABLE `demo_requests`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `departments`
@@ -6779,7 +6034,7 @@ ALTER TABLE `doctor_appointments`
 -- AUTO_INCREMENT for table `doctor_conditions`
 --
 ALTER TABLE `doctor_conditions`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT for table `doctor_degrees`
@@ -6833,7 +6088,7 @@ ALTER TABLE `emergencies`
 -- AUTO_INCREMENT for table `emergency_hospitals`
 --
 ALTER TABLE `emergency_hospitals`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `failed_jobs`
@@ -6911,25 +6166,25 @@ ALTER TABLE `loyalty_coupon_redemptions`
 -- AUTO_INCREMENT for table `loyalty_point_transactions`
 --
 ALTER TABLE `loyalty_point_transactions`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `loyalty_reward_coupons`
 --
 ALTER TABLE `loyalty_reward_coupons`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `loyalty_share_logs`
 --
 ALTER TABLE `loyalty_share_logs`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `media`
 --
 ALTER TABLE `media`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `medical_reports`
@@ -7172,6 +6427,18 @@ ALTER TABLE `sale_invoice_items`
   MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `seo_meta`
+--
+ALTER TABLE `seo_meta`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `seo_meta_translations`
+--
+ALTER TABLE `seo_meta_translations`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `services`
 --
 ALTER TABLE `services`
@@ -7199,7 +6466,7 @@ ALTER TABLE `settings`
 -- AUTO_INCREMENT for table `shifts`
 --
 ALTER TABLE `shifts`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=78;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=87;
 
 --
 -- AUTO_INCREMENT for table `shift_dates`
@@ -7211,7 +6478,7 @@ ALTER TABLE `shift_dates`
 -- AUTO_INCREMENT for table `shift_employees`
 --
 ALTER TABLE `shift_employees`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=282;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=355;
 
 --
 -- AUTO_INCREMENT for table `sick_leaves`
@@ -7223,7 +6490,7 @@ ALTER TABLE `sick_leaves`
 -- AUTO_INCREMENT for table `specialties`
 --
 ALTER TABLE `specialties`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=162;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=170;
 
 --
 -- AUTO_INCREMENT for table `statuses`
@@ -7247,7 +6514,7 @@ ALTER TABLE `stores`
 -- AUTO_INCREMENT for table `subscriptions_package_clinics`
 --
 ALTER TABLE `subscriptions_package_clinics`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `subscriptions_package_users`
@@ -7283,7 +6550,7 @@ ALTER TABLE `test_results_details`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=79;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=80;
 
 --
 -- AUTO_INCREMENT for table `users_members`
@@ -7307,7 +6574,7 @@ ALTER TABLE `user_points`
 -- AUTO_INCREMENT for table `verification_codes`
 --
 ALTER TABLE `verification_codes`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
 
 --
 -- AUTO_INCREMENT for table `vital_signs`
@@ -7703,6 +6970,380 @@ ALTER TABLE `patient_medical_reports`
   ADD CONSTRAINT `patient_medical_reports_parent_id_foreign` FOREIGN KEY (`parent_id`) REFERENCES `patient_medical_reports` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `patient_medical_reports_report_id_foreign` FOREIGN KEY (`report_id`) REFERENCES `medical_reports` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `patient_medical_reports_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `patient_sale_invoices`
+--
+ALTER TABLE `patient_sale_invoices`
+  ADD CONSTRAINT `patient_sale_invoices_account_tree_id_foreign` FOREIGN KEY (`account_tree_id`) REFERENCES `accounts_trees` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `patient_sale_invoices_clinic_id_foreign` FOREIGN KEY (`clinic_id`) REFERENCES `clinics` (`parent_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `patient_sale_invoices_customer_id_foreign` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `patient_sale_invoices_pharmacy_id_foreign` FOREIGN KEY (`pharmacy_id`) REFERENCES `clinics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `patient_sale_invoice_items`
+--
+ALTER TABLE `patient_sale_invoice_items`
+  ADD CONSTRAINT `patient_sale_invoice_items_drug_id_foreign` FOREIGN KEY (`drug_id`) REFERENCES `drugs` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `patient_sale_invoice_items_patient_sale_invoice_id_foreign` FOREIGN KEY (`patient_sale_invoice_id`) REFERENCES `patient_sale_invoices` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `patient_services`
+--
+ALTER TABLE `patient_services`
+  ADD CONSTRAINT `patient_services_clinic_id_foreign` FOREIGN KEY (`clinic_id`) REFERENCES `clinics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `patient_services_doctor_id_foreign` FOREIGN KEY (`doctor_id`) REFERENCES `clinics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `patient_services_invoice_id_foreign` FOREIGN KEY (`invoice_id`) REFERENCES `invoices` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `patient_services_nurse_id_foreign` FOREIGN KEY (`nurse_id`) REFERENCES `clinics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `patient_services_point_id_foreign` FOREIGN KEY (`point_id`) REFERENCES `clinic_point_nursings` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `patient_services_reservation_id_foreign` FOREIGN KEY (`reservation_id`) REFERENCES `reservations` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `patient_services_service_id_foreign` FOREIGN KEY (`service_id`) REFERENCES `services` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `patient_services_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `payment_methods`
+--
+ALTER TABLE `payment_methods`
+  ADD CONSTRAINT `payment_methods_clinic_id_foreign` FOREIGN KEY (`clinic_id`) REFERENCES `clinics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `permissions`
+--
+ALTER TABLE `permissions`
+  ADD CONSTRAINT `permissions_parent_id_foreign` FOREIGN KEY (`parent_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `permissions_requests`
+--
+ALTER TABLE `permissions_requests`
+  ADD CONSTRAINT `permissions_requests_clinic_id_foreign` FOREIGN KEY (`clinic_id`) REFERENCES `clinics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `permissions_requests_permission_owner_foreign` FOREIGN KEY (`permission_owner`) REFERENCES `clinics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `permissions_requests_permission_type_foreign` FOREIGN KEY (`permission_type`) REFERENCES `permissions_types` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `pharmacy_invoices`
+--
+ALTER TABLE `pharmacy_invoices`
+  ADD CONSTRAINT `pharmacy_invoices_account_tree_id_foreign` FOREIGN KEY (`account_tree_id`) REFERENCES `accounts_trees` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `pharmacy_invoices_clinic_id_foreign` FOREIGN KEY (`clinic_id`) REFERENCES `clinics` (`parent_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `pharmacy_invoices_customer_id_foreign` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `pharmacy_invoices_doctor_id_foreign` FOREIGN KEY (`doctor_id`) REFERENCES `clinics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `pharmacy_invoices_patient_id_foreign` FOREIGN KEY (`patient_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `pharmacy_invoices_pharmacy_id_foreign` FOREIGN KEY (`pharmacy_id`) REFERENCES `clinics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `pharmacy_invoices_store_id_foreign` FOREIGN KEY (`store_id`) REFERENCES `stores` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `pharmacy_invoices_supplier_id_foreign` FOREIGN KEY (`supplier_id`) REFERENCES `suppliers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `pharmacy_invoice_items`
+--
+ALTER TABLE `pharmacy_invoice_items`
+  ADD CONSTRAINT `pharmacy_invoice_items_drug_id_foreign` FOREIGN KEY (`drug_id`) REFERENCES `drugs` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `pharmacy_invoice_items_pharmacy_invoice_id_foreign` FOREIGN KEY (`pharmacy_invoice_id`) REFERENCES `pharmacy_invoices` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `pharmacy_prescriptions`
+--
+ALTER TABLE `pharmacy_prescriptions`
+  ADD CONSTRAINT `pharmacy_prescriptions_clinic_id_foreign` FOREIGN KEY (`clinic_id`) REFERENCES `clinics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `pharmacy_prescriptions_doctor_id_foreign` FOREIGN KEY (`doctor_id`) REFERENCES `clinics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `pharmacy_prescriptions_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `pharmacy_prescriptions_details`
+--
+ALTER TABLE `pharmacy_prescriptions_details`
+  ADD CONSTRAINT `pharmacy_prescriptions_details_drug_id_foreign` FOREIGN KEY (`drug_id`) REFERENCES `drugs` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `pharmacy_prescriptions_details_pharmacy_prescription_id_foreign` FOREIGN KEY (`pharmacy_prescription_id`) REFERENCES `pharmacy_prescriptions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `posts`
+--
+ALTER TABLE `posts`
+  ADD CONSTRAINT `posts_clinic_id_foreign` FOREIGN KEY (`clinic_id`) REFERENCES `clinics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `purchase_invoices`
+--
+ALTER TABLE `purchase_invoices`
+  ADD CONSTRAINT `purchase_invoices_clinic_id_foreign` FOREIGN KEY (`clinic_id`) REFERENCES `clinics` (`parent_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `purchase_invoices_pharmacy_id_foreign` FOREIGN KEY (`pharmacy_id`) REFERENCES `clinics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `purchase_invoices_store_id_foreign` FOREIGN KEY (`store_id`) REFERENCES `stores` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `purchase_invoices_supplier_id_foreign` FOREIGN KEY (`supplier_id`) REFERENCES `suppliers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `purchase_invoice_items`
+--
+ALTER TABLE `purchase_invoice_items`
+  ADD CONSTRAINT `purchase_invoice_items_drug_id_foreign` FOREIGN KEY (`drug_id`) REFERENCES `drugs` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `purchase_invoice_items_purchase_invoice_id_foreign` FOREIGN KEY (`purchase_invoice_id`) REFERENCES `purchase_invoices` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `regions`
+--
+ALTER TABLE `regions`
+  ADD CONSTRAINT `regions_city_id_foreign` FOREIGN KEY (`city_id`) REFERENCES `cities` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Constraints for table `reservations`
+--
+ALTER TABLE `reservations`
+  ADD CONSTRAINT `reservations_clinic_id_foreign` FOREIGN KEY (`clinic_id`) REFERENCES `clinics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `reservations_doctor_id_foreign` FOREIGN KEY (`doctor_id`) REFERENCES `clinics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `reservations_parent_id_foreign` FOREIGN KEY (`parent_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `reservations_reception_id_foreign` FOREIGN KEY (`reception_id`) REFERENCES `clinics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `reservations_status_id_foreign` FOREIGN KEY (`status_id`) REFERENCES `statuses` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `reservations_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `reservation_chats`
+--
+ALTER TABLE `reservation_chats`
+  ADD CONSTRAINT `reservation_chats_reservation_id_foreign` FOREIGN KEY (`reservation_id`) REFERENCES `reservations` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `reservation_drugs`
+--
+ALTER TABLE `reservation_drugs`
+  ADD CONSTRAINT `reservation_drugs_doctor_id_foreign` FOREIGN KEY (`doctor_id`) REFERENCES `clinics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `reservation_drugs_drug_id_foreign` FOREIGN KEY (`drug_id`) REFERENCES `drugs` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `reservation_drugs_reservation_id_foreign` FOREIGN KEY (`reservation_id`) REFERENCES `reservations` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `reservation_drugs_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `reservation_rates`
+--
+ALTER TABLE `reservation_rates`
+  ADD CONSTRAINT `reservation_rates_clinic_id_foreign` FOREIGN KEY (`clinic_id`) REFERENCES `clinics` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `reservation_rates_doctor_id_foreign` FOREIGN KEY (`doctor_id`) REFERENCES `clinics` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `reservation_rates_reservation_id_foreign` FOREIGN KEY (`reservation_id`) REFERENCES `reservations` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `reservation_rates_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `reservation_vital_signs`
+--
+ALTER TABLE `reservation_vital_signs`
+  ADD CONSTRAINT `reservation_vital_signs_reservation_id_foreign` FOREIGN KEY (`reservation_id`) REFERENCES `reservations` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `restrictions`
+--
+ALTER TABLE `restrictions`
+  ADD CONSTRAINT `restrictions_account_id_foreign` FOREIGN KEY (`account_id`) REFERENCES `clinics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `restrictions_clinic_id_foreign` FOREIGN KEY (`clinic_id`) REFERENCES `clinics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `restrictions_cost_center_id_foreign` FOREIGN KEY (`cost_center_id`) REFERENCES `cost_centers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `restrictions_daily_entry_id_foreign` FOREIGN KEY (`daily_entry_id`) REFERENCES `daily_entries` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `restrictions_final_accounts_foreign` FOREIGN KEY (`final_accounts`) REFERENCES `accounts_trees` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `result_manuals`
+--
+ALTER TABLE `result_manuals`
+  ADD CONSTRAINT `result_manuals_patient_service_id_foreign` FOREIGN KEY (`patient_service_id`) REFERENCES `patient_services` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `role_has_permissions`
+--
+ALTER TABLE `role_has_permissions`
+  ADD CONSTRAINT `role_has_permissions_permission_id_foreign` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `role_has_permissions_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `sale_invoices`
+--
+ALTER TABLE `sale_invoices`
+  ADD CONSTRAINT `sale_invoices_account_tree_id_foreign` FOREIGN KEY (`account_tree_id`) REFERENCES `accounts_trees` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `sale_invoices_clinic_id_foreign` FOREIGN KEY (`clinic_id`) REFERENCES `clinics` (`parent_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `sale_invoices_customer_id_foreign` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `sale_invoices_pharmacy_id_foreign` FOREIGN KEY (`pharmacy_id`) REFERENCES `clinics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `sale_invoice_items`
+--
+ALTER TABLE `sale_invoice_items`
+  ADD CONSTRAINT `sale_invoice_items_drug_id_foreign` FOREIGN KEY (`drug_id`) REFERENCES `drugs` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `sale_invoice_items_sale_invoice_id_foreign` FOREIGN KEY (`sale_invoice_id`) REFERENCES `sale_invoices` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `seo_meta_translations`
+--
+ALTER TABLE `seo_meta_translations`
+  ADD CONSTRAINT `seo_meta_translations_seo_meta_id_foreign` FOREIGN KEY (`seo_meta_id`) REFERENCES `seo_meta` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `services`
+--
+ALTER TABLE `services`
+  ADD CONSTRAINT `services_category_id_foreign` FOREIGN KEY (`category_id`) REFERENCES `services_categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `services_clinic_id_foreign` FOREIGN KEY (`clinic_id`) REFERENCES `clinics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `services_created_by_foreign` FOREIGN KEY (`created_by`) REFERENCES `clinics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `services_specialty_id_foreign` FOREIGN KEY (`specialty_id`) REFERENCES `specialties` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `services_categories`
+--
+ALTER TABLE `services_categories`
+  ADD CONSTRAINT `services_categories_clinic_id_foreign` FOREIGN KEY (`clinic_id`) REFERENCES `clinics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `service_analysis_attributes`
+--
+ALTER TABLE `service_analysis_attributes`
+  ADD CONSTRAINT `service_analysis_attributes_age_id_foreign` FOREIGN KEY (`age_id`) REFERENCES `age_categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `service_analysis_attributes_parent_id_foreign` FOREIGN KEY (`parent_id`) REFERENCES `service_analysis_attributes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `service_analysis_attributes_service_id_foreign` FOREIGN KEY (`service_id`) REFERENCES `services` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `settings`
+--
+ALTER TABLE `settings`
+  ADD CONSTRAINT `settings_app_type_foreign` FOREIGN KEY (`app_type`) REFERENCES `app_types` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `shifts`
+--
+ALTER TABLE `shifts`
+  ADD CONSTRAINT `shifts_account_type_foreign` FOREIGN KEY (`account_type`) REFERENCES `app_types` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `shifts_clinic_id_foreign` FOREIGN KEY (`clinic_id`) REFERENCES `clinics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `shift_dates`
+--
+ALTER TABLE `shift_dates`
+  ADD CONSTRAINT `shift_dates_shift_id_foreign` FOREIGN KEY (`shift_id`) REFERENCES `shifts` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `shift_employees`
+--
+ALTER TABLE `shift_employees`
+  ADD CONSTRAINT `shift_employees_account_type_foreign` FOREIGN KEY (`account_type`) REFERENCES `app_types` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `shift_employees_checkin_another_employee_foreign` FOREIGN KEY (`checkin_another_employee`) REFERENCES `clinics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `shift_employees_checkout_another_employee_foreign` FOREIGN KEY (`checkout_another_employee`) REFERENCES `clinics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `shift_employees_clinic_id_foreign` FOREIGN KEY (`clinic_id`) REFERENCES `clinics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `shift_employees_employee_id_foreign` FOREIGN KEY (`employee_id`) REFERENCES `clinics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `shift_employees_shift_id_foreign` FOREIGN KEY (`shift_id`) REFERENCES `shifts` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `sick_leaves`
+--
+ALTER TABLE `sick_leaves`
+  ADD CONSTRAINT `sick_leaves_reservation_id_foreign` FOREIGN KEY (`reservation_id`) REFERENCES `reservations` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `sick_leaves_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `specialties`
+--
+ALTER TABLE `specialties`
+  ADD CONSTRAINT `specialties_parent_id_foreign` FOREIGN KEY (`parent_id`) REFERENCES `specialties` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `status_conversions`
+--
+ALTER TABLE `status_conversions`
+  ADD CONSTRAINT `status_conversions_doctor_id_foreign` FOREIGN KEY (`doctor_id`) REFERENCES `clinics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `status_conversions_reception_id_foreign` FOREIGN KEY (`reception_id`) REFERENCES `clinics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `status_conversions_reservation_id_foreign` FOREIGN KEY (`reservation_id`) REFERENCES `reservations` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `status_conversions_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `stores`
+--
+ALTER TABLE `stores`
+  ADD CONSTRAINT `stores_clinic_id_foreign` FOREIGN KEY (`clinic_id`) REFERENCES `clinics` (`parent_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `stores_pharmacy_id_foreign` FOREIGN KEY (`pharmacy_id`) REFERENCES `clinics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `stores_responsible_person_id_foreign` FOREIGN KEY (`responsible_person_id`) REFERENCES `responsible_people` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `subscriptions_package_clinics`
+--
+ALTER TABLE `subscriptions_package_clinics`
+  ADD CONSTRAINT `subscriptions_package_clinics_clinic_id_foreign` FOREIGN KEY (`clinic_id`) REFERENCES `clinics` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `subscriptions_package_clinics_package_id_foreign` FOREIGN KEY (`package_id`) REFERENCES `packages` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `subscriptions_package_users`
+--
+ALTER TABLE `subscriptions_package_users`
+  ADD CONSTRAINT `subscriptions_package_users_package_id_foreign` FOREIGN KEY (`package_id`) REFERENCES `packages` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `subscriptions_package_users_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `suppliers`
+--
+ALTER TABLE `suppliers`
+  ADD CONSTRAINT `suppliers_clinic_id_foreign` FOREIGN KEY (`clinic_id`) REFERENCES `clinics` (`parent_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `suppliers_pharmacy_id_foreign` FOREIGN KEY (`pharmacy_id`) REFERENCES `clinics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `test_results`
+--
+ALTER TABLE `test_results`
+  ADD CONSTRAINT `test_results_clinic_id_foreign` FOREIGN KEY (`clinic_id`) REFERENCES `clinics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `test_results_doctor_id_foreign` FOREIGN KEY (`doctor_id`) REFERENCES `clinics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `test_results_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `test_results_details`
+--
+ALTER TABLE `test_results_details`
+  ADD CONSTRAINT `test_results_details_member_id_foreign` FOREIGN KEY (`member_id`) REFERENCES `users_members` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `test_results_details_test_result_id_foreign` FOREIGN KEY (`test_result_id`) REFERENCES `test_results` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `users`
+--
+ALTER TABLE `users`
+  ADD CONSTRAINT `users_city_id_foreign` FOREIGN KEY (`city_id`) REFERENCES `cities` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `users_class_id_foreign` FOREIGN KEY (`class_id`) REFERENCES `insurance_classes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `users_company_id_foreign` FOREIGN KEY (`company_id`) REFERENCES `insurance_companies` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `users_country_id_foreign` FOREIGN KEY (`country_id`) REFERENCES `countries` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `users_gover_id_foreign` FOREIGN KEY (`gover_id`) REFERENCES `cities` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `users_nationality_id_foreign` FOREIGN KEY (`nationality_id`) REFERENCES `countries` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `users_parent_id_foreign` FOREIGN KEY (`parent_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `users_reception_id_foreign` FOREIGN KEY (`reception_id`) REFERENCES `clinics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `users_region_id_foreign` FOREIGN KEY (`region_id`) REFERENCES `regions` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Constraints for table `users_members`
+--
+ALTER TABLE `users_members`
+  ADD CONSTRAINT `users_members_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `user_coupons`
+--
+ALTER TABLE `user_coupons`
+  ADD CONSTRAINT `user_coupons_coupon_id_foreign` FOREIGN KEY (`coupon_id`) REFERENCES `coupons` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `user_coupons_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `user_points`
+--
+ALTER TABLE `user_points`
+  ADD CONSTRAINT `user_points_clinic_id_foreign` FOREIGN KEY (`clinic_id`) REFERENCES `clinics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `user_points_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `verification_codes`
+--
+ALTER TABLE `verification_codes`
+  ADD CONSTRAINT `verification_codes_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `vital_signs`
+--
+ALTER TABLE `vital_signs`
+  ADD CONSTRAINT `vital_signs_clinic_id_foreign` FOREIGN KEY (`clinic_id`) REFERENCES `clinics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `vital_signs_doctor_id_foreign` FOREIGN KEY (`doctor_id`) REFERENCES `clinics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `vital_signs_emergency_id_foreign` FOREIGN KEY (`emergency_id`) REFERENCES `emergencies` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `vital_signs_reservation_id_foreign` FOREIGN KEY (`reservation_id`) REFERENCES `reservations` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `vital_signs_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `working_days`
+--
+ALTER TABLE `working_days`
+  ADD CONSTRAINT `working_days_day_id_foreign` FOREIGN KEY (`day_id`) REFERENCES `days` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `working_days_pharmacist_id_foreign` FOREIGN KEY (`pharmacist_id`) REFERENCES `clinics` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

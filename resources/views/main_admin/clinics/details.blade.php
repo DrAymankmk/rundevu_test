@@ -180,7 +180,11 @@
                 </div>
             </div>
             <!-- row end -->
-
+            @include('components.seo-form', [
+                 'languages' => $languages,
+                 'seo' => $clinic->seoMeta,
+                 'formAction' => route('update-clinic-seo', $clinic->id),
+             ])
             @php
                 $contract = $clinic->contract ?: new \App\Models\ClinicContract(\App\Models\ClinicContract::defaultAttributes());
                 $contractModel = old('contract_model', $contract->contract_model);

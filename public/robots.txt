@@ -1,2 +1,9 @@
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /clear
+Disallow: /pusher
+Disallow: /test
+
+Sitemap: https://randevuksa.com/sitemap.xml

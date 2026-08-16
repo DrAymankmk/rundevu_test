@@ -18,11 +18,9 @@ $isRtl = in_array($htmlLang, $rtlLangs, true);
 	<meta charset="utf-8">
 	<meta name="csrf-token" content="{{ csrf_token() }}">
 	<meta http-equiv="x-ua-compatible" content="ie=edge">
-	<title>Randevu</title>
+	@include('frontend.layout.partials.seo-meta', ['seo' => $seo ?? []])
+	@include('frontend.layout.partials.google-tags')
 	<meta name="author" content="Randevu">
-	<meta name="description" content="Randevu">
-	<meta name="keywords" content="Randevu">
-	<meta name="robots" content="INDEX,FOLLOW">
 
 	<!-- Mobile Specific Metas -->
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -67,7 +65,7 @@ $isRtl = in_array($htmlLang, $rtlLangs, true);
 </head>
 
 <body>
-
+	@include('frontend.layout.partials.google-tag-manager-noscript')
 
 	<!--[if lte IE 9]>
     	<p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>

@@ -59,15 +59,15 @@ class ClinicsController extends APIController
         // } else {
         //     $query = Clinic::where('app_type', 1)->where('status', 1)->select('id', 'info', 'name', 'image', 'lat', 'lng', 'address')->orderBy('id', 'asc');
         // }
-        $query = Clinic::where('app_type', 1)->where('status', 1)->select('id', 'app_type', 'info', 'name', 'image', 'lat', 'lng', 'address', 'facebook_url', 'instagram_url', 'tiktok_url', 'snapchat_url', 'youtube_url')->orderBy('id', 'asc');
+        $query = Clinic::whereIn('app_type', [1, 7])->where('status', 1)->select('id', 'parent_id', 'app_type', 'info', 'name', 'image', 'lat', 'lng', 'address', 'facebook_url', 'instagram_url', 'tiktok_url', 'snapchat_url', 'youtube_url')->orderBy('id', 'asc');
         if ($query->paginate()->total() == 0) {
-            $query = Clinic::where('app_type', 1)->where('status', 1)->select('id', 'app_type', 'info', 'name', 'image', 'lat', 'lng', 'address', 'facebook_url', 'instagram_url', 'tiktok_url', 'snapchat_url', 'youtube_url')->orderBy('id', 'asc');
+            $query = Clinic::whereIn('app_type', [1, 7])->where('status', 1)->select('id', 'parent_id', 'app_type', 'info', 'name', 'image', 'lat', 'lng', 'address', 'facebook_url', 'instagram_url', 'tiktok_url', 'snapchat_url', 'youtube_url')->orderBy('id', 'asc');
 //            if ($check_authorization) {
 //                $query->where('city_id', $city_id);
 //            }
         }
         if ($request->q) {
-            $query = Clinic::where('name', 'like', "%{$request->q}%")->where('app_type', 1)->where('status', 1)->select('id', 'app_type', 'info', 'name', 'image', 'lat', 'lng', 'address', 'facebook_url', 'instagram_url', 'tiktok_url', 'snapchat_url', 'youtube_url')->orderBy('id', 'asc');
+            $query = Clinic::where('name', 'like', "%{$request->q}%")->whereIn('app_type', [1, 7])->where('status', 1)->select('id', 'parent_id', 'app_type', 'info', 'name', 'image', 'lat', 'lng', 'address', 'facebook_url', 'instagram_url', 'tiktok_url', 'snapchat_url', 'youtube_url')->orderBy('id', 'asc');
 //            $query->where('name', 'like', "%{$request->q}%");
         }
         if ($request->city_id) {
@@ -156,7 +156,7 @@ class ClinicsController extends APIController
     // get doctors
     function clinic_doctors(ClinicRequest $request)
     {
-        $offers = Clinic::where('parent_id', $request->id)->where('app_type', 3)->select('id', 'app_type', 'name', 'image', 'phone', 'parent_id','info','info_ar')->orderBy('id', 'desc')->paginate(10);
+        $offers = Clinic::where('parent_id', $request->id)->where('app_type', 3)->select('id', 'app_type', 'name', 'image', 'phone', 'parent_id','info','info_ar', 'consultation_price')->orderBy('id', 'desc')->paginate(10);
         $offers_list = ClinicDoctorsResource::collection($offers)->response()->getData();
         return $this->success(trans('messages.offers.all'), $offers_list);
     }

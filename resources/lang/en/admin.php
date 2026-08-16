@@ -1152,5 +1152,11 @@ return [
 
     'chat' => 'chat',
     'write_message' => 'write message',
+    'consultation_price' => 'Consultation price',
+    'doctor_bio_ar' => 'Short bio Arabic',
+    'doctor_bio_en' => 'Short bio English',
+    'enter_consultation_price' => 'Enter consultation price',
+    'enter_doctor_bio_ar' => 'Enter short bio Arabic',
+    'enter_doctor_bio_en' => 'Enter short bio English',
 
 ];

@@ -53,6 +53,9 @@ Route::get('test', function () {
     return "Event has been sent!";
 });
 
+Route::get('/sitemap.xml', 'SeoFilesController@sitemap')->name('sitemap');
+Route::get('/robots.txt', 'SeoFilesController@robots')->name('robots');
+
 
 Route::get('/changeLanguageAdmin/{lang}', function ($lang) {
     $languages = Language::where('status', 1)->get()->toArray();
@@ -197,171 +200,6 @@ Route::group(["middleware" => ["auth", "setlocale"], 'prefix' => 'admin', 'names
         Route::put('links/{id}', 'CmsLinkController@update')->name('links.update');
         Route::delete('links/{id}', 'CmsLinkController@destroy')->name('links.destroy');
         Route::post('links/{id}/toggle-status', 'CmsLinkController@toggleStatus')->name('links.toggleStatus');
-    });
-
-    Route::group(['namespace' => 'Pharmacy', 'prefix' => 'pharmacy'], function () {
-
-
-        Route::name('pharmacy.')->group(function () {
-
-            Route::resource('pharmacy', 'ClinicController')->except('destroy', 'show', 'create', 'edit');
-
-            Route::resource('medicine-departments', 'MedicineDepartmentController')
-                ->except('create', 'edit', 'destroy', 'show');
-
-            Route::get('search-medicine-departments', 'MedicineDepartmentController@search')
-                ->name('medicine-departments.search');
-
-            Route::get('delete-medicine-department-id/{medicine_department_id}', 'MedicineDepartmentController@delete')
-                ->name('medicineDepartment.delete');
-
-            Route::get('get-drugs-by-drug_id/{medicine_department_id}', 'DrugController@getDrugsByDrugId')
-                ->name('medicineDepartment.getDrugsById');
-
-
-            Route::resource('drugs', 'DrugController')->except('create', 'destroy', 'show');
-            Route::get('delete-drug/{drug_id}', 'DrugController@delete')->name('drugs.delete');
-            Route::get('get-alternatives-drugs/{drug_id}', 'DrugController@getAlternativesDrugs')->name('drugs.getAlternativesDrugs');
-            Route::put('update-alternative-drug', 'DrugController@updateAlternativeDrug')->name('drugs.updateAlternativeDrug');
-            Route::get('delete-alternative-drug/{drug_id}', 'DrugController@deleteAlternativeDrug')
-                ->name('drugs.deleteAlternativeDrug');
-
-            Route::get('get-balances-of-drug/{drug_id}', 'DrugController@getBalancesOfDrug')
-                ->name('drugs.getBalancesOfDrug');
-            Route::get('search-drug', 'DrugController@search')->name('drugs.search');
-
-            // item unit
-            Route::resource('item-units', 'ItemUnitController')->except('create', 'edit', 'destroy', 'show');
-            Route::get('delete-unit/{item_unit_id}', 'ItemUnitController@delete')->name('itemUnits.delete');
-            Route::get('search-unit', 'ItemUnitController@search')->name('units.search');
-
-
-            Route::resource('customers', 'CustomerController')->except('create', 'destroy', 'show');
-            Route::get('delete-customer/{customerId}', 'CustomerController@delete')->name('customers.delete');
-            Route::get('search-customer', 'CustomerController@search')->name('customers.search');
-
-
-            Route::resource('suppliers', 'SupplierController')->except('create', 'destroy', 'show');
-            Route::get('delete-supplier/{supplierId}', 'SupplierController@delete')->name('suppliers.delete');
-            Route::get('search-supplier', 'SupplierController@search')->name('suppliers.search');
-
-
-            Route::resource('stores', 'StoreController')->except('create', 'destroy', 'show');
-            Route::get('delete-store/{store_id}', 'StoreController@delete')->name('stores.delete');
-            Route::get('search-store', 'StoreController@search')->name('stores.search');
-
-
-            Route::resource('inventory-records', 'InventoryRecordController')->except('create', 'destroy', 'show');
-            Route::get('delete-inventory-record/{inventory_record_id}', 'InventoryRecordController@delete')->name('inventoryRecord.delete');
-            Route::get('search-inventory-record', 'InventoryRecordController@search')->name('inventory-records.search');
-
-
-            Route::resource('inventory', 'InventoryController')->except('create', 'destroy', 'show');
-            Route::get('delete-inventory/{inventory_id}', 'InventoryController@delete')->name('inventory.delete');
-            Route::get('get-item-not-have-inventory', 'InventoryController@getItemsNotHaveInventor')->name('inventory.getItemsNotHaveInventor');
-            Route::get('data-item-not-have-inventory', 'InventoryController@dataItemsNotHaveInventor')->name('inventory.dataItemsNotHaveInventor');
-
-            Route::get('search-inventory', 'InventoryController@search')->name('inventory.search');
-
-            Route::resource('receipts-payments', 'ReceiptPaymentBondController')->except('create', 'destroy', 'show');
-            Route::get('search-receipts-payments', 'ReceiptPaymentBondController@search')->name('receipts-payments.search');
-
-            Route::get('get-tax-by-id-in-drugs', 'PurchaseInvoiceController@getItemById')->name('getItemById');
-
-
-            Route::resource('purchase-invoice', 'PurchaseInvoiceController')->except('destroy', 'show');
-            Route::get('delete-purchase-invoice/{purchase_invoice_id}', 'PurchaseInvoiceController@delete')->name('PurchaseInvoice.delete');
-            Route::get('search-purchase-invoice', 'PurchaseInvoiceController@search')->name('purchase-invoice.search');
-
-            Route::resource('sale-invoice', 'SaleInvoiceController')->except('destroy', 'show');
-            Route::get('delete-sale-invoice/{sale_invoice_id}', 'SaleInvoiceController@delete')->name('SaleInvoice.delete');
-            Route::get('search-sale-invoice', 'SaleInvoiceController@search')->name('sale-invoice.search');
-
-            Route::resource('patient-sale-invoice', 'PatientSaleInvoiceController')->except('destroy', 'show');
-            Route::get('delete-patient-sale-invoice/{patient_sale_invoice_id}', 'PatientSaleInvoiceController@delete')->name('PatientSaleInvoice.delete');
-            Route::get('search-patient-sale-invoice', 'PatientSaleInvoiceController@search')->name('patient-sale-invoice.search');
-            Route::get('get-drugs-belongs-to-patient', 'PatientSaleInvoiceController@getDrugsBelongsToPatient')
-                ->name('patient-sale-invoice.getDrugsBelongsToPatient');
-
-            Route::get('get-drugs-existed-in-store}', 'SaleInvoiceController@getDrugsExistedInStore')
-                ->name('sale-invoice.getDrugsExistedInStore');
-
-            Route::group(['namespace' => 'Reports'], function () {
-                Route::get('get-suppliers-and-clients-accounts-report', 'ReportController@getSuppliersAndClientsAccountsReport')
-                    ->name('reports.getSuppliersAndClientsAccountsReport');
-
-                Route::get('data-suppliers-and-clients-accounts-report', 'ReportController@dataSuppliersAndClientsAccountsReport')
-                    ->name('reports.dataSuppliersAndClientsAccountsReport');
-
-                Route::get('get-sales-report', 'ReportController@getSalesReport')
-                    ->name('reports.getSalesReport');
-
-                Route::get('data-sales-report', 'ReportController@dataSalesReport')
-                    ->name('reports.dataSalesReport');
-
-                Route::get('get-sales-invoice-report', 'ReportController@getSalesInvoiceReport')
-                    ->name('reports.getSalesInvoiceReport');
-
-                Route::get('data-sales-invoice-report', 'ReportController@dataSalesInvoiceReport')
-                    ->name('reports.dataSalesInvoiceReport');
-
-
-                Route::get('get-purchase-report', 'ReportController@getPurchaseReport')
-                    ->name('reports.getPurchaseReport');
-
-                Route::get('data-purchase-report', 'ReportController@dataPurchaseReport')
-                    ->name('reports.dataPurchaseReport');
-
-                Route::get('get-purchase-invoice-report', 'ReportController@getPurchaseInvoiceReport')
-                    ->name('reports.getPurchaseInvoiceReport');
-
-                Route::get('data-purchase-invoice-report', 'ReportController@dataPurchaseInvoiceReport')
-                    ->name('reports.dataPurchaseInvoiceReport');
-
-                Route::get('get-suppliers-report', 'ReportController@getSuppliersReport')
-                    ->name('reports.getSuppliersReport');
-
-                Route::get('data-suppliers-report', 'ReportController@dataSupplierReport')
-                    ->name('reports.dataSupplierReport');
-
-
-                Route::get('get-drugs-report', 'ReportController@getDrugsReport')
-                    ->name('reports.getDrugsReport');
-
-                Route::get('data-drugs-report', 'ReportController@dataDrugsReport')
-                    ->name('reports.dataDrugsReport');
-
-                Route::get('get-drugs-movement-report', 'ReportController@getDrugsMovementReport')
-                    ->name('reports.getDrugsMovementReport');
-
-                Route::get('data-drugs-movement-report', 'ReportController@dataDrugsMovementReport')
-                    ->name('reports.dataDrugsMovementReport');
-
-
-                Route::get('get-pharmacy-invoices-reports', 'ReportController@getPharmacyInvoiceReports')
-                    ->name('reports.getPharmacyInvoiceReports');
-
-                Route::get('data-pharmacy-invoices-reports', 'ReportController@dataPharmacyInvoiceReports')
-                    ->name('reports.dataPharmacyInvoiceReports');
-
-                Route::get('get-warnings-reports', 'ReportController@getWarningReports')
-                    ->name('reports.getWarningReports');
-
-                Route::get('data-warnings-reports', 'ReportController@dataWarningReports')
-                    ->name('reports.dataWarningReports');
-
-                Route::get('get-pharmacy-inventory-reports', 'ReportController@getPharmacyInventoryReports')
-                    ->name('reports.getPharmacyInventoryReports');
-
-                Route::get('data-pharmacy-inventory-reports', 'ReportController@dataPharmacyInventoryReports')
-                    ->name('reports.dataPharmacyInventoryReports');
-                Route::get('get-inventory-items-reports/{inventory_record_id}', 'ReportController@getInventoryItemsReports')
-                    ->name('reports.getInventoryItemsReports');
-
-            });
-
-        });
-
     });
 
     Route::group(['namespace' => 'Reception'], function () {
@@ -528,7 +366,7 @@ Route::group(["middleware" => ["auth", "setlocale"], 'prefix' => 'admin', 'names
 
 
         // edit profile
-        Route::get('edit-profile', 'ProfileController@index')->name('edit-profile');
+        Route::get('edit-profile', [\App\Http\Controllers\AdminPanel\ProfileController::class, 'index'])->name('edit-profile');
         Route::get('request-permission', 'PermissionsController@index')->name('request-permission');
         Route::post('send-request-permission', 'PermissionsController@send_request_permission')->name('send-request-permission');
 
@@ -644,53 +482,6 @@ Route::group(["middleware" => ["auth", "setlocale"], 'prefix' => 'admin', 'names
 
     });
 
-    Route::group(['namespace' => 'Pharmacy'], function () {
-        // new prescription
-        Route::get('new-prescription', 'NewPrescriptionController@new_prescription')->name('new-prescription');
-        Route::get('diagnosis-display/{id}', 'NewPrescriptionController@diagnosis_display')->name('diagnosis-display');
-        Route::post('add-drug-pharmacy/{reservation_id}', 'NewPrescriptionController@add_drug_pharmacy')->name('add-drug-pharmacy');
-    });
-
-    Route::group(['namespace' => 'Lab'], function () {
-        //create service category
-        Route::get('services-categories', 'ServicesCategoriesController@index')->name('services-categories');
-        Route::get('create-services-category', 'ServicesCategoriesController@create_services_category')->name('create-services-category');
-        Route::post('add-services-category', 'ServicesCategoriesController@add_services_category')->name('add-services-category');
-        Route::get('update-services-category/{id}', 'ServicesCategoriesController@update_services_category')->name('update-services-category');
-        Route::post('edit-services-category/{id}', 'ServicesCategoriesController@edit_services_category')->name('edit-services-category');
-        Route::get('update-status-services-category/{id}/{status}', 'ServicesCategoriesController@update_status_services_category')->name('update-status-services-category');
-        Route::delete('destroy-services-category/{id}', 'ServicesCategoriesController@destroy_services_category')->name('destroy-services-category');
-
-
-        // create drug sections
-
-        Route::get('category-analysis/{department_id}', 'CategoryAnalysisController@index')->name('category-analysis');
-        Route::get('create-category-analysis/{department_id}', 'CategoryAnalysisController@create_category_analysis')->name('create-category-analysis');
-        Route::post('add-category-analysis/{department_id}', 'CategoryAnalysisController@add_category_analysis')->name('add-category-analysis');
-        Route::get('update-category-analysis/{id}', 'CategoryAnalysisController@update_category_analysis')->name('update-category-analysis');
-        Route::post('edit-category-analysis/{id}', 'CategoryAnalysisController@edit_category_analysis')->name('edit-category-analysis');
-        Route::get('update-status-category-analysis/{id}/{status}', 'CategoryAnalysisController@update_status_category_analysis')->name('update-status-category-analysis');
-        Route::delete('destroy-category-analysis/{id}', 'CategoryAnalysisController@destroy_category_analysis')->name('destroy-category-analysis');
-
-
-        // analysis attribute
-        Route::get('analysis-attributes/{service_id}', 'AnalysisAttributesController@index')->name('analysis-attributes');
-
-        Route::post('create-analysis-attributes/{service_id}', 'AnalysisAttributesController@create_analysis_attributes')->name('create-analysis-attributes');
-//        Route::get('update-category-analysis/{id}', 'CategoryAnalysisController@update_category_analysis')->name('update-category-analysis');
-//        Route::post('edit-category-analysis/{id}', 'CategoryAnalysisController@edit_category_analysis')->name('edit-category-analysis');
-//        Route::get('update-status-category-analysis/{id}/{status}', 'CategoryAnalysisController@update_status_category_analysis')->name('update-status-category-analysis');
-//        Route::delete('destroy-category-analysis/{id}', 'CategoryAnalysisController@destroy_category_analysis')->name('destroy-category-analysis');
-
-
-        Route::get('patient-analysis/{patient_id}', 'AnalysisController@patient_analysis')->name('patient-analysis');
-        Route::post('confirm-receipt/{id}', 'AnalysisController@confirm_receipt')->name('confirm-receipt');
-        Route::get('upload-result/{test_result_id}', 'AnalysisController@upload_result')->name('upload-result');
-        Route::post('send-result-analysis/{id}', 'AnalysisController@send_result_analysis')->name('send-result-analysis');
-        // re analysis
-        Route::post('Re-analysis/{id}', 'AnalysisController@re_analysis')->name('Re-analysis');
-
-    });
     // aboutUs Settings
     Route::get('setting/{type}', 'AboutUsController@index')->name('setting');
     Route::get('app-setting/{setting_type}/{app_type}', 'AboutUsController@app_setting')->name('app-setting');
@@ -740,129 +531,10 @@ Route::group(["middleware" => ["auth", "setlocale"], 'prefix' => 'admin', 'names
 
     Route::get('financial-reports', 'FinancialReportsController@index')->name('financial-reports.index');
 
-    Route::get('reports', 'ReportController@index')->name('reports');
-    Route::post('report-result', 'ReportController@report_result')->name('report-result');
-
     // notifications
     Route::get('notifications', 'NotificationController@index')->name('notifications');
     Route::post('send-messages', 'NotificationController@send_messages')->name('send-messages');
     Route::delete('delete-notification/{id}', 'NotificationController@delete_notification')->name('delete-notification');
-
-    // terms and condition
-    Route::get('terms', 'TermsController@index')->name('terms');
-    Route::get('update-status-terms/{id}/{status}', 'TermsController@update_status_terms');
-    Route::post('add-terms', 'TermsController@create_terms')->name('add-terms');
-
-    Route::post('edit-terms/{id}', 'TermsController@edit_terms')->name('edit-terms');
-    Route::delete('delete-terms/{id}', 'TermsController@delete_terms')->name('delete-terms');
-
-
-    Route::group(['namespace' => 'Nursing'], function () {
-        //nursing-staff
-        Route::get('nursing-staff', 'NursingStaffController@index')->name('nursing-staff.index');
-        Route::post('nursing-staff', 'NursingStaffController@store')->name('nursing-staff.store');
-        Route::get('/nursing-staff/edit/{id}', 'NursingStaffController@edit')->name('nursing-staff.edit');
-        Route::put('/nursing-staff/update/{id}', 'NursingStaffController@update')->name('nursing-staff.update');
-        Route::get('/nursing-staff/search', 'NursingStaffController@search')->name('nursing-staff.search');
-        Route::get('/nursing-staff/filter', 'NursingStaffController@filter')->name('nursing-staff.filter');
-        Route::get('/nursing-services/{id}/nursingServices', 'NursingStaffController@nursingServices')->name('nursing-services.nursingServices');
-        Route::get('/nursing-services/{id}/nursingServicesfilter', 'NursingStaffController@nursingServicesfilter')->name('nursing-services.nursingServicesfilter');
-        Route::delete('nursing-staff/{id}', 'NursingStaffController@destroy')->name('nursing-staff.delete');
-
-        //nursing-request
-        Route::get('nursing-requests', 'NursingRequestController@index')->name('nursing-requests.index');
-        Route::get('nursing-requests/details/{id}', 'NursingRequestController@details')->name('nursing-requests.details');
-        Route::get('/nursing-requests/confirmedService', 'NursingRequestController@confirmedService')->name('nursing-requests.confirmedService');
-        Route::get('/nursing-requests/vital-signs/{id}', 'NursingRequestController@vitalSigns')->name('nursing-requests.vitalSigns');
-        Route::put('/nursing-requests/vital-signs-update/{id}', 'NursingRequestController@vitalSignsUpdate')->name('vital-signs-update.vitalSignsUpdate');
-        Route::get('/nursing-requests/search', 'NursingRequestController@search')->name('nursing-requests.search');
-        Route::get('/nursing-requests/filter', 'NursingRequestController@filter')->name('nursing-requests.filter');
-
-
-        //emergency
-        Route::get('create-emergency', 'EmergencyController@create')->name('create-emergency.create');
-        Route::post('store-emergency', 'EmergencyController@store')->name('store-emergency.store');
-        Route::get('emergency', 'EmergencyController@index')->name('emergency.index');
-        Route::get('new-patient', 'EmergencyController@newPatient')->name('new-patient.newPatient');
-        Route::post('save-patient', 'EmergencyController@savePatient')->name('save-patient.savePatient');
-        Route::get('/emergency/edit/{id}', 'EmergencyController@edit')->name('emergency.edit');
-        Route::put('/emergency/update/{id}', 'EmergencyController@update')->name('emergency.update');
-        Route::post('save-note', 'EmergencyController@saveNote')->name('save-note.saveNote');
-        Route::post('normal-exit', 'EmergencyController@normalExit')->name('normal-exit');
-        Route::post('ambulance-exit', 'EmergencyController@ambulanceExit')->name('ambulance-exit');
-        Route::get('emergency/filter', 'EmergencyController@filter')->name('emergency.filter');
-        Route::get('emergency/search', 'EmergencyController@search')->name('emergency.search');
-    });
-
-
-    Route::group(['namespace' => 'Insurance'], function () {
-        // new classes
-        Route::resource('classes', 'ClassesController')->except(['show', 'create', 'edit']);
-        Route::resource('companies', 'CompaniesController')->except(['index', 'create', 'edit']);
-        Route::resource('services-discount', 'ServicesDiscountController')->except(['index', 'create', 'edit']);
-        Route::get('services-discount/{company_id}/{type}', 'ServicesDiscountController@services')->name('services-discount');
-        Route::get('getSpecialties', 'ServicesDiscountController@getSpecialties')->name('getSpecialties');
-        Route::resource('insurance-policy', 'InsurancePolicyController')->except(['create', 'edit']);
-        Route::resource('insurance-approvals', 'InsuranceApprovalsController')->except(['create', 'edit']);
-       Route::get('insured-invoices-reports/{id}/{type}', 'ReportController@insured_invoices_reports')->name('insured-invoices-reports');
-//        Route::get('approved-services', 'InsuranceApprovalsController@approved_services')->name('approved-services');
-
-    });
-
-    Route::group(['namespace' => 'FinancialAccounts'], function () {
-
-        Route::get('accounts/{category_id}', 'AccountsController@index')->name('accounts');
-        Route::post('create-account-category/{category_id}', 'AccountsController@create_account_category')->name('create-account-category');
-//        Route::post('add-account-category', 'AccountsController@add_account_category')->name('add-account-category');
-        Route::get('update-account-category/{id}', 'AccountsController@update_account_category')->name('update-account-category');
-        Route::post('edit-account-category/{id}', 'AccountsController@edit_account_category')->name('edit-account-category');
-        Route::get('update-status-account-category/{id}/{status}', 'AccountsController@update_status_account_category')->name('update-status-account-category');
-        Route::delete('destroy-account-category/{id}', 'AccountsController@destroy_account_category')->name('destroy-account-category');
-
-
-        // report
-        Route::get('category-report/{category_id}', 'AccountsController@category_report')->name('category-report');
-        Route::get('account-settings', 'AccountsController@account_settings')->name('account-settings');
-
-        Route::get('restrictions', 'RestrictionsController@index')->name('restrictions');
-        Route::post('create-daily-entry', 'RestrictionsController@create_daily_entry')->name('create-daily-entry');
-
-        Route::get('financial-bonds', 'financialBondsController@index')->name('financial-bonds');
-        Route::post('create-financial-bonds', 'financialBondsController@create_financial_bonds')->name('create-financial-bonds');
-
-        // cost center
-        Route::get('costCenter', 'CostCenterController@index')->name('costCenter');
-        Route::post('create-cost-center', 'CostCenterController@create_cost_center')->name('create-cost-center');
-        Route::post('edit-cost-center/{id}', 'CostCenterController@edit_cost_center')->name('edit-cost-center');
-        Route::delete('destroy-cost-center/{id}', 'CostCenterController@destroy_cost_center')->name('destroy-cost-center');
-
-        Route::get('ledger', 'ReportsController@ledger')->name('ledger');
-        Route::get('trial-balance', 'ReportsController@trial_balance')->name('trial-balance');
-        Route::get('trading', 'ReportsController@trading')->name('trading');
-        Route::get('profit-and-loss', 'ReportsController@profit_and_loss')->name('profit-and-loss');
-        Route::get('financial-position', 'ReportsController@financial_position')->name('financial-position');
-        Route::get('invoices-reports', 'ReportsController@invoices_reports')->name('invoices-reports');
-        Route::get('income', 'ReportsController@income')->name('income');
-        Route::get('reception-income', 'ReportsController@reception_income')->name('reception-income');
-        Route::get('insurance-claim', 'ReportsController@insurance_claim')->name('insurance-claim');
-        Route::get('patients-balance', 'ReportsController@patients_balance')->name('patients-balance');
-//        Route::get('patients-balance', 'ReportsController@patients_balance')->name('patients-balance');
-        Route::get('doctor-rate', 'ReportsController@doctor_rate')->name('doctor-rate');
-        Route::get('pharmacist-rate', 'ReportsController@pharmacist_rate')->name('pharmacist-rate');
-        Route::get('vat-report', 'ReportsController@vat_report')->name('vat-report');
-        Route::get('expenses-vat', 'ReportsController@expenses_vat')->name('expenses-vat');
-        Route::get('accounts-chart', 'ReportsController@accounts_chart')->name('accounts-chart');
-        Route::get('salaries', 'ReportsController@salaries')->name('salaries');
-
-
-//        Route::get('accounts', 'AccountsController@index')->name('accounts');
-//        Route::post('add-account-category', 'AccountsController@add_account_category')->name('add-account-category');
-//        Route::post('edit-account-category/{id}', 'AccountsController@edit_account_category')->name('edit-account-category');
-//        Route::get('update-status-account-category/{id}/{status}', 'AccountsController@update_status_account_category')->name('update-status-account-category');
-//        Route::delete('destroy-account-category/{id}', 'AccountsController@destroy_account_category')->name('destroy-account-category');
-
-
-    });
 
     Route::group(['namespace' => 'MainAdmin'], function () {
 
@@ -880,6 +552,7 @@ Route::group(["middleware" => ["auth", "setlocale"], 'prefix' => 'admin', 'names
         Route::get('clinic-details/{clinic_id}', 'ClinicsController@clinic_details')->name('clinic-details');
         Route::get('doctor-details/{clinic_id}', 'ClinicsController@doctor_details')->name('doctor-details');
         Route::post('update-clinic/{id}', 'ClinicsController@update_clinic')->name('update-clinic');
+        Route::post('update-clinic-seo/{id}', 'ClinicsController@update_clinic_seo')->name('update-clinic-seo');
         Route::delete('destroy-clinic/{id}', 'ClinicsController@destroy_clinic')->name('destroy-clinic');
         Route::get('update-status-clinic/{id}/{status}', 'ClinicsController@update_status_clinic')->name('update-status-clinic');
         Route::get('/load-tab-content/{app_id}/{clinic_id}', 'ClinicsController@loadTabContent')->name('load-tab-content');
