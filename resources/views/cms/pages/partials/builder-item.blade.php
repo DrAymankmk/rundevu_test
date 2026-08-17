@@ -218,6 +218,9 @@
                                                         'label'
                                                         =>
                                                         __('cms.main_image'),
+                                                        'model'
+                                                        =>
+                                                        $item ?? null,
                                                         'existingImage'
                                                         =>
                                                         $mainImgUrl,
@@ -239,6 +242,9 @@
                                                         'label'
                                                         =>
                                                         __('cms.icon_image'),
+                                                        'model'
+                                                        =>
+                                                        $item ?? null,
                                                         'existingImage'
                                                         =>
                                                         $iconImgUrl,

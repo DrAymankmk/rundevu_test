@@ -1172,6 +1172,7 @@
 </div>
 
 @yield('scripts')
+@stack('scripts')
 <script>
     $(function () {
         $('.sidebar a[href]:not([href="#"]):not([target])').on('click', function () {

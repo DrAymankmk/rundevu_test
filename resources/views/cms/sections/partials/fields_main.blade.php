@@ -62,6 +62,7 @@
 				'inputName' => 'translations[' . $lang->code . '][image]',
 				'collection' => 'images_' . $lang->code,
 				'label' => __('cms.main_image'),
+				'model' => $section ?? null,
 				'existingImage' => isset($section) ? $section->getFirstMediaUrl('images_' .
 				$lang->code) : null
 				])

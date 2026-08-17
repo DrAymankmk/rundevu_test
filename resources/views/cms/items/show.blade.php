@@ -61,8 +61,10 @@
 						$lang->code)->first();
 						$imageUrl = $item->getFirstMediaUrl("images_{$lang->code}")
 						?: $item->getFirstMediaUrl('images');
+						$imageAlt = $item->getMediaAlt('images', $lang->code, true);
 						$iconUrl = $item->getFirstMediaUrl("icons_{$lang->code}") ?:
 						$item->getFirstMediaUrl('icons');
+						$iconAlt = $item->getMediaAlt('icons', $lang->code, true);
 						@endphp
 						<div class="tab-pane fade {{ $index === 0 ? 'show active' : '' }}"
 							id="content-{{ $lang->code }}" role="tabpanel">
@@ -119,7 +121,7 @@
 									class="form-label fw-bold">{{ __('cms.image') }}</label>
 								<div>
 									<img src="{{ $imageUrl }}"
-										alt="{{ $translation->title ?? 'Item Image' }}"
+										alt="{{ $imageAlt !== '' ? $imageAlt : ($translation->title ?? 'Item Image') }}"
 										class="img-fluid rounded"
 										style="max-height: 400px;">
 								</div>
@@ -132,7 +134,7 @@
 									class="form-label fw-bold">{{ __('cms.icon_image') }}</label>
 								<div>
 									<img src="{{ $iconUrl }}"
-										alt="{{ $translation->title ?? 'Item Icon' }}"
+										alt="{{ $iconAlt !== '' ? $iconAlt : ($translation->title ?? 'Item Icon') }}"
 										class="img-fluid rounded"
 										style="max-height: 200px;">
 								</div>
@@ -159,7 +161,7 @@
 						@foreach($gallery as $media)
 						<div class="col-md-3 mb-3">
 							<img src="{{ \App\Support\Cms\CmsGalleryMedia::previewUrl($media) }}"
-								alt="{{ $media->name }}"
+								alt="{{ \App\Support\Cms\CmsGalleryMedia::alt($media) }}"
 								class="img-thumbnail w-100"
 								style="height: 200px; object-fit: cover;">
 						</div>

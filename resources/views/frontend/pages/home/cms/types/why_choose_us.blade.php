@@ -66,7 +66,7 @@
                                 $cls = ['img1', 'img2', 'img3'][$gidx % 3];
                             @endphp
                             <div class="{{ $cls }} wow {{ $anim }} global-img" data-wow-delay="{{ $d }}">
-                                <img src="{{ $media->getUrl() }}" alt="">
+                                <img src="{{ $media->getUrl() }}" alt="{{ \App\Support\Cms\CmsGalleryMedia::alt($media) }}">
                             </div>
                         @endforeach
                     @else

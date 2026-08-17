@@ -28,7 +28,6 @@ function changeLang() {
     } else {
         localStorage.setItem('lang', 'ar');
     }
-    location.reload();
 }
 
 $(document).ready(function($) {

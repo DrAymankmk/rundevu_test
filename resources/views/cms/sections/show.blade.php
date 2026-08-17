@@ -63,6 +63,7 @@
 						$imageUrl =
 						$section->getFirstMediaUrl("images_{$lang->code}") ?:
 						$section->getFirstMediaUrl('images');
+						$imageAlt = $section->getMediaAlt('images', $lang->code, true);
 						@endphp
 						<div class="tab-pane fade {{ $index === 0 ? 'show active' : '' }}"
 							id="content-{{ $lang->code }}" role="tabpanel">
@@ -107,7 +108,7 @@
 									class="form-label fw-bold">{{ __('cms.image') }}</label>
 								<div>
 									<img src="{{ $imageUrl }}"
-										alt="{{ $translation->title ?? $section->name }}"
+										alt="{{ $imageAlt !== '' ? $imageAlt : ($translation->title ?? $section->name) }}"
 										class="img-fluid rounded"
 										style="max-height: 400px;">
 								</div>
@@ -134,7 +135,7 @@
 						@foreach($gallery as $media)
 						<div class="col-md-3 mb-3">
 							<img src="{{ \App\Support\Cms\CmsGalleryMedia::previewUrl($media) }}"
-								alt="{{ $media->name }}"
+								alt="{{ \App\Support\Cms\CmsGalleryMedia::alt($media) }}"
 								class="img-thumbnail w-100"
 								style="height: 200px; object-fit: cover;">
 						</div>

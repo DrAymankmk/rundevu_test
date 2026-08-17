@@ -41,7 +41,7 @@ collect();
 						<div class="project-card">
 							<div class="box-img global-img">
 								<img src="{{ $item->getMediaUrl('images', $locale, null, true) }}"
-									alt="{{ $item->title }}">
+									alt="{{ $item->getMediaAlt('images', $locale, true) }}">
 							</div>
 							<div class="box-content">
 								<h3 class="box-title"><a

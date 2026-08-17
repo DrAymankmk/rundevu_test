@@ -1,10 +1,19 @@
 @php
+    use App\Support\Cms\CmsGalleryMedia;
+
     $inputId = $inputId ?? 'image_upload_' . uniqid();
     $inputName = $inputName ?? 'image';
     $collection = $collection ?? 'images';
     $label = $label ?? __('Image');
     $existingImage = $existingImage ?? null;
     $previewId = 'preview_' . $inputId;
+    $altInputName = CmsGalleryMedia::altInputName($inputName);
+    $model = $model ?? null;
+    $existingAlt = $existingAlt ?? (isset($model) && method_exists($model, 'getFirstMedia')
+        ? CmsGalleryMedia::alt($model->getFirstMedia($collection))
+        : '');
+    $altOldKey = trim(str_replace(['][', '[', ']'], ['.', '.', ''], $altInputName), '.');
+    $existingAlt = old($altOldKey, $existingAlt);
 @endphp
 
 <div class="mb-3">
@@ -13,13 +22,13 @@
         <!-- Preview Container -->
         <div class="image-preview-container mb-2" id="{{ $previewId }}" style="{{ $existingImage ? '' : 'display: none;' }}">
             <div class="position-relative d-inline-block">
-                <img src="{{ $existingImage }}" 
-                     alt="Preview" 
-                     class="img-thumbnail" 
+                <img src="{{ $existingImage }}"
+                     alt="{{ $existingAlt !== '' ? $existingAlt : 'Preview' }}"
+                     class="img-thumbnail"
                      style="max-width: 200px; max-height: 200px; object-fit: cover;"
                      id="{{ $previewId }}_img">
-                <button type="button" 
-                        class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1" 
+                <button type="button"
+                        class="btn btn-sm btn-danger position-absolute top-0 end-0 m-1"
                         onclick="removeImagePreview('{{ $previewId }}', '{{ $inputId }}')"
                         style="border-radius: 50%; width: 24px; height: 24px; padding: 0; line-height: 1;">
                     <i class="mdi mdi-close"></i>
@@ -28,17 +37,29 @@
         </div>
 
         <!-- File Input -->
-        <input type="file" 
-               class="form-control @error($inputName) is-invalid @enderror" 
-               id="{{ $inputId }}" 
-               name="{{ $inputName }}" 
+        <input type="file"
+               class="form-control @error($inputName) is-invalid @enderror"
+               id="{{ $inputId }}"
+               name="{{ $inputName }}"
                accept="image/jpeg,image/png,image/gif,image/webp"
                onchange="previewImage(this, '{{ $previewId }}')">
-        
+
         @error($inputName)
         <div class="invalid-feedback">{{ $message }}</div>
         @enderror
-        
+
+        <label class="form-label mt-2 mb-1" for="{{ $inputId }}_alt">{{ __('cms.alt_text') }}</label>
+        <input type="text"
+               class="form-control @error($altInputName) is-invalid @enderror"
+               id="{{ $inputId }}_alt"
+               name="{{ $altInputName }}"
+               value="{{ $existingAlt }}"
+               maxlength="255"
+               placeholder="{{ __('cms.alt_text') }}">
+        @error($altInputName)
+        <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+
         <small class="text-muted">{{ __('Accepted formats: JPEG, PNG, GIF, WebP') }}</small>
     </div>
 </div>
@@ -48,15 +69,15 @@
 function previewImage(input, previewId) {
     const previewContainer = document.getElementById(previewId);
     const previewImg = document.getElementById(previewId + '_img');
-    
+
     if (input.files && input.files[0]) {
         const reader = new FileReader();
-        
+
         reader.onload = function(e) {
             previewImg.src = e.target.result;
             previewContainer.style.display = 'block';
         };
-        
+
         reader.readAsDataURL(input.files[0]);
     } else {
         previewContainer.style.display = 'none';
@@ -66,7 +87,7 @@ function previewImage(input, previewId) {
 function removeImagePreview(previewId, inputId) {
     const previewContainer = document.getElementById(previewId);
     const input = document.getElementById(inputId);
-    
+
     previewContainer.style.display = 'none';
     if (input) {
         input.value = '';

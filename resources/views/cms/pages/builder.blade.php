@@ -877,6 +877,8 @@
                     if ($sectionGalleryWrap.length) {
                         $sectionGalleryWrap.find('input.gallery-input').attr('id', sectionGalleryId);
                         $sectionGalleryWrap.find('.gallery-preview').attr('id', 'gallery-preview-' + sectionGalleryId);
+                        $sectionGalleryWrap.attr('data-new-alt-name', 'sections[' + si + '][gallery_new_alt][]');
+                        $sectionGalleryWrap.attr('data-replace-base', 'sections[' + si + '][gallery_replace]');
                     }
                     reindexItemImagesAndGallery($card);
                     refreshSectionCardUI($card);
@@ -904,6 +906,15 @@
                 if (!preview || !input.files) {
                     return;
                 }
+                var altName = $wrap.attr('data-new-alt-name') || 'gallery_new_alt[]';
+                var savedAlts = {};
+                $(preview).find('.gallery-item[data-file-name]').each(function() {
+                    var fn = this.getAttribute('data-file-name');
+                    var inp = this.querySelector('.gallery-alt-input');
+                    if (fn && inp) {
+                        savedAlts[fn] = inp.value;
+                    }
+                });
                 $(preview).find('.gallery-item[data-file-name]').remove();
                 Array.from(input.files).forEach(function(file) {
                     if (!isGalleryImageFile(file) && !isGalleryVideoFile(file)) {
@@ -912,20 +923,25 @@
                     var div = document.createElement('div');
                     div.className = 'gallery-item';
                     div.setAttribute('data-file-name', file.name);
+                    var escapedAlt = $('<div>').text(savedAlts[file.name] || '').html();
+                    var altHtml = '<input type="text" class="form-control form-control-sm mt-1 gallery-alt-input" name="' +
+                        altName + '" value="' + escapedAlt + '" maxlength="255" placeholder="{{ __('cms.alt_text') }}">';
                     if (isGalleryVideoFile(file)) {
                         var videoUrl = URL.createObjectURL(file);
-                        div.innerHTML = '<video src="' + videoUrl +
+                        div.innerHTML = '<div class="gallery-item-media"><video src="' + videoUrl +
                             '" class="img-thumbnail gallery-video-preview" muted playsinline></video>' +
                             '<span class="gallery-media-badge">{{ __("cms.video") }}</span>' +
-                            '<button type="button" class="btn btn-sm btn-danger gallery-remove-new"><i class="mdi mdi-delete"></i></button>';
+                            '<button type="button" class="btn btn-sm btn-danger gallery-remove-new"><i class="mdi mdi-delete"></i></button></div>' +
+                            altHtml;
                         preview.appendChild(div);
                         return;
                     }
                     var reader = new FileReader();
                     reader.onload = function(e) {
-                        div.innerHTML = '<img src="' + e.target.result +
+                        div.innerHTML = '<div class="gallery-item-media"><img src="' + e.target.result +
                             '" alt="" class="img-thumbnail">' +
-                            '<button type="button" class="btn btn-sm btn-danger gallery-remove-new"><i class="mdi mdi-delete"></i></button>';
+                            '<button type="button" class="btn btn-sm btn-danger gallery-remove-new"><i class="mdi mdi-delete"></i></button></div>' +
+                            altHtml;
                         preview.appendChild(div);
                     };
                     reader.readAsDataURL(file);
@@ -934,6 +950,28 @@
 
             $('#sections-container').on('change', 'input.gallery-input', function() {
                 rebuildSectionGalleryPreviews(this);
+            });
+
+            $('#sections-container').on('click', '.gallery-replace-existing', function(e) {
+                e.preventDefault();
+                var item = this.closest('.gallery-item');
+                var replaceInput = item && item.querySelector('.gallery-replace-input');
+                if (replaceInput) {
+                    replaceInput.click();
+                }
+            });
+
+            $('#sections-container').on('change', 'input.gallery-replace-input', function() {
+                if (!this.files || !this.files[0]) {
+                    return;
+                }
+                var file = this.files[0];
+                if (!window.CmsGalleryUpload ||
+                    (!window.CmsGalleryUpload.isImage(file) && !window.CmsGalleryUpload.isVideo(file))) {
+                    this.value = '';
+                    return;
+                }
+                window.CmsGalleryUpload.updateExistingPreview(this.closest('.gallery-item'), file);
             });
 
             $('#sections-container').on('click', '.gallery-remove-new', function(e) {
@@ -1027,6 +1065,9 @@
                         .attr('id', gid);
                     $card.find('.gallery-upload-container .gallery-preview')
                         .attr('id', 'gallery-preview-' + gid);
+                    $card.find('.gallery-upload-container')
+                        .attr('data-new-alt-name', 'sections[' + si + '][items][' + ii + '][gallery_new_alt][]')
+                        .attr('data-replace-base', 'sections[' + si + '][items][' + ii + '][gallery_replace]');
                     $card.find('.image-upload-wrapper').each(function() {
                         var $w = $(this);
                         var $input = $w.find(

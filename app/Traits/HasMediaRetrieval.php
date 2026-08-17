@@ -132,4 +132,14 @@ trait HasMediaRetrieval
 
         return $media ? CmsGalleryMedia::accessibleUrl($media) : null;
     }
+
+    public function getMediaAlt(
+        string $collectionName,
+        ?string $locale = null,
+        bool $useLanguageFallback = true
+    ): string {
+        $media = $this->getMediaWithFallback($collectionName, $locale, $useLanguageFallback);
+
+        return CmsGalleryMedia::alt($media);
+    }
 }

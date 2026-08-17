@@ -57,14 +57,14 @@
 
                 <!-- Language Switch -->
                 @if(app()->getLocale() == 'ar')
-                    <a href="{{ URL::to('changeLanguageAdmin','en') }}"
+                    <a href="{{ admin_language_switch_url('en') }}"
                        class="btn btn-liner-gradient me-3"
                        title="Switch to English">
                         <i class="ti ti-world"></i>
                         <span>English</span>
                     </a>
                 @else
-                    <a href="{{ URL::to('changeLanguageAdmin','ar') }}"
+                    <a href="{{ admin_language_switch_url('ar') }}"
                        class="btn btn-liner-gradient me-3"
                        title="التبديل إلى العربية">
                         <i class="ti ti-world"></i>
@@ -300,7 +300,7 @@
 
                         <!-- Item-->
                         <div class="pt-2 mt-2 border-top">
-                            <a href="{{url('admin/login')}}" class="dropdown-item text-danger">
+                            <a href="{{ route('admin.logout') }}" class="dropdown-item text-danger">
                                 <i class="ti ti-logout me-1 fs-17 align-middle"></i>
                                 <span class="align-middle">{{ trans('admin.logout') }}</span>
                             </a>

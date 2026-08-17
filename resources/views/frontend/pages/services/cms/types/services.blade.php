@@ -57,9 +57,11 @@ $serviceButtons->push(compact('href', 'label', 'target', 'rel', 'icon', 'btnClas
 			'service_1_1.svg'));
 			$icon = $item->getMediaUrl('icons', $locale, $defaultIcon, true);
 			$itemImg = $item->getMediaUrl('images', $locale, null, true);
+			$itemAlt = $item->getMediaAlt('images', $locale, true);
 			if (! filled($itemImg)) {
 			$g = $item->getMedia('gallery')->first();
 			$itemImg = $g ? $g->getUrl() : null;
+			$itemAlt = $g ? \App\Support\Cms\CmsGalleryMedia::alt($g) : $itemAlt;
 			}
 			$hasItemImage = filled($itemImg);
 			@endphp
@@ -69,7 +71,7 @@ $serviceButtons->push(compact('href', 'label', 'target', 'rel', 'icon', 'btnClas
 						@if($hasItemImage)
 						<div class="service-card-thumb global-img mb-3">
 							<img src="{{ $itemImg }}"
-								alt="{{ strip_tags($itemTitle) }}"
+								alt="{{ $itemAlt !== '' ? $itemAlt : strip_tags($itemTitle) }}"
 								class="w-100 rounded"
 								style="max-height: 200px; object-fit: cover;">
 						</div>

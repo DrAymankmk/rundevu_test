@@ -106,6 +106,7 @@
 								$lang->code . '][image]',
 								'collection' => 'images_' . $lang->code,
 								'label' => __('cms.main_image'),
+								'model' => $section,
 								'existingImage' =>
 								$section->getFirstMediaUrl('images_' .
 								$lang->code)

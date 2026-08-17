@@ -189,6 +189,7 @@ class CmsSection extends Model implements HasMedia
             ],
             'about-us' => [
                 'style_1' => ['preview' => 'frontend/layouts/about_section_style_1.png'],
+                'style_2' => ['preview' => 'frontend/layouts/about_section_style_2.png'],
             ],
             'services' => [
                 'style_1' => ['preview' => 'frontend/layouts/services_section_style_1.png'],

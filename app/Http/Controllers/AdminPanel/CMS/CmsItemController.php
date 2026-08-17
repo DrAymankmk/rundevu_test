@@ -114,10 +114,19 @@ class CmsItemController extends Controller
             'translations.*.sub_title' => 'nullable|string|max:255',
             'translations.*.content' => 'nullable|string',
             'translations.*.icon' => 'nullable|string|max:255',
+            'translations.*.image_alt' => 'nullable|string|max:255',
+            'translations.*.icon_image_alt' => 'nullable|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'image_alt' => 'nullable|string|max:255',
             'icon' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp,svg|max:2048',
             'gallery' => 'nullable|array',
             'gallery.*' => ['nullable', CmsGalleryMedia::fileRule()],
+            'gallery_existing_alt' => 'nullable|array',
+            'gallery_existing_alt.*' => 'nullable|string|max:255',
+            'gallery_new_alt' => 'nullable|array',
+            'gallery_new_alt.*' => 'nullable|string|max:255',
+            'gallery_replace' => 'nullable|array',
+            'gallery_replace.*' => ['nullable', CmsGalleryMedia::fileRule()],
         ]);
 
         $item = CmsItem::create([
@@ -138,34 +147,18 @@ class CmsItemController extends Controller
                 'icon' => $translationData['icon'] ?? null,
             ]);
 
-            // Handle language-specific image uploads
-            $translationFiles = $request->file("translations.{$locale}", []);
-            if (isset($translationFiles['image']) && $translationFiles['image']->isValid()) {
-                $item->clearMediaCollection("images_{$locale}");
-                $item->addMedia($translationFiles['image'])->toMediaCollection("images_{$locale}");
-            }
-            if (isset($translationFiles['icon_image']) && $translationFiles['icon_image']->isValid()) {
-                $item->clearMediaCollection("icons_{$locale}");
-                $item->addMedia($translationFiles['icon_image'])->toMediaCollection("icons_{$locale}");
-            }
+            $this->syncItemTranslationMedia($request, $item, $locale);
         }
 
-        // Handle general image uploads (for backward compatibility)
-        if ($request->hasFile('image')) {
-            $item->addMediaFromRequest('image')->toMediaCollection('images');
-        }
-        if ($request->hasFile('icon')) {
-            $item->addMediaFromRequest('icon')->toMediaCollection('icons');
-        }
-
-        // Handle gallery uploads
-        if ($request->hasFile('gallery')) {
-            foreach ($request->file('gallery') as $file) {
-                if ($file->isValid()) {
-                    $item->addMedia($file)->toMediaCollection('gallery');
-                }
-            }
-        }
+        $this->syncItemGeneralMedia($request, $item);
+        CmsGalleryMedia::syncGalleryUploads(
+            $item,
+            $request->file('gallery'),
+            $request->input('gallery_new_alt'),
+            $request->input('gallery_existing_alt'),
+            'gallery',
+            $request->file('gallery_replace')
+        );
 
         return redirect()->route('cms.items.index', ['section_id' => $item->cms_section_id])
             ->with('success', __('Item created successfully'));
@@ -211,11 +204,20 @@ class CmsItemController extends Controller
             'translations.*.content' => 'nullable|string',
             'translations.*.icon' => 'nullable|string|max:255',
             'translations.*.image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'translations.*.image_alt' => 'nullable|string|max:255',
             'translations.*.icon_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp,svg|max:2048',
+            'translations.*.icon_image_alt' => 'nullable|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'image_alt' => 'nullable|string|max:255',
             'icon' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp,svg|max:2048',
             'gallery' => 'nullable|array',
             'gallery.*' => ['nullable', CmsGalleryMedia::fileRule()],
+            'gallery_existing_alt' => 'nullable|array',
+            'gallery_existing_alt.*' => 'nullable|string|max:255',
+            'gallery_new_alt' => 'nullable|array',
+            'gallery_new_alt.*' => 'nullable|string|max:255',
+            'gallery_replace' => 'nullable|array',
+            'gallery_replace.*' => ['nullable', CmsGalleryMedia::fileRule()],
         ]);
 
         $item->update([
@@ -237,40 +239,18 @@ class CmsItemController extends Controller
                 ]
             );
 
-            // Handle language-specific image uploads
-            $translationFiles = $request->file("translations.{$locale}", []);
-            if (isset($translationFiles['image']) && $translationFiles['image']->isValid()) {
-                $item->clearMediaCollection("images_{$locale}");
-                $item->addMedia($translationFiles['image'])->toMediaCollection("images_{$locale}");
-            }
-            if (isset($translationFiles['icon_image']) && $translationFiles['icon_image']->isValid()) {
-                $item->clearMediaCollection("icons_{$locale}");
-                $item->addMedia($translationFiles['icon_image'])->toMediaCollection("icons_{$locale}");
-            }
+            $this->syncItemTranslationMedia($request, $item, $locale);
         }
 
-        // Handle general image uploads (for backward compatibility)
-        if ($request->hasFile('image')) {
-            $item->clearMediaCollection('images');
-            $item->addMediaFromRequest('image')->toMediaCollection('images');
-        }
-        if ($request->hasFile('thumbnail')) {
-            $item->clearMediaCollection('thumbnails');
-            $item->addMediaFromRequest('thumbnail')->toMediaCollection('thumbnails');
-        }
-        if ($request->hasFile('icon')) {
-            $item->clearMediaCollection('icons');
-            $item->addMediaFromRequest('icon')->toMediaCollection('icons');
-        }
-
-        // Handle gallery uploads
-        if ($request->hasFile('gallery')) {
-            foreach ($request->file('gallery') as $file) {
-                if ($file->isValid()) {
-                    $item->addMedia($file)->toMediaCollection('gallery');
-                }
-            }
-        }
+        $this->syncItemGeneralMedia($request, $item);
+        CmsGalleryMedia::syncGalleryUploads(
+            $item,
+            $request->file('gallery'),
+            $request->input('gallery_new_alt'),
+            $request->input('gallery_existing_alt'),
+            'gallery',
+            $request->file('gallery_replace')
+        );
 
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([
@@ -310,5 +290,54 @@ class CmsItemController extends Controller
             'message' => __('Status updated successfully'),
             'is_active' => $item->is_active,
         ]);
+    }
+
+    private function syncItemTranslationMedia(Request $request, CmsItem $item, string $locale): void
+    {
+        $translationFiles = $request->file("translations.{$locale}", []);
+
+        if (isset($translationFiles['image']) && $translationFiles['image']->isValid()) {
+            $item->clearMediaCollection("images_{$locale}");
+            CmsGalleryMedia::addFileWithAlt(
+                $item,
+                $translationFiles['image'],
+                "images_{$locale}",
+                $request->input("translations.{$locale}.image_alt")
+            );
+        } elseif ($request->exists("translations.{$locale}.image_alt")) {
+            CmsGalleryMedia::persistCollectionAlt($item, "images_{$locale}", $request->input("translations.{$locale}.image_alt"));
+        }
+
+        if (isset($translationFiles['icon_image']) && $translationFiles['icon_image']->isValid()) {
+            $item->clearMediaCollection("icons_{$locale}");
+            CmsGalleryMedia::addFileWithAlt(
+                $item,
+                $translationFiles['icon_image'],
+                "icons_{$locale}",
+                $request->input("translations.{$locale}.icon_image_alt")
+            );
+        } elseif ($request->exists("translations.{$locale}.icon_image_alt")) {
+            CmsGalleryMedia::persistCollectionAlt($item, "icons_{$locale}", $request->input("translations.{$locale}.icon_image_alt"));
+        }
+    }
+
+    private function syncItemGeneralMedia(Request $request, CmsItem $item): void
+    {
+        if ($request->hasFile('image')) {
+            $item->clearMediaCollection('images');
+            CmsGalleryMedia::addFileWithAlt($item, $request->file('image'), 'images', $request->input('image_alt'));
+        } elseif ($request->exists('image_alt')) {
+            CmsGalleryMedia::persistCollectionAlt($item, 'images', $request->input('image_alt'));
+        }
+
+        if ($request->hasFile('thumbnail')) {
+            $item->clearMediaCollection('thumbnails');
+            CmsGalleryMedia::addFileWithAlt($item, $request->file('thumbnail'), 'thumbnails', $request->input('thumbnail_alt'));
+        }
+
+        if ($request->hasFile('icon')) {
+            $item->clearMediaCollection('icons');
+            CmsGalleryMedia::addFileWithAlt($item, $request->file('icon'), 'icons', $request->input('icon_alt'));
+        }
     }
 }

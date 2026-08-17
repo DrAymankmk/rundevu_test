@@ -127,6 +127,7 @@
 								$lang->code . '][image]',
 								'collection' => 'images_' . $lang->code,
 								'label' => __('cms.main_image'),
+								'model' => $item,
 								'existingImage' =>
 								$item->getFirstMediaUrl('images_' .
 								$lang->code)
@@ -139,6 +140,7 @@
 								$lang->code . '][icon_image]',
 								'collection' => 'icons_' . $lang->code,
 								'label' => __('cms.icon_image'),
+								'model' => $item,
 								'existingImage' =>
 								$item->getFirstMediaUrl('icons_' .
 								$lang->code)

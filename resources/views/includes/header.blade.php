@@ -46,11 +46,11 @@
                                 </a>
                                 <ul class="language-dropdown onhover-show-div p-20">
                                     {{--                                        <li><a href="{{URL::to('changeLanguageAdmin',$lang->code)}}" data-lng="{{ $lang->code }}"><img src="{{$lang->image}}" style="width: 20px"/> {{$lang->name}}</a></li>--}}
-                                    <li><a href="{{URL::to('changeLanguageAdmin','ar')}}" data-lng="ar">
+                                    <li><a href="{{ admin_language_switch_url('ar') }}" data-lng="ar">
                                             <i class="flag-icon flag-icon-sa mr-2"></i>
                                             AR</a></li>
                                     <br>
-                                    <li><a href="{{URL::to('changeLanguageAdmin','en')}}" data-lng="ar">
+                                    <li><a href="{{ admin_language_switch_url('en') }}" data-lng="en">
                                             <i class="flag-icon flag-icon-us mr-2"></i>
                                             EN</a></li>
 

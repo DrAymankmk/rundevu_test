@@ -15,7 +15,10 @@ class AboutUsSectionPresenter
         $sub = $st?->subtitle ?: __('About us');
         $desc = $st?->description ?: '<p class="fs-18 mb-30 wow fadeInUp" data-wow-delay=".1s">' . e(__('A belief that knowledge is power—we connect our patients with their results and quality care when they need it most.')) . '</p>';
         $descHasListItems = stripos($desc, '<li') !== false;
-        $aboutAlt = strip_tags($title) ?: __('About');
+        $aboutAlt = $section->getMediaAlt('images', $locale, true);
+        if ($aboutAlt === '') {
+            $aboutAlt = strip_tags($title) ?: __('About');
+        }
 
         $resolveHref = static function (?string $raw): string {
             $raw = trim((string) $raw);
@@ -34,14 +37,7 @@ class AboutUsSectionPresenter
         };
 
         $galleryVideo = null;
-        $posterBeforeVideo = null;
-        $posterAfterVideo = null;
-        $mediaPool = collect();
-
-        $primaryFromImages = $section->getMediaUrl('images', $locale, null, true);
-        if (filled($primaryFromImages)) {
-            $mediaPool->push($primaryFromImages);
-        }
+        $galleryImages = collect();
 
         foreach ($section->getMedia('gallery') as $media) {
             if (CmsGalleryMedia::isVideo($media)) {
@@ -52,34 +48,42 @@ class AboutUsSectionPresenter
                 continue;
             }
 
-            $url = $media->getUrl();
+            $url = CmsGalleryMedia::accessibleUrl($media) ?? $media->getUrl();
             if (! filled($url)) {
                 continue;
             }
 
-            if ($galleryVideo === null) {
-                $posterBeforeVideo = $posterBeforeVideo ?? $url;
-            } elseif ($posterAfterVideo === null) {
-                $posterAfterVideo = $url;
-            }
-
-            $mediaPool->push($url);
+            $galleryImages->push([
+                'url' => $url,
+                'alt' => CmsGalleryMedia::alt($media),
+            ]);
         }
 
-        $mediaPool = $mediaPool->unique()->values();
+        $galleryImages = $galleryImages->unique('url')->values();
+        $firstMedia = $galleryImages->get(0);
+        $secondMedia = $galleryImages->get(1);
+        $thirdMedia = $galleryImages->get(2);
 
-        $primaryImg = $mediaPool->get(0) ?? asset('frontend/assets/img/normal/about_4_1.jpg');
-        $videoImg = $mediaPool->get(1)
-            ?? $posterAfterVideo
-            ?? $posterBeforeVideo
-            ?? asset('frontend/assets/img/normal/about-video.jpg');
-
-        $defaultSide = [
+        $defaults = [
+            asset('frontend/assets/img/normal/about_1_1.jpg'),
             asset('frontend/assets/img/normal/about_1_2.jpg'),
             asset('frontend/assets/img/normal/about_1_3.jpg'),
         ];
-        $sideImg1 = $mediaPool->get(0) ?? $defaultSide[0];
-        $sideImg2 = $mediaPool->get(1) ?? $defaultSide[1];
+
+        $primaryImg = is_array($firstMedia) ? $firstMedia['url'] : $defaults[0];
+        $primaryAlt = is_array($firstMedia) ? ($firstMedia['alt'] ?? '') : '';
+        if ($primaryAlt !== '') {
+            $aboutAlt = $primaryAlt;
+        }
+
+        $secondaryImg = is_array($secondMedia) ? $secondMedia['url'] : $defaults[1];
+        $secondaryAlt = is_array($secondMedia) ? ($secondMedia['alt'] ?? '') : $aboutAlt;
+
+        $videoImg = is_array($thirdMedia) ? $thirdMedia['url'] : $defaults[2];
+        $videoAlt = is_array($thirdMedia) ? ($thirdMedia['alt'] ?? '') : $aboutAlt;
+
+        $sideImg1 = $primaryImg;
+        $sideImg2 = $secondaryImg;
 
         $videoUrl = $galleryVideo ? (string) $galleryVideo->getUrl() : '';
         $videoMimeType = $galleryVideo?->mime_type ?? 'video/mp4';
@@ -165,7 +169,11 @@ class AboutUsSectionPresenter
             'descHasListItems',
             'aboutAlt',
             'primaryImg',
+            'primaryAlt',
+            'secondaryImg',
+            'secondaryAlt',
             'videoImg',
+            'videoAlt',
             'sideImg1',
             'sideImg2',
             'videoUrl',

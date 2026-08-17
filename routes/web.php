@@ -55,30 +55,40 @@ Route::get('test', function () {
 
 
 Route::get('/changeLanguageAdmin/{lang}', function ($lang) {
-    $languages = Language::where('status', 1)->get()->toArray();
-    $lang_codes = array_column($languages, 'code');
-    if (!in_array($lang, $lang_codes)) {
+    $languages = Language::where('status', 1)->pluck('code')->all();
+    if (!in_array($lang, $languages, true)) {
         $lang = 'en';
     }
-//    if (auth()->user()) {
-//        $user = auth()->user();
-//        $user->lang = $lang;
-//        $user->save();
-//    }
-    if (session()->has('lang')) {
-        session()->forget('lang');
-    }
-    session()->put('lang', $lang);
-
-
-    App::setLocale($lang);
-    // Session
-    session()->put('lang', $lang);
 
     session(['lang' => $lang]);
-    app()->setLocale($lang);
+    App::setLocale($lang);
 
-    return back();
+    $redirect = request()->query('redirect');
+    if (is_string($redirect) && $redirect !== '') {
+        if (preg_match('#^https?://#i', $redirect)) {
+            $path = parse_url($redirect, PHP_URL_PATH) ?: '/admin/dashboard';
+            $query = parse_url($redirect, PHP_URL_QUERY);
+            $redirect = $path . ($query ? '?' . $query : '');
+        }
+        if (strpos($redirect, '/admin') === 0
+            && strpos($redirect, '/admin/login') === false
+            && strpos($redirect, '//') === false
+            && strpos($redirect, 'changeLanguageAdmin') === false
+        ) {
+            return redirect()->to($redirect);
+        }
+    }
+
+    $previous = url()->previous();
+    if (auth()->check() && (strpos($previous, '/admin/login') !== false || strpos($previous, 'changeLanguageAdmin') !== false)) {
+        return redirect()->route('admin.dashboard');
+    }
+
+    if (auth()->check()) {
+        return redirect()->to($previous);
+    }
+
+    return redirect()->back();
 });
 
 // Route::get('/', function () {
@@ -739,6 +749,27 @@ Route::group(["middleware" => ["auth", "setlocale"], 'prefix' => 'admin', 'names
     Route::post('edit-profile/{id}', 'ProfileController@edit_profile')->name('edit-profile');
 
     Route::get('financial-reports', 'FinancialReportsController@index')->name('financial-reports.index');
+
+    Route::prefix('clinic-reports')->name('clinic-reports.')->group(function () {
+        Route::get('appointments', 'ClinicReportsController@appointments')->name('appointments');
+        Route::get('doctors', 'ClinicReportsController@doctors')->name('doctors');
+        Route::get('patients', 'ClinicReportsController@patients')->name('patients');
+        Route::get('reviews', 'ClinicReportsController@reviews')->name('reviews');
+    });
+
+    Route::prefix('analytics')->name('analytics.')->group(function () {
+        Route::get('/', 'AnalyticsReportsController@index')->name('index');
+        Route::get('reservations', 'AnalyticsReportsController@reservations')->name('reservations');
+        Route::get('by-status', 'AnalyticsReportsController@byStatus')->name('by-status');
+        Route::get('time-based', 'AnalyticsReportsController@timeBased')->name('time-based');
+        Route::get('by-doctor', 'AnalyticsReportsController@byDoctor')->name('by-doctor');
+        Route::get('by-specialty', 'AnalyticsReportsController@bySpecialty')->name('by-specialty');
+        Route::get('doctors', 'AnalyticsReportsController@doctors')->name('doctors');
+        Route::get('patients', 'AnalyticsReportsController@patients')->name('patients');
+        Route::get('ratings', 'AnalyticsReportsController@ratings')->name('ratings');
+        Route::get('export/{section}', 'AnalyticsReportsController@export')->name('export');
+        Route::post('ratings/{id}/resolve', 'AnalyticsReportsController@resolveReview')->name('ratings.resolve');
+    });
 
     Route::get('reports', 'ReportController@index')->name('reports');
     Route::post('report-result', 'ReportController@report_result')->name('report-result');

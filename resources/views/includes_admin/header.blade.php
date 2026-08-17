@@ -12,14 +12,14 @@
         <ul class="nav user-menu gap-2">
             <li class="nav-item m-0 desktop-language-switch">
                 @if(\Illuminate\Support\Facades\Session::get('lang') == 'en' || app()->getLocale() == 'en')
-                    <a onclick="changeLang()" href="{{URL::to('changeLanguageAdmin','ar')}}" class="hasnotifications nav-link" aria-label="Change language to Arabic">
+                    <a onclick="changeLang()" href="{{admin_language_switch_url('ar')}}" class="hasnotifications nav-link" aria-label="Change language to Arabic">
                         <i class="fa-solid fa-globe"></i>
                         <img class="switchLang" src="/assets/img/ar.png" alt="" width="30" height="30">
                         <span>AR</span>
                     </a>
 {{--                    <a href="" onclick="changeLang()" class="nav-link"><img class="switchLang" width="30" height="30" src="/assets/img/ar.png" alt=""></a>--}}
                 @else
-                    <a onclick="changeLang()" href="{{URL::to('changeLanguageAdmin','en')}}" class="hasnotifications nav-link" aria-label="Change language to English">
+                    <a onclick="changeLang()" href="{{admin_language_switch_url('en')}}" class="hasnotifications nav-link" aria-label="Change language to English">
                         <i class="fa-solid fa-globe"></i>
                         <img class="switchLang" src="/assets/img/en.jpg" alt="" width="30" height="30">
                         <span>EN</span>
@@ -81,13 +81,13 @@
         </ul>
         <div class="mobile-language-switch d-sm-none d-flex">
             @if(\Illuminate\Support\Facades\Session::get('lang') == 'en' || app()->getLocale() == 'en')
-                <a onclick="changeLang()"  href="{{URL::to('changeLanguageAdmin','ar')}}" class="hasnotifications nav-link" aria-label="Change language to Arabic">
+                <a onclick="changeLang()"  href="{{admin_language_switch_url('ar')}}" class="hasnotifications nav-link" aria-label="Change language to Arabic">
                     <i class="fa-solid fa-globe"></i>
                     <img src="/assets/img/ar.png" class="switchLang2" alt="">
                     <span>AR</span>
                 </a>
             @else
-                <a onclick="changeLang()"  href="{{URL::to('changeLanguageAdmin','en')}}" class="hasnotifications nav-link" aria-label="Change language to English">
+                <a onclick="changeLang()"  href="{{admin_language_switch_url('en')}}" class="hasnotifications nav-link" aria-label="Change language to English">
                     <i class="fa-solid fa-globe"></i>
                     <img src="/assets/img/en.jpg" class="switchLang2" alt="">
                     <span>EN</span>
@@ -274,13 +274,13 @@
             <li class="nav-item desktop-language-switch">
 
                 @if(\Illuminate\Support\Facades\Session::get('lang') == 'en' || app()->getLocale() == 'en')
-                    <a href="{{URL::to('changeLanguageAdmin','ar')}}" class="hasnotifications nav-link" aria-label="Change language to Arabic">
+                    <a href="{{admin_language_switch_url('ar')}}" class="hasnotifications nav-link" aria-label="Change language to Arabic">
                         <i class="fa-solid fa-globe"></i>
                         <img src="/assets/img/ar.png" alt="">
                         <span>AR</span>
                     </a>
                 @else
-                    <a href="{{URL::to('changeLanguageAdmin','en')}}" class="hasnotifications nav-link" aria-label="Change language to English">
+                    <a href="{{admin_language_switch_url('en')}}" class="hasnotifications nav-link" aria-label="Change language to English">
                         <i class="fa-solid fa-globe"></i>
                         <img src="/assets/img/en.jpg" alt="">
                         <span>EN</span>
@@ -290,13 +290,13 @@
         </ul>
         <div class="mobile-language-switch d-sm-none d-flex">
             @if(\Illuminate\Support\Facades\Session::get('lang') == 'en' || app()->getLocale() == 'en')
-                <a href="{{URL::to('changeLanguageAdmin','ar')}}" class="hasnotifications nav-link" aria-label="Change language to Arabic">
+                <a href="{{admin_language_switch_url('ar')}}" class="hasnotifications nav-link" aria-label="Change language to Arabic">
                     <i class="fa-solid fa-globe"></i>
                     <img src="/assets/img/ar.png" alt="">
                     <span>AR</span>
                 </a>
             @else
-                <a href="{{URL::to('changeLanguageAdmin','en')}}" class="hasnotifications nav-link" aria-label="Change language to English">
+                <a href="{{admin_language_switch_url('en')}}" class="hasnotifications nav-link" aria-label="Change language to English">
                     <i class="fa-solid fa-globe"></i>
                     <img src="/assets/img/en.jpg" alt="">
                     <span>EN</span>

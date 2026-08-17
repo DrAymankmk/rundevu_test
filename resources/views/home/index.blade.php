@@ -107,6 +107,18 @@
                         </div>
                     </div>
 
+                    <div class="col-sm-6 col-xl-3 col-lg-4">
+                        <div class="dash-widget dashboard-link-widget" data-href="{{ route('clinic-reports.appointments') }}">
+                            <div class="dash-boxs comman-flex-center">
+                                <i class="fa-solid fa-calendar-check"></i>
+                            </div>
+                            <div class="dash-content dash-count">
+                                <h4><a href="{{ route('clinic-reports.appointments') }}">@lang('clinic_reports.title')</a></h4>
+                                <p>@lang('clinic_reports.appointments')</p>
+                            </div>
+                        </div>
+                    </div>
+
 
 
                 </div>

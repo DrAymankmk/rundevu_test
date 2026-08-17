@@ -79,6 +79,7 @@
 				'inputName' => 'translations[' . $lang->code . '][image]',
 				'collection' => 'images_' . $lang->code,
 				'label' => __('cms.main_image'),
+				'model' => $item ?? null,
 				'existingImage' => isset($item) ? $item->getFirstMediaUrl('images_' .
 				$lang->code) : null
 				])
@@ -88,6 +89,7 @@
 				'inputName' => 'translations[' . $lang->code . '][icon_image]',
 				'collection' => 'icons_' . $lang->code,
 				'label' => __('cms.icon_image'),
+				'model' => $item ?? null,
 				'existingImage' => isset($item) ? $item->getFirstMediaUrl('icons_' .
 				$lang->code) : null
 				])
