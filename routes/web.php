@@ -55,40 +55,30 @@ Route::get('test', function () {
 
 
 Route::get('/changeLanguageAdmin/{lang}', function ($lang) {
-    $languages = Language::where('status', 1)->pluck('code')->all();
-    if (!in_array($lang, $languages, true)) {
+    $languages = Language::where('status', 1)->get()->toArray();
+    $lang_codes = array_column($languages, 'code');
+    if (!in_array($lang, $lang_codes)) {
         $lang = 'en';
     }
+//    if (auth()->user()) {
+//        $user = auth()->user();
+//        $user->lang = $lang;
+//        $user->save();
+//    }
+    if (session()->has('lang')) {
+        session()->forget('lang');
+    }
+    session()->put('lang', $lang);
+
+
+    App::setLocale($lang);
+    // Session
+    session()->put('lang', $lang);
 
     session(['lang' => $lang]);
-    App::setLocale($lang);
+    app()->setLocale($lang);
 
-    $redirect = request()->query('redirect');
-    if (is_string($redirect) && $redirect !== '') {
-        if (preg_match('#^https?://#i', $redirect)) {
-            $path = parse_url($redirect, PHP_URL_PATH) ?: '/admin/dashboard';
-            $query = parse_url($redirect, PHP_URL_QUERY);
-            $redirect = $path . ($query ? '?' . $query : '');
-        }
-        if (strpos($redirect, '/admin') === 0
-            && strpos($redirect, '/admin/login') === false
-            && strpos($redirect, '//') === false
-            && strpos($redirect, 'changeLanguageAdmin') === false
-        ) {
-            return redirect()->to($redirect);
-        }
-    }
-
-    $previous = url()->previous();
-    if (auth()->check() && (strpos($previous, '/admin/login') !== false || strpos($previous, 'changeLanguageAdmin') !== false)) {
-        return redirect()->route('admin.dashboard');
-    }
-
-    if (auth()->check()) {
-        return redirect()->to($previous);
-    }
-
-    return redirect()->back();
+    return back();
 });
 
 // Route::get('/', function () {
