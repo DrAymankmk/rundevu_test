@@ -9,7 +9,14 @@ class ReservationRate extends Model
 {
     use HasFactory;
 
-    public $fillable = ['clinic_id','doctor_id','reservation_id', 'user_id', 'comment','rate_value','status'];
+    public $fillable = [
+        'clinic_id', 'doctor_id', 'reservation_id', 'user_id', 'comment', 'rate_value', 'status',
+        'follow_up_status', 'follow_up_notes', 'resolved_at', 'resolved_by',
+    ];
+
+    protected $casts = [
+        'resolved_at' => 'datetime',
+    ];
 
     function users () {
         return $this->belongsTo(User::class,'user_id');

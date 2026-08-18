@@ -247,7 +247,7 @@
                                     class="fa-solid fa-file-invoice-dollar"></i></span>
                             <span>@lang('financial_reports.title')</span></a></li>
 
-                    <!-- <li><a href="{{ route('clinic-reports.appointments') }}"
+                    <li><a href="{{ route('clinic-reports.appointments') }}"
                            class="{{ request()->routeIs('clinic-reports.appointments') ? 'active' : '' }}"><span
                                 class="menu-side clinic-admin-menu-icon"><i
                                     class="fa-solid fa-calendar-check"></i></span>
@@ -269,7 +269,7 @@
                            class="{{ request()->routeIs('clinic-reports.reviews') ? 'active' : '' }}"><span
                                 class="menu-side clinic-admin-menu-icon"><i
                                     class="fa-solid fa-star"></i></span>
-                            <span>@lang('clinic_reports.reviews')</span></a></li> -->
+                            <span>@lang('clinic_reports.reviews')</span></a></li>
 
                     <li><a href="{{ route('change-password') }}"><span
                                 class="menu-side clinic-admin-menu-icon"><i

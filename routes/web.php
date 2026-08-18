@@ -745,6 +745,7 @@ Route::group(["middleware" => ["auth", "setlocale"], 'prefix' => 'admin', 'names
         Route::get('doctors', 'ClinicReportsController@doctors')->name('doctors');
         Route::get('patients', 'ClinicReportsController@patients')->name('patients');
         Route::get('reviews', 'ClinicReportsController@reviews')->name('reviews');
+        Route::get('export/{section}', 'ClinicReportsController@export')->name('export');
     });
 
     Route::prefix('analytics')->name('analytics.')->group(function () {
