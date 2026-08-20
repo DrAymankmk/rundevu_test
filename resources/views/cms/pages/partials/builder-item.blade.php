@@ -251,6 +251,19 @@
                                                         ])
                                                     </div>
                                                 </div>
+                                                <div class="col-12 mt-2">
+                                                    @include('components.gallery-upload', [
+                                                        'compact' => true,
+                                                        'deferGalleryInit' => true,
+                                                        'inputId' => 'item-gallery-s'.$sidx.'-i'.$iidx.'-'.$lang->code,
+                                                        'inputName' => 'sections['.$sidx.'][items]['.$iidx.'][translations]['.$lang->code.'][gallery]',
+                                                        'collection' => 'gallery_'.$lang->code,
+                                                        'label' => __('cms.gallery_images'),
+                                                        'existingImages' => ($item ?? null)
+                                                            ? $item->getMedia('gallery_'.$lang->code)
+                                                            : collect(),
+                                                    ])
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -259,19 +272,6 @@
                         </div>
                     @endif
                 </div>
-                <!-- <div class="col-xl-4">
-						<div class="mt-4 mt-xl-0">
-							@include('components.gallery-upload', [
-							'deferGalleryInit' => true,
-							'inputId' => 'item-gallery-s'.$sidx.'-i'.$iidx,
-							'inputName' => 'sections['.$sidx.'][items]['.$iidx.'][gallery]',
-							'collection' => 'gallery',
-							'label' => __('cms.gallery_images'),
-							'existingImages' => ($item ?? null) ? $item->getMedia('gallery') :
-							collect([]),
-							])
-                </div>
-            </div> -->
             </div>
             <hr class="my-2">
             <div class="d-flex justify-content-between align-items-center mb-1">

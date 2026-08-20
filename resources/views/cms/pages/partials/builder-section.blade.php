@@ -287,24 +287,28 @@
                                         ])
                                     </div>
                                 </div>
+
+                                <hr class="my-2">
+                                <h6 class="small fw-semibold mb-2">
+                                    {{ __('cms.gallery') }} ({{ $lang->name }})
+                                </h6>
+
+                                @include('components.gallery-upload', [
+                                    'compact' => true,
+                                    'deferGalleryInit' => true,
+                                    'inputId' => 'section-gallery-' . $sidx . '-' . $lang->code,
+                                    'inputName' => 'sections[' . $sidx . '][translations][' . $lang->code . '][gallery]',
+                                    'collection' => 'gallery_' . $lang->code,
+                                    'label' => __('cms.gallery_images'),
+                                    'existingImages' => ($section ?? null)
+                                        ? $section->getMedia('gallery_' . $lang->code)
+                                        : collect(),
+                                ])
                             </div>
                         @endforeach
                     </div>
                 </div>
             @endif
-            @php
-                $sectionExistingImages = ($section ?? null)
-                    ? $section->getMedia('gallery')
-                    : collect();
-            @endphp
-            @include('components.gallery-upload', [
-            'deferGalleryInit' => true,
-            'inputId' => 'section-gallery-'.$sidx,
-            'inputName' => 'sections['.$sidx.'][gallery]',
-            'collection' => 'gallery',
-            'label' => __('cms.gallery_images'),
-            'existingImages' => $sectionExistingImages,
-            ])
             <hr>
             <div class="d-flex justify-content-between align-items-center mb-2">
                 <span class="fw-semibold">{{ __('cms.section_links') }}</span>

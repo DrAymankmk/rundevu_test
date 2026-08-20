@@ -870,16 +870,26 @@
                             si + ']');
                     });
                     syncSectionBuilderIds($card, si);
-                    var sectionGalleryId = 'section-gallery-' + si;
-                    var $sectionGalleryWrap = $card.find('.gallery-upload-container').filter(function() {
+                    $card.find('.gallery-upload-container').filter(function() {
                         return $(this).closest('.item-card').length === 0;
-                    }).first();
-                    if ($sectionGalleryWrap.length) {
-                        $sectionGalleryWrap.find('input.gallery-input').attr('id', sectionGalleryId);
-                        $sectionGalleryWrap.find('.gallery-preview').attr('id', 'gallery-preview-' + sectionGalleryId);
-                        $sectionGalleryWrap.attr('data-new-alt-name', 'sections[' + si + '][gallery_new_alt][]');
-                        $sectionGalleryWrap.attr('data-replace-base', 'sections[' + si + '][gallery_replace]');
-                    }
+                    }).each(function() {
+                        var $wrap = $(this);
+                        var $input = $wrap.find('input.gallery-input').first();
+                        if (!$input.length) {
+                            return;
+                        }
+                        var name = $input.attr('name') || '';
+                        var match = name.match(/\[translations\]\[([^\]]+)\]\[gallery\]/);
+                        if (!match) {
+                            return;
+                        }
+                        var lang = match[1];
+                        var galleryId = 'section-gallery-' + si + '-' + lang;
+                        $input.attr('id', galleryId);
+                        $wrap.find('.gallery-preview').attr('id', 'gallery-preview-' + galleryId);
+                        $wrap.attr('data-new-alt-name', 'sections[' + si + '][translations][' + lang + '][gallery_new_alt][]');
+                        $wrap.attr('data-replace-base', 'sections[' + si + '][translations][' + lang + '][gallery_replace]');
+                    });
                     reindexItemImagesAndGallery($card);
                     refreshSectionCardUI($card);
                 });
@@ -1060,14 +1070,24 @@
                 var si = $('#sections-container .section-card').index($section);
                 $section.find('.items-wrap .item-card').each(function(ii) {
                     var $card = $(this);
-                    var gid = 'item-gallery-s' + si + '-i' + ii;
-                    $card.find('.gallery-upload-container input.gallery-input')
-                        .attr('id', gid);
-                    $card.find('.gallery-upload-container .gallery-preview')
-                        .attr('id', 'gallery-preview-' + gid);
-                    $card.find('.gallery-upload-container')
-                        .attr('data-new-alt-name', 'sections[' + si + '][items][' + ii + '][gallery_new_alt][]')
-                        .attr('data-replace-base', 'sections[' + si + '][items][' + ii + '][gallery_replace]');
+                    $card.find('.gallery-upload-container').each(function() {
+                        var $wrap = $(this);
+                        var $input = $wrap.find('input.gallery-input').first();
+                        if (!$input.length) {
+                            return;
+                        }
+                        var name = $input.attr('name') || '';
+                        var match = name.match(/\[translations\]\[([^\]]+)\]\[gallery\]/);
+                        if (!match) {
+                            return;
+                        }
+                        var lang = match[1];
+                        var galleryId = 'item-gallery-s' + si + '-i' + ii + '-' + lang;
+                        $input.attr('id', galleryId);
+                        $wrap.find('.gallery-preview').attr('id', 'gallery-preview-' + galleryId);
+                        $wrap.attr('data-new-alt-name', 'sections[' + si + '][items][' + ii + '][translations][' + lang + '][gallery_new_alt][]');
+                        $wrap.attr('data-replace-base', 'sections[' + si + '][items][' + ii + '][translations][' + lang + '][gallery_replace]');
+                    });
                     $card.find('.image-upload-wrapper').each(function() {
                         var $w = $(this);
                         var $input = $w.find(

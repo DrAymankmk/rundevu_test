@@ -2,8 +2,14 @@
     use App\Support\Cms\CmsGalleryMedia;
 
     $deferGalleryInit = $deferGalleryInit ?? false;
+    $compact = $compact ?? false;
+    $inputId = $inputId ?? 'gallery_upload_' . uniqid();
     $inputName = $inputName ?? 'gallery';
+    $collection = $collection ?? 'gallery';
+    $existingImages = $existingImages ?? collect();
+    // Normalize so we don't end up with "[][]" when callers already pass an array name (e.g. "...[gallery][]").
     $galleryNameRoot = preg_replace('/\[\]$/', '', $inputName);
+    $fileInputName = $galleryNameRoot . '[]';
     if (preg_match('/^(.*)\[gallery\]$/', $galleryNameRoot, $galleryNameMatch)) {
         $existingAltBase = $galleryNameMatch[1] . '[gallery_existing_alt]';
         $replaceBase = $galleryNameMatch[1] . '[gallery_replace]';
@@ -18,16 +24,16 @@
         array_map(fn ($ext) => '.'.$ext, CmsGalleryMedia::VIDEO_EXTENSIONS)
     ));
 @endphp
-<div class="mb-3">
-    <label class="form-label">{{ $label ?? __('Gallery') }}</label>
+<div class="mb-3 gallery-upload-field{{ $compact ? ' gallery-upload-field-compact' : '' }}">
+    <label class="form-label{{ $compact ? ' small mb-0' : '' }}" for="{{ $inputId }}">{{ $label ?? __('Gallery') }}</label>
     <div class="gallery-upload-container"
          data-collection="{{ $collection }}"
          data-new-alt-name="{{ $newAltName }}"
          data-replace-base="{{ $replaceBase }}">
         <input type="file"
                id="{{ $inputId }}"
-               name="{{ $inputName }}[]"
-               class="form-control gallery-input"
+               name="{{ $fileInputName }}"
+               class="form-control{{ $compact ? ' form-control-sm' : '' }} gallery-input"
                accept="{{ $acceptTypes }}"
                multiple>
 
@@ -66,6 +72,7 @@
                         </div>
                         <input type="text"
                                class="form-control form-control-sm mt-1 gallery-alt-input"
+                               data-media-id="{{ $image->id }}"
                                name="{{ $existingAltBase }}[{{ $image->id }}]"
                                value="{{ CmsGalleryMedia::alt($image) }}"
                                maxlength="255"

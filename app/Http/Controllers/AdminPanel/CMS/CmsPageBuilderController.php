@@ -52,7 +52,7 @@ class CmsPageBuilderController extends Controller
         $validated = $request->validate($rules);
         $validated['is_active'] = $request->boolean('is_active');
 
-        $page = DB::transaction(function () use ($validated, $request) {
+        $page = DB::transaction(function () use ($validated, $request, $localeCodes) {
             $page = CmsPage::create([
                 'slug' => $validated['slug'],
                 'name' => $validated['name'],
@@ -75,7 +75,7 @@ class CmsPageBuilderController extends Controller
                 ]);
                 $this->syncSectionTranslations($section, $sec['translations'] ?? []);
                 $this->syncMorphLinks($section, $sec['links'] ?? []);
-                $this->syncSectionGalleryFromRequest($request, $order, $section);
+                $this->syncSectionTranslationGalleriesFromRequest($request, $order, $section, $localeCodes);
 
                 foreach ($sec['items'] ?? [] as $iOrder => $itemRow) {
                     $item = $section->items()->create([
@@ -111,7 +111,7 @@ class CmsPageBuilderController extends Controller
         $validated['is_active'] = $request->boolean('is_active');
         $this->assertBuilderPayloadBelongsToPage($page, $validated);
 
-        DB::transaction(function () use ($page, $validated, $request) {
+        DB::transaction(function () use ($page, $validated, $request, $localeCodes) {
             $page->update([
                 'slug' => $validated['slug'],
                 'name' => $validated['name'],
@@ -154,7 +154,7 @@ class CmsPageBuilderController extends Controller
                 $keptSectionIds[] = $section->id;
                 $this->syncSectionTranslations($section, $sec['translations'] ?? []);
                 $this->syncMorphLinks($section, $sec['links'] ?? []);
-                $this->syncSectionGalleryFromRequest($request, $order, $section);
+                $this->syncSectionTranslationGalleriesFromRequest($request, $order, $section, $localeCodes);
 
                 $keptItemIds = [];
                 foreach ($sec['items'] ?? [] as $iOrder => $itemRow) {
@@ -261,6 +261,14 @@ class CmsPageBuilderController extends Controller
             'sections.*.gallery.*' => ['nullable', CmsGalleryMedia::fileRule()],
             'sections.*.gallery_replace' => ['nullable', 'array'],
             'sections.*.gallery_replace.*' => ['nullable', CmsGalleryMedia::fileRule()],
+            'sections.*.translations.*.gallery' => ['nullable', 'array'],
+            'sections.*.translations.*.gallery.*' => ['nullable', CmsGalleryMedia::fileRule()],
+            'sections.*.translations.*.gallery_existing_alt' => ['nullable', 'array'],
+            'sections.*.translations.*.gallery_existing_alt.*' => ['nullable', 'string', 'max:255'],
+            'sections.*.translations.*.gallery_new_alt' => ['nullable', 'array'],
+            'sections.*.translations.*.gallery_new_alt.*' => ['nullable', 'string', 'max:255'],
+            'sections.*.translations.*.gallery_replace' => ['nullable', 'array'],
+            'sections.*.translations.*.gallery_replace.*' => ['nullable', CmsGalleryMedia::fileRule()],
             'sections.*.links' => ['nullable', 'array'],
             'sections.*.links.*.name' => ['nullable', 'string', 'max:255'],
             'sections.*.links.*.link' => ['nullable', 'string', 'max:2048'],
@@ -279,6 +287,14 @@ class CmsPageBuilderController extends Controller
             'sections.*.items.*.gallery.*' => ['nullable', CmsGalleryMedia::fileRule()],
             'sections.*.items.*.gallery_replace' => ['nullable', 'array'],
             'sections.*.items.*.gallery_replace.*' => ['nullable', CmsGalleryMedia::fileRule()],
+            'sections.*.items.*.translations.*.gallery' => ['nullable', 'array'],
+            'sections.*.items.*.translations.*.gallery.*' => ['nullable', CmsGalleryMedia::fileRule()],
+            'sections.*.items.*.translations.*.gallery_existing_alt' => ['nullable', 'array'],
+            'sections.*.items.*.translations.*.gallery_existing_alt.*' => ['nullable', 'string', 'max:255'],
+            'sections.*.items.*.translations.*.gallery_new_alt' => ['nullable', 'array'],
+            'sections.*.items.*.translations.*.gallery_new_alt.*' => ['nullable', 'string', 'max:255'],
+            'sections.*.items.*.translations.*.gallery_replace' => ['nullable', 'array'],
+            'sections.*.items.*.translations.*.gallery_replace.*' => ['nullable', CmsGalleryMedia::fileRule()],
             'sections.*.items.*.translations.*.image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:2048'],
             'sections.*.items.*.translations.*.icon_image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp,svg', 'max:2048'],
         ];
@@ -370,8 +386,18 @@ class CmsPageBuilderController extends Controller
             } elseif ($request->exists("sections.{$sectionIndex}.items.{$itemIndex}.translations.{$locale}.icon_image_alt")) {
                 CmsGalleryMedia::persistCollectionAlt($item, "icons_{$locale}", $iconAlt);
             }
+
+            CmsGalleryMedia::syncGalleryUploads(
+                $item,
+                $request->file("sections.{$sectionIndex}.items.{$itemIndex}.translations.{$locale}.gallery"),
+                $request->input("sections.{$sectionIndex}.items.{$itemIndex}.translations.{$locale}.gallery_new_alt"),
+                $request->input("sections.{$sectionIndex}.items.{$itemIndex}.translations.{$locale}.gallery_existing_alt"),
+                'gallery_' . $locale,
+                $request->file("sections.{$sectionIndex}.items.{$itemIndex}.translations.{$locale}.gallery_replace")
+            );
         }
 
+        // Legacy single gallery field (kept for backward compatibility).
         CmsGalleryMedia::syncGalleryUploads(
             $item,
             $request->file("sections.{$sectionIndex}.items.{$itemIndex}.gallery"),
@@ -382,10 +408,34 @@ class CmsPageBuilderController extends Controller
         );
     }
 
-    private function syncSectionGalleryFromRequest(Request $request, int $sectionIndex, CmsSection $section): void
-    {
-        $beforeCount = $section->getMedia('gallery')->count();
+    private function syncSectionTranslationGalleriesFromRequest(
+        Request $request,
+        int $sectionIndex,
+        CmsSection $section,
+        array $localeCodes
+    ): void {
+        $addedGalleryImages = false;
 
+        foreach ($localeCodes as $locale) {
+            $collection = 'gallery_' . $locale;
+            $beforeCount = $section->getMedia($collection)->count();
+
+            CmsGalleryMedia::syncGalleryUploads(
+                $section,
+                $request->file("sections.{$sectionIndex}.translations.{$locale}.gallery"),
+                $request->input("sections.{$sectionIndex}.translations.{$locale}.gallery_new_alt"),
+                $request->input("sections.{$sectionIndex}.translations.{$locale}.gallery_existing_alt"),
+                $collection,
+                $request->file("sections.{$sectionIndex}.translations.{$locale}.gallery_replace")
+            );
+
+            if ($section->getMedia($collection)->count() > $beforeCount) {
+                $addedGalleryImages = true;
+            }
+        }
+
+        // Legacy single gallery field (kept for backward compatibility).
+        $legacyBeforeCount = $section->getMedia('gallery')->count();
         CmsGalleryMedia::syncGalleryUploads(
             $section,
             $request->file("sections.{$sectionIndex}.gallery"),
@@ -395,15 +445,30 @@ class CmsPageBuilderController extends Controller
             $request->file("sections.{$sectionIndex}.gallery_replace")
         );
 
-        if ($section->getMedia('gallery')->count() > $beforeCount) {
-            $this->syncSectionPrimaryImageFromGallery($section);
+        if ($section->getMedia('gallery')->count() > $legacyBeforeCount) {
+            $addedGalleryImages = true;
+        }
+
+        if ($addedGalleryImages) {
+            $this->syncSectionPrimaryImageFromGallery($section, $localeCodes);
         }
     }
 
-    private function syncSectionPrimaryImageFromGallery(CmsSection $section): void
+    private function syncSectionPrimaryImageFromGallery(CmsSection $section, array $localeCodes = []): void
     {
         if ($section->getFirstMedia('images')) {
             return;
+        }
+
+        foreach ($localeCodes as $locale) {
+            $firstImage = $section->getMedia('gallery_' . $locale)->first(
+                fn ($media) => CmsGalleryMedia::isImage($media)
+            );
+            if ($firstImage) {
+                $firstImage->copy($section, 'images');
+
+                return;
+            }
         }
 
         $firstImage = $section->getMedia('gallery')->first(

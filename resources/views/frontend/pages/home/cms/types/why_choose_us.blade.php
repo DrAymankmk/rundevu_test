@@ -56,7 +56,7 @@
             <div class="col-xxl-7">
                 <div class="choose-img-box">
                     @php
-                        $gallery = $section->getMedia('gallery');
+                        $gallery = $section->getGalleryMedia($locale);
                     @endphp
                     @if($gallery->isNotEmpty())
                         @foreach($gallery->take(3) as $gidx => $media)
@@ -64,9 +64,10 @@
                                 $anim = ['fadeInLeft', 'fadeInRight', 'fadeInUp'][$gidx % 3];
                                 $d = ['.3s', '.6s', '.9s'][$gidx % 3];
                                 $cls = ['img1', 'img2', 'img3'][$gidx % 3];
+                                $galleryUrl = \App\Support\Cms\CmsGalleryMedia::accessibleUrl($media) ?? $media->getUrl();
                             @endphp
                             <div class="{{ $cls }} wow {{ $anim }} global-img" data-wow-delay="{{ $d }}">
-                                <img src="{{ $media->getUrl() }}" alt="{{ \App\Support\Cms\CmsGalleryMedia::alt($media) }}">
+                                <img src="{{ $galleryUrl }}" alt="{{ \App\Support\Cms\CmsGalleryMedia::alt($media) }}">
                             </div>
                         @endforeach
                     @else

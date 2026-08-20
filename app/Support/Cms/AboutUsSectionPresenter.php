@@ -39,7 +39,7 @@ class AboutUsSectionPresenter
         $galleryVideo = null;
         $galleryImages = collect();
 
-        foreach ($section->getMedia('gallery') as $media) {
+        foreach ($section->getGalleryMedia($locale) as $media) {
             if (CmsGalleryMedia::isVideo($media)) {
                 if ($galleryVideo === null) {
                     $galleryVideo = $media;

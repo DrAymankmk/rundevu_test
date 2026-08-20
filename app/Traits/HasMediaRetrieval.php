@@ -142,4 +142,50 @@ trait HasMediaRetrieval
 
         return CmsGalleryMedia::alt($media);
     }
+
+    /**
+     * Get gallery media for the current locale with sensible fallbacks.
+     *
+     * @return \Illuminate\Support\Collection<int, Media>
+     */
+    public function getGalleryMedia(
+        ?string $locale = null,
+        bool $useLanguageFallback = true
+    ): \Illuminate\Support\Collection {
+        $locale = $locale ?? app()->getLocale();
+        $fallbackLocale = config('app.fallback_locale', 'en');
+
+        if ($useLanguageFallback) {
+            $localized = $this->getMedia('gallery_' . $locale);
+            if ($localized->isNotEmpty()) {
+                return $localized;
+            }
+
+            if ($locale !== $fallbackLocale) {
+                $fallback = $this->getMedia('gallery_' . $fallbackLocale);
+                if ($fallback->isNotEmpty()) {
+                    return $fallback;
+                }
+            }
+        }
+
+        $legacy = $this->getMedia('gallery');
+        if ($legacy->isNotEmpty()) {
+            return $legacy;
+        }
+
+        if ($useLanguageFallback) {
+            $anyLocaleGallery = Media::where('model_type', get_class($this))
+                ->where('model_id', $this->id)
+                ->where('collection_name', 'like', 'gallery_%')
+                ->orderBy('order_column')
+                ->get();
+
+            if ($anyLocaleGallery->isNotEmpty()) {
+                return $anyLocaleGallery;
+            }
+        }
+
+        return collect();
+    }
 }

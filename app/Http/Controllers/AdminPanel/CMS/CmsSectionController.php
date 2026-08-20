@@ -123,6 +123,14 @@ class CmsSectionController extends Controller
             'translations.*.subtitle' => 'nullable|string',
             'translations.*.description' => 'nullable|string',
             'translations.*.image_alt' => 'nullable|string|max:255',
+            'translations.*.gallery' => 'nullable|array',
+            'translations.*.gallery.*' => ['nullable', CmsGalleryMedia::fileRule()],
+            'translations.*.gallery_existing_alt' => 'nullable|array',
+            'translations.*.gallery_existing_alt.*' => 'nullable|string|max:255',
+            'translations.*.gallery_new_alt' => 'nullable|array',
+            'translations.*.gallery_new_alt.*' => 'nullable|string|max:255',
+            'translations.*.gallery_replace' => 'nullable|array',
+            'translations.*.gallery_replace.*' => ['nullable', CmsGalleryMedia::fileRule()],
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'image_alt' => 'nullable|string|max:255',
             'gallery' => 'nullable|array',
@@ -156,6 +164,7 @@ class CmsSectionController extends Controller
             ]);
 
             $this->syncSectionTranslationImage($request, $section, $locale);
+            $this->syncSectionTranslationGallery($request, $section, $locale);
         }
 
         $this->syncSectionGeneralImage($request, $section);
@@ -220,6 +229,14 @@ class CmsSectionController extends Controller
             'translations.*.description' => 'nullable|string',
             'translations.*.image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'translations.*.image_alt' => 'nullable|string|max:255',
+            'translations.*.gallery' => 'nullable|array',
+            'translations.*.gallery.*' => ['nullable', CmsGalleryMedia::fileRule()],
+            'translations.*.gallery_existing_alt' => 'nullable|array',
+            'translations.*.gallery_existing_alt.*' => 'nullable|string|max:255',
+            'translations.*.gallery_new_alt' => 'nullable|array',
+            'translations.*.gallery_new_alt.*' => 'nullable|string|max:255',
+            'translations.*.gallery_replace' => 'nullable|array',
+            'translations.*.gallery_replace.*' => ['nullable', CmsGalleryMedia::fileRule()],
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'image_alt' => 'nullable|string|max:255',
             'gallery' => 'nullable|array',
@@ -256,6 +273,7 @@ class CmsSectionController extends Controller
             );
 
             $this->syncSectionTranslationImage($request, $section, $locale);
+            $this->syncSectionTranslationGallery($request, $section, $locale);
         }
 
         $this->syncSectionGeneralImage($request, $section);
@@ -340,6 +358,18 @@ class CmsSectionController extends Controller
         if ($request->exists("translations.{$locale}.image_alt")) {
             CmsGalleryMedia::persistCollectionAlt($section, "images_{$locale}", $alt);
         }
+    }
+
+    private function syncSectionTranslationGallery(Request $request, CmsSection $section, string $locale): void
+    {
+        CmsGalleryMedia::syncGalleryUploads(
+            $section,
+            $request->file("translations.{$locale}.gallery"),
+            $request->input("translations.{$locale}.gallery_new_alt"),
+            $request->input("translations.{$locale}.gallery_existing_alt"),
+            'gallery_' . $locale,
+            $request->file("translations.{$locale}.gallery_replace")
+        );
     }
 
     private function syncSectionGeneralImage(Request $request, CmsSection $section): void

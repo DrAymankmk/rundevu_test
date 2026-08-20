@@ -43,7 +43,7 @@
 						dir="{{ $lang->direction }}">
 				</div>
 
-				@include('backend.components.rich-text-editor', [
+				@include('components.rich-text-editor', [
 				'inputId' => 'section_description_' . $lang->code,
 				'inputName' => 'translations[' . $lang->code . '][description]',
 				'label' => __('cms.description') . ' (' . $lang->name . ')',
@@ -57,7 +57,7 @@
 				<hr class="my-3">
 				<h6 class="mb-3">{{ __('cms.images') }} ({{ $lang->name }})</h6>
 
-				@include('backend.components.image-upload', [
+				@include('components.image-upload', [
 				'inputId' => 'section_image_' . $lang->code,
 				'inputName' => 'translations[' . $lang->code . '][image]',
 				'collection' => 'images_' . $lang->code,
@@ -66,24 +66,22 @@
 				'existingImage' => isset($section) ? $section->getFirstMediaUrl('images_' .
 				$lang->code) : null
 				])
+
+				<!-- Gallery Upload Fields for this Language -->
+				<hr class="my-3">
+				<h6 class="mb-3">{{ __('cms.gallery') }} ({{ $lang->name }})</h6>
+
+				@include('components.gallery-upload', [
+					'inputId' => 'section_gallery_' . $lang->code,
+					'inputName' => 'translations[' . $lang->code . '][gallery]',
+					'collection' => 'gallery_' . $lang->code,
+					'label' => __('cms.gallery_images'),
+					'existingImages' => isset($section)
+						? $section->getMedia('gallery_' . $lang->code)
+						: collect([]),
+				])
 			</div>
 			@endforeach
 		</div>
-	</div>
-</div>
-
-<!-- Gallery Section -->
-<div class="card mt-3">
-	<div class="card-header">
-		<h5 class="card-title mb-0">{{ __('cms.gallery') }}</h5>
-	</div>
-	<div class="card-body">
-		@include('backend.components.gallery-upload', [
-		'inputId' => 'section_gallery',
-		'inputName' => 'gallery',
-		'collection' => 'gallery',
-		'label' => __('cms.gallery_images'),
-		'existingImages' => isset($section) ? $section->getMedia('gallery') : collect([])
-		])
 	</div>
 </div>
