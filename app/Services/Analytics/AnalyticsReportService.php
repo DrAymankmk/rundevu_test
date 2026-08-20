@@ -3,6 +3,7 @@
 namespace App\Services\Analytics;
 
 use App\Models\Clinic;
+use App\Models\ClinicSpecialist;
 use App\Models\DoctorCondition;
 use App\Models\ReservationRate;
 use App\Models\Reservations;
@@ -45,10 +46,21 @@ class AnalyticsReportService
             $doctorQuery->where('parent_id', $filters['clinic_id']);
         }
 
-        $specialties = Specialty::query()
+        $specialtiesQuery = Specialty::query()
             ->where('status', 1)
-            ->orderBy('name_' . app()->getLocale())
-            ->get(['id', 'name_ar', 'name_en', 'parent_id']);
+            ->orderBy('name_' . app()->getLocale());
+
+        if (!empty($filters['clinic_id'])) {
+            $clinicSpecialtyIds = ClinicSpecialist::query()
+                ->where('clinic_id', $filters['clinic_id'])
+                ->where('type', 1)
+                ->where('status', 1)
+                ->pluck('specialty_id');
+
+            $specialtiesQuery->whereIn('id', $clinicSpecialtyIds);
+        }
+
+        $specialties = $specialtiesQuery->get(['id', 'name_ar', 'name_en', 'parent_id']);
 
         $statuses = Status::query()->orderBy('id')->get();
 
