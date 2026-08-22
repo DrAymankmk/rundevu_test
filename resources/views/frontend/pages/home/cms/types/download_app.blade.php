@@ -4,8 +4,15 @@ $fb = config('app.fallback_locale', 'en');
 $locale = app()->getLocale();
 $items = $section->relationLoaded('items') ? $section->items->where('is_active', true)->sortBy('order')->values() :
 collect();
-$phoneImg = $section->getMediaUrl('images', $locale, asset('frontend/assets/img/normal/download-1-1.png'), true);
-$phoneAlt = $section->getMediaAlt('images', $locale, true);
+$galleryImage = $section->getGalleryMedia($locale)->first(
+	fn ($media) => \App\Support\Cms\CmsGalleryMedia::isImage($media)
+);
+$phoneImg = $galleryImage
+	? (\App\Support\Cms\CmsGalleryMedia::accessibleUrl($galleryImage) ?? $galleryImage->getUrl())
+	: $section->getMediaUrl('images', $locale, asset('frontend/assets/img/normal/download-1-1.png'), true);
+$phoneAlt = $galleryImage
+	? \App\Support\Cms\CmsGalleryMedia::alt($galleryImage)
+	: $section->getMediaAlt('images', $locale, true);
 $apple = $items->first(fn ($i) => str_contains(strtolower($i->slug ?? ''), 'apple')) ?? $items->get(0);
 $google = $items->first(fn ($i) => str_contains(strtolower($i->slug ?? ''), 'google') ||
 str_contains(strtolower($i->slug ?? ''), 'play')) ?? $items->get(1);

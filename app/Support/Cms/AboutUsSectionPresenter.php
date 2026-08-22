@@ -36,30 +36,56 @@ class AboutUsSectionPresenter
             return (bool) preg_match('#(youtube\.com|youtu\.be|vimeo\.com)#i', $url);
         };
 
-        $galleryVideo = null;
-        $galleryImages = collect();
-
-        foreach ($section->getGalleryMedia($locale) as $media) {
-            if (CmsGalleryMedia::isVideo($media)) {
-                if ($galleryVideo === null) {
-                    $galleryVideo = $media;
+        $pushGalleryImages = static function ($mediaItems, $into) {
+            foreach ($mediaItems as $media) {
+                if (CmsGalleryMedia::isVideo($media)) {
+                    continue;
                 }
 
-                continue;
+                $url = CmsGalleryMedia::accessibleUrl($media) ?? $media->getUrl();
+                if (! filled($url) || $into->contains('url', $url)) {
+                    continue;
+                }
+
+                $into->push([
+                    'url' => $url,
+                    'alt' => CmsGalleryMedia::alt($media),
+                ]);
             }
 
-            $url = CmsGalleryMedia::accessibleUrl($media) ?? $media->getUrl();
-            if (! filled($url)) {
-                continue;
+            return $into;
+        };
+
+        $findGalleryVideo = static function ($mediaItems) {
+            foreach ($mediaItems as $media) {
+                if (CmsGalleryMedia::isVideo($media)) {
+                    return $media;
+                }
             }
 
-            $galleryImages->push([
-                'url' => $url,
-                'alt' => CmsGalleryMedia::alt($media),
-            ]);
+            return null;
+        };
+
+        // Prefer current-locale gallery. If empty, use fallback-locale gallery.
+        // Fill remaining slots from legacy gallery only (do not mix another locale).
+        $localeGallery = $section->getMedia('gallery_' . $locale);
+        $fallbackGallery = $locale !== $fb ? $section->getMedia('gallery_' . $fb) : collect();
+        $legacyGallery = $section->getMedia('gallery');
+
+        $primaryGallery = $localeGallery->isNotEmpty()
+            ? $localeGallery
+            : ($fallbackGallery->isNotEmpty() ? $fallbackGallery : collect());
+
+        $galleryImages = collect();
+        $galleryImages = $pushGalleryImages($primaryGallery, $galleryImages);
+        if ($galleryImages->count() < 3) {
+            $galleryImages = $pushGalleryImages($legacyGallery, $galleryImages);
         }
 
-        $galleryImages = $galleryImages->unique('url')->values();
+        $galleryVideo = $findGalleryVideo($primaryGallery)
+            ?? $findGalleryVideo($legacyGallery);
+
+        $galleryImages = $galleryImages->values();
         $firstMedia = $galleryImages->get(0);
         $secondMedia = $galleryImages->get(1);
         $thirdMedia = $galleryImages->get(2);

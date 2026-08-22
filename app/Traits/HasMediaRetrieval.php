@@ -174,18 +174,6 @@ trait HasMediaRetrieval
             return $legacy;
         }
 
-        if ($useLanguageFallback) {
-            $anyLocaleGallery = Media::where('model_type', get_class($this))
-                ->where('model_id', $this->id)
-                ->where('collection_name', 'like', 'gallery_%')
-                ->orderBy('order_column')
-                ->get();
-
-            if ($anyLocaleGallery->isNotEmpty()) {
-                return $anyLocaleGallery;
-            }
-        }
-
         return collect();
     }
 }
