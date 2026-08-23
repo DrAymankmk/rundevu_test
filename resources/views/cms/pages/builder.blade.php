@@ -910,6 +910,69 @@
                 return file.type && file.type.startsWith('video/');
             }
 
+            function galleryFileKey(file) {
+                if (window.CmsGalleryUpload && window.CmsGalleryUpload.fileKey) {
+                    return window.CmsGalleryUpload.fileKey(file);
+                }
+                return (file.webkitRelativePath || file.name) + '|' + file.size + '|' + file.lastModified;
+            }
+
+            function syncGalleryStoredFiles($wrap, input) {
+                var stored = $wrap.data('gallerySelectedFiles') || [];
+                var dt = new DataTransfer();
+                stored.forEach(function(file) {
+                    dt.items.add(file);
+                });
+                input.files = dt.files;
+            }
+
+            function appendNewGalleryPreviews($wrap, files) {
+                var preview = $wrap.find('.gallery-preview')[0];
+                if (!preview || !files || !files.length) {
+                    return;
+                }
+                var altName = $wrap.attr('data-new-alt-name') || 'gallery_new_alt[]';
+                var existingKeys = {};
+                $(preview).find('.gallery-item[data-file-key]').each(function() {
+                    existingKeys[this.getAttribute('data-file-key')] = true;
+                });
+
+                files.forEach(function(file) {
+                    var key = galleryFileKey(file);
+                    if (existingKeys[key]) {
+                        return;
+                    }
+                    existingKeys[key] = true;
+
+                    var div = document.createElement('div');
+                    div.className = 'gallery-item';
+                    div.setAttribute('data-file-key', key);
+                    var altHtml = '<input type="text" class="form-control form-control-sm mt-1 gallery-alt-input" name="' +
+                        altName + '" maxlength="255" placeholder="{{ __('cms.alt_text') }}">';
+
+                    if (isGalleryVideoFile(file)) {
+                        var videoUrl = URL.createObjectURL(file);
+                        div.innerHTML = '<div class="gallery-item-media"><video src="' + videoUrl +
+                            '" class="img-thumbnail gallery-video-preview" muted playsinline></video>' +
+                            '<span class="gallery-media-badge">{{ __("cms.video") }}</span>' +
+                            '<button type="button" class="btn btn-sm btn-danger gallery-remove-new"><i class="mdi mdi-delete"></i></button></div>' +
+                            altHtml;
+                        preview.appendChild(div);
+                        return;
+                    }
+
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        div.innerHTML = '<div class="gallery-item-media"><img src="' + e.target.result +
+                            '" alt="" class="img-thumbnail">' +
+                            '<button type="button" class="btn btn-sm btn-danger gallery-remove-new"><i class="mdi mdi-delete"></i></button></div>' +
+                            altHtml;
+                        preview.appendChild(div);
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+
             function rebuildSectionGalleryPreviews(input) {
                 var $wrap = $(input).closest('.gallery-upload-container');
                 var preview = $wrap.find('.gallery-preview')[0];
@@ -918,22 +981,23 @@
                 }
                 var altName = $wrap.attr('data-new-alt-name') || 'gallery_new_alt[]';
                 var savedAlts = {};
-                $(preview).find('.gallery-item[data-file-name]').each(function() {
-                    var fn = this.getAttribute('data-file-name');
+                $(preview).find('.gallery-item[data-file-key], .gallery-item[data-file-name]').each(function() {
+                    var key = this.getAttribute('data-file-key') || this.getAttribute('data-file-name');
                     var inp = this.querySelector('.gallery-alt-input');
-                    if (fn && inp) {
-                        savedAlts[fn] = inp.value;
+                    if (key && inp) {
+                        savedAlts[key] = inp.value;
                     }
                 });
-                $(preview).find('.gallery-item[data-file-name]').remove();
+                $(preview).find('.gallery-item[data-file-key], .gallery-item[data-file-name]').remove();
                 Array.from(input.files).forEach(function(file) {
                     if (!isGalleryImageFile(file) && !isGalleryVideoFile(file)) {
                         return;
                     }
+                    var key = galleryFileKey(file);
                     var div = document.createElement('div');
                     div.className = 'gallery-item';
-                    div.setAttribute('data-file-name', file.name);
-                    var escapedAlt = $('<div>').text(savedAlts[file.name] || '').html();
+                    div.setAttribute('data-file-key', key);
+                    var escapedAlt = $('<div>').text(savedAlts[key] || '').html();
                     var altHtml = '<input type="text" class="form-control form-control-sm mt-1 gallery-alt-input" name="' +
                         altName + '" value="' + escapedAlt + '" maxlength="255" placeholder="{{ __('cms.alt_text') }}">';
                     if (isGalleryVideoFile(file)) {
@@ -958,8 +1022,46 @@
                 });
             }
 
+            
+            $('#sections-container').on('click', '.gallery-pick-files', function(e) {
+                e.preventDefault();
+                var targetId = this.getAttribute('data-target-input');
+                var input = targetId ? document.getElementById(targetId) : null;
+                if (!input) {
+                    input = $(this).closest('.gallery-upload-container').find('input.gallery-input')[0];
+                }
+                if (input) {
+                    input.value = '';
+                    input.click();
+                }
+            });
+
             $('#sections-container').on('change', 'input.gallery-input', function() {
-                rebuildSectionGalleryPreviews(this);
+                var input = this;
+                var $wrap = $(input).closest('.gallery-upload-container');
+                var newlyChosen = Array.from(input.files || []);
+                var stored = $wrap.data('gallerySelectedFiles') || [];
+                var dt = new DataTransfer();
+                stored.forEach(function(file) {
+                    dt.items.add(file);
+                });
+                input.files = dt.files;
+
+                var added = [];
+                if (window.CmsGalleryUpload && window.CmsGalleryUpload.mergeFilesIntoInput) {
+                    added = window.CmsGalleryUpload.mergeFilesIntoInput(input, newlyChosen);
+                } else {
+                    newlyChosen.forEach(function(file) {
+                        if (isGalleryImageFile(file) || isGalleryVideoFile(file)) {
+                            dt.items.add(file);
+                            added.push(file);
+                        }
+                    });
+                    input.files = dt.files;
+                }
+
+                $wrap.data('gallerySelectedFiles', Array.from(input.files || []));
+                appendNewGalleryPreviews($wrap, added);
             });
 
             $('#sections-container').on('click', '.gallery-replace-existing', function(e) {
@@ -987,18 +1089,20 @@
             $('#sections-container').on('click', '.gallery-remove-new', function(e) {
                 e.preventDefault();
                 var $item = $(this).closest('.gallery-item');
-                var name = $item.attr('data-file-name');
-                var input = $item.closest('.gallery-upload-container').find(
-                    'input.gallery-input')[0];
-                if (!input || !input.files) {
+                var $wrap = $item.closest('.gallery-upload-container');
+                var key = $item.attr('data-file-key') || $item.attr('data-file-name');
+                var input = $wrap.find('input.gallery-input')[0];
+                if (!input || !key) {
                     $item.remove();
                     return;
                 }
+                var stored = ($wrap.data('gallerySelectedFiles') || Array.from(input.files || [])).filter(function(f) {
+                    return galleryFileKey(f) !== key;
+                });
+                $wrap.data('gallerySelectedFiles', stored);
                 var dt = new DataTransfer();
-                Array.from(input.files).forEach(function(f) {
-                    if (f.name !== name) {
-                        dt.items.add(f);
-                    }
+                stored.forEach(function(f) {
+                    dt.items.add(f);
                 });
                 input.files = dt.files;
                 $item.remove();

@@ -29360,7 +29360,7 @@ span.select2-selection.select2-selection--single:focus {
   border-radius: 50px;
   position: absolute;
   top: 5px;
-  left: 0;
+  right: 0;
 }
 .available-list li.unavailable:after {
   content: "\f057";

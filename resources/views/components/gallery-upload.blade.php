@@ -30,14 +30,24 @@
          data-collection="{{ $collection }}"
          data-new-alt-name="{{ $newAltName }}"
          data-replace-base="{{ $replaceBase }}">
+        <div class="gallery-pick-actions d-flex flex-wrap gap-2 mb-1">
+            <button type="button"
+                    class="btn btn-outline-primary{{ $compact ? ' btn-sm' : '' }} gallery-pick-files"
+                    data-target-input="{{ $inputId }}">
+                <i class="mdi mdi-image-plus"></i>
+                {{ __('cms.add_images') }}
+            </button>
+        </div>
+
         <input type="file"
                id="{{ $inputId }}"
                name="{{ $fileInputName }}"
-               class="form-control{{ $compact ? ' form-control-sm' : '' }} gallery-input"
+               class="d-none gallery-input"
                accept="{{ $acceptTypes }}"
                multiple>
 
         <small class="text-muted d-block mt-1">{{ __('cms.gallery_media_hint') }}</small>
+        <small class="text-muted d-block">{{ __('cms.gallery_multi_folder_hint') }}</small>
         <small class="text-muted d-block">{{ __('cms.gallery_replace_hint') }}</small>
 
         <div class="gallery-preview mt-3" id="gallery-preview-{{ $inputId }}">
@@ -142,6 +152,11 @@
                 border: 2px solid #0d6efd;
                 pointer-events: none;
             }
+            .gallery-pick-actions .btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.35rem;
+            }
         </style>
     @endpush
 @endonce
@@ -155,6 +170,44 @@
                 },
                 isVideo: function(file) {
                     return file && file.type && file.type.startsWith('video/');
+                },
+                isAcceptedMedia: function(file) {
+                    return this.isImage(file) || this.isVideo(file);
+                },
+                fileKey: function(file) {
+                    if (!file) {
+                        return '';
+                    }
+                    return (file.webkitRelativePath || file.name) + '|' + file.size + '|' + file.lastModified;
+                },
+                mergeFilesIntoInput: function(input, incomingFiles) {
+                    if (!input || !incomingFiles || !incomingFiles.length) {
+                        return [];
+                    }
+                    var existing = Array.from(input.files || []);
+                    var seen = {};
+                    existing.forEach(function(file) {
+                        seen[window.CmsGalleryUpload.fileKey(file)] = true;
+                    });
+                    var added = [];
+                    var dt = new DataTransfer();
+                    existing.forEach(function(file) {
+                        dt.items.add(file);
+                    });
+                    Array.from(incomingFiles).forEach(function(file) {
+                        if (!window.CmsGalleryUpload.isAcceptedMedia(file)) {
+                            return;
+                        }
+                        var key = window.CmsGalleryUpload.fileKey(file);
+                        if (seen[key]) {
+                            return;
+                        }
+                        seen[key] = true;
+                        dt.items.add(file);
+                        added.push(file);
+                    });
+                    input.files = dt.files;
+                    return added;
                 },
                 updateExistingPreview: function(galleryItem, file) {
                     if (!galleryItem || !file) {
@@ -223,7 +276,7 @@
                 function appendGalleryPreview(file) {
                     var galleryItem = document.createElement('div');
                     galleryItem.className = 'gallery-item';
-                    galleryItem.setAttribute('data-file-name', file.name);
+                    galleryItem.setAttribute('data-file-key', window.CmsGalleryUpload.fileKey(file));
 
                     if (window.CmsGalleryUpload.isVideo(file)) {
                         var videoUrl = URL.createObjectURL(file);
@@ -253,17 +306,48 @@
 
                 function bindRemoveNew(galleryItem, file) {
                     galleryItem.querySelector('.gallery-remove-new').addEventListener('click', function() {
+                        var key = window.CmsGalleryUpload.fileKey(file);
                         selectedFiles = selectedFiles.filter(function(f) {
-                            return f.name !== file.name;
+                            return window.CmsGalleryUpload.fileKey(f) !== key;
                         });
-
-                        var dt = new DataTransfer();
-                        selectedFiles.forEach(function(f) {
-                            dt.items.add(f);
-                        });
-                        input.files = dt.files;
+                        syncInputFromSelected();
                         galleryItem.remove();
                     });
+                }
+
+                function syncInputFromSelected() {
+                    var dt = new DataTransfer();
+                    selectedFiles.forEach(function(file) {
+                        dt.items.add(file);
+                    });
+                    input.files = dt.files;
+                }
+
+                function addFilesFromList(fileList, replaceInputSelection) {
+                    var incoming = Array.from(fileList || []);
+                    if (!incoming.length) {
+                        return [];
+                    }
+                    var seen = {};
+                    selectedFiles.forEach(function(file) {
+                        seen[window.CmsGalleryUpload.fileKey(file)] = true;
+                    });
+                    var added = [];
+                    incoming.forEach(function(file) {
+                        if (!window.CmsGalleryUpload.isAcceptedMedia(file)) {
+                            return;
+                        }
+                        var key = window.CmsGalleryUpload.fileKey(file);
+                        if (seen[key]) {
+                            return;
+                        }
+                        seen[key] = true;
+                        selectedFiles.push(file);
+                        added.push(file);
+                        appendGalleryPreview(file);
+                    });
+                    syncInputFromSelected();
+                    return added;
                 }
 
                 function initGallery() {
@@ -271,17 +355,20 @@
                         return;
                     }
 
-                    input.addEventListener('change', function() {
-                        Array.from(input.files).forEach(function(file) {
-                            if (!window.CmsGalleryUpload.isImage(file) && !window.CmsGalleryUpload.isVideo(file)) {
-                                return;
-                            }
-                            if (selectedFiles.some(function(f) { return f.name === file.name; })) {
-                                return;
-                            }
-                            selectedFiles.push(file);
-                            appendGalleryPreview(file);
+                    var container = input.closest('.gallery-upload-container') || input.parentElement;
+                    var pickFilesBtn = container ? container.querySelector('.gallery-pick-files') : null;
+
+                    if (pickFilesBtn) {
+                        pickFilesBtn.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            input.value = '';
+                            input.click();
                         });
+                    }
+
+                    input.addEventListener('change', function() {
+                        var newlyChosen = Array.from(input.files || []);
+                        addFilesFromList(newlyChosen);
                     });
 
                     previewContainer.addEventListener('click', function(e) {
