@@ -5609,9 +5609,9 @@ a.text-theme:hover,
 .widget_pages a::before,
 .widget_archive a::before,
 .widget_categories a::before {
-  content: "\f061";
+  content: "\f060";
   position: absolute;
-  right: 25px;
+  right: 0px;
   top: 17px;
   font-family: var(--icon-font);
   font-weight: 600;
@@ -9946,9 +9946,9 @@ blockquote.has-very-dark-gray-color {
   color: var(--title-color);
   text-align: center;
 }
-.blog-single .social-links a:hover {
+/* .blog-single .social-links a:hover {
   color: var(--theme-color);
-}
+} */
 .blog-single .blog-meta {
   margin-block-start: -0.25em;
   margin-block-end: 3px;

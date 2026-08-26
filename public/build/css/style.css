@@ -22916,8 +22916,8 @@ span.flatpickr-weekday,
 }
 
 [dir=rtl] .select2-container--open .select2-dropdown {
-    left: auto;
-    right: 0;
+    /* left: auto;
+    right: 0; */
 }
 
 .select2-container--default .select2-selection--multiple {

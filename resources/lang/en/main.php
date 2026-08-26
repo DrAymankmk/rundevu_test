@@ -360,6 +360,17 @@ return [
     'no_demo_requests_yet' => 'No demo requests yet.',
     'created_date' => 'Created date',
 
+    'cms' => 'CMS',
+    'cms-pages' => 'Pages',
+    'cms-page-builder' => 'Page Builder',
+    'cms-sections' => 'Sections',
+    'cms-items' => 'Items',
+    'cms-links' => 'Links',
+    'cms-media' => 'Media',
+    'blogs' => 'Blogs',
+    'blog-posts' => 'Posts',
+    'blog-categories' => 'Categories',
+
     'notification_recipients' => 'Notification emails',
     'notification_add_recipient' => 'Add recipient',
     'notification_edit_recipient' => 'Edit recipient',

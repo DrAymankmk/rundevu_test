@@ -929,6 +929,29 @@
                             </li>
                         </ul>
                     </li>
+
+                    <li class="menu-title"><span>@lang('main.blogs')</span></li>
+                    <li>
+                        <ul>
+                            <li class="submenu">
+                                <a href="javascript:void(0);"
+                                   class="{{ Request::is('admin/blog*') ? 'active subdrop' : '' }}">
+                                    <i class="ti ti-brand-blogger"></i><span>@lang('main.blogs')</span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <ul>
+                                    <li>
+                                        <a href="{{ route('blog.posts.index') }}"
+                                           class="{{ Request::is('admin/blog/posts*') ? 'active' : '' }}">@lang('main.blog-posts')</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('blog.categories.index') }}"
+                                           class="{{ Request::is('admin/blog/categories*') ? 'active' : '' }}">@lang('main.blog-categories')</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
                 </ul>
             @endif
 

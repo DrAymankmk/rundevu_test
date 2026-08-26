@@ -75,7 +75,7 @@ $isRtl = in_array($htmlLang, $rtlLangs, true);
    		Code Start From Here
 	******************************** -->
 
-	<div class="color-scheme-wrap active">
+	<!-- <div class="color-scheme-wrap active">
 		<button class="switchIcon"><i class="fa-solid fa-palette"></i></button>
 		<h4 class="color-scheme-wrap-title"><i class="far fa-palette me-2"></i>Style Swicher</h4>
 		<div class="color-switch-btns">
@@ -88,7 +88,7 @@ $isRtl = in_array($htmlLang, $rtlLangs, true);
 		</div>
 		<a href="https://themeforest.net/user/themeholy" class="th-btn text-center w-100"><i
 				class="fa fa-shopping-cart me-2"></i> Purchase</a>
-	</div>
+	</div> -->
 	<!--==============================
      Preloader
   ==============================-->
@@ -451,6 +451,7 @@ $isRtl = in_array($htmlLang, $rtlLangs, true);
 
 	<!-- Main Js File -->
 	<script src=" {{ asset('frontend/assets/js/main.js') }}"></script>
+	@stack('scripts')
 
 </body>
 
