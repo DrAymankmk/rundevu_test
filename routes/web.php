@@ -93,6 +93,9 @@ Route::group(['namespace' => 'Frontend', 'middleware' => 'setlocale' , 'as' => '
     Route::get('/subscription', 'SubscriptionController@index')->name('subscription');
     Route::post('/subscription/register', 'SubscriptionController@registerClinic')->name('subscription.register');
     Route::get('/contact', 'ContactController@index')->name('contact');
+    Route::get('/blog', 'BlogController@index')->name('blog');
+    Route::get('/blog/load-more', 'BlogController@loadMore')->name('blog.load-more');
+    Route::get('/blog/{slug}', 'BlogController@show')->name('blog.show');
     Route::get('/social-media', 'SocialMediaController@index')->name('social');
     Route::post('/book-demo', 'ContactController@bookDemo')->name('book_demo');
     Route::post('/contact', 'ContactController@submitContact')->name('contact.submit');
@@ -197,6 +200,27 @@ Route::group(["middleware" => ["auth", "setlocale"], 'prefix' => 'admin', 'names
         Route::put('links/{id}', 'CmsLinkController@update')->name('links.update');
         Route::delete('links/{id}', 'CmsLinkController@destroy')->name('links.destroy');
         Route::post('links/{id}/toggle-status', 'CmsLinkController@toggleStatus')->name('links.toggleStatus');
+    });
+
+// blog module
+    Route::group(['namespace' => 'Blog', 'prefix' => 'blog', 'as' => 'blog.'], function () {
+        Route::get('categories', 'BlogCategoryController@index')->name('categories.index');
+        Route::get('categories/data', 'BlogCategoryController@data')->name('categories.data');
+        Route::get('categories/create', 'BlogCategoryController@create')->name('categories.create');
+        Route::post('categories', 'BlogCategoryController@store')->name('categories.store');
+        Route::get('categories/{id}/edit', 'BlogCategoryController@edit')->name('categories.edit');
+        Route::put('categories/{id}', 'BlogCategoryController@update')->name('categories.update');
+        Route::delete('categories/{id}', 'BlogCategoryController@destroy')->name('categories.destroy');
+        Route::post('categories/{id}/toggle-status', 'BlogCategoryController@toggleStatus')->name('categories.toggleStatus');
+
+        Route::get('posts', 'BlogPostController@index')->name('posts.index');
+        Route::get('posts/data', 'BlogPostController@data')->name('posts.data');
+        Route::get('posts/create', 'BlogPostController@create')->name('posts.create');
+        Route::post('posts', 'BlogPostController@store')->name('posts.store');
+        Route::get('posts/{id}/edit', 'BlogPostController@edit')->name('posts.edit');
+        Route::put('posts/{id}', 'BlogPostController@update')->name('posts.update');
+        Route::delete('posts/{id}', 'BlogPostController@destroy')->name('posts.destroy');
+        Route::post('posts/{id}/toggle-status', 'BlogPostController@toggleStatus')->name('posts.toggleStatus');
     });
 
     Route::group(['namespace' => 'Pharmacy', 'prefix' => 'pharmacy'], function () {
