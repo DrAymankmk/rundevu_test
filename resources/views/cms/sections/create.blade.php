@@ -101,6 +101,17 @@
 								'label' => __('cms.main_image'),
 								'existingImage' => null
 								])
+
+								<hr class="my-3">
+								<h6 class="mb-3">{{ __('cms.gallery') }} ({{ $lang->name }})</h6>
+
+								@include('components.gallery-upload', [
+									'inputId' => 'section_gallery_' . $lang->code,
+									'inputName' => 'translations[' . $lang->code . '][gallery]',
+									'collection' => 'gallery_' . $lang->code,
+									'label' => __('cms.gallery_images'),
+									'existingImages' => collect(),
+								])
 							</div>
 							@endforeach
 						</div>
@@ -233,23 +244,6 @@
 			</div>
 		</div>
 
-		<!-- Gallery Section -->
-		<div class="col-lg-12 mt-3">
-			<div class="card">
-				<div class="card-header">
-					<h5 class="card-title mb-0">{{ __('cms.gallery') }}</h5>
-				</div>
-				<div class="card-body">
-					@include('components.gallery-upload', [
-					'inputId' => 'section_gallery',
-					'inputName' => 'gallery',
-					'collection' => 'gallery',
-					'label' => __('cms.gallery_images'),
-					'existingImages' => collect([])
-					])
-				</div>
-			</div>
-		</div>
 	</form>
 </div>
 @endsection

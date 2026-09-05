@@ -1,5 +1,4 @@
 @extends('layout_new.mainlayout')
-
 @php
     $isEdit = $page !== null;
     $currentPageSlug = $page->slug ?? '';
@@ -870,14 +869,26 @@
                             si + ']');
                     });
                     syncSectionBuilderIds($card, si);
-                    var sectionGalleryId = 'section-gallery-' + si;
-                    var $sectionGalleryWrap = $card.find('.gallery-upload-container').filter(function() {
+                    $card.find('.gallery-upload-container').filter(function() {
                         return $(this).closest('.item-card').length === 0;
-                    }).first();
-                    if ($sectionGalleryWrap.length) {
-                        $sectionGalleryWrap.find('input.gallery-input').attr('id', sectionGalleryId);
-                        $sectionGalleryWrap.find('.gallery-preview').attr('id', 'gallery-preview-' + sectionGalleryId);
-                    }
+                    }).each(function() {
+                        var $wrap = $(this);
+                        var $input = $wrap.find('input.gallery-input').first();
+                        if (!$input.length) {
+                            return;
+                        }
+                        var name = $input.attr('name') || '';
+                        var match = name.match(/\[translations\]\[([^\]]+)\]\[gallery\]/);
+                        if (!match) {
+                            return;
+                        }
+                        var lang = match[1];
+                        var galleryId = 'section-gallery-' + si + '-' + lang;
+                        $input.attr('id', galleryId);
+                        $wrap.find('.gallery-preview').attr('id', 'gallery-preview-' + galleryId);
+                        $wrap.attr('data-new-alt-name', 'sections[' + si + '][translations][' + lang + '][gallery_new_alt][]');
+                        $wrap.attr('data-replace-base', 'sections[' + si + '][translations][' + lang + '][gallery_replace]');
+                    });
                     reindexItemImagesAndGallery($card);
                     refreshSectionCardUI($card);
                 });
@@ -898,59 +909,199 @@
                 return file.type && file.type.startsWith('video/');
             }
 
-            function rebuildSectionGalleryPreviews(input) {
-                var $wrap = $(input).closest('.gallery-upload-container');
+            function galleryFileKey(file) {
+                if (window.CmsGalleryUpload && window.CmsGalleryUpload.fileKey) {
+                    return window.CmsGalleryUpload.fileKey(file);
+                }
+                return (file.webkitRelativePath || file.name) + '|' + file.size + '|' + file.lastModified;
+            }
+
+            function syncGalleryStoredFiles($wrap, input) {
+                var stored = $wrap.data('gallerySelectedFiles') || [];
+                var dt = new DataTransfer();
+                stored.forEach(function(file) {
+                    dt.items.add(file);
+                });
+                input.files = dt.files;
+            }
+
+            function appendNewGalleryPreviews($wrap, files) {
                 var preview = $wrap.find('.gallery-preview')[0];
-                if (!preview || !input.files) {
+                if (!preview || !files || !files.length) {
                     return;
                 }
-                $(preview).find('.gallery-item[data-file-name]').remove();
-                Array.from(input.files).forEach(function(file) {
-                    if (!isGalleryImageFile(file) && !isGalleryVideoFile(file)) {
+                var altName = $wrap.attr('data-new-alt-name') || 'gallery_new_alt[]';
+                var existingKeys = {};
+                $(preview).find('.gallery-item[data-file-key]').each(function() {
+                    existingKeys[this.getAttribute('data-file-key')] = true;
+                });
+
+                files.forEach(function(file) {
+                    var key = galleryFileKey(file);
+                    if (existingKeys[key]) {
                         return;
                     }
+                    existingKeys[key] = true;
+
                     var div = document.createElement('div');
                     div.className = 'gallery-item';
-                    div.setAttribute('data-file-name', file.name);
+                    div.setAttribute('data-file-key', key);
+                    var altHtml = '<input type="text" class="form-control form-control-sm mt-1 gallery-alt-input" name="' +
+                        altName + '" maxlength="255" placeholder="{{ __('cms.alt_text') }}">';
+
                     if (isGalleryVideoFile(file)) {
                         var videoUrl = URL.createObjectURL(file);
-                        div.innerHTML = '<video src="' + videoUrl +
+                        div.innerHTML = '<div class="gallery-item-media"><video src="' + videoUrl +
                             '" class="img-thumbnail gallery-video-preview" muted playsinline></video>' +
                             '<span class="gallery-media-badge">{{ __("cms.video") }}</span>' +
-                            '<button type="button" class="btn btn-sm btn-danger gallery-remove-new"><i class="mdi mdi-delete"></i></button>';
+                            '<button type="button" class="btn btn-sm btn-danger gallery-remove-new"><i class="mdi mdi-delete"></i></button></div>' +
+                            altHtml;
                         preview.appendChild(div);
                         return;
                     }
+
                     var reader = new FileReader();
                     reader.onload = function(e) {
-                        div.innerHTML = '<img src="' + e.target.result +
+                        div.innerHTML = '<div class="gallery-item-media"><img src="' + e.target.result +
                             '" alt="" class="img-thumbnail">' +
-                            '<button type="button" class="btn btn-sm btn-danger gallery-remove-new"><i class="mdi mdi-delete"></i></button>';
+                            '<button type="button" class="btn btn-sm btn-danger gallery-remove-new"><i class="mdi mdi-delete"></i></button></div>' +
+                            altHtml;
                         preview.appendChild(div);
                     };
                     reader.readAsDataURL(file);
                 });
             }
 
+            function rebuildSectionGalleryPreviews(input) {
+                var $wrap = $(input).closest('.gallery-upload-container');
+                var preview = $wrap.find('.gallery-preview')[0];
+                if (!preview || !input.files) {
+                    return;
+                }
+                var altName = $wrap.attr('data-new-alt-name') || 'gallery_new_alt[]';
+                var savedAlts = {};
+                $(preview).find('.gallery-item[data-file-key], .gallery-item[data-file-name]').each(function() {
+                    var key = this.getAttribute('data-file-key') || this.getAttribute('data-file-name');
+                    var inp = this.querySelector('.gallery-alt-input');
+                    if (key && inp) {
+                        savedAlts[key] = inp.value;
+                    }
+                });
+                $(preview).find('.gallery-item[data-file-key], .gallery-item[data-file-name]').remove();
+                Array.from(input.files).forEach(function(file) {
+                    if (!isGalleryImageFile(file) && !isGalleryVideoFile(file)) {
+                        return;
+                    }
+                    var key = galleryFileKey(file);
+                    var div = document.createElement('div');
+                    div.className = 'gallery-item';
+                    div.setAttribute('data-file-key', key);
+                    var escapedAlt = $('<div>').text(savedAlts[key] || '').html();
+                    var altHtml = '<input type="text" class="form-control form-control-sm mt-1 gallery-alt-input" name="' +
+                        altName + '" value="' + escapedAlt + '" maxlength="255" placeholder="{{ __('cms.alt_text') }}">';
+                    if (isGalleryVideoFile(file)) {
+                        var videoUrl = URL.createObjectURL(file);
+                        div.innerHTML = '<div class="gallery-item-media"><video src="' + videoUrl +
+                            '" class="img-thumbnail gallery-video-preview" muted playsinline></video>' +
+                            '<span class="gallery-media-badge">{{ __("cms.video") }}</span>' +
+                            '<button type="button" class="btn btn-sm btn-danger gallery-remove-new"><i class="mdi mdi-delete"></i></button></div>' +
+                            altHtml;
+                        preview.appendChild(div);
+                        return;
+                    }
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        div.innerHTML = '<div class="gallery-item-media"><img src="' + e.target.result +
+                            '" alt="" class="img-thumbnail">' +
+                            '<button type="button" class="btn btn-sm btn-danger gallery-remove-new"><i class="mdi mdi-delete"></i></button></div>' +
+                            altHtml;
+                        preview.appendChild(div);
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+
+
+            $('#sections-container').on('click', '.gallery-pick-files', function(e) {
+                e.preventDefault();
+                var targetId = this.getAttribute('data-target-input');
+                var input = targetId ? document.getElementById(targetId) : null;
+                if (!input) {
+                    input = $(this).closest('.gallery-upload-container').find('input.gallery-input')[0];
+                }
+                if (input) {
+                    input.value = '';
+                    input.click();
+                }
+            });
+
             $('#sections-container').on('change', 'input.gallery-input', function() {
-                rebuildSectionGalleryPreviews(this);
+                var input = this;
+                var $wrap = $(input).closest('.gallery-upload-container');
+                var newlyChosen = Array.from(input.files || []);
+                var stored = $wrap.data('gallerySelectedFiles') || [];
+                var dt = new DataTransfer();
+                stored.forEach(function(file) {
+                    dt.items.add(file);
+                });
+                input.files = dt.files;
+
+                var added = [];
+                if (window.CmsGalleryUpload && window.CmsGalleryUpload.mergeFilesIntoInput) {
+                    added = window.CmsGalleryUpload.mergeFilesIntoInput(input, newlyChosen);
+                } else {
+                    newlyChosen.forEach(function(file) {
+                        if (isGalleryImageFile(file) || isGalleryVideoFile(file)) {
+                            dt.items.add(file);
+                            added.push(file);
+                        }
+                    });
+                    input.files = dt.files;
+                }
+
+                $wrap.data('gallerySelectedFiles', Array.from(input.files || []));
+                appendNewGalleryPreviews($wrap, added);
+            });
+
+            $('#sections-container').on('click', '.gallery-replace-existing', function(e) {
+                e.preventDefault();
+                var item = this.closest('.gallery-item');
+                var replaceInput = item && item.querySelector('.gallery-replace-input');
+                if (replaceInput) {
+                    replaceInput.click();
+                }
+            });
+
+            $('#sections-container').on('change', 'input.gallery-replace-input', function() {
+                if (!this.files || !this.files[0]) {
+                    return;
+                }
+                var file = this.files[0];
+                if (!window.CmsGalleryUpload ||
+                    (!window.CmsGalleryUpload.isImage(file) && !window.CmsGalleryUpload.isVideo(file))) {
+                    this.value = '';
+                    return;
+                }
+                window.CmsGalleryUpload.updateExistingPreview(this.closest('.gallery-item'), file);
             });
 
             $('#sections-container').on('click', '.gallery-remove-new', function(e) {
                 e.preventDefault();
                 var $item = $(this).closest('.gallery-item');
-                var name = $item.attr('data-file-name');
-                var input = $item.closest('.gallery-upload-container').find(
-                    'input.gallery-input')[0];
-                if (!input || !input.files) {
+                var $wrap = $item.closest('.gallery-upload-container');
+                var key = $item.attr('data-file-key') || $item.attr('data-file-name');
+                var input = $wrap.find('input.gallery-input')[0];
+                if (!input || !key) {
                     $item.remove();
                     return;
                 }
+                var stored = ($wrap.data('gallerySelectedFiles') || Array.from(input.files || [])).filter(function(f) {
+                    return galleryFileKey(f) !== key;
+                });
+                $wrap.data('gallerySelectedFiles', stored);
                 var dt = new DataTransfer();
-                Array.from(input.files).forEach(function(f) {
-                    if (f.name !== name) {
-                        dt.items.add(f);
-                    }
+                stored.forEach(function(f) {
+                    dt.items.add(f);
                 });
                 input.files = dt.files;
                 $item.remove();
@@ -1022,11 +1173,24 @@
                 var si = $('#sections-container .section-card').index($section);
                 $section.find('.items-wrap .item-card').each(function(ii) {
                     var $card = $(this);
-                    var gid = 'item-gallery-s' + si + '-i' + ii;
-                    $card.find('.gallery-upload-container input.gallery-input')
-                        .attr('id', gid);
-                    $card.find('.gallery-upload-container .gallery-preview')
-                        .attr('id', 'gallery-preview-' + gid);
+                    $card.find('.gallery-upload-container').each(function() {
+                        var $wrap = $(this);
+                        var $input = $wrap.find('input.gallery-input').first();
+                        if (!$input.length) {
+                            return;
+                        }
+                        var name = $input.attr('name') || '';
+                        var match = name.match(/\[translations\]\[([^\]]+)\]\[gallery\]/);
+                        if (!match) {
+                            return;
+                        }
+                        var lang = match[1];
+                        var galleryId = 'item-gallery-s' + si + '-i' + ii + '-' + lang;
+                        $input.attr('id', galleryId);
+                        $wrap.find('.gallery-preview').attr('id', 'gallery-preview-' + galleryId);
+                        $wrap.attr('data-new-alt-name', 'sections[' + si + '][items][' + ii + '][translations][' + lang + '][gallery_new_alt][]');
+                        $wrap.attr('data-replace-base', 'sections[' + si + '][items][' + ii + '][translations][' + lang + '][gallery_replace]');
+                    });
                     $card.find('.image-upload-wrapper').each(function() {
                         var $w = $(this);
                         var $input = $w.find(
@@ -1280,7 +1444,6 @@
             if (window.initSharedIconPicker) {
                 window.initSharedIconPicker('cmsBuilderIconPicker');
             }
-
             reindexSections();
             reindexPageLinks();
         })(jQuery);

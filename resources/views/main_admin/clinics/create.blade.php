@@ -414,6 +414,13 @@
                                         <option value="annual_subscription" {{ old('contract_model') === 'annual_subscription' ? 'selected' : '' }}>@lang('main.contract_annual_subscription')</option>
                                     </select>
                                 </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">@lang('main.contract_payment_method')</label>
+                                    <select name="payment_method" class="form-control form-control-lg">
+                                        <option value="cash" {{ old('payment_method', 'cash') === 'cash' ? 'selected' : '' }}>@lang('main.payment_cash')</option>
+                                        <option value="online" {{ old('payment_method') === 'online' ? 'selected' : '' }}>@lang('main.payment_online')</option>
+                                    </select>
+                                </div>
                                 <div class="col-md-6 contract-commission-field">
                                     <label class="form-label">@lang('main.platform_commission_rate')</label>
                                     <input class="form-control form-control-lg @error('commission_rate') is-invalid @enderror"
@@ -447,7 +454,7 @@
                                            name="annual_subscription_ends_at"
                                            value="{{ old('annual_subscription_ends_at') }}">
                                 </div>
-                                <div class="col-md-12 contract-subscription-field">
+                                <div class="col-md-12">
                                     <div class="form-check form-switch">
                                         <input class="form-check-input" type="checkbox" name="rendezvous_badge_enabled" value="1" id="rendezvous_badge_enabled" {{ old('rendezvous_badge_enabled') ? 'checked' : '' }}>
                                         <label class="form-check-label" for="rendezvous_badge_enabled">@lang('main.rendezvous_badge_enabled')</label>

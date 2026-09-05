@@ -13,6 +13,10 @@ class LoginController extends Controller
     // login form
     function form_login()
     {
+        if (Auth::check()) {
+            return redirect()->route('admin.dashboard');
+        }
+
         return view('login');
     }
 
@@ -41,7 +45,7 @@ class LoginController extends Controller
             return redirect()->route($redirectRoute);
 
         } else {
-           session()->flash('failed', trans('messages.auth.login_message_failed'));
+            session()->flash('failed', trans('messages.auth.login_message_failed'));
             return redirect()->back();
         }
     }
@@ -49,8 +53,11 @@ class LoginController extends Controller
     // logout
     public function logout()
     {
-//        Auth::logout();
+        Auth::logout();
         Session::forget('frontSession');
+        Session::invalidate();
+        Session::regenerateToken();
+
         return redirect('/admin/login');
     }
 }

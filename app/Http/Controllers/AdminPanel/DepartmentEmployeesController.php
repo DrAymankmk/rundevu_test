@@ -81,6 +81,7 @@ class DepartmentEmployeesController extends Controller
                             'doctor_id' => $add_employee->id,
                             'appointments_online' => $request->appointments_online,
                             'appointments_reception' => $request->appointments_reception,
+                            'number_patients' => $request->consultation_duration,
                             'consultation_duration' => $request->consultation_duration,
                         ]
                     );
@@ -193,6 +194,7 @@ class DepartmentEmployeesController extends Controller
                         'doctor_id' => $id,
                         'appointments_online' => $request->appointments_online,
                         'appointments_reception' => $request->appointments_reception,
+                        'number_patients' => $request->consultation_duration,
                         'consultation_duration' => $request->consultation_duration,
                     ]
                 );

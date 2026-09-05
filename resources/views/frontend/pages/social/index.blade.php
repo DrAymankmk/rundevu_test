@@ -128,17 +128,7 @@
 }
 </style>
 
-<div class="breadcumb-wrapper">
-	<div class="container">
-		<div class="breadcumb-content">
-			<h1 class="breadcumb-title">{{ __('main.social_media') }}</h1>
-			<ul class="breadcumb-menu">
-				<li><a href="{{ route('frontend.home') }}">{{ __('main.home') }}</a></li>
-				<li>{{ __('main.social_media') }}</li>
-			</ul>
-		</div>
-	</div>
-</div>
+<x-breadcrumb :title="__('main.social_media')" />
 
 <section class="space social-page-hero">
 	<div class="container">

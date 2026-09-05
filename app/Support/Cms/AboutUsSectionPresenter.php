@@ -15,7 +15,10 @@ class AboutUsSectionPresenter
         $sub = $st?->subtitle ?: __('About us');
         $desc = $st?->description ?: '<p class="fs-18 mb-30 wow fadeInUp" data-wow-delay=".1s">' . e(__('A belief that knowledge is power—we connect our patients with their results and quality care when they need it most.')) . '</p>';
         $descHasListItems = stripos($desc, '<li') !== false;
-        $aboutAlt = strip_tags($title) ?: __('About');
+        $aboutAlt = $section->getMediaAlt('images', $locale, true);
+        if ($aboutAlt === '') {
+            $aboutAlt = strip_tags($title) ?: __('About');
+        }
 
         $resolveHref = static function (?string $raw): string {
             $raw = trim((string) $raw);
@@ -33,53 +36,80 @@ class AboutUsSectionPresenter
             return (bool) preg_match('#(youtube\.com|youtu\.be|vimeo\.com)#i', $url);
         };
 
-        $galleryVideo = null;
-        $posterBeforeVideo = null;
-        $posterAfterVideo = null;
-        $mediaPool = collect();
-
-        $primaryFromImages = $section->getMediaUrl('images', $locale, null, true);
-        if (filled($primaryFromImages)) {
-            $mediaPool->push($primaryFromImages);
-        }
-
-        foreach ($section->getMedia('gallery') as $media) {
-            if (CmsGalleryMedia::isVideo($media)) {
-                if ($galleryVideo === null) {
-                    $galleryVideo = $media;
+        $pushGalleryImages = static function ($mediaItems, $into) {
+            foreach ($mediaItems as $media) {
+                if (CmsGalleryMedia::isVideo($media)) {
+                    continue;
                 }
 
-                continue;
+                $url = CmsGalleryMedia::accessibleUrl($media) ?? $media->getUrl();
+                if (! filled($url) || $into->contains('url', $url)) {
+                    continue;
+                }
+
+                $into->push([
+                    'url' => $url,
+                    'alt' => CmsGalleryMedia::alt($media),
+                ]);
             }
 
-            $url = $media->getUrl();
-            if (! filled($url)) {
-                continue;
+            return $into;
+        };
+
+        $findGalleryVideo = static function ($mediaItems) {
+            foreach ($mediaItems as $media) {
+                if (CmsGalleryMedia::isVideo($media)) {
+                    return $media;
+                }
             }
 
-            if ($galleryVideo === null) {
-                $posterBeforeVideo = $posterBeforeVideo ?? $url;
-            } elseif ($posterAfterVideo === null) {
-                $posterAfterVideo = $url;
-            }
+            return null;
+        };
 
-            $mediaPool->push($url);
+        // Prefer current-locale gallery. If empty, use fallback-locale gallery.
+        // Fill remaining slots from legacy gallery only (do not mix another locale).
+        $localeGallery = $section->getMedia('gallery_' . $locale);
+        $fallbackGallery = $locale !== $fb ? $section->getMedia('gallery_' . $fb) : collect();
+        $legacyGallery = $section->getMedia('gallery');
+
+        $primaryGallery = $localeGallery->isNotEmpty()
+            ? $localeGallery
+            : ($fallbackGallery->isNotEmpty() ? $fallbackGallery : collect());
+
+        $galleryImages = collect();
+        $galleryImages = $pushGalleryImages($primaryGallery, $galleryImages);
+        if ($galleryImages->count() < 3) {
+            $galleryImages = $pushGalleryImages($legacyGallery, $galleryImages);
         }
 
-        $mediaPool = $mediaPool->unique()->values();
+        $galleryVideo = $findGalleryVideo($primaryGallery)
+            ?? $findGalleryVideo($legacyGallery);
 
-        $primaryImg = $mediaPool->get(0) ?? asset('frontend/assets/img/normal/about_4_1.jpg');
-        $videoImg = $mediaPool->get(1)
-            ?? $posterAfterVideo
-            ?? $posterBeforeVideo
-            ?? asset('frontend/assets/img/normal/about-video.jpg');
+        $galleryImages = $galleryImages->values();
+        $firstMedia = $galleryImages->get(0);
+        $secondMedia = $galleryImages->get(1);
+        $thirdMedia = $galleryImages->get(2);
 
-        $defaultSide = [
+        $defaults = [
+            asset('frontend/assets/img/normal/about_1_1.jpg'),
             asset('frontend/assets/img/normal/about_1_2.jpg'),
             asset('frontend/assets/img/normal/about_1_3.jpg'),
         ];
-        $sideImg1 = $mediaPool->get(0) ?? $defaultSide[0];
-        $sideImg2 = $mediaPool->get(1) ?? $defaultSide[1];
+
+        $primaryImg = is_array($firstMedia) ? $firstMedia['url'] : $defaults[0];
+        $primaryAlt = is_array($firstMedia) ? ($firstMedia['alt'] ?? '') : '';
+        if ($primaryAlt !== '') {
+            $aboutAlt = $primaryAlt;
+        }
+
+        $secondaryImg = is_array($secondMedia) ? $secondMedia['url'] : $defaults[1];
+        $secondaryAlt = is_array($secondMedia) ? ($secondMedia['alt'] ?? '') : $aboutAlt;
+
+        $videoImg = is_array($thirdMedia) ? $thirdMedia['url'] : $defaults[2];
+        $videoAlt = is_array($thirdMedia) ? ($thirdMedia['alt'] ?? '') : $aboutAlt;
+
+        $sideImg1 = $primaryImg;
+        $sideImg2 = $secondaryImg;
 
         $videoUrl = $galleryVideo ? (string) $galleryVideo->getUrl() : '';
         $videoMimeType = $galleryVideo?->mime_type ?? 'video/mp4';
@@ -152,7 +182,7 @@ class AboutUsSectionPresenter
         // $discountLabel = trim(strip_tags((string) $sub)) !== ''
         //     ? strip_tags($sub) . ' * ' . __('main.app_name') . ' *'
         //     : __('main.app_name') . ' * ' . __('main.services') . ' *';
-                $discountLabel = __('main.app_name');
+        $discountLabel = __('main.app_name');
         $htmlLang = explode('-', strtolower(str_replace('_', '-', $locale)))[0];
         $discountAnimeClass = in_array($htmlLang, ['ar', 'fa', 'he', 'ur'], true)
             ? 'discount-anime discount-anime-plain'
@@ -165,7 +195,11 @@ class AboutUsSectionPresenter
             'descHasListItems',
             'aboutAlt',
             'primaryImg',
+            'primaryAlt',
+            'secondaryImg',
+            'secondaryAlt',
             'videoImg',
+            'videoAlt',
             'sideImg1',
             'sideImg2',
             'videoUrl',

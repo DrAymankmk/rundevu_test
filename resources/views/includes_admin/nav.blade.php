@@ -70,6 +70,11 @@
                                         class="fa-solid fa-file-invoice-dollar"></i></span>
                                 <span>@lang('financial_reports.title')</span></a></li>
 
+                        <li><a href="{{ route('analytics.index') }}"><span
+                                    class="menu-side clinic-admin-menu-icon"><i
+                                        class="fa-solid fa-chart-line"></i></span>
+                                <span>@lang('analytics.title')</span></a></li>
+
                         <li><a href="{{ route('points') }}"><span class="menu-side"><img
                                         style="background-color: #888"
                                         src="/media/icons/personal_information.png"
@@ -241,6 +246,30 @@
                                 class="menu-side clinic-admin-menu-icon"><i
                                     class="fa-solid fa-file-invoice-dollar"></i></span>
                             <span>@lang('financial_reports.title')</span></a></li>
+
+                    <li><a href="{{ route('clinic-reports.appointments') }}"
+                           class="{{ request()->routeIs('clinic-reports.appointments') ? 'active' : '' }}"><span
+                                class="menu-side clinic-admin-menu-icon"><i
+                                    class="fa-solid fa-calendar-check"></i></span>
+                            <span>@lang('clinic_reports.appointments')</span></a></li>
+
+                    <li><a href="{{ route('clinic-reports.doctors') }}"
+                           class="{{ request()->routeIs('clinic-reports.doctors') ? 'active' : '' }}"><span
+                                class="menu-side clinic-admin-menu-icon"><i
+                                    class="fa-solid fa-user-doctor"></i></span>
+                            <span>@lang('clinic_reports.doctors')</span></a></li>
+
+                    <li><a href="{{ route('clinic-reports.patients') }}"
+                           class="{{ request()->routeIs('clinic-reports.patients') ? 'active' : '' }}"><span
+                                class="menu-side clinic-admin-menu-icon"><i
+                                    class="fa-solid fa-users"></i></span>
+                            <span>@lang('clinic_reports.patients')</span></a></li>
+
+                    <li><a href="{{ route('clinic-reports.reviews') }}"
+                           class="{{ request()->routeIs('clinic-reports.reviews') ? 'active' : '' }}"><span
+                                class="menu-side clinic-admin-menu-icon"><i
+                                    class="fa-solid fa-star"></i></span>
+                            <span>@lang('clinic_reports.reviews')</span></a></li>
 
                     <li><a href="{{ route('change-password') }}"><span
                                 class="menu-side clinic-admin-menu-icon"><i

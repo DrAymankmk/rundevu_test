@@ -122,9 +122,25 @@ class CmsSectionController extends Controller
             'translations.*.title' => 'nullable|string|max:255',
             'translations.*.subtitle' => 'nullable|string',
             'translations.*.description' => 'nullable|string',
+            'translations.*.image_alt' => 'nullable|string|max:255',
+            'translations.*.gallery' => 'nullable|array',
+            'translations.*.gallery.*' => ['nullable', CmsGalleryMedia::fileRule()],
+            'translations.*.gallery_existing_alt' => 'nullable|array',
+            'translations.*.gallery_existing_alt.*' => 'nullable|string|max:255',
+            'translations.*.gallery_new_alt' => 'nullable|array',
+            'translations.*.gallery_new_alt.*' => 'nullable|string|max:255',
+            'translations.*.gallery_replace' => 'nullable|array',
+            'translations.*.gallery_replace.*' => ['nullable', CmsGalleryMedia::fileRule()],
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'image_alt' => 'nullable|string|max:255',
             'gallery' => 'nullable|array',
             'gallery.*' => ['nullable', CmsGalleryMedia::fileRule()],
+            'gallery_existing_alt' => 'nullable|array',
+            'gallery_existing_alt.*' => 'nullable|string|max:255',
+            'gallery_new_alt' => 'nullable|array',
+            'gallery_new_alt.*' => 'nullable|string|max:255',
+            'gallery_replace' => 'nullable|array',
+            'gallery_replace.*' => ['nullable', CmsGalleryMedia::fileRule()],
         ]);
 
         $section = CmsSection::create([
@@ -147,27 +163,19 @@ class CmsSectionController extends Controller
                 'description' => $translationData['description'] ?? null,
             ]);
 
-            // Handle language-specific image uploads
-            $translationFiles = $request->file("translations.{$locale}", []);
-            if (isset($translationFiles['image']) && $translationFiles['image']->isValid()) {
-                $section->clearMediaCollection("images_{$locale}");
-                $section->addMedia($translationFiles['image'])->toMediaCollection("images_{$locale}");
-            }
+            $this->syncSectionTranslationImage($request, $section, $locale);
+            $this->syncSectionTranslationGallery($request, $section, $locale);
         }
 
-        // Handle general image uploads (for backward compatibility)
-        if ($request->hasFile('image')) {
-            $section->addMediaFromRequest('image')->toMediaCollection('images');
-        }
-
-        // Handle gallery uploads
-        if ($request->hasFile('gallery')) {
-            foreach ($request->file('gallery') as $file) {
-                if ($file->isValid()) {
-                    $section->addMedia($file)->toMediaCollection('gallery');
-                }
-            }
-        }
+        $this->syncSectionGeneralImage($request, $section);
+        CmsGalleryMedia::syncGalleryUploads(
+            $section,
+            $request->file('gallery'),
+            $request->input('gallery_new_alt'),
+            $request->input('gallery_existing_alt'),
+            'gallery',
+            $request->file('gallery_replace')
+        );
 
         return redirect()->route('cms.sections.index', ['page_id' => $section->cms_page_id])
             ->with('success', __('Section created successfully'));
@@ -220,9 +228,25 @@ class CmsSectionController extends Controller
             'translations.*.subtitle' => 'nullable|string',
             'translations.*.description' => 'nullable|string',
             'translations.*.image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'translations.*.image_alt' => 'nullable|string|max:255',
+            'translations.*.gallery' => 'nullable|array',
+            'translations.*.gallery.*' => ['nullable', CmsGalleryMedia::fileRule()],
+            'translations.*.gallery_existing_alt' => 'nullable|array',
+            'translations.*.gallery_existing_alt.*' => 'nullable|string|max:255',
+            'translations.*.gallery_new_alt' => 'nullable|array',
+            'translations.*.gallery_new_alt.*' => 'nullable|string|max:255',
+            'translations.*.gallery_replace' => 'nullable|array',
+            'translations.*.gallery_replace.*' => ['nullable', CmsGalleryMedia::fileRule()],
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'image_alt' => 'nullable|string|max:255',
             'gallery' => 'nullable|array',
             'gallery.*' => ['nullable', CmsGalleryMedia::fileRule()],
+            'gallery_existing_alt' => 'nullable|array',
+            'gallery_existing_alt.*' => 'nullable|string|max:255',
+            'gallery_new_alt' => 'nullable|array',
+            'gallery_new_alt.*' => 'nullable|string|max:255',
+            'gallery_replace' => 'nullable|array',
+            'gallery_replace.*' => ['nullable', CmsGalleryMedia::fileRule()],
         ]);
 
         $section = CmsSection::find($id);
@@ -248,28 +272,19 @@ class CmsSectionController extends Controller
                 ]
             );
 
-            // Handle language-specific image uploads
-            $translationFiles = $request->file("translations.{$locale}", []);
-            if (isset($translationFiles['image']) && $translationFiles['image']->isValid()) {
-                $section->clearMediaCollection("images_{$locale}");
-                $section->addMedia($translationFiles['image'])->toMediaCollection("images_{$locale}");
-            }
+            $this->syncSectionTranslationImage($request, $section, $locale);
+            $this->syncSectionTranslationGallery($request, $section, $locale);
         }
 
-        // Handle general image uploads (for backward compatibility)
-        if ($request->hasFile('image')) {
-            $section->clearMediaCollection('images');
-            $section->addMediaFromRequest('image')->toMediaCollection('images');
-        }
-
-        // Handle gallery uploads
-        if ($request->hasFile('gallery')) {
-            foreach ($request->file('gallery') as $file) {
-                if ($file->isValid()) {
-                    $section->addMedia($file)->toMediaCollection('gallery');
-                }
-            }
-        }
+        $this->syncSectionGeneralImage($request, $section);
+        CmsGalleryMedia::syncGalleryUploads(
+            $section,
+            $request->file('gallery'),
+            $request->input('gallery_new_alt'),
+            $request->input('gallery_existing_alt'),
+            'gallery',
+            $request->file('gallery_replace')
+        );
 
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([
@@ -326,5 +341,48 @@ class CmsSectionController extends Controller
         }
 
         return view('cms.sections.ajax_form', compact('section', 'languages', 'pages', 'selectedPageId'));
+    }
+
+    private function syncSectionTranslationImage(Request $request, CmsSection $section, string $locale): void
+    {
+        $translationFiles = $request->file("translations.{$locale}", []);
+        $alt = $request->input("translations.{$locale}.image_alt");
+
+        if (isset($translationFiles['image']) && $translationFiles['image']->isValid()) {
+            $section->clearMediaCollection("images_{$locale}");
+            CmsGalleryMedia::addFileWithAlt($section, $translationFiles['image'], "images_{$locale}", $alt);
+
+            return;
+        }
+
+        if ($request->exists("translations.{$locale}.image_alt")) {
+            CmsGalleryMedia::persistCollectionAlt($section, "images_{$locale}", $alt);
+        }
+    }
+
+    private function syncSectionTranslationGallery(Request $request, CmsSection $section, string $locale): void
+    {
+        CmsGalleryMedia::syncGalleryUploads(
+            $section,
+            $request->file("translations.{$locale}.gallery"),
+            $request->input("translations.{$locale}.gallery_new_alt"),
+            $request->input("translations.{$locale}.gallery_existing_alt"),
+            'gallery_' . $locale,
+            $request->file("translations.{$locale}.gallery_replace")
+        );
+    }
+
+    private function syncSectionGeneralImage(Request $request, CmsSection $section): void
+    {
+        if ($request->hasFile('image')) {
+            $section->clearMediaCollection('images');
+            CmsGalleryMedia::addFileWithAlt($section, $request->file('image'), 'images', $request->input('image_alt'));
+
+            return;
+        }
+
+        if ($request->exists('image_alt')) {
+            CmsGalleryMedia::persistCollectionAlt($section, 'images', $request->input('image_alt'));
+        }
     }
 }

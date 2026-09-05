@@ -391,8 +391,12 @@
                                 </a>
                                 <ul>
                                     <li><a href="{{ route('reports.index') }}" class="{{ Request::is('income-report') ? 'active' : '' }}">@lang('main.reports')</a></li>
-                                    @if(in_array((int) auth()->user()->app_type, [1, 6, 7, 11], true))
+                                    @if((int) auth()->user()->app_type === 6)
                                     <li><a href="{{ route('financial-reports.index') }}" class="{{ request()->routeIs('financial-reports.index') ? 'active' : '' }}">@lang('financial_reports.title')</a></li>
+                                    <!-- <li><a href="{{ route('analytics.index') }}" class="{{ request()->routeIs('analytics.*') ? 'active' : '' }}">@lang('analytics.title')</a></li> -->
+                                    @elseif(in_array((int) auth()->user()->app_type, [1, 7, 11], true))
+                                    <li><a href="{{ route('financial-reports.index') }}" class="{{ request()->routeIs('financial-reports.index') ? 'active' : '' }}">@lang('financial_reports.title')</a></li>
+                                    <li><a href="{{ route('clinic-reports.appointments') }}" class="{{ request()->routeIs('clinic-reports.*') ? 'active' : '' }}">@lang('clinic_reports.title')</a></li>
                                     @endif
                                     {{--                                <li><a href="{{url('expense-report')}}" class="{{ Request::is('expense-report') ? 'active' : '' }}">Expense Report</a></li>--}}
                                     {{--                                <li><a href="{{url('profit-and-loss')}}" class="{{ Request::is('profit-and-loss') ? 'active' : '' }}">Profit & Loss</a></li>--}}
@@ -925,6 +929,29 @@
                             </li>
                         </ul>
                     </li>
+                    <li class="menu-title"><span>@lang('main.blogs')</span></li>
+                    <li>
+                        <ul>
+                            <li class="submenu">
+                                <a href="javascript:void(0);"
+                                   class="{{ Request::is('admin/blog*') ? 'active subdrop' : '' }}">
+                                    <i class="ti ti-brand-blogger"></i><span>@lang('main.blogs')</span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <ul>
+                                    <li>
+                                        <a href="{{ route('blog.posts.index') }}"
+                                           class="{{ Request::is('admin/blog/posts*') ? 'active' : '' }}">@lang('main.blog-posts')</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('blog.categories.index') }}"
+                                           class="{{ Request::is('admin/blog/categories*') ? 'active' : '' }}">@lang('main.blog-categories')</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+
                 </ul>
             @endif
 

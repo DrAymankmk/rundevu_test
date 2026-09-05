@@ -4,7 +4,15 @@ $fb = config('app.fallback_locale', 'en');
 $locale = app()->getLocale();
 $items = $section->relationLoaded('items') ? $section->items->where('is_active', true)->sortBy('order')->values() :
 collect();
-$phoneImg = $section->getMediaUrl('images', $locale, asset('frontend/assets/img/normal/download-1-1.png'), true);
+$galleryImage = $section->getGalleryMedia($locale)->first(
+	fn ($media) => \App\Support\Cms\CmsGalleryMedia::isImage($media)
+);
+$phoneImg = $galleryImage
+	? (\App\Support\Cms\CmsGalleryMedia::accessibleUrl($galleryImage) ?? $galleryImage->getUrl())
+	: $section->getMediaUrl('images', $locale, asset('frontend/assets/img/normal/download-1-1.png'), true);
+$phoneAlt = $galleryImage
+	? \App\Support\Cms\CmsGalleryMedia::alt($galleryImage)
+	: $section->getMediaAlt('images', $locale, true);
 $apple = $items->first(fn ($i) => str_contains(strtolower($i->slug ?? ''), 'apple')) ?? $items->get(0);
 $google = $items->first(fn ($i) => str_contains(strtolower($i->slug ?? ''), 'google') ||
 str_contains(strtolower($i->slug ?? ''), 'play')) ?? $items->get(1);
@@ -15,14 +23,14 @@ $appleUrl = $appleIt?->content ? strip_tags($appleIt->content) :
 $googleUrl = $googleIt?->content ? strip_tags($googleIt->content) :
 'https://play.google.com/store/apps/details?id=com.takaful.rendezvous';
 @endphp
-<section class="download-area space overflow-hidden"
-	data-bg-src="{{ asset('frontend/assets/img/bg/download-bg-1.png') }}" id="section-{{ $section->id }}">
+<section class="download-area space overflow-hidden" data-bg-src="{{ asset('frontend/assets/img/download_bg.jpeg') }}"
+	id="section-{{ $section->id }}">
 	<div class="container">
 		<div class="row gy-5 align-items-center">
 			<div class="col-xl-6">
 				<div class="download-img">
 					<div class="img1">
-						<img src="{{ $phoneImg }}" alt="">
+						<img src="{{ $phoneImg }}" alt="{{ $phoneAlt }}">
 					</div>
 				</div>
 			</div>

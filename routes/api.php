@@ -122,6 +122,7 @@ Route::group(['namespace' => 'API'], function () {
             Route::get('/clinic-doctors', 'ClinicsController@clinic_doctors');
             Route::post('/clinic-complaint', 'ClinicsController@clinic_complaint');
 
+            Route::get('/doctor-details', 'DoctorsController@doctor_details');
             Route::get('/doctor-appointments', 'DoctorsController@doctor_appointments');
             Route::get('/get-date-appointments', 'DoctorsController@get_date_appointments');
 

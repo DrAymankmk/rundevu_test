@@ -1,10 +1,10 @@
 @charset "UTF-8";
 /*
-Template Name: Medova 
-Template URL: http://themeholy.com/html/Medova 
+Template Name: Medova
+Template URL: http://themeholy.com/html/Medova
 Description: Medova  - Health & Medical HTML Template
 Author: themeholy
-Author URI: https://themeforest.net/user/themeholy 
+Author URI: https://themeforest.net/user/themeholy
 Version: 1.0.0
 */
 /*=================================
@@ -45,7 +45,7 @@ Version: 1.0.0
     4.6. Blog
     4.7. Comments
     4.8. Hero Area
-    4.9. Error    
+    4.9. Error
     4.00. Popup Search
     4.00. Popup Side Menu
     4.00. Wocommerce
@@ -9420,9 +9420,9 @@ blockquote.has-very-dark-gray-color {
   color: var(--title-color);
   text-align: center;
 }
-.blog-single .social-links a:hover {
+/* .blog-single .social-links a:hover {
   color: var(--theme-color);
-}
+} */
 .blog-single .blog-meta {
   margin: -0.25em 0 3px 0;
 }

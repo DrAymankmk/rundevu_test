@@ -8,12 +8,13 @@
     foreach ($items as $item) {
         $it = $item->translation($locale) ?? $item->translation($fb);
         $img = $item->getMediaUrl('images', $locale, null, true);
+        $imgAlt = $item->getMediaAlt('images', $locale, true);
         if ($img) {
-            $slides->push(['img' => $img, 'title' => $it?->title, 'text' => $it?->content]);
+            $slides->push(['img' => $img, 'alt' => $imgAlt, 'title' => $it?->title, 'text' => $it?->content]);
         }
     }
     foreach ($section->getMedia('gallery') as $media) {
-        $slides->push(['img' => $media->getUrl(), 'title' => null, 'text' => null]);
+        $slides->push(['img' => $media->getUrl(), 'alt' => \App\Support\Cms\CmsGalleryMedia::alt($media), 'title' => null, 'text' => null]);
     }
     if ($slides->isEmpty()) {
         foreach (['project_1_1.jpg', 'project_1_2.jpg', 'project_1_3.jpg'] as $pj) {
@@ -21,6 +22,7 @@
                 'img' => asset('frontend/assets/img/project/' . $pj),
                 'title' => __('Our values'),
                 'text' => __('We are equipped with best medical services and quality care.'),
+                'alt' => '',
             ]);
         }
     }
@@ -48,7 +50,7 @@
                         <div class="swiper-slide">
                             <div class="project-card">
                                 <div class="box-img global-img">
-                                    <img src="{{ $slide['img'] }}" alt="">
+                                    <img src="{{ $slide['img'] }}" alt="{{ $slide['alt'] ?? '' }}">
                                 </div>
                                 <div class="box-content">
                                     <h3 class="box-title"><a href="{{ url('/contact') }}">{{ $slide['title'] ?: __('Project') }}</a></h3>

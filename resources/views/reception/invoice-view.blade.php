@@ -146,7 +146,7 @@
                                 <div class="invoice-head-clinic" style="direction: ltr;">
                                     <div class="d-flex justify-content-between flex-wrap gap-1 gap-x-4">
                                         <div class="invoice-counts gap-1">
-                                            <img src="{{$invoice->doctor->owner->image ?? null}}" width="20" height="20" alt=""> <span class="fw-bold">{{$invoice->doctor->owner->name ?? null}}</span>
+                                            <img src="{{ optional(optional($invoice->doctor)->owner)->image }}" width="20" height="20" alt=""> <span class="fw-bold">{{ optional(optional($invoice->doctor)->owner)->name }}</span>
                                         </div>
                                         <div class="invoice-counts gap-2 flex-wrap" style="margin-left: auto;">
                                             <p><span>{{ $invoice->invoice_number }}</span></p>
@@ -178,52 +178,52 @@
                                         </p>
                                         <p class="d-flex align-items-center justify-content-between">
                                             <span>رقم الملف:</span>
-                                            <span>{{ $invoice->user->file_number }}</span>
+                                            <span>{{ optional($invoice->user)->file_number }}</span>
                                             <span>MRN:</span>
                                         </p>
                                         <p class="d-flex align-items-center justify-content-between">
                                             <span>اسم المريض:</span>
-                                            <span>{{ $invoice->user->name }}</span>
+                                            <span>{{ optional($invoice->user)->name }}</span>
                                             <span>Pat. Name:</span>
                                         </p>
                                         <p class="d-flex align-items-center justify-content-between">
                                             <span>اسم الطبيب:</span>
-                                            <span>{{ $invoice->doctor->name ?? null }}</span>
+                                            <span>{{ optional($invoice->doctor)->name }}</span>
                                             <span>Doctor:</span>
                                         </p>
                                         <p class="d-flex align-items-center justify-content-between">
                                             <span>اسم العيادة:</span>
-                                            <span>{{ $invoice->doctor->owner->name }}</span>
+                                            <span>{{ optional(optional($invoice->doctor)->owner)->name }}</span>
                                             <span>Clinic:</span>
                                         </p>
                                         <p class="d-flex align-items-center justify-content-between">
                                             <span>الجنسية:</span>
-                                            <span>{{ app()->getLocale() == 'en' ? $invoice->user->nationality->name_en :  $invoice->user->nationality->name_ar }}</span>
+                                            <span>{{ app()->getLocale() == 'en' ? optional(optional($invoice->user)->nationality)->name_en : optional(optional($invoice->user)->nationality)->name_ar }}</span>
                                             <span>Nationality:</span>
                                         </p>
                                         <p class="d-flex align-items-center justify-content-between">
                                             <span>رقم الهوية:</span>
-                                            <span>{{ $invoice->user->file_number }}</span>
+                                            <span>{{ optional($invoice->user)->file_number }}</span>
                                             <span>Pat.ID:</span>
                                         </p>
                                         <p class="d-flex align-items-center justify-content-between">
                                             <span>البوليصة:</span>
-                                            <span>{{ $invoice->user->bill_number ?? null }}</span>
+                                            <span>{{ optional($invoice->user)->bill_number }}</span>
                                             <span>Policy:</span>
                                         </p>
                                         <p class="d-flex align-items-center justify-content-between">
                                             <span>شركة التأمين:</span>
-                                            <span>{{ app()->getLocale() == 'en' ? $invoice->user->company->name_en ?? null :  $invoice->user->company->name_ar ?? null }}</span>
+                                            <span>{{ app()->getLocale() == 'en' ? optional(optional($invoice->user)->company)->name_en : optional(optional($invoice->user)->company)->name_ar }}</span>
                                             <span>Insurance Co:</span>
                                         </p>
                                         <p class="d-flex align-items-center justify-content-between">
                                             <span>المستخدم:</span>
-                                            <span>{{ $invoice->user->id ?? null }}</span>
+                                            <span>{{ optional($invoice->user)->id }}</span>
                                             <span>User ID:</span>
                                         </p>
                                         <p class="d-flex align-items-center justify-content-between">
                                             <span>هاتف</span>
-                                            <span>{{ $invoice->user->phone ?? null }}</span>
+                                            <span>{{ optional($invoice->user)->phone }}</span>
                                             <span>Phone No:</span>
                                         </p>
                                     </div>
@@ -241,7 +241,7 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        @foreach($invoice->services as $service)
+                                        @forelse($invoice->services as $service)
                                         <tr>
                                             <td>{{ $service->services->code ?? null }}</td>
                                             <td>{{ $service->qty }}</td>
@@ -250,7 +250,16 @@
                                             <td>{{ $service->tax  ?? 0 }}</td>
                                             <td>{{ $service->price - $service->discount }}</td>
                                         </tr>
-                                        @endforeach
+                                        @empty
+                                            <tr>
+                                                <td>{{ $invoice->reservation_id ? $invoice->reservation_id : $invoice->id }}</td>
+                                                <td>1</td>
+                                                <td>{{ $invoice->total_price }}</td>
+                                                <td>{{ $invoice->discount ?? 0 }}</td>
+                                                <td>{{ $invoice->patient_tax ?? 0 }}</td>
+                                                <td>{{ $invoice->total_price }}</td>
+                                            </tr>
+                                        @endforelse
                                         </tbody>
                                     </table>
                                 </div>
@@ -258,7 +267,7 @@
                                     <div class="invoice-data">
                                         <p class="d-flex align-items-center justify-content-between">
                                             <span>إجمالى قبل الخصم:</span>
-                                            <span>{{ $invoice->services->sum('price') ?? 0}}</span>
+                                            <span>{{ $invoice->services->count() ? $invoice->services->sum('price') : $invoice->total_price }}</span>
                                             <span>Total Before Disc:</span>
                                         </p>
                                         <p class="d-flex align-items-center justify-content-between">
@@ -268,7 +277,7 @@
                                         </p>
                                         <p class="d-flex align-items-center justify-content-between">
                                             <span>إجمالى بعد الخصم:</span>
-                                            <span>{{  $invoice->services->sum('price') -  $invoice->services->sum('discount') }}</span>
+                                            <span>{{ $invoice->services->count() ? ($invoice->services->sum('price') -  $invoice->services->sum('discount')) : $invoice->total_price }}</span>
                                             <span>Total After Disc:</span>
                                         </p>
                                         <p class="d-flex align-items-center justify-content-between">

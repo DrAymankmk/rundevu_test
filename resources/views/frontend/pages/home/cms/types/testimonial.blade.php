@@ -19,6 +19,7 @@
             'name' => $it?->title ?: $defaults[$idx % 3]['name'],
             'role' => $it?->sub_title ?: $defaults[$idx % 3]['role'],
             'img' => $avatar,
+            'alt' => $item->getMediaAlt('images', $locale, true),
         ]);
     }
     if ($slides->isEmpty()) {
@@ -56,7 +57,7 @@
                                         <div class="box-wrapp">
                                             <div class="box-profile">
                                                 <div class="box-author">
-                                                    <img src="{{ $slide['img'] }}" alt="">
+                                                    <img src="{{ $slide['img'] }}" alt="{{ $slide['alt'] ?? $slide['name'] ?? '' }}">
                                                 </div>
                                                 <div class="box-info">
                                                     <h3 class="box-title">{{ $slide['name'] }}</h3>

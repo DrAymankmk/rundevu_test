@@ -14,9 +14,10 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // \App\Models\User::factory(10)->create();
-	$this->call([
-		CmsSeeder::class,
-		NotificationEventsSeeder::class,
-	]);
+        $this->call([
+            CmsSeeder::class,
+            NotificationEventsSeeder::class,
+            BlogSeeder::class,
+        ]);
     }
 }

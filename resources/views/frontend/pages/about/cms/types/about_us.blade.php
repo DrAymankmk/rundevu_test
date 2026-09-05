@@ -6,7 +6,7 @@
 			<div class="col-xxl-4">
 				<div class="img-box4 me-xl-3">
 					<div class="img1 reveal">
-						<img src="{{ $primaryImg }}" alt="{{ $aboutAlt }}">
+						<img src="{{ $primaryImg }}" alt="{{ $primaryAlt !== '' ? $primaryAlt : $aboutAlt }}">
 					</div>
 					<div class="about-wrapp" style="right: 0px;">
 						<div class="discount-wrapp">
@@ -21,6 +21,11 @@
 									style="padding: 10px;">{{ $discountLabel }}</span>
 							</div>
 						</div>
+					</div>
+				</div>
+				<div class="img-box4 me-xl-3">
+					<div class="img1 reveal">
+						<img src="{{ $secondaryImg }}" alt="{{ $secondaryAlt !== '' ? $secondaryAlt : $aboutAlt }}">
 					</div>
 				</div>
 			</div>
@@ -72,15 +77,7 @@
 						@endif
 					</div>
 					<div class="video-img2 wow fadeInUp" style="width: 320px;">
-						@if($videoIsLocal && filled($videoUrl))
-						<video class="about-video-thumb" muted playsinline
-							preload="metadata" aria-label="{{ $aboutAlt }}">
-							<source src="{{ $videoUrl }}"
-								type="{{ $videoMimeType }}">
-						</video>
-						@else
-						<img src="{{ $videoImg }}" alt="{{ $aboutAlt }}">
-						@endif
+						<img src="{{ $videoImg }}" alt="{{ $videoAlt !== '' ? $videoAlt : $aboutAlt }}">
 						@if(filled($videoUrl))
 						@if($videoIsLocal)
 						<a href="#about-inline-video-{{ $section->id }}"

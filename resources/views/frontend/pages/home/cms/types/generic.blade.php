@@ -22,11 +22,12 @@
                     @php
                         $it = $item->translation(app()->getLocale()) ?? $item->translation(config('app.fallback_locale', 'en'));
                         $img = $item->getMediaUrl('images', app()->getLocale(), null, true);
+                        $imgAlt = $item->getMediaAlt('images', app()->getLocale(), true);
                     @endphp
                     <div class="col-md-6 col-xl-4">
                         <div class="feature-card th-ani">
                             @if($img)
-                                <div class="mb-3"><img src="{{ $img }}" alt="" class="img-fluid rounded"></div>
+                                <div class="mb-3"><img src="{{ $img }}" alt="{{ $imgAlt }}" class="img-fluid rounded"></div>
                             @endif
                             <h3 class="box-title text-anime-style-2">{{ $it?->title ?: __('Item') }}</h3>
                             @if($it?->sub_title)

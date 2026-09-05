@@ -5609,9 +5609,9 @@ a.text-theme:hover,
 .widget_pages a::before,
 .widget_archive a::before,
 .widget_categories a::before {
-  content: "\f061";
+  content: "\f060";
   position: absolute;
-  right: 25px;
+  right: 0px;
   top: 17px;
   font-family: var(--icon-font);
   font-weight: 600;
@@ -9946,9 +9946,9 @@ blockquote.has-very-dark-gray-color {
   color: var(--title-color);
   text-align: center;
 }
-.blog-single .social-links a:hover {
+/* .blog-single .social-links a:hover {
   color: var(--theme-color);
-}
+} */
 .blog-single .blog-meta {
   margin-block-start: -0.25em;
   margin-block-end: 3px;
@@ -18673,10 +18673,10 @@ span.select2-selection.select2-selection--single:focus {
   animation: spin 10s infinite alternate-reverse;
 }
 .discount-tag span {
-  --rotate-letter: 8deg;
-  min-block-size: 80px;
-  position: absolute;
-  min-inline-size: 80px;
+    --rotate-letter: 25deg;
+    min-block-size: 80px;
+    position: absolute;
+    min-inline-size: 135px;
   left: 24px;
   top: 0px;
   text-transform: uppercase;
@@ -29360,7 +29360,7 @@ span.select2-selection.select2-selection--single:focus {
   border-radius: 50px;
   position: absolute;
   top: 5px;
-  left: 0;
+  right: 0;
 }
 .available-list li.unavailable:after {
   content: "\f057";
@@ -32615,7 +32615,7 @@ span.select2-selection.select2-selection--single:focus {
 .choose-img-box .img2 {
   position: absolute;
   top: 0;
-  right: -45px;
+  left: -45px;
   width: 539px;
   height: 539px;
   border-radius: 294px;
@@ -32635,7 +32635,7 @@ span.select2-selection.select2-selection--single:focus {
 }
 .choose-img-box .img3 {
   position: absolute;
-  left: 40%;
+  right: 40%;
   bottom: 0;
   width: 280px;
   height: 280px;

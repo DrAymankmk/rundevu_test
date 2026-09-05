@@ -6,4 +6,4 @@ Disallow: /clear
 Disallow: /pusher
 Disallow: /test
 
-Sitemap: https://randevuksa.com/sitemap.xml
+Sitemap: https://rundevo.net/sitemap.xml

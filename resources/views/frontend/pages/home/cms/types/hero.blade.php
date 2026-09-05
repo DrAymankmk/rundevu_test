@@ -96,6 +96,7 @@ if ($items->isNotEmpty()) {
 foreach ($items as $idx => $item) {
 $it = $item->translation($locale) ?? $item->translation($fb);
 $heroImg = $item->getMediaUrl('images', $locale, $defaultSlides[$idx % 3]['img'], true);
+$heroAlt = $item->getMediaAlt('images', $locale, true);
 $title = $it?->title;
 if (! $title && $it?->content) {
 $title = strip_tags($it->content);
@@ -109,7 +110,7 @@ $buttons = $mapModelLinksToButtons($item);
 // if ($buttons->isEmpty()) {
 // $buttons = $fallbackButtons;
 // }
-$slides->push(['title' => $title, 'subtitle' => $sub, 'desc' => $desc, 'img' => $heroImg, 'buttons' => $buttons]);
+$slides->push(['title' => $title, 'subtitle' => $sub, 'desc' => $desc, 'img' => $heroImg, 'alt' => $heroAlt, 'buttons' => $buttons]);
 }
 } else {
 foreach ($defaultSlides as $idx => $def) {
@@ -181,7 +182,7 @@ $slides->push([
 									data-ani-delay="0.4s">
 									<img src="{{ $slide['img'] }}"
 										style="width: 596px; height: 750px;"
-										alt="">
+										alt="{{ $slide['alt'] ?? '' }}">
 								</div>
 							</div>
 						</div>

@@ -95,6 +95,9 @@
  								<li><a href="{{ route('frontend.faq') }}">
  										{{ __('main.faq') }}</a>
  								</li>
+								<li><a href="{{ route('frontend.blog') }}">
+										{{ __('main.blogs') }}</a>
+								</li>
 
  								<li><a href="{{ route('frontend.subscription') }}">
  										{{ __('main.subscription') }}</a>

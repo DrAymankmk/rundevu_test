@@ -50,9 +50,9 @@ class ReservationsController extends APIController
 
         $patient_id = $request->user_id ?? $check_authorization->id;
         $use_service_one_without_package = Reservations::where('parent_id', $check_authorization->id)->exists();
-        if ($use_service_one_without_package && $check_authorization->package_id == 4) {
-            return $this->respondWithError(trans('user.doctors.check_reservation_one'));
-        }
+//        if ($use_service_one_without_package && $check_authorization->package_id == 4) {
+//            return $this->respondWithError(trans('user.doctors.check_reservation_one'));
+//        }
 
         $doctor = Clinic::where('id', $request->id)
             ->select('id', 'parent_id', 'name', 'app_type')

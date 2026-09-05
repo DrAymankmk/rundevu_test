@@ -54,7 +54,7 @@ class InvoicesController extends Controller
 
     function invoice_view($invoice_id)
     {
-        $invoice = invoices::whereId($invoice_id)->first();
+        $invoice = invoices::with(['doctor.owner', 'user.nationality', 'user.company', 'services.services'])->whereId($invoice_id)->firstOrFail();
         $clinic = Clinic::whereId(auth()->user()->id)->select('id','image','name')->first();
         return view('reception.invoice-view', compact('invoice','clinic'));
     }
@@ -77,7 +77,10 @@ class InvoicesController extends Controller
     function create_invoice_reservation($reservation_id)
     {
         $clinic_id = auth()->user()->parent_id;
-        $reservation = Reservations::whereId($reservation_id)->first();
+        $reservation = Reservations::with(['user.company', 'doctor', 'invoice'])->whereId($reservation_id)->firstOrFail();
+        if ($reservation->invoice) {
+            return redirect()->route('invoice-view', $reservation->invoice->id);
+        }
         $data['payment_method'] = PaymentMethod::where('clinic_id', auth()->user()->parent_id)->select('id', 'name_' . $this->lang() . ' as name')->get();
         $data['specializations'] = ClinicSpecialist::with('specialties')->where('clinic_id', $reservation->doctor_id)->where('type', 1)->where('status', 1)->get();
         $data['patient_id'] = $patient_id ?? null;
@@ -85,9 +88,10 @@ class InvoicesController extends Controller
         if ($reservation->user->company_id) {
             $company_cost = $reservation->user->company->amount;
         } else {
-            $company_cost = TakafoulDiscount::pluck('discount')->first();
+            $company_cost = 100;
         }
-        return view('reception.create_invoice_reservation', compact('data','reservation','company_cost'));
+        $consultation_price = $reservation->price ?? $reservation->doctor->consultation_price ?? 0;
+        return view('reception.create_invoice_reservation', compact('data','reservation','company_cost','consultation_price'));
     }
 
     // get services
@@ -110,13 +114,29 @@ class InvoicesController extends Controller
         $reception = auth()->user()->id;
         $data = $request->all();
         $patient = User::where('id', $request->patient_id)->select('id', 'parent_id', 'company_id')->first();
+        if ($request->reservation_id && invoices::where('reservation_id', $request->reservation_id)->exists()) {
+            $invoice = invoices::where('reservation_id', $request->reservation_id)->first();
+            return redirect()->route('invoice-view', $invoice->id);
+        }
+        $reservation = $request->reservation_id
+            ? Reservations::with('doctor')->whereId($request->reservation_id)->first()
+            : null;
+        $reservationPrice = $reservation
+            ? ($reservation->price ?? $reservation->doctor->consultation_price ?? 0)
+            : null;
+
         $data['reception_id'] = $reception;
         $data['doctor_id'] = $request->doctor_id;
-        $data['total_price'] = $request->total ?? $request->reservation_total;
-        $data['total_amount_paid'] = $request->amount_paid;
+        $data['total_price'] = $reservation ? $reservationPrice : ($request->total ?? $request->reservation_total);
+        $data['total_amount_paid'] = $request->reservation_id ? $data['total_price'] : $request->amount_paid;
         $data['user_id'] = $request->patient_id;
-        $data['company_id'] = $patient->company_id;
+        $data['company_id'] = $patient->company_id ?? null;
         $data['company_total_deductible'] = $patient->company->amount ?? 0;
+        $data['discount'] = $request->discount ?? 0;
+        $data['patient_tax'] = $request->patient_tax ?? 0;
+        $data['company_tax'] = $request->company_tax ?? 0;
+        $data['payment_status'] = $request->reservation_id ? 'paid' : ($request->payment_status ?? 'un_paid');
+        $data['other_info'] = $request->info ?? $request->other_info;
         $create_invoice = invoices::create($data);
         $i = 0;
         if ($create_invoice) {
@@ -150,7 +170,7 @@ class InvoicesController extends Controller
 
             invoices::generate_qrCode($invoice->invoice_number);
             session()->flash('success', __(trans('admin.add_invoice_success')));
-            return redirect()->back();
+            return redirect()->route('invoice-view', $invoice->id);
         } else {
             return redirect()->back();
         }

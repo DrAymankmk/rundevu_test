@@ -53,6 +53,10 @@ class Reservations extends Model
         return $this->hasMany(ReservationDrug::class,'reservation_id');
     }
 
+    function invoice () {
+        return $this->hasOne(invoices::class,'reservation_id');
+    }
+
     function specialty () {
 
         return $this->belongsTo(Specialty::class,'sub_specialist_id');

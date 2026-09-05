@@ -9,6 +9,7 @@ use App\Models\Notifications;
 use App\Models\Reservations;
 use App\Models\Specialty;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
@@ -29,7 +30,7 @@ class AppointmentsController extends Controller
 
         $data['patients'] = User::orderByDesc('id')->get();
 
-        $query = Reservations::with(['doctor.specialties.specialties', 'user', 'reservation_status'])
+        $query = Reservations::with(['doctor.specialties.specialties', 'user', 'reservation_status', 'invoice'])
             ->where(function ($q) use ($doctorIds, $data) {
                 $q->whereIn('doctor_id', $doctorIds)
                     ->orWhereIn('reception_id', $data['receptions']);
@@ -55,14 +56,21 @@ class AppointmentsController extends Controller
             $query->where('user_id', $request->patient_id);
         }
 
-        if ($request->filled('date_from') && $request->filled('date_to')) {
-            $query->whereBetween('date', [$request->date_from, $request->date_to]);
-        } elseif ($request->filled('date_from')) {
-            $query->whereDate('date', '>=', $request->date_from);
-        } elseif ($request->filled('date_to')) {
-            $query->whereDate('date', '<=', $request->date_to);
+        $dateFrom = $this->normalizeFilterDate($request->date_from);
+        $dateTo = $this->normalizeFilterDate($request->date_to);
+
+        if ($dateFrom && $dateTo) {
+            if ($dateFrom > $dateTo) {
+                [$dateFrom, $dateTo] = [$dateTo, $dateFrom];
+            }
+
+            $query->whereBetween('date', [$dateFrom, $dateTo]);
+        } elseif ($dateFrom) {
+            $query->whereDate('date', '>=', $dateFrom);
+        } elseif ($dateTo) {
+            $query->whereDate('date', '<=', $dateTo);
         } else {
-            if (empty($request->patient_id)) {
+            if (!$patient_id && !$request->anyFilled(['patient_id', 'doctor_id', 'search'])) {
                 $query->whereDate('date', now()->toDateString());
             }
         }
@@ -75,6 +83,27 @@ class AppointmentsController extends Controller
         $data['patient_id'] = $patient_id ?? null;
 
         return view('reception.appointments', compact('data'));
+    }
+
+    private function normalizeFilterDate($date): ?string
+    {
+        if (!$date) {
+            return null;
+        }
+
+        foreach (['Y-m-d', 'd/m/Y'] as $format) {
+            try {
+                return Carbon::createFromFormat($format, trim($date))->format('Y-m-d');
+            } catch (\Throwable $exception) {
+                //
+            }
+        }
+
+        try {
+            return Carbon::parse($date)->format('Y-m-d');
+        } catch (\Throwable $exception) {
+            return null;
+        }
     }
 
     function cancel_reservation($id)

@@ -60,6 +60,7 @@
                         <div class="card-body pb-0">
                             @php
                                 $detailsContractModel = optional($clinic->contract)->contract_model ?? 'cash_commission';
+                                $detailsPaymentMethod = optional($clinic->contract)->payment_method ?? 'cash';
                             @endphp
                             <div class="row">
                                 <div class="col-sm-4">
@@ -84,6 +85,17 @@
                                                 @else
                                                     @lang('main.contract_cash_commission_short')
                                                 @endif
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <span class="avatar rounded-circle bg-light text-dark flex-shrink-0 me-2"><i class="ti ti-credit-card fs-16"></i></span>
+                                        <div>
+                                            <h6 class="fs-13 fw-bold mb-1">@lang('main.contract_payment_method')</h6>
+                                            <p class="mb-0">
+                                                {{ $detailsPaymentMethod === 'online' ? __('main.payment_online') : __('main.payment_cash') }}
                                             </p>
                                         </div>
                                     </div>
@@ -188,6 +200,7 @@
             @php
                 $contract = $clinic->contract ?: new \App\Models\ClinicContract(\App\Models\ClinicContract::defaultAttributes());
                 $contractModel = old('contract_model', $contract->contract_model);
+                $paymentMethod = old('payment_method', $contract->payment_method ?? 'cash');
             @endphp
             <div class="row">
                 <div class="col-xl-12 d-flex">
@@ -207,6 +220,13 @@
                                             <option value="annual_subscription" {{ $contractModel === 'annual_subscription' ? 'selected' : '' }}>@lang('main.contract_annual_subscription')</option>
                                         </select>
                                     </div>
+                                    <div class="col-lg-2">
+                                        <label class="form-label">@lang('main.contract_payment_method')</label>
+                                        <select name="payment_method" class="form-control">
+                                            <option value="cash" {{ $paymentMethod === 'cash' ? 'selected' : '' }}>@lang('main.payment_cash')</option>
+                                            <option value="online" {{ $paymentMethod === 'online' ? 'selected' : '' }}>@lang('main.payment_online')</option>
+                                        </select>
+                                    </div>
                                     <div class="col-lg-2 contract-commission-field">
                                         <label class="form-label">@lang('main.platform_commission_rate')</label>
                                         <input type="number" name="commission_rate" class="form-control" min="0" max="100" step="0.01" value="{{ old('commission_rate', $contract->commission_rate) }}">
@@ -223,7 +243,7 @@
                                         <label class="form-label">@lang('main.annual_subscription_ends_at')</label>
                                         <input type="date" name="annual_subscription_ends_at" class="form-control" value="{{ old('annual_subscription_ends_at', optional($contract->annual_subscription_ends_at)->format('Y-m-d')) }}">
                                     </div>
-                                    <div class="col-lg-9 contract-subscription-field">
+                                    <div class="col-lg-9">
                                         <div class="form-check form-switch">
                                             <input class="form-check-input" type="checkbox" name="rendezvous_badge_enabled" value="1" id="rendezvous_badge_enabled" {{ old('rendezvous_badge_enabled', $contract->rendezvous_badge_enabled) ? 'checked' : '' }}>
                                             <label class="form-check-label" for="rendezvous_badge_enabled">@lang('main.rendezvous_badge_enabled')</label>

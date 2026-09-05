@@ -255,9 +255,15 @@
                                                                     type="button"><i class="fa-solid fa-list-ul m-r-5"></i> @lang('admin.doctor.waiting_list')
                                                                 </a>
                                                             @endif
-{{--                                                            @if($reservation->status_id == 1)--}}
-{{--                                                                <a class="dropdown-item" href="{{ route('create-invoice-reservation', $reservation->id) }}"><i class="fa-regular fa-credit-card m-r-5"></i> @lang('admin.pay')</a>--}}
-{{--                                                            @endif--}}
+                                                            @if($reservation->invoice)
+                                                                <a class="dropdown-item" href="{{ route('invoice-view', $reservation->invoice->id) }}">
+                                                                    <i class="feather-printer m-r-5"></i> @lang('admin.print')
+                                                                </a>
+                                                            @elseif(in_array($reservation->status_id, [1, 2, 3]))
+                                                                <a class="dropdown-item" href="{{ route('create-invoice-reservation', $reservation->id) }}">
+                                                                    <i class="fa-regular fa-credit-card m-r-5"></i> @lang('admin.pay')
+                                                                </a>
+                                                            @endif
 
                                                             <!-- زر إنهاء الحجز -->
                                                             @if(in_array($reservation->status_id, [1, 2, 3]))

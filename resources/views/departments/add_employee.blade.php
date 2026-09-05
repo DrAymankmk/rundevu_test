@@ -234,6 +234,17 @@
                                             </div>
 
                                             <div class="col-md-6 mb-3">
+                                                <label for="number_patients">@lang('admin.number_patients')</label>
+                                                <input class="form-control" id="number_patients" type="number"
+                                                       min="0"
+                                                       placeholder="@lang('admin.number_patients')" value="{{ old('number_patients') }}"
+                                                       name="number_patients"
+                                                       required="">
+                                                <div class="invalid-feedback">@lang('admin.enter') @lang('admin.number_patients').
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6 mb-3">
                                                 <label for="consultation_price">@lang('admin.consultation_price')</label>
                                                 <input class="form-control" id="consultation_price" type="number"
                                                        step="0.01" min="0"

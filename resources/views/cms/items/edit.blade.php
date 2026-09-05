@@ -127,6 +127,7 @@
 								$lang->code . '][image]',
 								'collection' => 'images_' . $lang->code,
 								'label' => __('cms.main_image'),
+								'model' => $item,
 								'existingImage' =>
 								$item->getFirstMediaUrl('images_' .
 								$lang->code)
@@ -139,9 +140,21 @@
 								$lang->code . '][icon_image]',
 								'collection' => 'icons_' . $lang->code,
 								'label' => __('cms.icon_image'),
+								'model' => $item,
 								'existingImage' =>
 								$item->getFirstMediaUrl('icons_' .
 								$lang->code)
+								])
+
+								<hr class="my-3">
+								<h6 class="mb-3">{{ __('cms.gallery') }} ({{ $lang->name }})</h6>
+
+								@include('components.gallery-upload', [
+									'inputId' => 'item_gallery_' . $lang->code,
+									'inputName' => 'translations[' . $lang->code . '][gallery]',
+									'collection' => 'gallery_' . $lang->code,
+									'label' => __('cms.gallery_images'),
+									'existingImages' => $item->getMedia('gallery_' . $lang->code),
 								])
 							</div>
 							@endforeach
@@ -233,25 +246,6 @@
 						<p class="mb-0"><strong>{{ __('cms.updated') }}:</strong>
 							{{ $item->updated_at->format('Y-m-d H:i') }}</p>
 					</div>
-				</div>
-			</div>
-		</div>
-
-
-		<!-- Gallery Section -->
-		<div class="col-lg-12 mt-3">
-			<div class="card">
-				<div class="card-header">
-					<h5 class="card-title mb-0">{{ __('cms.gallery') }}</h5>
-				</div>
-				<div class="card-body">
-					@include('components.gallery-upload', [
-					'inputId' => 'item_gallery',
-					'inputName' => 'gallery',
-					'collection' => 'gallery',
-					'label' => __('cms.gallery_images'),
-					'existingImages' => $item->getMedia('gallery')
-					])
 				</div>
 			</div>
 		</div>
