@@ -28,6 +28,10 @@
 									</li>
 									<li><a href="{{ route('frontend.services') }}">{{ __('main.services') }}</a>
 									</li>
+									<li><a href="{{ route('frontend.clinics') }}">{{ __('main.clinics') }}</a>
+									</li>
+									<li><a href="{{ route('frontend.doctors') }}">{{ __('doctors.page_title') }}</a>
+									</li>
 									<li><a href="{{ route('frontend.subscription') }}">{{ __('main.subscription') }}</a>
 									</li>
 

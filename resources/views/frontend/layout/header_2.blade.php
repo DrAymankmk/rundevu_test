@@ -52,9 +52,9 @@
  				</div>
  				<div class="col-auto">
  					<div class="header-button">
-						<a href="#" class="th-btn" data-bs-toggle="modal" data-bs-target="#bookDemoModal"><img
+						<!-- <a href="#" class="th-btn" data-bs-toggle="modal" data-bs-target="#bookDemoModal"><img
 								src="{{ asset('frontend/assets/img/icon/alarm.svg') }}"
-								alt=""> {{ __('main.book_demo') }}</a>
+								alt=""> {{ __('main.book_demo') }}</a> -->
  						<!-- <form class="search-form">
  							<input type="text"
  								placeholder="{{ __('main.search') }}">
@@ -97,6 +97,12 @@
  								</li>
 								<li><a href="{{ route('frontend.blog') }}">
 										{{ __('main.blogs') }}</a>
+								</li>
+								<li><a href="{{ route('frontend.clinics') }}">
+										{{ __('main.clinics') }}</a>
+								</li>
+								<li><a href="{{ route('frontend.doctors') }}">
+										{{ __('doctors.page_title') }}</a>
 								</li>
 
  								<li><a href="{{ route('frontend.subscription') }}">

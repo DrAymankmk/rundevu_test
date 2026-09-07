@@ -14,3 +14,6 @@ yarn-error.log
 /.idea
 /.vscode
 /docs
+/REPORTS
+/resources/view/analytics/
+dashboards_layouts

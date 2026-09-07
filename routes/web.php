@@ -96,6 +96,10 @@ Route::group(['namespace' => 'Frontend', 'middleware' => 'setlocale' , 'as' => '
     Route::get('/blog', 'BlogController@index')->name('blog');
     Route::get('/blog/load-more', 'BlogController@loadMore')->name('blog.load-more');
     Route::get('/blog/{slug}', 'BlogController@show')->name('blog.show');
+    Route::get('/clinics', 'ClinicsController@index')->name('clinics');
+    Route::get('/clinics/{id}', 'ClinicsController@show')->name('clinics.show')->whereNumber('id');
+    Route::get('/doctors', 'DoctorsController@index')->name('doctors');
+    Route::get('/doctors/{id}', 'DoctorsController@show')->name('doctors.show')->whereNumber('id');
     Route::get('/social-media', 'SocialMediaController@index')->name('social');
     Route::post('/book-demo', 'ContactController@bookDemo')->name('book_demo');
     Route::post('/contact', 'ContactController@submitContact')->name('contact.submit');

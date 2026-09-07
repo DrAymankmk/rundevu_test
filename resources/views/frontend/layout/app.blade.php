@@ -341,6 +341,10 @@ $isRtl = in_array($htmlLang, $rtlLangs, true);
 
 
 					<li><a href="{{ route('frontend.about') }}">About Us</a></li>
+					<li><a href="{{ route('frontend.services') }}">{{ __('main.services') }}</a></li>
+					<li><a href="{{ route('frontend.clinics') }}">{{ __('main.clinics') }}</a></li>
+					<li><a href="{{ route('frontend.doctors') }}">{{ __('doctors.page_title') }}</a></li>
+					<li><a href="{{ route('frontend.blog') }}">{{ __('main.blogs') }}</a></li>
 					<li class="menu-item-has-children">
 						<a href="#">Services</a>
 						<ul class="sub-menu">
@@ -386,7 +390,7 @@ $isRtl = in_array($htmlLang, $rtlLangs, true);
 ==============================-->
 
 	@if(Route::is('frontend.about') || Route::is('frontend.services') || Route::is('frontend.faq') ||
-	Route::is('frontend.subscription') || Route::is('frontend.contact') )
+	Route::is('frontend.subscription') || Route::is('frontend.contact') || Route::is('frontend.clinics*') || Route::is('frontend.doctors*') )
 	@include('frontend.layout.header_2')
 	@else
 	@include('frontend.layout.header_1')
