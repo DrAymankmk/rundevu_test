@@ -57,6 +57,10 @@ class ClinicContractsController extends APIController
             'annual_subscription_starts_at' => ['nullable', 'date_format:Y-m-d'],
             'annual_subscription_ends_at' => ['nullable', 'date_format:Y-m-d'],
             'rendezvous_badge_enabled' => ['nullable', 'boolean'],
+            'payment_method' => ['nullable', Rule::in([
+                ClinicContract::PAYMENT_CASH,
+                ClinicContract::PAYMENT_ONLINE,
+            ])],
         ]);
 
         if ($validator->fails()) {
@@ -72,9 +76,8 @@ class ClinicContractsController extends APIController
                 'annual_subscription_amount' => $request->annual_subscription_amount,
                 'annual_subscription_starts_at' => $request->annual_subscription_starts_at,
                 'annual_subscription_ends_at' => $request->annual_subscription_ends_at,
-                'rendezvous_badge_enabled' => $contractModel === ClinicContract::ANNUAL_SUBSCRIPTION
-                    ? (bool) $request->rendezvous_badge_enabled
-                    : false,
+                'rendezvous_badge_enabled' => (bool) $request->rendezvous_badge_enabled,
+                'payment_method' => $request->input('payment_method', ClinicContract::PAYMENT_CASH),
             ]
         );
 
@@ -111,6 +114,7 @@ class ClinicContractsController extends APIController
             'annual_subscription_starts_at' => optional($this->contractValue($clinic, 'annual_subscription_starts_at'))->format('Y-m-d'),
             'annual_subscription_ends_at' => optional($this->contractValue($clinic, 'annual_subscription_ends_at'))->format('Y-m-d'),
             'rendezvous_badge_enabled' => (bool) $this->contractValue($clinic, 'rendezvous_badge_enabled'),
+            'payment_method' => $this->contractValue($clinic, 'payment_method'),
             'booking_policy' => $clinic->bookingPolicy(),
         ];
     }

@@ -11,6 +11,11 @@ class ClinicOffer extends Model
     use HasFactory,SoftDeletes;
     public $fillable = ['clinic_id','specialty_id', 'title_ar', 'title_en','discount','start_date','end_date','status'];
 
+    public function clinic()
+    {
+        return $this->belongsTo(Clinic::class, 'clinic_id');
+    }
+
     public function specialty()
     {
         return $this->belongsTo(Specialty::class, 'specialty_id');

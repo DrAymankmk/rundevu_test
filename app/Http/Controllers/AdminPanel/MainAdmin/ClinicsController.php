@@ -286,6 +286,7 @@ class ClinicsController extends Controller
             'annual_subscription_starts_at',
             'annual_subscription_ends_at',
             'rendezvous_badge_enabled',
+            'payment_method',
         ];
     }
 
@@ -302,6 +303,10 @@ class ClinicsController extends Controller
             'annual_subscription_starts_at' => ['nullable', 'date_format:Y-m-d'],
             'annual_subscription_ends_at' => ['nullable', 'date_format:Y-m-d', 'after_or_equal:annual_subscription_starts_at'],
             'rendezvous_badge_enabled' => ['nullable', 'boolean'],
+            'payment_method' => ['nullable', Rule::in([
+                ClinicContract::PAYMENT_CASH,
+                ClinicContract::PAYMENT_ONLINE,
+            ])],
         ]);
     }
 
@@ -325,8 +330,8 @@ class ClinicsController extends Controller
                 'annual_subscription_ends_at' => $contractModel === ClinicContract::ANNUAL_SUBSCRIPTION
                     ? $request->input('annual_subscription_ends_at')
                     : null,
-                'rendezvous_badge_enabled' => $contractModel === ClinicContract::ANNUAL_SUBSCRIPTION
-                    && (bool) $request->input('rendezvous_badge_enabled'),
+                'rendezvous_badge_enabled' => (bool) $request->input('rendezvous_badge_enabled'),
+                'payment_method' => $request->input('payment_method', ClinicContract::PAYMENT_CASH),
             ]
         );
     }

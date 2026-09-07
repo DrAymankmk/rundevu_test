@@ -40,6 +40,53 @@
         .table-select + span {
             display: none;
         }
+
+        .booking-card {
+            border-radius: 16px;
+            border: 1px solid #eef1f7;
+            box-shadow: 0 6px 22px rgba(15, 23, 42, 0.06);
+            overflow: hidden;
+        }
+
+        .booking-card .card-body {
+            padding: 28px;
+        }
+
+        .payment-tabs {
+            border-bottom: 1px solid #eef1f7;
+            gap: 8px;
+        }
+
+        .payment-tabs .nav-link {
+            border: 0;
+            border-radius: 12px 12px 0 0;
+            color: #475569;
+            font-weight: 600;
+            padding: 12px 18px;
+        }
+
+        .payment-tabs .nav-link.active {
+            background: #2e37a4;
+            color: #fff;
+        }
+
+        .payment-summary {
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 22px;
+        }
+
+        .payment-summary p {
+            margin-bottom: 6px;
+            color: #475569;
+            font-weight: 600;
+        }
+
+        .payment-summary strong {
+            color: #1f2937;
+        }
     </style>
     <div class="page-wrapper">
         <div class="content">
@@ -62,18 +109,47 @@
             <div class="row">
                 <div class="col-sm-12">
 
-                    <div class="card ">
+                    <div class="card booking-card">
                         <div class="card-body">
                             <form method="post" action="{{ route('add-invoice') }}"
                                   enctype="multipart/form-data" class="" class="was-validated needs-validation">
                                 @csrf
+                                @php
+                                    $visitPrice = old('price', $consultation_price ?? 0);
+                                    $companyAmount = 0;
+                                    $patientAmount = $visitPrice;
+                                @endphp
                                 <div class="row">
                                     <div class="col-12">
                                         <div class="form-heading">
-                                            <h4>@lang('admin.reception.create_invoice')</h4>
+                                            <h4>@lang('admin.pay') - @lang('admin.consultation_price')</h4>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <ul class="nav nav-tabs payment-tabs mb-4" role="tablist">
+                                            <li class="nav-item" role="presentation">
+                                                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#appointment-tab" type="button" role="tab">
+                                                    @lang('admin.reserve_appointment')
+                                                </button>
+                                            </li>
+                                            <li class="nav-item" role="presentation">
+                                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#payment-tab" type="button" role="tab">
+                                                    @lang('admin.pay')
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="payment-summary">
+                                            <p>@lang('admin.reservation_number'): <strong>{{ $reservation->booking_number }}</strong></p>
+                                            <p>@lang('admin.Doctor'): <strong>{{ $reservation->doctor->name ?? null }}</strong></p>
+                                            <p>@lang('admin.consultation_price'): <strong>{{ number_format((float) $visitPrice, 2) }}</strong></p>
                                         </div>
                                     </div>
                                     <input type="hidden" name="reservation_id" value="{{$reservation->id}}">
+                                    <div class="tab-content col-12 p-0">
+                                        <div class="tab-pane fade show active" id="appointment-tab" role="tabpanel">
+                                            <div class="row">
                                     <div class="col-12 col-md-6 col-xl-6">
                                         <div class="form-group local-forms">
                                             <label for="patient">@lang('admin.patient_name') <span class="login-danger">*</span></label>
@@ -122,6 +198,10 @@
                                             <input class="form-control" id="file_number" type="text" placeholder="@lang('admin.file_number')" value="{{$reservation->user->file_number ?? null}}" readonly/>
                                         </div>
                                     </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane fade" id="payment-tab" role="tabpanel">
+                                            <div class="row">
                                     <div class="col-12 col-md-6 col-xl-4">
                                         <div class="form-group local-forms">
                                             <label for="payment_method">@lang('admin.payment_method') <span
@@ -135,15 +215,11 @@
                                             </select>
                                         </div>
                                     </div>
+                                    <input type="hidden" name="payment_status" value="paid">
                                     <div class="col-12 col-md-6 col-xl-4">
                                         <div class="form-group local-forms">
-                                            <label>@lang('admin.select')@lang('admin.payment_status') <span class="login-danger">*</span></label>
-                                            <select class="form-control select" name="payment_status">
-                                                <option selected disabled>@lang('admin.select')  @lang('admin.payment_status')</option>
-                                                <option value="paid">@lang('admin.paid')</option>
-                                                <option value="un_paid">@lang('admin.un_paid')</option>
-                                                <option value="partially_paid">@lang('admin.partially_paid')</option>
-                                            </select>
+                                            <label>@lang('admin.payment_status')</label>
+                                            <input type="text" class="form-control" value="@lang('admin.paid')" readonly>
                                         </div>
                                     </div>
                                     <div class="col-12 col-md-6 col-xl-4">
@@ -167,9 +243,10 @@
                                                     <div class="col-lg-4 col-sm-6">
                                                         <div class="form-group mb-2">
                                                             <label style="font-size: 14px;">@lang('admin.price')</label>
-                                                            <input type="text" class="form-control" id="price" name="price" value="{{old('price')}}"  required>
+                                                            <input type="text" class="form-control" id="price" name="price" value="{{ $visitPrice }}" readonly required>
                                                         </div>
                                                     </div>
+                                                    <input type="hidden" id="discount" name="discount" value="0">
 {{--                                                    <div class="col-lg-3 col-sm-6">--}}
 {{--                                                        <div class="form-group mb-2">--}}
 {{--                                                            <label--}}
@@ -177,7 +254,7 @@
 {{--                                                            <input type="number" class="form-control" value="0" id="discount" name="discount" readonly  required>--}}
 {{--                                                        </div>--}}
 {{--                                                    </div>--}}
-                                                    <div class="col-lg-4 col-sm-6">
+                                                    <div class="col-lg-4 col-sm-6 d-none">
                                                         <div class="form-group mb-2">
                                                             <label
                                                                 style="font-size: 14px;">@lang('admin.patient_tax')</label>
@@ -187,25 +264,25 @@
                                                     <div class="col-lg-4 col-sm-6">
                                                         <div class="form-group mb-2">
                                                             <label style="font-size: 14px;">@lang('admin.total')</label>
-                                                            <input type="text" class="form-control" name="reservation_total" id="reservation_total" value="{{old('total')}}">
+                                                            <input type="text" class="form-control" name="reservation_total" id="reservation_total" value="{{ old('reservation_total', $visitPrice) }}" readonly>
                                                         </div>
                                                     </div>
                                                 </div>
 
-                                                <div class="row">
+                                                <div class="row d-none">
                                                     <input type="hidden" id="company_price" value="{{$company_cost}}">
                                                     <div class="col-sm-4">
                                                         <div class="form-group mb-2">
                                                             <label
                                                                 style="font-size: 14px;">@lang('admin.patient_cost')</label>
                                                             <input type="hidden" id="company_percentage" >
-                                                            <input type="text" class="form-control" name="patient_cost"  id="patient_cost" value="{{old('patient_cost')}}" readonly>
+                                                            <input type="text" class="form-control" name="patient_cost"  id="patient_cost" value="{{ old('patient_cost', $patientAmount) }}" readonly>
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-4">
                                                         <div class="form-group mb-2">
                                                             <label style="font-size: 14px;">@lang('admin.company_cost')</label>
-                                                            <input type="text" class="form-control" name="company_cost" id="company_cost" value="{{old('company_cost')}}" readonly>
+                                                            <input type="text" class="form-control" name="company_cost" id="company_cost" value="{{ old('company_cost', $companyAmount) }}" readonly>
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-4">
@@ -219,14 +296,14 @@
                                                         <div class="form-group mb-2">
                                                             <label
                                                                 style="font-size: 14px;">@lang('admin.patient_total') </label>
-                                                            <input type="text" class="form-control" name="patient_total" id="patient_total" value="{{old('patient_total')}}">
+                                                            <input type="text" class="form-control" name="patient_total" id="patient_total" value="{{ old('patient_total', $patientAmount) }}" readonly>
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-4">
                                                         <div class="form-group mb-2">
                                                             <label
                                                                 style="font-size: 14px;">@lang('admin.company_total')  </label>
-                                                            <input type="text" class="form-control" name="company_total" id="company_total" value="{{old('company_total')}}">
+                                                            <input type="text" class="form-control" name="company_total" id="company_total" value="{{ old('company_total', $companyAmount) }}" readonly>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -242,26 +319,29 @@
                                     <div class="col-12 col-md-4">
                                         <div class="form-group">
                                             <label style="font-size: 14px;">@lang('admin.total_amount') </label>
-                                            <input disabled class="form-control" placeholder="@lang('admin.total_amount')" id="total_amount" name="total_amount" value="{{old('total_amount')}}">
+                                            <input disabled class="form-control" placeholder="@lang('admin.total_amount')" id="total_amount" name="total_amount" value="{{ old('total_amount', $patientAmount) }}">
                                         </div>
                                     </div>
                                     <div class="col-12 col-md-4">
                                         <div class="form-group">
                                             <label style="font-size: 14px;">@lang('admin.amount_paid') </label>
-                                            <input  class="form-control" placeholder="@lang('admin.amount_paid')" id="amount_paid" name="amount_paid" value="{{old('amount_paid')}}">
+                                            <input class="form-control" placeholder="@lang('admin.amount_paid')" id="amount_paid" name="amount_paid" value="{{ old('amount_paid', $patientAmount) }}" readonly>
                                         </div>
                                     </div>
-                                    <div class="col-12 col-md-4">
+                                    <div class="col-12 col-md-4 d-none">
                                         <div class="form-group">
                                             <label style="font-size: 14px;">@lang('admin.remaining_amount') </label>
-                                            <input disabled class="form-control" placeholder="@lang('admin.remaining_amount')" id="remaining_amount" name="remaining_amount" value="{{old('remaining_amount')}}">
+                                            <input disabled class="form-control" placeholder="@lang('admin.remaining_amount')" id="remaining_amount" name="remaining_amount" value="{{ old('remaining_amount', 0) }}">
                                         </div>
                                     </div>
 
                                     <div class="col-12">
                                         <div class="doctor-submit text-end">
                                             <button type="submit" class="btn btn-primary submit-form me-2">@lang('admin.save')</button>
-                                            <button type="submit" class="btn btn-primary cancel-form">@lang('admin.cancel')</button>
+                                            <a href="{{ route('appointments') }}" class="btn btn-primary cancel-form">@lang('admin.cancel')</a>
+                                        </div>
+                                    </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

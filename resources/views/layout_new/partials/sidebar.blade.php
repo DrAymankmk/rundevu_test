@@ -929,7 +929,6 @@
                             </li>
                         </ul>
                     </li>
-
                     <li class="menu-title"><span>@lang('main.blogs')</span></li>
                     <li>
                         <ul>

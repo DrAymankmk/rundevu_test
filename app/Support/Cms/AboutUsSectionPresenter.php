@@ -182,7 +182,7 @@ class AboutUsSectionPresenter
         // $discountLabel = trim(strip_tags((string) $sub)) !== ''
         //     ? strip_tags($sub) . ' * ' . __('main.app_name') . ' *'
         //     : __('main.app_name') . ' * ' . __('main.services') . ' *';
-                $discountLabel = __('main.app_name');
+        $discountLabel = __('main.app_name');
         $htmlLang = explode('-', strtolower(str_replace('_', '-', $locale)))[0];
         $discountAnimeClass = in_array($htmlLang, ['ar', 'fa', 'he', 'ur'], true)
             ? 'discount-anime discount-anime-plain'

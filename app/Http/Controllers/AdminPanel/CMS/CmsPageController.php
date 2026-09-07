@@ -31,10 +31,10 @@ class CmsPageController extends Controller
             $search = $request->search['value'];
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('slug', 'like', "%{$search}%")
-                  ->orWhereHas('translations', function ($q2) use ($search) {
-                      $q2->where('title', 'like', "%{$search}%");
-                  });
+                    ->orWhere('slug', 'like', "%{$search}%")
+                    ->orWhereHas('translations', function ($q2) use ($search) {
+                        $q2->where('title', 'like', "%{$search}%");
+                    });
             });
         }
 

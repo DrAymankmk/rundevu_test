@@ -14,7 +14,7 @@ class Clinic extends Authenticatable
     use HasFactory, HasRoles, HasSeo;
     protected $fillable = [
         'name', 'email', 'password', 'phone', 'image', 'qr_code', 'status', 'app_type', 'parent_id', 'city_id', 'lat', 'lng', 'address',
-        'gender', 'date_created','package_end_date', 'communication_officer','communication_officer_phone', 'specialization', 'firebase_token', 'platform', 'device_token', 'jwt_token', 'info', 'degree_id', 'ID_Number',
+        'gender', 'date_created','package_end_date', 'communication_officer','communication_officer_phone', 'specialization', 'firebase_token', 'platform', 'device_token', 'jwt_token', 'info', 'info_ar', 'consultation_price', 'degree_id', 'ID_Number',
         'facebook_url', 'instagram_url', 'tiktok_url', 'snapchat_url', 'youtube_url'
         ,'is_manager','nursing_point_id','notes','role_id','points_enabled','points_category','enabled_modules',
         'license_number','medical_commercial_license','alternative_phone'
@@ -23,6 +23,7 @@ class Clinic extends Authenticatable
     protected $casts = [
         'enabled_modules' => 'array',
         'points_enabled' => 'boolean',
+        'consultation_price' => 'decimal:2',
     ];
 
     public function contractOwner()
@@ -48,9 +49,10 @@ class Clinic extends Authenticatable
             return false;
         }
 
-        return (string) $contract->contract_model === ClinicContract::ANNUAL_SUBSCRIPTION
-            && (bool) $contract->rendezvous_badge_enabled
+        return (bool) $contract->rendezvous_badge_enabled
             && (
+//                (string) $contract->contract_model !== ClinicContract::ANNUAL_SUBSCRIPTION
+//                ||
                 empty($contract->annual_subscription_ends_at)
                 || $contract->annual_subscription_ends_at->gte(now()->startOfDay())
             );
@@ -64,6 +66,10 @@ class Clinic extends Authenticatable
             : new ClinicContract(ClinicContract::defaultAttributes());
         $contractModel = $contract->contract_model;
         $isVerified = $this->isVerifiedForInstantBooking();
+        $bookingFlow = $isVerified ? 'instant' : 'request';
+        $bookingMessage = $isVerified
+            ? ''
+            : 'تم استلام طلبك، وسوف يتم تأكيد الموعد النهائي معك من قبل العيادة.';
 
         return [
             'contract_model' => $contractModel,
@@ -74,11 +80,22 @@ class Clinic extends Authenticatable
             'badge_message' => $isVerified
                 ? 'هذه العيادة تلتزم بالموعد المحجوز على شكل حجز مؤكد بمجرد اتمام الحجز.'
                 : '',
-            'booking_flow' => $isVerified ? 'instant' : 'request',
-            'booking_message' => $isVerified
-                ? ''
-                : 'تم استلام طلبك، وسوف يتم تأكيد الموعد النهائي معك من قبل العيادة.',
-            'payment_method' => $contractModel === ClinicContract::ONLINE_PAYMENT_COMMISSION ? 'online' : 'cash',
+            'booking_flow' => $bookingFlow,
+            'booking_message' => $bookingMessage,
+            'allows_instant_booking' => $isVerified,
+            'allows_booking_request' => !$isVerified,
+            'requires_doctor_selection' => true,
+            'requires_appointment_selection' => $isVerified,
+            'booking_action' => $isVerified ? 'choose_doctor_and_appointment' : 'send_booking_request',
+            'booking_action_label_ar' => $isVerified ? 'احجز موعد' : 'إرسال طلب حجز',
+            'booking_action_label_en' => $isVerified ? 'Book appointment' : 'Send booking request',
+            'booking_instructions_ar' => $isVerified
+                ? 'اختر الطبيب والموعد المناسب لتأكيد الحجز مباشرة.'
+                : 'اختر الطبيب وأرسل طلب الحجز، وسوف تتواصل العيادة معك لتأكيد الموعد.',
+            'booking_instructions_en' => $isVerified
+                ? 'Choose the doctor and appointment time to confirm the booking immediately.'
+                : 'Choose the doctor and send a booking request. The clinic will contact you to confirm the appointment.',
+            'payment_method' => $contract->payment_method ?? ClinicContract::PAYMENT_CASH,
         ];
     }
 
@@ -215,7 +232,15 @@ class Clinic extends Authenticatable
     {
         return $this->hasMany(Clinic::class, 'parent_id')
             ->where('app_type', 3)
-            ->select('id', 'parent_id', 'name', 'phone', 'image', 'info', 'info_ar');
+            ->select('id', 'parent_id', 'app_type', 'name', 'phone', 'image', 'info', 'info_ar', 'consultation_price');
+    }
+
+    function branches()
+    {
+        return $this->hasMany(Clinic::class, 'parent_id')
+            ->where('app_type', 7)
+            ->where('status', 1)
+            ->select('id', 'parent_id', 'app_type', 'name', 'email', 'phone', 'image', 'lat', 'lng', 'address', 'status');
     }
 
 

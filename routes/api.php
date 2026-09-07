@@ -45,80 +45,6 @@ Route::group(['namespace' => 'API'], function () {
     Route::get('clinic-contract', 'ClinicContractsController@show');
     Route::post('clinic-contract/update', 'ClinicContractsController@update');
 
-    //complaints box CRUD Routes
-    Route::group(['namespace' => 'Clinics', 'prefix' => 'complaints_box'], function () {
-        Route::get('/', 'ComplaintsBoxController@index');
-        Route::post('/send_reply', 'ComplaintsBoxController@send_reply');
-    });
-
-    //posts CRUD Routes
-    Route::group(['namespace' => 'Clinics', 'prefix' => 'posts'], function () {
-        Route::get('/', 'PostsController@index');
-        Route::post('/update_or_create', 'PostsController@updateOrCreate');
-        Route::delete('/delete/{id}', 'PostsController@delete_post');
-    });
-
-    //departments box CRUD Routes
-    Route::group(['namespace' => 'Clinics', 'prefix' => 'departments'], function () {
-        Route::get('/', 'DepartmentsController@index');
-        Route::post('/update_or_create', 'DepartmentsController@updateOrCreate');
-        Route::post('/change_status', 'DepartmentsController@change_status_department');
-    });
-
-    //staff  CRUD Routes
-    Route::group(['namespace' => 'Clinics', 'prefix' => 'attendance'], function () {
-        Route::get('/', 'AttendanceController@filter_staff');
-        Route::get('/employee', 'AttendanceController@get_attendance_employee');
-    });
-
-    Route::group(['namespace' => 'Clinics'], function () {
-        // edit on profile
-        Route::post('update-profile', 'ProfileController@edit_profile');
-        Route::post('change_password', 'ProfileController@change_password');
-    });
-
-    //complaints box CRUD Routes
-    Route::group(['namespace' => 'Clinics', 'prefix' => 'shift'], function () {
-        Route::get('/', 'ShiftController@index');
-        Route::post('/update_or_create', 'ShiftController@updateOrCreate');
-    });
-
-    Route::group(['namespace' => 'Clinics', 'prefix' => 'specialists'], function () {
-        Route::get('/', 'SpecialtiesController@index');
-        Route::post('/update_or_create', 'SpecialtiesController@updateOrCreate');
-        Route::delete('/delete/{id}', 'SpecialtiesController@delete_specialty');
-    });
-
-
-    //posts CRUD Routes
-    Route::group(['namespace' => 'Clinics', 'prefix' => 'offers'], function () {
-        Route::get('/', 'OffersController@index');
-        Route::post('/update_or_create', 'OffersController@updateOrCreate');
-        Route::delete('/delete/{id}', 'OffersController@delete_offer');
-    });
-
-    //posts CRUD Routes
-    Route::group(['namespace' => 'Clinics', 'prefix' => 'branches'], function () {
-        Route::get('/', 'BranchesController@index');
-        Route::post('/update_or_create', 'BranchesController@updateOrCreate');
-        Route::post('/change_status', 'BranchesController@change_status_branch');
-    });
-
-    //employees CRUD Routes
-    Route::group(['namespace' => 'Clinics', 'prefix' => 'employees'], function () {
-        Route::get('/', 'NewEmployeeController@index');
-        Route::get('/degree-doctor', 'NewEmployeeController@degree_doctor');
-        Route::post('/update_or_create', 'NewEmployeeController@updateOrCreate');
-        Route::delete('/delete/{id}', 'NewEmployeeController@delete_employee');
-        Route::get('/shift', 'NewEmployeeController@shifts');
-        Route::post('/shift/updateOrCreate', 'NewEmployeeController@updateOrCreateEmployeeShift');
-        Route::get('/permission', 'AttendanceController@permissions_employee');
-
-        // permission types
-        Route::get('/permission-types', 'PermissionTypesController@permission_types');
-
-    });
-
     Route::group(['prefix' => 'employees'], function () {
         // permission types
         Route::get('/permission-types', 'PermissionTypesController@permission_types');
@@ -127,20 +53,6 @@ Route::group(['namespace' => 'API'], function () {
 
 
     });
-
-    //admin CRUD Routes
-    Route::group(['namespace' => 'Clinics', 'prefix' => 'clinics'], function () {
-        Route::get('/admin', 'AccountAdminController@index');
-        Route::get('/admin/permissions', 'AccountAdminController@admin_permissions');
-        Route::get('/admin/special-permissions', 'AdminPermissionsController@special_permissions');
-        Route::post('/admin/update_or_create', 'AccountAdminController@updateOrCreate');
-        Route::post('/admin/permissions/update_or_create', 'AccountAdminController@updateOrCreateAdminPermissions');
-        Route::post('/change-status-permission', 'AttendanceController@change_status_permission');
-        // clinic points
-        Route::get('/points', 'PointsController@points');
-
-    });
-
 
     // user app
 
@@ -210,6 +122,7 @@ Route::group(['namespace' => 'API'], function () {
             Route::get('/clinic-doctors', 'ClinicsController@clinic_doctors');
             Route::post('/clinic-complaint', 'ClinicsController@clinic_complaint');
 
+            Route::get('/doctor-details', 'DoctorsController@doctor_details');
             Route::get('/doctor-appointments', 'DoctorsController@doctor_appointments');
             Route::get('/get-date-appointments', 'DoctorsController@get_date_appointments');
 

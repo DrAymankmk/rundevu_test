@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     'all_pages' => 'All Pages',
     'pages' => 'Pages',
     'page_builder' => 'Page Builder',

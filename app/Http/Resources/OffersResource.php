@@ -16,10 +16,14 @@ class OffersResource extends JsonResource
     {
         return [
             'id'            => $this->id,
+            'clinic_name'            => $this->clinic->name ?? null,
+            'clinic_id'            => $this->clinic_id,
             'title'      => $request->header('lang') == 'en' ? $this->title_en : $this->title_ar,
             'title_ar'      => $this->title_ar,
             'title_en'      => $this->title_en,
             'discount'      => $this->discount,
+            'discount_value'      => (string)$this->discount,
+            'image'      => $this->clinic->image ?? null,
             'specialty_id'   => $this->specialty_id ? (int) $this->specialty_id : null,
             'specialty'      => $this->specialty ? ($request->header('lang') == 'en' ? $this->specialty->name_en : $this->specialty->name_ar) : '',
             'start_date'     => $this->start_date,

@@ -45,7 +45,7 @@ class LoginController extends Controller
             return redirect()->route($redirectRoute);
 
         } else {
-           session()->flash('failed', trans('messages.auth.login_message_failed'));
+            session()->flash('failed', trans('messages.auth.login_message_failed'));
             return redirect()->back();
         }
     }

@@ -17,6 +17,7 @@ class ClinicDetailsResource extends JsonResource
         $user_id = $user->id ?? null;
         $currentPackage = $this->currentPackage;
         $contractModel = optional($this->contract)->contract_model ?? 'cash_commission';
+        $bookingPolicy = $this->bookingPolicy();
 
         return [
             'id' => $this->id,
@@ -38,7 +39,19 @@ class ClinicDetailsResource extends JsonResource
                 'end_date' => $this->package_end_date,
             ],
             'contract_model' => $contractModel,
-            'booking_policy' => $this->bookingPolicy(),
+            'booking_policy' => $bookingPolicy,
+            'reservation_options' => [
+                'booking_flow' => $bookingPolicy['booking_flow'],
+                'action' => $bookingPolicy['booking_action'],
+                'label_ar' => $bookingPolicy['booking_action_label_ar'],
+                'label_en' => $bookingPolicy['booking_action_label_en'],
+                'instructions_ar' => $bookingPolicy['booking_instructions_ar'],
+                'instructions_en' => $bookingPolicy['booking_instructions_en'],
+                'requires_doctor_selection' => $bookingPolicy['requires_doctor_selection'],
+                'requires_appointment_selection' => $bookingPolicy['requires_appointment_selection'],
+                'allows_instant_booking' => $bookingPolicy['allows_instant_booking'],
+                'allows_booking_request' => $bookingPolicy['allows_booking_request'],
+            ],
             'social_media' => [
                 'facebook' => (string) ($this->facebook_url ?? ''),
                 'instagram' => (string) ($this->instagram_url ?? ''),

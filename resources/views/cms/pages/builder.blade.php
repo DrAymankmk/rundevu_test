@@ -1,5 +1,4 @@
 @extends('layout_new.mainlayout')
-
 @php
     $isEdit = $page !== null;
     $currentPageSlug = $page->slug ?? '';
@@ -1445,7 +1444,6 @@
             if (window.initSharedIconPicker) {
                 window.initSharedIconPicker('cmsBuilderIconPicker');
             }
-
             reindexSections();
             reindexPageLinks();
         })(jQuery);

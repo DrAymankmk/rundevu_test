@@ -20,6 +20,8 @@ use Illuminate\Support\Facades\Route;
 
 use Illuminate\Support\Facades\Artisan;
 
+Route::get('/sitemap.xml', 'SitemapController')->name('sitemap');
+
 Route::get('/clear', function () {
 //    Artisan::call('optimize:clear');
     Artisan::call('config:clear');
@@ -33,18 +35,18 @@ Route::get('/clear', function () {
 Route::get('/pusher', function () {
 //    return view('pusher.pusher');
 
-        $data = [
-            'title' => $request->title ?? 'New Notification',
-            'message' => $request->message ?? 'Hello from Takafoul!',
-            'time' => now()->toDateTimeString(),
-        ];
+    $data = [
+        'title' => $request->title ?? 'New Notification',
+        'message' => $request->message ?? 'Hello from Takafoul!',
+        'time' => now()->toDateTimeString(),
+    ];
 
-        event(new Notify($data));
+    event(new Notify($data));
     broadcast(new Notify($data));
-        return response()->json([
-            'success' => true,
-            'message' => 'Notification sent successfully.',
-        ]);
+    return response()->json([
+        'success' => true,
+        'message' => 'Notification sent successfully.',
+    ]);
 
 });
 
@@ -854,7 +856,7 @@ Route::group(["middleware" => ["auth", "setlocale"], 'prefix' => 'admin', 'names
         Route::get('getSpecialties', 'ServicesDiscountController@getSpecialties')->name('getSpecialties');
         Route::resource('insurance-policy', 'InsurancePolicyController')->except(['create', 'edit']);
         Route::resource('insurance-approvals', 'InsuranceApprovalsController')->except(['create', 'edit']);
-       Route::get('insured-invoices-reports/{id}/{type}', 'ReportController@insured_invoices_reports')->name('insured-invoices-reports');
+        Route::get('insured-invoices-reports/{id}/{type}', 'ReportController@insured_invoices_reports')->name('insured-invoices-reports');
 //        Route::get('approved-services', 'InsuranceApprovalsController@approved_services')->name('approved-services');
 
     });

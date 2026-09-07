@@ -5,7 +5,9 @@ use App\Http\Controllers\API\APIController;
 use App\Http\Requests\UserApp\Clinics\ClinicRequest;
 use App\Http\Requests\UserApp\DoctorAppointment;
 use App\Http\Resources\UserApp\AppointmentResource;
+use App\Http\Resources\UserApp\DoctorDetailsResource;
 use App\Http\Resources\UserApp\DoctorAppointmentsResource;
+use App\Models\Clinic;
 use App\Models\ComplaintBox;
 use App\Models\Day;
 use App\Models\Shift;
@@ -21,6 +23,26 @@ class DoctorsController extends APIController
     {
         $this->setLang($request->header('lang'));
         $this->repository = $repository;
+    }
+
+    function doctor_details(DoctorAppointment $request)
+    {
+        $doctor = Clinic::with([
+            'owner',
+            'degree',
+            'specialties.specialties',
+            'sub_specialties.specialties',
+        ])
+            ->where('id', $request->id)
+            ->where('app_type', 3)
+            ->where('status', 1)
+            ->first();
+
+        if (!$doctor) {
+            return $this->respondNotFound(trans('messages.something_went_wrong'));
+        }
+
+        return $this->success(trans('messages.data'), new DoctorDetailsResource($doctor));
     }
 
     // get doctors

@@ -85,7 +85,7 @@ class CmsSection extends Model implements HasMedia
         $fallbackLocale = $fallbackLocale ?? config('app.fallback_locale', 'en');
 
         $translation = $this->translation($locale);
-        
+
         if ($translation && !empty($translation->$attribute)) {
             return $translation->$attribute;
         }

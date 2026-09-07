@@ -250,6 +250,32 @@
                                                 </div>
                                             </div>
 
+                                            <div class="col-md-6 mb-3">
+                                                <label for="consultation_price">@lang('admin.consultation_price')</label>
+                                                <input class="form-control" id="consultation_price" type="number"
+                                                       step="0.01" min="0"
+                                                       placeholder="@lang('admin.enter_consultation_price')" value="{{ old('consultation_price', $data['employee']->consultation_price) }}"
+                                                       name="consultation_price">
+                                                <div class="invalid-feedback">@lang('admin.enter_consultation_price').
+                                                </div>
+                                            </div>
+
+                                            <div class="w-100"></div>
+
+                                            <div class="col-md-6 mb-3">
+                                                <label for="info_ar">@lang('admin.doctor_bio_ar')</label>
+                                                <textarea class="form-control" id="info_ar"
+                                                          placeholder="@lang('admin.enter_doctor_bio_ar')"
+                                                          name="info_ar" rows="3">{{ old('info_ar', $data['employee']->info_ar) }}</textarea>
+                                            </div>
+
+                                            <div class="col-md-6 mb-3">
+                                                <label for="info">@lang('admin.doctor_bio_en')</label>
+                                                <textarea class="form-control" id="info"
+                                                          placeholder="@lang('admin.enter_doctor_bio_en')"
+                                                          name="info" rows="3">{{ old('info', $data['employee']->info) }}</textarea>
+                                            </div>
+
                                             <div class="col-md-6 mb-3" style="display: none">
                                                 <label for="appointments_online">@lang('admin.Percentage of online patient')</label>
                                                 <input class="form-control" id="appointments_online" type="number"

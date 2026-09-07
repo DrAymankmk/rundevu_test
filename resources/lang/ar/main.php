@@ -551,7 +551,11 @@ return [
     'annual_subscription_starts_at' => 'بداية الاشتراك',
     'annual_subscription_ends_at' => 'نهاية الاشتراك',
     'rendezvous_badge_enabled' => 'تفعيل Rendezvous Badge والحجز المؤكد مباشرة',
+    'contract_payment_method' => 'طريقة الدفع',
+    'payment_cash' => 'كاش',
+    'payment_online' => 'أونلاين',
     'save_contract' => 'حفظ التعاقد',
     'unlimited' => 'غير محدود',
     'not_applicable' => 'غير مطبق',
+
 ];
