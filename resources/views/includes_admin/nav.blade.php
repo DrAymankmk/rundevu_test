@@ -4,7 +4,7 @@
 			<ul>
 
 
-				@if(auth()->user()->app_type != 5)
+				@if(!in_array(auth()->user()->app_type, [5, 4, 25, 26]))
 				<li><a href="{{ route('admin.dashboard') }}"><span class="menu-side"><img
 								src="/assets/img/icons/menu-icon-01.svg"
 								alt=""></span>
@@ -202,7 +202,7 @@
 
 
 			<!-- pharmacy -->
-			@elseif(auth()->user()->app_type == 5)
+			@elseif(in_array(auth()->user()->app_type, [5, 4, 25, 26]))
 			@clinicModule('points')
 			<li><a href="{{ route('loyalty.redemptions') }}"><span
 						class="menu-side clinic-admin-menu-icon"><i
