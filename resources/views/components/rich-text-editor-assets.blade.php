@@ -1,11 +1,13 @@
 @once
 <link href="{{ asset('admin/css/quill.snow.css') }}" rel="stylesheet" type="text/css">
 <style>
+.ql-snow.ql-toolbar button.ql-table,
 .ql-snow .ql-toolbar button.ql-table {
-	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Crect x='1.5' y='2.5' width='15' height='13' fill='none' stroke='%23444' stroke-width='1.4'/%3E%3Cpath fill='none' stroke='%23444' stroke-width='1.4' d='M1.5 7h15M1.5 11.5h15M7 2.5v13M11.5 2.5v13'/%3E%3C/svg%3E");
-	background-repeat: no-repeat;
-	background-position: center;
-	background-size: 16px 16px;
+	position: relative;
+}
+.ql-snow.ql-toolbar button.ql-table svg:not(.ql-table-icon),
+.ql-snow .ql-toolbar button.ql-table svg:not(.ql-table-icon) {
+	display: none;
 }
 .ql-editor table {
 	width: 100%;
@@ -130,6 +132,21 @@
 		enhanceTables(quill.root);
 	}
 
+	function ensureTableIcon(quill) {
+		var toolbar = quill.getModule('toolbar');
+		var btn = toolbar && toolbar.container ? toolbar.container.querySelector('button.ql-table') : null;
+		if (!btn || btn.querySelector('svg.ql-table-icon')) {
+			return;
+		}
+		btn.innerHTML = '<svg class="ql-table-icon" viewBox="0 0 18 18">' +
+			'<rect class="ql-stroke" height="12" width="16" x="1" y="3"></rect>' +
+			'<line class="ql-stroke" x1="1" x2="17" y1="7.5" y2="7.5"></line>' +
+			'<line class="ql-stroke" x1="1" x2="17" y1="12" y2="12"></line>' +
+			'<line class="ql-stroke" x1="7" x2="7" y1="3" y2="15"></line>' +
+			'<line class="ql-stroke" x1="12" x2="12" y1="3" y2="15"></line>' +
+			'</svg>';
+	}
+
 	function teardownCmsQuillRoot(wrap) {
 		if (!wrap) {
 			return;
@@ -222,6 +239,7 @@
 			}
 
 			var quill = new Quill('#' + editorId, quillConfig);
+			ensureTableIcon(quill);
 
 			if (textarea.value) {
 				quill.root.innerHTML = textarea.value;
