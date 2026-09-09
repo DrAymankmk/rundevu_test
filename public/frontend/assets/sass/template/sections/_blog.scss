@@ -548,6 +548,25 @@ blockquote.has-very-dark-gray-color {
     line-height: 1.5;
     letter-spacing: 0.02em;
     color: rgba(92, 95, 113, 0.9);
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+    }
+
+    th,
+    td {
+        border: 1px solid #d9dde7;
+        padding: 10px 12px;
+        vertical-align: top;
+    }
+
+    th {
+        background: #f5f7fb;
+        font-weight: 600;
+        color: $title-color;
+    }
 }
 
 .share-links-title {

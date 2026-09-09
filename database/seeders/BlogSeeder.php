@@ -319,6 +319,12 @@ class BlogSeeder extends Seeder
             foreach (['en', 'ar'] as $locale) {
                 $post->translations()->create([
                     'locale' => $locale,
+                    'slug' => BlogPost::uniqueSlug(
+                        $locale === 'en'
+                            ? $item['slug']
+                            : (BlogPost::makeSlug($item[$locale]['title']) ?: $item['slug'] . '-' . $locale),
+                        $post->id
+                    ),
                     'title' => $item[$locale]['title'],
                     'summary' => $item[$locale]['summary'],
                     'content' => $item[$locale]['content'],

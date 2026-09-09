@@ -57,12 +57,27 @@
 										<span class="text-danger">*</span>
 									</label>
 									<input type="text"
-										class="form-control @error('translations.'.$lang->code.'.title') is-invalid @enderror"
+										class="form-control js-blog-title @error('translations.'.$lang->code.'.title') is-invalid @enderror"
 										name="translations[{{ $lang->code }}][title]"
 										value="{{ old('translations.'.$lang->code.'.title') }}"
 										dir="{{ $lang->direction }}"
+										data-locale="{{ $lang->code }}"
 										required>
 									@error('translations.'.$lang->code.'.title')
+									<div class="invalid-feedback">{{ $message }}</div>
+									@enderror
+								</div>
+
+								<div class="mb-3">
+									<label class="form-label">{{ __('blog.slug') }} ({{ $lang->name }})</label>
+									<input type="text"
+										class="form-control js-blog-slug @error('translations.'.$lang->code.'.slug') is-invalid @enderror"
+										name="translations[{{ $lang->code }}][slug]"
+										value="{{ old('translations.'.$lang->code.'.slug') }}"
+										dir="{{ $lang->direction }}"
+										data-locale="{{ $lang->code }}">
+									<small class="text-muted">{{ __('blog.slug_hint') }}</small>
+									@error('translations.'.$lang->code.'.slug')
 									<div class="invalid-feedback">{{ $message }}</div>
 									@enderror
 								</div>
@@ -107,6 +122,13 @@
 									<div class="invalid-feedback">{{ $message }}</div>
 									@enderror
 								</div>
+
+								@include('components.image-upload', [
+									'inputId' => 'post_image_' . $lang->code,
+									'inputName' => 'translations[' . $lang->code . '][image]',
+									'collection' => 'image_' . $lang->code,
+									'label' => __('blog.image') . ' (' . $lang->name . ')',
+								])
 							</div>
 							@endforeach
 						</div>
@@ -129,14 +151,6 @@
 						</div>
 
 						<div class="mb-3">
-							<label class="form-label">{{ __('blog.slug') }}</label>
-							<input type="text" class="form-control @error('slug') is-invalid @enderror"
-								name="slug" value="{{ old('slug') }}">
-							<small class="text-muted">{{ __('blog.slug_hint') }}</small>
-							@error('slug')<div class="invalid-feedback">{{ $message }}</div>@enderror
-						</div>
-
-						<div class="mb-3">
 							<label class="form-label">{{ __('blog.categories') }}</label>
 							<select name="category_ids[]" class="form-control select2 @error('category_ids') is-invalid @enderror" multiple>
 								@foreach($categories as $category)
@@ -155,13 +169,6 @@
 								name="publish_date" value="{{ old('publish_date') }}">
 							@error('publish_date')<div class="invalid-feedback">{{ $message }}</div>@enderror
 						</div>
-
-						@include('components.image-upload', [
-							'inputId' => 'post_image',
-							'inputName' => 'image',
-							'collection' => 'image',
-							'label' => __('blog.image'),
-						])
 
 						<div class="mb-3">
 							<div class="form-check form-switch">
@@ -196,15 +203,21 @@ $(document).ready(function() {
 		$('.select2').select2({ width: '100%', placeholder: '{{ __("blog.select_categories") }}' });
 	}
 
-	$('input[name="name"]').on('blur', function() {
-		var slug = $('input[name="slug"]');
-		if (!slug.val()) {
-			var name = $(this).val();
-			slug.val(name.toLowerCase()
-				.replace(/[^\w\s-]/g, '')
-				.replace(/\s+/g, '-')
-				.replace(/-+/g, '-')
-				.trim());
+	function slugify(text) {
+		return String(text || '')
+			.trim()
+			.toLowerCase()
+			.replace(/[^\p{L}\p{N}\s-]+/gu, '')
+			.replace(/[\s_]+/g, '-')
+			.replace(/-+/g, '-')
+			.replace(/^-+|-+$/g, '');
+	}
+
+	$('.js-blog-title').on('blur', function() {
+		var locale = $(this).data('locale');
+		var slug = $('.js-blog-slug[data-locale="' + locale + '"]');
+		if (slug.length && !slug.val()) {
+			slug.val(slugify($(this).val()));
 		}
 	});
 });

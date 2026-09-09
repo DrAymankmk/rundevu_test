@@ -15,24 +15,25 @@ document.addEventListener('DOMContentLoaded', function() {
 @endif
 
 <style>
-	#bookDemoModal.book-demo-modal-top {
-		z-index: 10000010 !important;
-	}
+#bookDemoModal.book-demo-modal-top {
+	z-index: 10000010 !important;
+}
 
-	#bookDemoModal.book-demo-modal-top .modal-dialog {
-		z-index: 10000011 !important;
-	}
+#bookDemoModal.book-demo-modal-top .modal-dialog {
+	z-index: 10000011 !important;
+}
 
-	body.book-demo-modal-open .modal-backdrop {
-		z-index: 10000009 !important;
-	}
+body.book-demo-modal-open .modal-backdrop {
+	z-index: 10000009 !important;
+}
 </style>
 
-<div class="modal fade book-demo-modal-top" id="bookDemoModal" tabindex="-1" aria-labelledby="bookDemoModalLabel" aria-hidden="true">
+<div class="modal fade book-demo-modal-top" id="bookDemoModal" tabindex="-1" aria-labelledby="bookDemoModalLabel"
+	aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered">
 		<div class="modal-content">
 			<div class="modal-header border-0 pb-0">
-				<h5 class="modal-title" id="bookDemoModalLabel">{{ __('main.book_demo') }}</h5>
+				<span class="modal-title" id="bookDemoModalLabel">{{ __('main.book_demo') }}</span>
 				<button type="button" class="btn-close" data-bs-dismiss="modal"
 					aria-label="{{ __('main.Close') }}"></button>
 			</div>
@@ -112,8 +113,8 @@ document.addEventListener('DOMContentLoaded', function() {
 		document.body.classList.remove('book-demo-modal-open');
 	});
 
-	@if ($errors->getBag('bookDemo')->isNotEmpty())
-		new bootstrap.Modal(modal).show();
+	@if($errors->getBag('bookDemo')->isNotEmpty())
+	new bootstrap.Modal(modal).show();
 	@endif
 });
 </script>

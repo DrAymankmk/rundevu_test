@@ -20,7 +20,7 @@ return [
     'default' => 'Default',
     'no_active_cms_languages' => 'No active CMS languages. Please add languages before editing translations.',
     'slug' => 'Slug',
-    'slug_hint' => 'Leave empty to auto-generate from name',
+    'slug_hint' => 'Leave empty to auto-generate from the title. Arabic and English can have different slugs.',
     'description' => 'Description',
     'summary' => 'Summary',
     'content' => 'Content',

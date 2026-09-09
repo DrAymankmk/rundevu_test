@@ -1,5 +1,31 @@
 @once
 <link href="{{ asset('admin/css/quill.snow.css') }}" rel="stylesheet" type="text/css">
+<style>
+.ql-snow .ql-toolbar button.ql-table {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Crect x='1.5' y='2.5' width='15' height='13' fill='none' stroke='%23444' stroke-width='1.4'/%3E%3Cpath fill='none' stroke='%23444' stroke-width='1.4' d='M1.5 7h15M1.5 11.5h15M7 2.5v13M11.5 2.5v13'/%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: 16px 16px;
+}
+.ql-editor table {
+	width: 100%;
+	border-collapse: collapse;
+	margin: 12px 0;
+	table-layout: fixed;
+}
+.ql-editor table td,
+.ql-editor table th {
+	border: 1px solid #cfd6e4;
+	padding: 8px 10px;
+	min-width: 48px;
+	vertical-align: top;
+	background: #fff;
+}
+.ql-editor table th {
+	background: #f4f7fb;
+	font-weight: 600;
+}
+</style>
 <script src="{{ asset('admin/js/quill.min.js') }}"></script>
 <script>
 (function () {
@@ -10,6 +36,98 @@
 		} catch (e) {
 			return {};
 		}
+	}
+
+	function registerTableBlot() {
+		if (typeof Quill === 'undefined' || Quill.__blogTableRegistered) {
+			return;
+		}
+
+		var BlockEmbed = Quill.import('blots/block/embed');
+
+		function tableInnerHtml(rows, cols) {
+			var html = '<thead><tr>';
+			var c;
+			var r;
+			for (c = 0; c < cols; c++) {
+				html += '<th><br></th>';
+			}
+			html += '</tr></thead><tbody>';
+			for (r = 1; r < rows; r++) {
+				html += '<tr>';
+				for (c = 0; c < cols; c++) {
+					html += '<td><br></td>';
+				}
+				html += '</tr>';
+			}
+			html += '</tbody>';
+			return html;
+		}
+
+		class TableBlot extends BlockEmbed {
+			static create(value) {
+				var node = super.create();
+				var html = '';
+				if (typeof value === 'string') {
+					html = value;
+				} else if (value && value.html) {
+					html = value.html;
+				} else {
+					var rows = Math.min(10, Math.max(2, parseInt(value && value.rows, 10) || 3));
+					var cols = Math.min(10, Math.max(2, parseInt(value && value.cols, 10) || 3));
+					html = tableInnerHtml(rows, cols);
+				}
+				node.innerHTML = html;
+				node.setAttribute('contenteditable', 'false');
+				Array.prototype.forEach.call(node.querySelectorAll('th, td'), function (cell) {
+					cell.setAttribute('contenteditable', 'true');
+				});
+				return node;
+			}
+
+			static value(node) {
+				return { html: node.innerHTML };
+			}
+		}
+
+		TableBlot.blotName = 'blogTable';
+		TableBlot.tagName = 'TABLE';
+
+		Quill.register(TableBlot, true);
+		Quill.__blogTableRegistered = true;
+	}
+
+	function enhanceTables(root) {
+		if (!root) {
+			return;
+		}
+		Array.prototype.forEach.call(root.querySelectorAll('table'), function (table) {
+			table.setAttribute('contenteditable', 'false');
+			Array.prototype.forEach.call(table.querySelectorAll('th, td'), function (cell) {
+				cell.setAttribute('contenteditable', 'true');
+			});
+		});
+	}
+
+	function serializeHtml(html) {
+		var tmp = document.createElement('div');
+		tmp.innerHTML = html || '';
+		Array.prototype.forEach.call(tmp.querySelectorAll('[contenteditable]'), function (el) {
+			el.removeAttribute('contenteditable');
+		});
+		return tmp.innerHTML;
+	}
+
+	function insertTable(quill) {
+		var rows = parseInt(window.prompt('Number of rows', '3'), 10);
+		var cols = parseInt(window.prompt('Number of columns', '3'), 10);
+		if (!rows || !cols) {
+			return;
+		}
+		var range = quill.getSelection(true) || { index: quill.getLength() };
+		quill.insertEmbed(range.index, 'blogTable', { rows: rows, cols: cols }, 'user');
+		quill.setSelection(range.index + 1, 0, 'silent');
+		enhanceTables(quill.root);
 	}
 
 	function teardownCmsQuillRoot(wrap) {
@@ -69,24 +187,33 @@
 				return;
 			}
 
+			registerTableBlot();
+
 			var opts = parseOptions(wrap);
 			var quillConfig = {
 				theme: 'snow',
 				modules: {
-					toolbar: [
-						[{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-						[{ 'font': [] }],
-						[{ 'size': [] }],
-						['bold', 'italic', 'underline', 'strike'],
-						[{ 'color': [] }, { 'background': [] }],
-						[{ 'script': 'sub'}, { 'script': 'super' }],
-						[{ 'list': 'ordered'}, { 'list': 'bullet' }],
-						[{ 'indent': '-1'}, { 'indent': '+1' }],
-						[{ 'direction': 'rtl' }, { 'align': [] }],
-						['link', 'image', 'video'],
-						['blockquote', 'code-block'],
-						['clean']
-					]
+					toolbar: {
+						container: [
+							[{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+							[{ 'font': [] }],
+							[{ 'size': [] }],
+							['bold', 'italic', 'underline', 'strike'],
+							[{ 'color': [] }, { 'background': [] }],
+							[{ 'script': 'sub'}, { 'script': 'super' }],
+							[{ 'list': 'ordered'}, { 'list': 'bullet' }],
+							[{ 'indent': '-1'}, { 'indent': '+1' }],
+							[{ 'direction': 'rtl' }, { 'align': [] }],
+							['link', 'image', 'video', 'table'],
+							['blockquote', 'code-block'],
+							['clean']
+						],
+						handlers: {
+							table: function () {
+								insertTable(this.quill);
+							}
+						}
+					}
 				},
 				placeholder: opts.placeholder || ''
 			};
@@ -98,17 +225,18 @@
 
 			if (textarea.value) {
 				quill.root.innerHTML = textarea.value;
+				enhanceTables(quill.root);
 			}
 
 			quill.on('text-change', function () {
-				textarea.value = quill.root.innerHTML;
+				textarea.value = serializeHtml(quill.root.innerHTML);
 			});
 
 			var form = textarea.closest('form');
 			if (form && textarea.getAttribute('data-quill-form-bound') !== '1') {
 				textarea.setAttribute('data-quill-form-bound', '1');
 				form.addEventListener('submit', function () {
-					textarea.value = quill.root.innerHTML;
+					textarea.value = serializeHtml(quill.root.innerHTML);
 				});
 			}
 

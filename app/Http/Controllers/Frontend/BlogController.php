@@ -87,14 +87,19 @@ class BlogController extends Controller
 
         $post = BlogPost::query()
             ->published()
-            ->where('slug', $slug)
+            ->whereSlug($slug)
             ->with(['translations', 'categories.translations', 'media', 'seoMeta.translations'])
             ->firstOrFail();
+
+        $localizedSlug = $post->getSlug($locale);
+        if ($localizedSlug !== '' && $localizedSlug !== $slug) {
+            return redirect()->route('frontend.blog.show', $localizedSlug);
+        }
 
         $translation = $post->translation($locale) ?? $post->translations->first();
         $title = $translation?->title ?? $post->name;
         $summary = $translation?->summary ?? '';
-        $image = $post->getImageUrl('preview') ?: $post->getImageUrl();
+        $image = $post->getImageUrl('preview', $locale) ?: $post->getImageUrl('', $locale);
 
         $relatedPosts = $this->relatedPosts($post, $translation, 4);
 
@@ -120,7 +125,7 @@ class BlogController extends Controller
             'title' => $title,
             'description' => $summary,
             'image' => $image,
-            'canonical' => route('frontend.blog.show', $post->slug),
+            'canonical' => route('frontend.blog.show', $post->getSlug($locale)),
         ]);
 
         return view('frontend.pages.blog.blog_details', compact(
@@ -192,6 +197,7 @@ class BlogController extends Controller
                     ->orWhere('slug', 'like', "%{$search}%")
                     ->orWhereHas('translations', function ($q2) use ($search) {
                         $q2->where('title', 'like', "%{$search}%")
+                            ->orWhere('slug', 'like', "%{$search}%")
                             ->orWhere('summary', 'like', "%{$search}%")
                             ->orWhere('content', 'like', "%{$search}%");
                     });

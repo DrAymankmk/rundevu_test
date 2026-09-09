@@ -109,7 +109,7 @@ $isRtl = in_array($htmlLang, $rtlLangs, true);
 	<!--==============================
     Sidemenu
 ============================== -->
-	<div class="sidemenu-wrapper shopping-cart ">
+	<!-- <div class="sidemenu-wrapper shopping-cart ">
 		<div class="sidemenu-content">
 			<button class="closeButton sideMenuCls"><i class="far fa-times"></i></button>
 			<div class="widget woocommerce widget_shopping_cart">
@@ -201,7 +201,7 @@ $isRtl = in_array($htmlLang, $rtlLangs, true);
 				</div>
 			</div>
 		</div>
-	</div>
+	</div> -->
 	<!--==============================
     Sidemenu
 ============================== -->
@@ -222,90 +222,9 @@ $isRtl = in_array($htmlLang, $rtlLangs, true);
 					</p>
 				</div>
 			</div>
-			<div class="widget footer-widget">
-				<h3 class="widget_title">Recent Posts</h3>
-				<div class="recent-post-wrap">
-					<div class="recent-post">
-						<div class="media-img">
-							<a href="blog-details.html"><img
-									src="assets/img/blog/recent-post-1-1.jpg"
-									alt="Blog Image"></a>
-						</div>
-						<div class="media-body">
-							<div class="recent-post-meta">
-								<a href="blog.html"><i
-										class="fa-sharp fa-solid fa-calendar-days"></i>April
-									02,
-									2025</a>
-							</div>
-							<h4 class="post-title"><a class="text-inherit"
-									href="blog-details.html">Cometes
-									contabesco audacia
-									aeneus tui canonicus</a></h4>
-						</div>
-					</div>
-					<div class="recent-post">
-						<div class="media-img">
-							<a href="blog-details.html"><img
-									src="assets/img/blog/recent-post-1-2.jpg"
-									alt="Blog Image"></a>
-						</div>
-						<div class="media-body">
-							<div class="recent-post-meta">
-								<a href="blog.html"><i
-										class="fa-sharp fa-solid fa-calendar-days"></i>April
-									25,
-									2025</a>
-							</div>
-							<h4 class="post-title"><a class="text-inherit"
-									href="blog-details.html">Cometes
-									contabesco audacia
-									aeneus tui canonicus</a></h4>
-						</div>
-					</div>
-					<div class="recent-post">
-						<div class="media-img">
-							<a href="blog-details.html"><img
-									src="assets/img/blog/recent-post-1-3.jpg"
-									alt="Blog Image"></a>
-						</div>
-						<div class="media-body">
-							<div class="recent-post-meta">
-								<a href="blog.html"><i
-										class="fa-sharp fa-solid fa-calendar-days"></i>26
-									April,
-									2025</a>
-							</div>
-							<h4 class="post-title"><a class="text-inherit"
-									href="blog-details.html">Cometes
-									contabesco audacia
-									aeneus tui canonicus</a></h4>
 
-						</div>
-					</div>
-					<div class="recent-post">
-						<div class="media-img">
-							<a href="blog-details.html"><img
-									src="assets/img/blog/recent-post-1-4.jpg"
-									alt="Blog Image"></a>
-						</div>
-						<div class="media-body">
-							<div class="recent-post-meta">
-								<a href="blog.html"><i
-										class="fa-sharp fa-solid fa-calendar-days"></i>27
-									April,
-									2025</a>
-							</div>
-							<h4 class="post-title"><a class="text-inherit"
-									href="blog-details.html">Cometes
-									contabesco audacia
-									aeneus tui canonicus</a></h4>
-						</div>
-					</div>
-				</div>
-			</div>
 			<div class="widget footer-widget">
-				<h3 class="widget_title">Social Media:</h3>
+				<span class="widget_title">Social Media:</span>
 				<div class="th-social">
 					<a href="https://facebook.com"><i class="fab fa-facebook-f"></i></a>
 					<a href="https://twitter.com"><i class="fab fa-twitter"></i></a>
@@ -341,10 +260,14 @@ $isRtl = in_array($htmlLang, $rtlLangs, true);
 
 
 					<li><a href="{{ route('frontend.about') }}">About Us</a></li>
-					<li><a href="{{ route('frontend.services') }}">{{ __('main.services') }}</a></li>
-					<li><a href="{{ route('frontend.clinics') }}">{{ __('main.clinics') }}</a></li>
-					<li><a href="{{ route('frontend.doctors') }}">{{ __('doctors.page_title') }}</a></li>
-					<li><a href="{{ route('frontend.blog') }}">{{ __('main.blogs') }}</a></li>
+					<li><a href="{{ route('frontend.services') }}">{{ __('main.services') }}</a>
+					</li>
+					<li><a href="{{ route('frontend.clinics') }}">{{ __('main.clinics') }}</a>
+					</li>
+					<li><a href="{{ route('frontend.doctors') }}">{{ __('doctors.page_title') }}</a>
+					</li>
+					<li><a href="{{ route('frontend.blog') }}">{{ __('main.blogs') }}</a>
+					</li>
 					<li class="menu-item-has-children">
 						<a href="#">Services</a>
 						<ul class="sub-menu">
@@ -390,7 +313,8 @@ $isRtl = in_array($htmlLang, $rtlLangs, true);
 ==============================-->
 
 	@if(Route::is('frontend.about') || Route::is('frontend.services') || Route::is('frontend.faq') ||
-	Route::is('frontend.subscription') || Route::is('frontend.contact') || Route::is('frontend.clinics*') || Route::is('frontend.doctors*') )
+	Route::is('frontend.subscription') || Route::is('frontend.contact') || Route::is('frontend.clinics*') ||
+	Route::is('frontend.doctors*') || Route::is('frontend.blog') )
 	@include('frontend.layout.header_2')
 	@else
 	@include('frontend.layout.header_1')
@@ -404,6 +328,8 @@ $isRtl = in_array($htmlLang, $rtlLangs, true);
         Footer Area
     ==============================-->
 	@include('frontend.layout.footer')
+
+	@include('frontend.layout.partials.whatsapp-support')
 
 	<!--********************************
 			Code End  Here

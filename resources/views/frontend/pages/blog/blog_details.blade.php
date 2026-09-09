@@ -12,7 +12,7 @@
     $categoryNames = $post->categories->map(function ($category) {
         return $category->getTranslatedAttribute('title') ?: $category->name;
     })->filter()->values();
-    $shareUrl = urlencode(route('frontend.blog.show', $post->slug));
+    $shareUrl = urlencode(route('frontend.blog.show', $post->getSlug()));
     $shareTitle = urlencode($title);
 @endphp
 

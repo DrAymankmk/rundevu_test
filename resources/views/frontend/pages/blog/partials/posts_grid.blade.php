@@ -21,14 +21,14 @@
 <div class="col-xl-6">
     <div class="th-blog blog-single has-post-thumbnail single-grid">
         <div class="blog-img global-img">
-            <a href="{{ route('frontend.blog.show', $post->slug) }}">
+            <a href="{{ route('frontend.blog.show', $post->getSlug()) }}">
                 <img src="{{ $image }}" alt="{{ $title }}">
             </a>
         </div>
         <div class="blog-content">
             <div class="blog-meta">
                 @if($date)
-                <a href="{{ route('frontend.blog.show', $post->slug) }}">
+                <a href="{{ route('frontend.blog.show', $post->getSlug()) }}">
                     <i class="fa-solid fa-calendar-days"></i>{{ $date }}
                 </a>
                 @endif
@@ -39,7 +39,7 @@
                 @endif
             </div>
             <h2 class="box-title">
-                <a href="{{ route('frontend.blog.show', $post->slug) }}">{{ $title }}</a>
+                <a href="{{ route('frontend.blog.show', $post->getSlug()) }}">{{ $title }}</a>
             </h2>
             @if($summary)
             <p class="blog-text">
@@ -55,7 +55,7 @@
                 @endforeach
             </div>
             @endif
-            <a href="{{ route('frontend.blog.show', $post->slug) }}" class="line-btn">
+            <a href="{{ route('frontend.blog.show', $post->getSlug()) }}" class="line-btn">
                 {{ __('blog.read_more') }}
                 <x-arrow-icon />
             </a>

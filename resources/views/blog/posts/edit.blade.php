@@ -69,12 +69,27 @@
 										<span class="text-danger">*</span>
 									</label>
 									<input type="text"
-										class="form-control @error('translations.'.$lang->code.'.title') is-invalid @enderror"
+										class="form-control js-blog-title @error('translations.'.$lang->code.'.title') is-invalid @enderror"
 										name="translations[{{ $lang->code }}][title]"
 										value="{{ old('translations.'.$lang->code.'.title', $translation->title ?? '') }}"
 										dir="{{ $lang->direction }}"
+										data-locale="{{ $lang->code }}"
 										required>
 									@error('translations.'.$lang->code.'.title')
+									<div class="invalid-feedback">{{ $message }}</div>
+									@enderror
+								</div>
+
+								<div class="mb-3">
+									<label class="form-label">{{ __('blog.slug') }} ({{ $lang->name }})</label>
+									<input type="text"
+										class="form-control js-blog-slug @error('translations.'.$lang->code.'.slug') is-invalid @enderror"
+										name="translations[{{ $lang->code }}][slug]"
+										value="{{ old('translations.'.$lang->code.'.slug', $translation->slug ?? '') }}"
+										dir="{{ $lang->direction }}"
+										data-locale="{{ $lang->code }}">
+									<small class="text-muted">{{ __('blog.slug_hint') }}</small>
+									@error('translations.'.$lang->code.'.slug')
 									<div class="invalid-feedback">{{ $message }}</div>
 									@enderror
 								</div>
@@ -119,6 +134,37 @@
 									<div class="invalid-feedback">{{ $message }}</div>
 									@enderror
 								</div>
+
+								@php
+									$localeCollection = 'image_' . $lang->code;
+									$localeImage = $post->getFirstMedia($localeCollection);
+									if (!$localeImage && $lang->is_default) {
+										$localeImage = $post->getFirstMedia('image');
+									}
+									$localeImageUrl = $localeImage
+										? ($localeImage->hasGeneratedConversion('thumb') ? $localeImage->getUrl('thumb') : $localeImage->getUrl())
+										: null;
+									$localeImageCollection = $localeImage?->collection_name ?: $localeCollection;
+								@endphp
+								@include('components.image-upload', [
+									'inputId' => 'post_image_' . $lang->code,
+									'inputName' => 'translations[' . $lang->code . '][image]',
+									'collection' => $localeImageCollection,
+									'label' => __('blog.image') . ' (' . $lang->name . ')',
+									'existingImage' => $localeImageUrl,
+									'existingAlt' => \App\Support\Cms\CmsGalleryMedia::alt($localeImage),
+									'model' => $post,
+								])
+								@if($localeImage)
+								<div class="mb-3 form-check">
+									<input type="checkbox" class="form-check-input"
+										name="translations[{{ $lang->code }}][remove_image]"
+										id="remove_image_{{ $lang->code }}" value="1">
+									<label class="form-check-label" for="remove_image_{{ $lang->code }}">
+										{{ __('blog.remove_image') }} ({{ $lang->name }})
+									</label>
+								</div>
+								@endif
 							</div>
 							@endforeach
 						</div>
@@ -141,14 +187,6 @@
 						</div>
 
 						<div class="mb-3">
-							<label class="form-label">{{ __('blog.slug') }}</label>
-							<input type="text" class="form-control @error('slug') is-invalid @enderror"
-								name="slug" value="{{ old('slug', $post->slug) }}">
-							<small class="text-muted">{{ __('blog.slug_hint') }}</small>
-							@error('slug')<div class="invalid-feedback">{{ $message }}</div>@enderror
-						</div>
-
-						<div class="mb-3">
 							<label class="form-label">{{ __('blog.categories') }}</label>
 							<select name="category_ids[]" class="form-control select2 @error('category_ids') is-invalid @enderror" multiple>
 								@foreach($categories as $category)
@@ -167,22 +205,6 @@
 								name="publish_date" value="{{ $publishDateValue }}">
 							@error('publish_date')<div class="invalid-feedback">{{ $message }}</div>@enderror
 						</div>
-
-						@include('components.image-upload', [
-							'inputId' => 'post_image',
-							'inputName' => 'image',
-							'collection' => 'image',
-							'label' => __('blog.image'),
-							'existingImage' => $post->getImageUrl('thumb'),
-							'model' => $post,
-						])
-
-						@if($post->getFirstMedia('image'))
-						<div class="mb-3 form-check">
-							<input type="checkbox" class="form-check-input" name="remove_image" id="remove_image" value="1">
-							<label class="form-check-label" for="remove_image">{{ __('blog.remove_image') }}</label>
-						</div>
-						@endif
 
 						<div class="mb-3">
 							<div class="form-check form-switch">
@@ -216,6 +238,24 @@ $(document).ready(function() {
 	if ($.fn.select2) {
 		$('.select2').select2({ width: '100%', placeholder: '{{ __("blog.select_categories") }}' });
 	}
+
+	function slugify(text) {
+		return String(text || '')
+			.trim()
+			.toLowerCase()
+			.replace(/[^\p{L}\p{N}\s-]+/gu, '')
+			.replace(/[\s_]+/g, '-')
+			.replace(/-+/g, '-')
+			.replace(/^-+|-+$/g, '');
+	}
+
+	$('.js-blog-title').on('blur', function() {
+		var locale = $(this).data('locale');
+		var slug = $('.js-blog-slug[data-locale="' + locale + '"]');
+		if (slug.length && !slug.val()) {
+			slug.val(slugify($(this).val()));
+		}
+	});
 });
 </script>
 @endpush

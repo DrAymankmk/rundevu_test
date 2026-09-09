@@ -53,19 +53,19 @@ $categorySlug = $categorySlug ?? request('category', '');
 			@endphp
 			<div class="recent-post">
 				<div class="media-img">
-					<a href="{{ route('frontend.blog.show', $recent->slug) }}">
+					<a href="{{ route('frontend.blog.show', $recent->getSlug()) }}">
 						<img src="{{ $recentImage }}" alt="{{ $recentTitle }}">
 					</a>
 				</div>
 				<div class="media-body">
 					<div class="recent-post-meta">
-						<a href="{{ route('frontend.blog.show', $recent->slug) }}">
+						<a href="{{ route('frontend.blog.show', $recent->getSlug()) }}">
 							<i class="fa-sharp fa-solid fa-calendar-days"></i>{{ $recentDate }}
 						</a>
 					</div>
 					<h4 class="post-title">
 						<a class="text-inherit"
-							href="{{ route('frontend.blog.show', $recent->slug) }}">{{ $recentTitle }}</a>
+							href="{{ route('frontend.blog.show', $recent->getSlug()) }}">{{ $recentTitle }}</a>
 					</h4>
 				</div>
 			</div>
