@@ -111,6 +111,7 @@ $buttons = $mapModelLinksToButtons($item);
 // $buttons = $fallbackButtons;
 // }
 $slides->push(['title' => $title, 'subtitle' => $sub, 'desc' => $desc, 'img' => $heroImg, 'alt' => $heroAlt, 'buttons' => $buttons]);
+
 }
 } else {
 foreach ($defaultSlides as $idx => $def) {
@@ -121,8 +122,11 @@ $slides->push([
 'img' => $def['img'],
 // 'buttons' => $fallbackButtons,
 ]);
+        }
 }
-}
+
+$appleUrl = 'https://apps.apple.com/us/app/randevu-%D8%B1%D8%A7%D9%86%D8%AF%D9%8A%D9%81%D9%88/id6761128352';
+$googleUrl = 'https://play.google.com/store/apps/details?id=com.takaful.rendezvous';
 @endphp
 <div class="th-hero-wrapper hero-1" id="hero-{{ $section->id }}">
 	<div class="swiper th-slider" data-slider-options='{"effect":"fade"}'>
@@ -132,13 +136,13 @@ $slides->push([
 				<div class="hero-inner">
 					<div class="th-hero-bg" data-bg-src="{{ $bg }}"></div>
 					<div class="container">
-						<div class="row align-items-end">
+						<div class="row align-items-center">
 							<div class="col-xl-7">
 								<div class="hero-style1">
 									<span class="sub-title"
 										data-ani="slideinup"
 										data-ani-delay="0.2s">{{ $slide['subtitle'] }}</span>
-									<h1 class="hero-title"
+									<h1 class="hero-title" style="font-size:55px;"
 										data-ani="slideinup"
 										data-ani-delay="0.4s">
 										{!! $slide['title']
@@ -177,12 +181,26 @@ $slides->push([
 								</div>
 							</div>
 							<div class="col-xl-5">
-								<div class="hero-image"
+								<div class="hero-app-cta" style="padding-top: 280px;"
 									data-ani="slideinup"
-									data-ani-delay="0.4s">
-									<img src="{{ $slide['img'] }}"
-										style="width: 596px; height: 750px;"
-										alt="{{ $slide['alt'] ?? '' }}">
+									data-ani-delay="0.5s">
+									<div class="hero-app-cta__stores">
+										<a class="hero-app-cta__store" href="{{ $appleUrl }}"
+											target="_blank" rel="noopener noreferrer">
+											<img src="{{ asset('frontend/assets/img/icon/apple.svg') }}"
+												alt="{{ __('main.app_store') }}">
+										</a>
+										<a class="hero-app-cta__store" href="{{ $googleUrl }}"
+											target="_blank" rel="noopener noreferrer">
+											<img src="{{ asset('frontend/assets/img/icon/google-play.svg') }}"
+												alt="{{ __('main.google_play') }}">
+										</a>
+									</div>
+									<a href="{{ route('frontend.subscription') }}"
+										class="th-btn style1" style="padding: 15px !important">
+										{{ __('main.register_clinic') }}
+										<i class="fa-solid fa-hospital ms-2"></i>
+									</a>
 								</div>
 							</div>
 						</div>
