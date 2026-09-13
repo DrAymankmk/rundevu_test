@@ -175,7 +175,7 @@
 		<!-- <div class="social-page-cta mt-50">
 			<h3 class="text-white mb-15">{{ __('main.social_media_cta_title') }}</h3>
 			<p class="mb-25 text-white">{{ __('main.social_media_cta_text') }}</p>
-			<a href="{{ route('frontend.contact') }}" class="th-btn">
+			<a href="{{ frontend_route('frontend.contact') }}" class="th-btn">
 				{{ __('main.contact') }}
 				<i
 					class="fa-regular fa-arrow-{{ app()->getLocale() === 'ar' ? 'left' : 'right' }} ms-2"></i>

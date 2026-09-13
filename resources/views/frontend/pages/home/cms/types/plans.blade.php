@@ -116,7 +116,7 @@
                                 </div>
                             </div>
                         @endif
-                        <a href="{{ route('frontend.subscription', ['package' => $package->id]) }}"
+                        <a href="{{ frontend_route('frontend.subscription', ['package' => $package->id]) }}"
                             class="th-btn black-border fw-btn">
                             {{ __('main.choose_plan') }}
                             <i class="fa-regular fa-arrow-left ms-2"></i>

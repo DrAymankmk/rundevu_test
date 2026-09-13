@@ -19,7 +19,7 @@
 @endphp
 
 <div class="clinics-filters mb-40">
-	<form id="clinics-filter-form" action="{{ route('frontend.clinics') }}" method="GET" class="row gy-3 gx-3 align-items-end">
+	<form id="clinics-filter-form" action="{{ frontend_route('frontend.clinics') }}" method="GET" class="row gy-3 gx-3 align-items-end">
 		<input type="hidden" name="lat" id="clinics-lat" value="{{ $nearMe ? $lat : '' }}">
 		<input type="hidden" name="lng" id="clinics-lng" value="{{ $nearMe ? $lng : '' }}">
 
@@ -72,7 +72,7 @@
 					<span>{{ $nearMe ? __('clinics.near_me_active') : __('clinics.near_me') }}</span>
 				</button>
 
-				<a href="{{ route('frontend.clinics') }}" class="th-btn black-border">{{ __('clinics.reset') }}</a>
+				<a href="{{ frontend_route('frontend.clinics') }}" class="th-btn black-border">{{ __('clinics.reset') }}</a>
 			</div>
 		</div>
 	</form>
@@ -81,7 +81,7 @@
 	<div class="clinics-near-banner mt-3">
 		<i class="fa-solid fa-circle-check"></i>
 		<span>{{ __('clinics.near_me_banner') }}</span>
-		<a href="{{ route('frontend.clinics', array_filter(['q' => $search ?: null, 'city_id' => $cityId ?: null, 'specialty_id' => $specialtyId ?: null])) }}">
+		<a href="{{ frontend_route('frontend.clinics', array_filter(['q' => $search ?: null, 'city_id' => $cityId ?: null, 'specialty_id' => $specialtyId ?: null])) }}">
 			{{ __('clinics.clear_near_me') }}
 		</a>
 	</div>

@@ -17,7 +17,7 @@
 @endphp
 
 <div class="doctors-filters mb-30">
-	<form action="{{ route('frontend.doctors') }}" method="GET" class="doctors-filters__panel">
+	<form action="{{ frontend_route('frontend.doctors') }}" method="GET" class="doctors-filters__panel">
 		<div class="row gy-3 gx-3 align-items-end">
 			<div class="col-md-6 col-xl-3">
 				<label class="form-label fw-semibold mb-2">{{ __('main.search') }}</label>
@@ -71,7 +71,7 @@
 				<label class="form-label fw-semibold mb-2 d-none d-xl-block">&nbsp;</label>
 				<div class="doctors-filters__actions">
 					<button type="submit" class="th-btn style2">{{ __('doctors.filter') }}</button>
-					<a href="{{ route('frontend.doctors') }}" class="th-btn black-border">{{ __('doctors.reset') }}</a>
+					<a href="{{ frontend_route('frontend.doctors') }}" class="th-btn black-border">{{ __('doctors.reset') }}</a>
 				</div>
 			</div>
 		</div>
@@ -79,7 +79,7 @@
 		@if($hasActiveFilters)
 		<div class="doctors-filters__active mt-3">
 			<span><i class="fa-solid fa-filter"></i> {{ __('doctors.active_filters') }}</span>
-			<a href="{{ route('frontend.doctors') }}">{{ __('doctors.clear_filters') }}</a>
+			<a href="{{ frontend_route('frontend.doctors') }}">{{ __('doctors.clear_filters') }}</a>
 		</div>
 		@endif
 	</form>

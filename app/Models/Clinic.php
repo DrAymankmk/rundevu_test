@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
 use App\Traits\HasSeo;
@@ -13,7 +14,7 @@ class Clinic extends Authenticatable
 {
     use HasFactory, HasRoles, HasSeo;
     protected $fillable = [
-        'name', 'email', 'password', 'phone', 'image', 'qr_code', 'status', 'app_type', 'parent_id', 'city_id', 'lat', 'lng', 'address',
+        'name', 'slug', 'email', 'password', 'phone', 'image', 'qr_code', 'status', 'app_type', 'parent_id', 'city_id', 'lat', 'lng', 'address',
         'gender', 'date_created','package_end_date', 'communication_officer','communication_officer_phone', 'specialization', 'firebase_token', 'platform', 'device_token', 'jwt_token', 'info', 'info_ar', 'consultation_price', 'degree_id', 'ID_Number',
         'facebook_url', 'instagram_url', 'tiktok_url', 'snapchat_url', 'youtube_url'
         ,'is_manager','nursing_point_id','notes','role_id','points_enabled','points_category','enabled_modules',
@@ -25,6 +26,87 @@ class Clinic extends Authenticatable
         'points_enabled' => 'boolean',
         'consultation_price' => 'decimal:2',
     ];
+
+    protected static function booted()
+    {
+        static::creating(function (Clinic $clinic) {
+            if (! filled($clinic->slug)) {
+                $clinic->slug = static::uniqueSlug($clinic->name ?: ('clinic-'.Str::random(6)));
+            }
+        });
+
+        static::updating(function (Clinic $clinic) {
+            if (! filled($clinic->slug)) {
+                $clinic->slug = static::uniqueSlug($clinic->name ?: ('clinic-'.$clinic->id), $clinic->id);
+            }
+        });
+    }
+
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
+    public function resolveRouteBinding($value, $field = null)
+    {
+        $field = $field ?: $this->getRouteKeyName();
+
+        $query = static::query()->where($field, $value);
+
+        // Keep old numeric detail URLs working until links are fully migrated.
+        if (ctype_digit((string) $value)) {
+            $query->orWhere($this->getKeyName(), (int) $value);
+        }
+
+        return $query->firstOrFail();
+    }
+
+    public static function makeSlug(string $value): string
+    {
+        $value = trim($value);
+        if ($value === '') {
+            return '';
+        }
+
+        // Prefer ASCII URL slugs for stable frontend routes.
+        $slug = Str::slug($value, '-');
+        if ($slug !== '') {
+            return $slug;
+        }
+
+        $ascii = @iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $value);
+        $slug = Str::slug(is_string($ascii) ? $ascii : $value, '-');
+
+        return $slug;
+    }
+
+    public static function uniqueSlug(string $value, ?int $ignoreId = null): string
+    {
+        $slug = static::makeSlug($value);
+        if ($slug === '') {
+            $slug = $ignoreId ? 'clinic-'.$ignoreId : 'clinic';
+        }
+
+        $base = $slug;
+        $i = 2;
+
+        while (static::slugExists($slug, $ignoreId)) {
+            $slug = $base.'-'.$i;
+            $i++;
+        }
+
+        return $slug;
+    }
+
+    public static function slugExists(string $slug, ?int $ignoreId = null): bool
+    {
+        $query = static::query()->where('slug', $slug);
+        if ($ignoreId) {
+            $query->where('id', '!=', $ignoreId);
+        }
+
+        return $query->exists();
+    }
 
     public function contractOwner()
     {
@@ -166,7 +248,7 @@ class Clinic extends Authenticatable
 
     function clinic_doctor()
     {
-        return $this->belongsTo(Clinic::class, 'parent_id')->select('id', 'name', 'image', DB::raw('DATE(created_at) as created_date'));
+        return $this->belongsTo(Clinic::class, 'parent_id')->select('id', 'name', 'slug', 'image', DB::raw('DATE(created_at) as created_date'));
     }
 
     function owner () {
@@ -232,7 +314,7 @@ class Clinic extends Authenticatable
     {
         return $this->hasMany(Clinic::class, 'parent_id')
             ->where('app_type', 3)
-            ->select('id', 'parent_id', 'app_type', 'name', 'phone', 'image', 'info', 'info_ar', 'consultation_price');
+            ->select('id', 'parent_id', 'app_type', 'name', 'slug', 'phone', 'image', 'info', 'info_ar', 'consultation_price');
     }
 
     function branches()
@@ -240,7 +322,7 @@ class Clinic extends Authenticatable
         return $this->hasMany(Clinic::class, 'parent_id')
             ->where('app_type', 7)
             ->where('status', 1)
-            ->select('id', 'parent_id', 'app_type', 'name', 'email', 'phone', 'image', 'lat', 'lng', 'address', 'status');
+            ->select('id', 'parent_id', 'app_type', 'name', 'slug', 'email', 'phone', 'image', 'lat', 'lng', 'address', 'status');
     }
 
 

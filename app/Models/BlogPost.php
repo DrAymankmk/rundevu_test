@@ -109,6 +109,29 @@ class BlogPost extends Model implements HasMedia
         return filled($fallback?->slug) ? $fallback->slug : (string) $this->slug;
     }
 
+    /**
+     * Canonical URL slug for frontend routes (always English / base slug).
+     */
+    public function getRouteSlug(): string
+    {
+        if (filled($this->slug)) {
+            return (string) $this->slug;
+        }
+
+        $defaultLocale = function_exists('frontend_default_locale')
+            ? frontend_default_locale()
+            : (string) config('app.fallback_locale', 'en');
+
+        $translation = $this->translation($defaultLocale);
+        if ($translation && filled($translation->slug)) {
+            return (string) $translation->slug;
+        }
+
+        $fallback = $this->translations->first(fn ($row) => filled($row->slug));
+
+        return filled($fallback?->slug) ? (string) $fallback->slug : '';
+    }
+
     public static function imageCollection(?string $locale = null): string
     {
         $locale = $locale ?? app()->getLocale();

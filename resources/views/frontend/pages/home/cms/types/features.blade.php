@@ -20,7 +20,7 @@ if (preg_match('#^(https?:)?//#i', $raw) || str_starts_with($raw, 'mailto:') || 
 return $raw;
 }
 
-return str_starts_with($raw, '/') ? url($raw) : url('/' . ltrim($raw, '/'));
+return frontend_url(str_starts_with($raw, '/') ? $raw : '/' . ltrim($raw, '/'));
 };
 
 $getItemLink = static function ($item) use ($locale, $fb, $resolveHref) {

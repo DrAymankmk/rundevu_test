@@ -57,7 +57,7 @@ class ClinicsController extends Controller
         $seo = $this->seoResolver->resolve(null, $locale, [
             'title' => __('main.clinics'),
             'description' => __('clinics.frontend_list_description'),
-            'canonical' => route('frontend.clinics'),
+            'canonical' => frontend_route('frontend.clinics'),
         ]);
 
         return view('frontend.pages.clinics.index', compact(
@@ -74,20 +74,18 @@ class ClinicsController extends Controller
         ));
     }
 
-    public function show(int $id)
+    public function show(Clinic $clinic)
     {
         $locale = app()->getLocale();
 
-        $clinic = Clinic::query()
-            ->where('app_type', 1)
-            ->where('status', 1)
-            ->with([
-                'city',
-                'specialties.specialties',
-                'medical_staff',
-                'seoMeta.translations',
-            ])
-            ->findOrFail($id);
+        abort_unless((int) $clinic->app_type === 1 && (int) $clinic->status === 1, 404);
+
+        $clinic->load([
+            'city',
+            'specialties.specialties',
+            'medical_staff',
+            'seoMeta.translations',
+        ]);
 
         $clinic->rate = ClinicRating::rate($clinic->id);
         $clinic->rates_count = ClinicRating::where('clinic_id', $clinic->id)
@@ -130,7 +128,7 @@ class ClinicsController extends Controller
             'title' => $clinic->name,
             'description' => \Illuminate\Support\Str::limit(strip_tags((string) $info), 160),
             'image' => $clinic->image,
-            'canonical' => route('frontend.clinics.show', $clinic->id),
+            'canonical' => frontend_route('frontend.clinics.show', $clinic),
         ]);
 
         return view('frontend.pages.clinics.show', compact(

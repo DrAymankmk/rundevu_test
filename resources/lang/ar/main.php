@@ -299,6 +299,7 @@ return [
 	'cms-items'=> 'العناصر',
 	'cms-links'=> 'الروابط',
     'cms-media'=> 'الوسائط',
+    'website-media'=> 'وسائط الموقع',
     'blogs' => 'المدونة',
     'blog-posts' => 'المقالات',
     'blog-categories' => 'التصنيفات',

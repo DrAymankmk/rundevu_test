@@ -28,13 +28,13 @@
 		->values();
 @endphp
 
-<div class="breadcumb-wrapper" data-bg-src="{{ asset('frontend/assets/img/bg/breadcumb-bg.jpg') }}">
+<div class="breadcumb-wrapper" data-bg-src="{{ asset('frontend/assets/img/bg/breadcumb-doctor-details.jpg') }}">
 	<div class="container">
 		<div class="breadcumb-content">
 			<h1 class="breadcumb-title">{{ $doctor->name }}</h1>
 			<ul class="breadcumb-menu">
-				<li><a href="{{ route('frontend.home') }}">{{ __('main.home') }}</a></li>
-				<li><a href="{{ route('frontend.doctors') }}">{{ __('doctors.page_title') }}</a></li>
+				<li><a href="{{ frontend_route('frontend.home') }}">{{ __('main.home') }}</a></li>
+				<li><a href="{{ frontend_route('frontend.doctors') }}">{{ __('doctors.page_title') }}</a></li>
 				<li>{{ \Illuminate\Support\Str::limit($doctor->name, 40) }}</li>
 			</ul>
 		</div>
@@ -110,7 +110,7 @@
 
 				<div class="doctor-details-hero__actions">
 					@if($parentClinic)
-					<a href="{{ route('frontend.clinics.show', $parentClinic->id) }}" class="th-btn style2">
+					<a href="{{ frontend_route('frontend.clinics.show', $parentClinic) }}" class="th-btn style2">
 						<i class="fa-solid fa-hospital"></i>
 						{{ __('doctors.view_clinic') }}
 					</a>
@@ -130,7 +130,7 @@
 					</a>
 					@endif
 
-					<a href="{{ route('frontend.doctors') }}" class="doctor-details-back">
+					<a href="{{ frontend_route('frontend.doctors') }}" class="doctor-details-back">
 						{{ __('doctors.back_to_doctors') }}
 						<x-arrow-icon />
 					</a>
@@ -162,7 +162,7 @@
 						</div>
 					</div>
 
-					<a href="{{ route('frontend.clinics.show', $parentClinic->id) }}" class="doctor-clinic-card">
+					<a href="{{ frontend_route('frontend.clinics.show', $parentClinic) }}" class="doctor-clinic-card">
 						<img src="{{ $parentClinic->image }}" alt="{{ $parentClinic->name }}">
 						<div class="doctor-clinic-card__content">
 							<h4>{{ $parentClinic->name }}</h4>
@@ -244,7 +244,7 @@
 								<span class="doctor-details-info-list__icon"><i class="fa-solid fa-hospital"></i></span>
 								<div>
 									<small>{{ __('doctors.clinic') }}</small>
-									<a href="{{ route('frontend.clinics.show', $parentClinic->id) }}">{{ $parentClinic->name }}</a>
+									<a href="{{ frontend_route('frontend.clinics.show', $parentClinic) }}">{{ $parentClinic->name }}</a>
 								</div>
 							</li>
 							@endif
@@ -296,7 +296,7 @@
 
 						<div class="doctor-details-side-card__actions">
 							@if($parentClinic)
-							<a href="{{ route('frontend.clinics.show', $parentClinic->id) }}" class="th-btn style2 w-100 text-center">
+							<a href="{{ frontend_route('frontend.clinics.show', $parentClinic) }}" class="th-btn style2 w-100 text-center">
 								{{ __('doctors.view_clinic') }}
 							</a>
 							@endif

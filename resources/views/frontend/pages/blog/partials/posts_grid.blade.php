@@ -21,25 +21,25 @@
 <div class="col-xl-6">
     <div class="th-blog blog-single has-post-thumbnail single-grid">
         <div class="blog-img global-img">
-            <a href="{{ route('frontend.blog.show', $post->getSlug()) }}">
+            <a href="{{ frontend_route('frontend.blog.show', $post->getRouteSlug()) }}">
                 <img src="{{ $image }}" alt="{{ $title }}">
             </a>
         </div>
         <div class="blog-content">
             <div class="blog-meta">
                 @if($date)
-                <a href="{{ route('frontend.blog.show', $post->getSlug()) }}">
+                <a href="{{ frontend_route('frontend.blog.show', $post->getRouteSlug()) }}">
                     <i class="fa-solid fa-calendar-days"></i>{{ $date }}
                 </a>
                 @endif
                 @if($categoryNames->isNotEmpty())
-                <a href="{{ route('frontend.blog', ['category' => $post->categories->first()->slug]) }}">
+                <a href="{{ frontend_route('frontend.blog', ['category' => $post->categories->first()->slug]) }}">
                     <i class="fa-solid fa-folder"></i>{{ $categoryNames->first() }}
                 </a>
                 @endif
             </div>
             <h2 class="box-title">
-                <a href="{{ route('frontend.blog.show', $post->getSlug()) }}">{{ $title }}</a>
+                <a href="{{ frontend_route('frontend.blog.show', $post->getRouteSlug()) }}">{{ $title }}</a>
             </h2>
             @if($summary)
             <p class="blog-text">
@@ -49,13 +49,13 @@
             @if($postTags->isNotEmpty())
             <div class="blog-meta mb-2">
                 @foreach($postTags as $tag)
-                <a href="{{ route('frontend.blog', ['q' => $tag]) }}">
+                <a href="{{ frontend_route('frontend.blog', ['q' => $tag]) }}">
                     <i class="fa-solid fa-tags"></i>{{ $tag }}
                 </a>
                 @endforeach
             </div>
             @endif
-            <a href="{{ route('frontend.blog.show', $post->getSlug()) }}" class="line-btn">
+            <a href="{{ frontend_route('frontend.blog.show', $post->getRouteSlug()) }}" class="line-btn">
                 {{ __('blog.read_more') }}
                 <x-arrow-icon />
             </a>

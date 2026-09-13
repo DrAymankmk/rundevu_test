@@ -48,7 +48,7 @@ class BlogController extends Controller
         $seo = $this->seoResolver->resolve(null, $locale, [
             'title' => __('main.blogs'),
             'description' => __('blog.frontend_list_description'),
-            'canonical' => route('frontend.blog'),
+            'canonical' => frontend_route('frontend.blog'),
         ]);
 
         return view('frontend.pages.blog.index', compact(
@@ -91,9 +91,10 @@ class BlogController extends Controller
             ->with(['translations', 'categories.translations', 'media', 'seoMeta.translations'])
             ->firstOrFail();
 
-        $localizedSlug = $post->getSlug($locale);
-        if ($localizedSlug !== '' && $localizedSlug !== $slug) {
-            return redirect()->route('frontend.blog.show', $localizedSlug);
+        $canonicalSlug = $post->getRouteSlug();
+
+        if ($canonicalSlug !== '' && $canonicalSlug !== $slug) {
+            return redirect()->to(frontend_route('frontend.blog.show', $canonicalSlug), 301);
         }
 
         $translation = $post->translation($locale) ?? $post->translations->first();
@@ -125,7 +126,7 @@ class BlogController extends Controller
             'title' => $title,
             'description' => $summary,
             'image' => $image,
-            'canonical' => route('frontend.blog.show', $post->getSlug($locale)),
+            'canonical' => frontend_route('frontend.blog.show', $canonicalSlug !== '' ? $canonicalSlug : $slug),
         ]);
 
         return view('frontend.pages.blog.blog_details', compact(

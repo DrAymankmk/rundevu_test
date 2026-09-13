@@ -6,7 +6,7 @@ $categorySlug = $categorySlug ?? request('category', '');
 <aside class="sidebar-area style2">
 	<div class="widget widget_search">
 		<h3 class="widget_title">{{ __('blog.search') }}</h3>
-		<form class="search-form" action="{{ route('frontend.blog') }}" method="GET">
+		<form class="search-form" action="{{ frontend_route('frontend.blog') }}" method="GET">
 			@if($categorySlug)
 			<input type="hidden" name="category" value="{{ $categorySlug }}">
 			@endif
@@ -21,7 +21,7 @@ $categorySlug = $categorySlug ?? request('category', '');
 		<h3 class="widget_title">{{ __('blog.categories') }}</h3>
 		<ul>
 			<li>
-				<a href="{{ route('frontend.blog', array_filter(['q' => $search ?: null])) }}"
+				<a href="{{ frontend_route('frontend.blog', array_filter(['q' => $search ?: null])) }}"
 					class="{{ $categorySlug === '' ? 'active' : '' }}">
 					{{ __('blog.all_categories') }}
 				</a>
@@ -31,7 +31,7 @@ $categorySlug = $categorySlug ?? request('category', '');
 			$categoryTitle = $category->getTranslatedAttribute('title') ?: $category->name;
 			@endphp
 			<li>
-				<a href="{{ route('frontend.blog', array_filter(['category' => $category->slug, 'q' => $search ?: null])) }}"
+				<a href="{{ frontend_route('frontend.blog', array_filter(['category' => $category->slug, 'q' => $search ?: null])) }}"
 					class="{{ $categorySlug === $category->slug ? 'active' : '' }}">
 					{{ $categoryTitle }}
 					<span>({{ $category->posts_count }})</span>
@@ -53,19 +53,19 @@ $categorySlug = $categorySlug ?? request('category', '');
 			@endphp
 			<div class="recent-post">
 				<div class="media-img">
-					<a href="{{ route('frontend.blog.show', $recent->getSlug()) }}">
+					<a href="{{ frontend_route('frontend.blog.show', $recent->getRouteSlug()) }}">
 						<img src="{{ $recentImage }}" alt="{{ $recentTitle }}">
 					</a>
 				</div>
 				<div class="media-body">
 					<div class="recent-post-meta">
-						<a href="{{ route('frontend.blog.show', $recent->getSlug()) }}">
+						<a href="{{ frontend_route('frontend.blog.show', $recent->getRouteSlug()) }}">
 							<i class="fa-sharp fa-solid fa-calendar-days"></i>{{ $recentDate }}
 						</a>
 					</div>
 					<h4 class="post-title">
 						<a class="text-inherit"
-							href="{{ route('frontend.blog.show', $recent->getSlug()) }}">{{ $recentTitle }}</a>
+							href="{{ frontend_route('frontend.blog.show', $recent->getRouteSlug()) }}">{{ $recentTitle }}</a>
 					</h4>
 				</div>
 			</div>

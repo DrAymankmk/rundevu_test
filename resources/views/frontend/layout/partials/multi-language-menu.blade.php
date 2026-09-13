@@ -28,7 +28,7 @@
                     }
                 @endphp
                 <li>
-                    <a href="{{ route('frontend.language.switch', ['lang' => $code]) }}"
+                    <a href="{{ frontend_route('frontend.language.switch', ['lang' => $code]) }}"
                         rel="nofollow"
                         @if($isActive) class="active" aria-current="true" @endif>{{ $label }}</a>
                 </li>

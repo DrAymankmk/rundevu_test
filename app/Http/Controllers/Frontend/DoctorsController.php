@@ -55,7 +55,7 @@ class DoctorsController extends Controller
         $seo = $this->seoResolver->resolve(null, $locale, [
             'title' => __('doctors.page_title'),
             'description' => __('doctors.frontend_list_description'),
-            'canonical' => route('frontend.doctors'),
+            'canonical' => frontend_route('frontend.doctors'),
         ]);
 
         return view('frontend.pages.doctors.index', compact(
@@ -71,25 +71,27 @@ class DoctorsController extends Controller
         ));
     }
 
-    public function show(int $id)
+    public function show(Clinic $doctor)
     {
         $locale = app()->getLocale();
 
-        $doctor = Clinic::query()
-            ->where('app_type', 3)
-            ->where('status', 1)
-            ->with([
-                'owner.city',
-                'city',
-                'degree',
-                'specialties.specialties',
-                'sub_specialties.specialties',
-                'seoMeta.translations',
-            ])
-            ->whereHas('owner', function (Builder $q) {
-                $q->where('app_type', 1)->where('status', 1);
-            })
-            ->findOrFail($id);
+        abort_unless((int) $doctor->app_type === 3 && (int) $doctor->status === 1, 404);
+
+        $doctor->load([
+            'owner.city',
+            'city',
+            'degree',
+            'specialties.specialties',
+            'sub_specialties.specialties',
+            'seoMeta.translations',
+        ]);
+
+        abort_unless(
+            $doctor->owner
+            && (int) $doctor->owner->app_type === 1
+            && (int) $doctor->owner->status === 1,
+            404
+        );
 
         $this->decorateDoctor($doctor);
 
@@ -132,7 +134,7 @@ class DoctorsController extends Controller
             'title' => $doctor->name,
             'description' => \Illuminate\Support\Str::limit(strip_tags((string) $info), 160),
             'image' => $doctor->image,
-            'canonical' => route('frontend.doctors.show', $doctor->id),
+            'canonical' => frontend_route('frontend.doctors.show', $doctor),
         ]);
 
         return view('frontend.pages.doctors.show', compact(

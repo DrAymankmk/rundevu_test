@@ -2,7 +2,6 @@
 
 
 use App\Events\Notify;
-use App\Models\CmsLanguage;
 use App\Models\Language;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
@@ -87,7 +86,9 @@ Route::get('/changeLanguageAdmin/{lang}', function ($lang) {
 //     return view('welcome');
 // });
 
-Route::group(['namespace' => 'Frontend', 'middleware' => 'setlocale' , 'as' => 'frontend.'], function () {
+$frontendReservedSlugs = 'about|services|faq|subscription|contact|blog|clinics|doctors|social-media|language|register|terms|clear|pusher|test|sitemap\.xml';
+
+$registerFrontendRoutes = function (bool $arabicBlogFlat = false) use ($frontendReservedSlugs) {
     Route::get('/', 'HomeController@index')->name('home');
     Route::get('/about', 'AboutController@index')->name('about');
     Route::get('/services', 'ServiceController@index')->name('services');
@@ -97,32 +98,44 @@ Route::group(['namespace' => 'Frontend', 'middleware' => 'setlocale' , 'as' => '
     Route::get('/contact', 'ContactController@index')->name('contact');
     Route::get('/blog', 'BlogController@index')->name('blog');
     Route::get('/blog/load-more', 'BlogController@loadMore')->name('blog.load-more');
-    Route::get('/blog/{slug}', 'BlogController@show')->name('blog.show');
+    if (! $arabicBlogFlat) {
+        Route::get('/blog/{slug}', 'BlogController@show')->name('blog.show');
+    }
     Route::get('/clinics', 'ClinicsController@index')->name('clinics');
-    Route::get('/clinics/{id}', 'ClinicsController@show')->name('clinics.show')->whereNumber('id');
+    Route::get('/clinics/{clinic}', 'ClinicsController@show')->name('clinics.show')->where('clinic', '^[A-Za-z0-9\-]+$');
     Route::get('/doctors', 'DoctorsController@index')->name('doctors');
-    Route::get('/doctors/{id}', 'DoctorsController@show')->name('doctors.show')->whereNumber('id');
+    Route::get('/doctors/{doctor}', 'DoctorsController@show')->name('doctors.show')->where('doctor', '^[A-Za-z0-9\-]+$');
     Route::get('/social-media', 'SocialMediaController@index')->name('social');
     Route::post('/book-demo', 'ContactController@bookDemo')->name('book_demo');
     Route::post('/contact', 'ContactController@submitContact')->name('contact.submit');
-    Route::get('language/{lang}', function (string $lang) {
-        $codes = Language::query()->where('status', 1)->pluck('code')->all();
-        if ($codes === [] && Schema::hasTable('cms_languages')) {
-            $codes = CmsLanguage::query()->active()->ordered()->pluck('code')->all();
-        }
-        if ($codes === []) {
-            $codes = array_values(array_unique(array_filter([
-                (string) config('app.locale'),
-                (string) config('app.fallback_locale', 'en'),
-            ])));
-        }
-        $lang = in_array($lang, $codes, true) ? $lang : ($codes[0] ?? 'en');
-        session(['lang' => $lang]);
-        App::setLocale($lang);
 
-        return redirect()->back();
-    })->name('language.switch');
+    if ($arabicBlogFlat) {
+        // Legacy: /ar/blog/{slug} → /ar/{slug}
+        Route::get('/blog/{slug}', function (string $slug) {
+            return redirect()->to(frontend_route('frontend.blog.show', $slug, true, 'ar'), 301);
+        })->where('slug', '^[\p{L}\p{N}\-_]+$');
+
+        // Arabic blog details: /ar/{arabic_slug}
+        Route::get('/{slug}', 'BlogController@show')
+            ->name('blog.show')
+            ->where('slug', '^(?!' . $frontendReservedSlugs . ')[\p{L}\p{N}\-_]+$');
+    }
+};
+
+// English (default): unprefixed URLs — /about, /blog/{english_slug}
+Route::group(['namespace' => 'Frontend', 'middleware' => 'setlocale', 'as' => 'frontend.'], function () use ($registerFrontendRoutes) {
+    $registerFrontendRoutes(false);
 });
+
+// Arabic: /ar prefix — /ar/about, blog details at /ar/{arabic_slug}
+Route::group(['namespace' => 'Frontend', 'prefix' => 'ar', 'middleware' => 'setlocale', 'as' => 'frontend.ar.'], function () use ($registerFrontendRoutes) {
+    $registerFrontendRoutes(true);
+});
+
+// Legacy language switch route (rewrites current path to /ar/... or unprefixed)
+Route::get('language/{lang}', function (string $lang) {
+    return redirect()->to(frontend_language_url($lang));
+})->middleware('setlocale')->name('frontend.language.switch');
 
 Route::post('register', 'RegisterController@register')->name('register');
 
@@ -194,6 +207,11 @@ Route::group(["middleware" => ["auth", "setlocale"], 'prefix' => 'admin', 'names
         Route::put('media/{id}', 'MediaController@update')->name('media.update');
         Route::delete('media/{id}', 'MediaController@destroy')->name('media.destroy');
     });
+
+    Route::get('website-media', 'FrontendMediaController@index')->name('website-media.index');
+    Route::get('website-media/data', 'FrontendMediaController@data')->name('website-media.data');
+    Route::post('website-media/update', 'FrontendMediaController@update')->name('website-media.update');
+    Route::post('website-media/convert', 'FrontendMediaController@convert')->name('website-media.convert');
 
 // cms links
     Route::group(['namespace' => 'CMS', 'prefix' => 'cms', 'as' => 'cms.'], function () {

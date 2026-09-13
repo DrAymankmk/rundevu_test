@@ -83,7 +83,7 @@ if (preg_match('/<li[^>]*>/i', $text)) {
 			return $raw;
 			}
 
-			return str_starts_with($raw, '/') ? url($raw) : url('/' . ltrim($raw, '/'));
+			return frontend_url(str_starts_with($raw, '/') ? $raw : '/' . ltrim($raw, '/'));
 			};
 
 			$aboutButtons = collect();

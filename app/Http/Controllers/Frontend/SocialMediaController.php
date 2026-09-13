@@ -21,7 +21,7 @@ class SocialMediaController extends Controller
 
         $seo = $this->seoResolver->defaults([
             'title' => __('main.social_media'),
-            'canonical' => route('frontend.social'),
+            'canonical' => frontend_route('frontend.social'),
         ]);
 
         return view('frontend.pages.social.index', compact('platforms', 'seo'));

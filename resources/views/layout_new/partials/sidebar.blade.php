@@ -899,9 +899,15 @@
                     <li>
                         <ul>
 
+                            <li>
+                                <a href="{{ route('website-media.index') }}"
+                                   class="{{ Request::is('admin/website-media*') || Route::is('website-media.*') ? 'active' : '' }}">
+                                    <i class="ti ti-photo"></i><span>@lang('main.website-media')</span>
+                                </a>
+                            </li>
                             <li class="submenu">
                                 <a href="javascript:void(0);"
-                                   class="{{ Request::is('cms-pages', 'cms-sections', 'cms-items') ? 'active subdrop' : '' }}">
+                                   class="{{ Request::is('cms-pages', 'cms-sections', 'cms-items') || Request::is('admin/cms*') ? 'active subdrop' : '' }}">
                                     <i
                                         class="ti ti-report"></i><span>@lang('main.cms')</span>
                                     <span class="menu-arrow"></span>

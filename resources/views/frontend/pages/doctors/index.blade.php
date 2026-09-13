@@ -1,19 +1,20 @@
 @extends('frontend.layout.app')
 
 @section('content')
-<div class="breadcumb-wrapper" data-bg-src="{{ asset('frontend/assets/img/bg/breadcumb-bg.jpg') }}">
+<div class="breadcumb-wrapper" data-bg-src="{{ asset('frontend/assets/img/bg/breadcumb-doctors.jpg') }}">
 	<div class="container">
 		<div class="breadcumb-content">
 			<h1 class="breadcumb-title">{{ __('doctors.page_title') }}</h1>
 			<ul class="breadcumb-menu">
-				<li><a href="{{ route('frontend.home') }}">{{ __('main.home') }}</a></li>
+				<li><a href="{{ frontend_route('frontend.home') }}">{{ __('main.home') }}</a>
+				</li>
 				<li>{{ __('doctors.page_title') }}</li>
 			</ul>
 		</div>
 	</div>
 </div>
 
-<section class="space-top space-extra-bottom doctors-listing-sec" style="padding: 40px 100px;">
+<section class="space-top space-extra-bottom doctors-listing-sec" style="padding: 40px 40px;">
 	<div class="container">
 		@include('frontend.pages.doctors.partials.filters')
 
@@ -32,7 +33,7 @@
 					<i class="fa-solid fa-user-doctor"></i>
 					<h3>{{ __('doctors.no_doctors') }}</h3>
 					<p>{{ __('doctors.no_doctors_hint') }}</p>
-					<a href="{{ route('frontend.doctors') }}"
+					<a href="{{ frontend_route('frontend.doctors') }}"
 						class="th-btn style2">{{ __('doctors.reset') }}</a>
 				</div>
 			</div>

@@ -6,7 +6,7 @@
 						<div class="widget footer-widget mb-0">
 							<div class="th-widget-about">
 								<div class="about-logo">
-									<a href="{{ route('frontend.home') }}"><img
+									<a href="{{ frontend_route('frontend.home') }}"><img
 											style="height:50px; width:100px;"
 											src="{{ asset('frontend/assets/img/logo.png') }}"
 											alt="Randevu "></a>
@@ -22,17 +22,17 @@
 							<h3 class="widget_title"> {{ __('main.quick_links') }}</h3>
 							<div class="menu-all-pages-container">
 								<ul class="menu">
-									<li><a href="{{ route('frontend.home') }}">{{ __('main.home') }}</a>
+									<li><a href="{{ frontend_route('frontend.home') }}">{{ __('main.home') }}</a>
 									</li>
-									<li><a href="{{ route('frontend.about') }}">{{ __('main.about') }}</a>
+									<li><a href="{{ frontend_route('frontend.about') }}">{{ __('main.about') }}</a>
 									</li>
-									<li><a href="{{ route('frontend.services') }}">{{ __('main.services') }}</a>
+									<li><a href="{{ frontend_route('frontend.services') }}">{{ __('main.services') }}</a>
 									</li>
-									<li><a href="{{ route('frontend.clinics') }}">{{ __('main.clinics') }}</a>
+									<li><a href="{{ frontend_route('frontend.clinics') }}">{{ __('main.clinics') }}</a>
 									</li>
-									<li><a href="{{ route('frontend.doctors') }}">{{ __('doctors.page_title') }}</a>
+									<li><a href="{{ frontend_route('frontend.doctors') }}">{{ __('doctors.page_title') }}</a>
 									</li>
-									<li><a href="{{ route('frontend.subscription') }}">{{ __('main.subscription') }}</a>
+									<li><a href="{{ frontend_route('frontend.subscription') }}">{{ __('main.subscription') }}</a>
 									</li>
 
 								</ul>
@@ -94,13 +94,13 @@
 							<div class="menu-all-pages-container">
 								<ul class="menu">
 
-									<li><a href="{{ route('frontend.faq') }}">{{ __('main.faqs') }}</a>
+									<li><a href="{{ frontend_route('frontend.faq') }}">{{ __('main.faqs') }}</a>
 									</li>
-									<li><a href="{{ route('frontend.blog') }}">{{ __('main.blogs') }}</a>
+									<li><a href="{{ frontend_route('frontend.blog') }}">{{ __('main.blogs') }}</a>
 									</li>
-									<li><a href="{{ route('frontend.contact') }}">{{ __('main.contact') }}</a>
+									<li><a href="{{ frontend_route('frontend.contact') }}">{{ __('main.contact') }}</a>
 									</li>
-									<li><a href="{{ route('frontend.social') }}">{{ __('main.social_media') }}</a>
+									<li><a href="{{ frontend_route('frontend.social') }}">{{ __('main.social_media') }}</a>
 									</li>
 								</ul>
 							</div>
@@ -187,7 +187,7 @@
 									{{ __('main.copyright') }} <i
 										class="fal fa-copyright"></i>
 									{{ date('Y') }} <a
-										href="{{ route('frontend.home') }}">{{ __('main.app_name') }}</a>.
+										href="{{ frontend_route('frontend.home') }}">{{ __('main.app_name') }}</a>.
 									{{ __('main.all_rights_reserved') }}
 								</p>
 							</div>

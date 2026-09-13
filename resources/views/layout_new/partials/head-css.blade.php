@@ -178,7 +178,7 @@
     <link rel="stylesheet" href="{{URL::asset('build/plugins/jsvectormap/css/jsvectormap.min.css')}}">
 @endif
 
-@if (Route::is(['ui-sweetalerts']) || Route::is('cms.*'))
+@if (Route::is(['ui-sweetalerts']) || Route::is('cms.*') || Route::is('website-media.*'))
     <!-- Sweetalert2 CSS -->
     <link rel="stylesheet" href="{{URL::asset('build/plugins/sweetalert2/sweetalert2.min.css')}}">
 @endif

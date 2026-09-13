@@ -6,7 +6,7 @@
 		<div class="breadcumb-content">
 			<h1 class="breadcumb-title">{{ __('main.blogs') }}</h1>
 			<ul class="breadcumb-menu">
-				<li><a href="{{ route('frontend.home') }}">{{ __('main.home') }}</a></li>
+				<li><a href="{{ frontend_route('frontend.home') }}">{{ __('main.home') }}</a></li>
 				<li>{{ __('main.blogs') }}</li>
 			</ul>
 		</div>
@@ -30,7 +30,7 @@
 				@if($posts->isNotEmpty() && $posts->hasMorePages())
 				<div class="text-center mt-40" id="blog-load-more-wrap">
 					<button type="button" class="th-btn" id="blog-load-more"
-						data-url="{{ route('frontend.blog.load-more') }}"
+						data-url="{{ frontend_route('frontend.blog.load-more') }}"
 						data-page="2"
 						data-q="{{ $search }}"
 						data-category="{{ $categorySlug }}"

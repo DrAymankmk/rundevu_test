@@ -1,24 +1,25 @@
 @php
-	$locale = app()->getLocale();
-	$parentClinic = $doctor->owner ?? null;
-	$city = $doctor->city ?: ($parentClinic->city ?? null);
-	$cityLabel = '';
-	if ($city) {
-		$cityLabel = $locale === 'en'
-			? ($city->name_en ?: $city->name_ar)
-			: ($city->name_ar ?: $city->name_en);
-	}
-	$locationLabel = ($parentClinic->address ?? null) ?: $cityLabel;
-	$rate = (float) ($doctor->rate ?? 0);
-	$specialtyNames = $doctor->specialty_names ?? '';
-	$degreeName = $doctor->degree_name ?? '';
-	$columnClass = $columnClass ?? 'col-md-6 col-lg-4';
+$locale = app()->getLocale();
+$parentClinic = $doctor->owner ?? null;
+$city = $doctor->city ?: ($parentClinic->city ?? null);
+$cityLabel = '';
+if ($city) {
+$cityLabel = $locale === 'en'
+? ($city->name_en ?: $city->name_ar)
+: ($city->name_ar ?: $city->name_en);
+}
+$locationLabel = ($parentClinic->address ?? null) ?: $cityLabel;
+$rate = (float) ($doctor->rate ?? 0);
+$specialtyNames = $doctor->specialty_names ?? '';
+$degreeName = $doctor->degree_name ?? '';
+$columnClass = $columnClass ?? 'col-md-6 col-lg-3';
 @endphp
 
 <div class="{{ $columnClass }}">
 	<article class="doctor-card-v2 h-100">
 		<div class="doctor-card-v2__media">
-			<a href="{{ route('frontend.doctors.show', $doctor->id) }}" class="doctor-card-v2__image-link">
+			<a href="{{ frontend_route('frontend.doctors.show', $doctor) }}"
+				class="doctor-card-v2__image-link">
 				<img src="{{ $doctor->image }}" alt="{{ $doctor->name }}" loading="lazy">
 			</a>
 
@@ -36,7 +37,8 @@
 
 		<div class="doctor-card-v2__body">
 			<h3 class="doctor-card-v2__title">
-				<a href="{{ route('frontend.doctors.show', $doctor->id) }}">{{ $doctor->name }}</a>
+				<a
+					href="{{ frontend_route('frontend.doctors.show', $doctor) }}">{{ $doctor->name }}</a>
 			</h3>
 
 			<p class="doctor-card-v2__specialties" title="{{ $specialtyNames }}">
@@ -46,7 +48,8 @@
 
 			@if($parentClinic)
 			<p class="doctor-card-v2__clinic">
-				<a href="{{ route('frontend.clinics.show', $parentClinic->id) }}" class="clinic-location-link">
+				<a href="{{ frontend_route('frontend.clinics.show', $parentClinic) }}"
+					class="clinic-location-link">
 					<i class="fa-solid fa-hospital"></i>
 					<span>{{ $parentClinic->name }}</span>
 				</a>
@@ -66,13 +69,16 @@
 			@endif
 
 			<div class="doctor-card-v2__footer">
-				<div class="clinic-card-v2__stars" aria-label="{{ __('doctors.rating') }} {{ number_format($rate, 1) }}">
-					@for($i = 1; $i <= 5; $i++)
-						<i class="fa-{{ $rate >= $i ? 'solid' : 'regular' }} fa-star {{ $rate >= $i ? 'is-active' : '' }}"></i>
-					@endfor
+				<div class="clinic-card-v2__stars"
+					aria-label="{{ __('doctors.rating') }} {{ number_format($rate, 1) }}">
+					@for($i = 1; $i <= 5; $i++) <i
+						class="fa-{{ $rate >= $i ? 'solid' : 'regular' }} fa-star {{ $rate >= $i ? 'is-active' : '' }}">
+						</i>
+						@endfor
 				</div>
 
-				<a href="{{ route('frontend.doctors.show', $doctor->id) }}" class="doctor-card-v2__cta">
+				<a href="{{ frontend_route('frontend.doctors.show', $doctor) }}"
+					class="doctor-card-v2__cta">
 					{{ __('doctors.view_details') }}
 					<x-arrow-icon />
 				</a>

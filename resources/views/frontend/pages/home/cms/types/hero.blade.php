@@ -24,7 +24,7 @@ if (preg_match('#^(https?:)?//#i', $raw) || str_starts_with($raw, 'mailto:') || 
 return $raw;
 }
 
-return str_starts_with($raw, '/') ? url($raw) : url('/' . ltrim($raw, '/'));
+return frontend_url(str_starts_with($raw, '/') ? $raw : '/' . ltrim($raw, '/'));
 };
 
 $mapModelLinksToButtons = static function ($model) use ($locale, $fb, $resolveHref): \Illuminate\Support\Collection {
@@ -73,7 +73,7 @@ $fallbackButtons = $mapModelLinksToButtons($section);
 if ($fallbackButtons->isEmpty()) {
 $fallbackButtons = collect([
 [
-'href' => url('/contact'),
+'href' => frontend_url('/contact'),
 'label' => __('Book an Appointment'),
 'target' => '_self',
 'rel' => null,
@@ -81,7 +81,7 @@ $fallbackButtons = collect([
 'btnClass' => 'th-btn style1',
 ],
 [
-'href' => url('/services'),
+'href' => frontend_url('/services'),
 'label' => __('Our Departments'),
 'target' => '_self',
 'rel' => null,
@@ -196,7 +196,7 @@ $googleUrl = 'https://play.google.com/store/apps/details?id=com.takaful.rendezvo
 												alt="{{ __('main.google_play') }}">
 										</a>
 									</div>
-									<a href="{{ route('frontend.subscription') }}"
+									<a href="{{ frontend_route('frontend.subscription') }}"
 										class="th-btn style1" style="padding: 15px !important">
 										{{ __('main.register_clinic') }}
 										<i class="fa-solid fa-hospital ms-2"></i>

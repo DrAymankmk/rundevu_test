@@ -18,7 +18,7 @@
             return $raw;
         }
 
-        return str_starts_with($raw, '/') ? url($raw) : url('/' . ltrim($raw, '/'));
+        return frontend_url(str_starts_with($raw, '/') ? $raw : '/' . ltrim($raw, '/'));
     };
 
     $getItemLink = static function ($item) use ($locale, $fb, $resolveHref) {
@@ -102,7 +102,7 @@
                         <div class="feature-card th-ani">
                             <h3 class="box-title text-anime-style-2">{{ $def['t'] }}</h3>
                             <p class="box-text">{{ $def['c'] }}</p>
-                            <a href="{{ url('/contact') }}" class="th-btn black-border">{{ __('Emergency Call') }} <i class="fa-regular fa-arrow-right ms-2"></i></a>
+                            <a href="{{ frontend_url('/contact') }}" class="th-btn black-border">{{ __('Emergency Call') }} <i class="fa-regular fa-arrow-right ms-2"></i></a>
                         </div>
                     </div>
                 @endforeach

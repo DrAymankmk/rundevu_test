@@ -9,6 +9,18 @@ $items = $section->relationLoaded('items') ? $section->items->where('is_active',
 collect();
 $defaultIcons = ['service_1_1.svg', 'service_1_2.svg', 'service_1_3.svg'];
 
+$resolveHref = static function (?string $raw): string {
+    $raw = trim((string) $raw);
+    if ($raw === '') {
+        return '#';
+    }
+    if (preg_match('#^(https?:)?//#i', $raw) || str_starts_with($raw, 'mailto:') || str_starts_with($raw, 'tel:')) {
+        return $raw;
+    }
+
+    return frontend_url(str_starts_with($raw, '/') ? $raw : '/' . ltrim($raw, '/'));
+};
+
 $serviceButtons = collect();
 if ($section->relationLoaded('links')) {
 foreach ($section->links->where('is_active', true)->filter(static fn ($l) => filled(trim((string) ($l->link ??
@@ -80,7 +92,7 @@ $serviceButtons->push(compact('href', 'label', 'target', 'rel', 'icon', 'btnClas
 							<img src="{{ $icon }}" alt="">
 						</div>
 						<h3 class="box-title"><a
-								href="{{ url('/contact') }}">{{ $itemTitle }}</a>
+								href="{{ frontend_url('/contact') }}">{{ $itemTitle }}</a>
 						</h3>
 						<p class="box-text">{!! $itemDesc !!}</p>
 						@if($serviceButtons->isNotEmpty())

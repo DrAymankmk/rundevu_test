@@ -37,7 +37,7 @@ body.book-demo-modal-open .modal-backdrop {
 				<button type="button" class="btn-close" data-bs-dismiss="modal"
 					aria-label="{{ __('main.Close') }}"></button>
 			</div>
-			<form action="{{ route('frontend.book_demo') }}" method="POST">
+			<form action="{{ frontend_route('frontend.book_demo') }}" method="POST">
 				@csrf
 				<div class="modal-body pt-2">
 					<div class="mb-3">

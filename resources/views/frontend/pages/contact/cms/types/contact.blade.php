@@ -194,7 +194,7 @@ $normalized = preg_replace('#<br\s* /?>#i', "\n", (string) $content);
 					</div>
 				</div>
 				<div class="col-xl-8">
-					<form action="{{ route('frontend.contact.submit') }}" method="POST"
+					<form action="{{ frontend_route('frontend.contact.submit') }}" method="POST"
 						class="contact-form">
 						@csrf
 						<h3 class="h4 mb-30 mt-n3">

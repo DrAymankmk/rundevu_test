@@ -211,7 +211,7 @@ $isRtl = in_array($htmlLang, $rtlLangs, true);
 			<div class="widget footer-widget mb-0">
 				<div class="th-widget-about">
 					<div class="about-logo">
-						<a href="{{ route('frontend.home') }}"><img
+						<a href="{{ frontend_route('frontend.home') }}"><img
 								src=" {{ asset('frontend/assets/img/logo.png') }}"
 								style="height:50px; width:100px;"
 								alt="Randevu "></a>
@@ -249,24 +249,24 @@ $isRtl = in_array($htmlLang, $rtlLangs, true);
 		<div class="th-menu-area text-center">
 			<button class="th-menu-toggle"><i class="fal fa-times"></i></button>
 			<div class="mobile-logo">
-				<a href="{{ route('frontend.home') }}"><img
+				<a href="{{ frontend_route('frontend.home') }}"><img
 						src="{{ asset('frontend/assets/img/logo.png') }}"
 						alt="Randevu "></a>
 			</div>
 
 			<div class="th-mobile-menu">
 				<ul>
-					<li><a href="{{ route('frontend.home') }}">Home</a></li>
+					<li><a href="{{ frontend_route('frontend.home') }}">Home</a></li>
 
 
-					<li><a href="{{ route('frontend.about') }}">About Us</a></li>
-					<li><a href="{{ route('frontend.services') }}">{{ __('main.services') }}</a>
+					<li><a href="{{ frontend_route('frontend.about') }}">About Us</a></li>
+					<li><a href="{{ frontend_route('frontend.services') }}">{{ __('main.services') }}</a>
 					</li>
-					<li><a href="{{ route('frontend.clinics') }}">{{ __('main.clinics') }}</a>
+					<li><a href="{{ frontend_route('frontend.clinics') }}">{{ __('main.clinics') }}</a>
 					</li>
-					<li><a href="{{ route('frontend.doctors') }}">{{ __('doctors.page_title') }}</a>
+					<li><a href="{{ frontend_route('frontend.doctors') }}">{{ __('doctors.page_title') }}</a>
 					</li>
-					<li><a href="{{ route('frontend.blog') }}">{{ __('main.blogs') }}</a>
+					<li><a href="{{ frontend_route('frontend.blog') }}">{{ __('main.blogs') }}</a>
 					</li>
 					<li class="menu-item-has-children">
 						<a href="#">Services</a>

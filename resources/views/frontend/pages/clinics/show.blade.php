@@ -30,13 +30,13 @@
 		filled($clinic->youtube_url);
 @endphp
 
-<div class="breadcumb-wrapper" data-bg-src="{{ asset('frontend/assets/img/bg/breadcumb-bg.jpg') }}">
+<div class="breadcumb-wrapper" data-bg-src="{{ asset('frontend/assets/img/bg/breadcumb-clinic-details.jpg') }}">
 	<div class="container">
 		<div class="breadcumb-content">
 			<h1 class="breadcumb-title">{{ $clinic->name }}</h1>
 			<ul class="breadcumb-menu">
-				<li><a href="{{ route('frontend.home') }}">{{ __('main.home') }}</a></li>
-				<li><a href="{{ route('frontend.clinics') }}">{{ __('main.clinics') }}</a></li>
+				<li><a href="{{ frontend_route('frontend.home') }}">{{ __('main.home') }}</a></li>
+				<li><a href="{{ frontend_route('frontend.clinics') }}">{{ __('main.clinics') }}</a></li>
 				<li>{{ \Illuminate\Support\Str::limit($clinic->name, 40) }}</li>
 			</ul>
 		</div>
@@ -118,7 +118,7 @@
 					</a>
 					@endif
 
-					<a href="{{ route('frontend.clinics') }}" class="clinic-details-back">
+					<a href="{{ frontend_route('frontend.clinics') }}" class="clinic-details-back">
 						{{ __('clinics.back_to_clinics') }}
 						<x-arrow-icon />
 					</a>
@@ -153,7 +153,7 @@
 					<div class="row gy-3">
 						@foreach($clinic->medical_staff as $doctor)
 						<div class="col-sm-6 col-md-4">
-							<a href="{{ route('frontend.doctors.show', $doctor->id) }}" class="clinic-doctor-card">
+							<a href="{{ frontend_route('frontend.doctors.show', $doctor) }}" class="clinic-doctor-card">
 								<img src="{{ $doctor->image }}" alt="{{ $doctor->name }}">
 								<div>
 									<h4>{{ $doctor->name }}</h4>

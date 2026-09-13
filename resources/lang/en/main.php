@@ -367,6 +367,7 @@ return [
     'cms-items' => 'Items',
     'cms-links' => 'Links',
     'cms-media' => 'Media',
+    'website-media' => 'Website Media',
     'blogs' => 'Blogs',
     'blog-posts' => 'Posts',
     'blog-categories' => 'Categories',
