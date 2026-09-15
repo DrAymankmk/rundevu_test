@@ -17,3 +17,5 @@ yarn-error.log
 /REPORTS
 /resources/view/analytics/
 dashboards_layouts
+/public/media
+

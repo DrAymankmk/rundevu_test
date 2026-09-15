@@ -92,7 +92,7 @@ $isRtl = in_array($htmlLang, $rtlLangs, true);
 	<!--==============================
      Preloader
   ==============================-->
-	<div class="preloader ">
+	<!-- <div class="preloader ">
 		<button class="th-btn preloaderCls">Cancel Preloader </button>
 		<div class="preloader-inner">
 			<img src=" {{ asset('frontend/assets/img/logo.png') }}" style="height:50px; width:100px;"
@@ -105,7 +105,7 @@ $isRtl = in_array($htmlLang, $rtlLangs, true);
 				<div class="fade-out"></div>
 			</div>
 		</div>
-	</div>
+	</div> -->
 	<!--==============================
     Sidemenu
 ============================== -->
