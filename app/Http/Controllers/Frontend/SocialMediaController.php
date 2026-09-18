@@ -13,15 +13,13 @@ class SocialMediaController extends Controller
 
     public function index()
     {
-        $platforms = collect(config('social.platforms', []))
-            ->filter(static function ($platform) {
-                return filled($platform['url'] ?? null);
-            })
-            ->values();
+        $platforms = website_social_platforms();
 
         $seo = $this->seoResolver->defaults([
             'title' => __('main.social_media'),
+            'description' => __('main.social_media_page_subtitle'),
             'canonical' => frontend_route('frontend.social'),
+            'lcp_image' => frontend_breadcrumb_image('social'),
         ]);
 
         return view('frontend.pages.social.index', compact('platforms', 'seo'));

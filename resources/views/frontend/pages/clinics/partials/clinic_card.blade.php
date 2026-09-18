@@ -24,7 +24,7 @@ $distance = isset($clinic->distance) ? round((float) $clinic->distance, 1) : nul
 		<div class="clinic-card-v2__media">
 			<a href="{{ frontend_route('frontend.clinics.show', $clinic) }}"
 				class="clinic-card-v2__image-link">
-				<img src="{{ $clinic->image }}" alt="{{ $clinic->name }}" loading="lazy">
+				<img src="{{ $clinic->image }}" alt="{{ $clinic->name }}" loading="lazy" decoding="async" width="400" height="400">
 			</a>
 
 			@if($distance !== null)

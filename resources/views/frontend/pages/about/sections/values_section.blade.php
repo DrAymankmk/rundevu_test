@@ -20,10 +20,10 @@
                         <div class="swiper-slide">
                             <div class="project-card">
                                 <div class="box-img global-img">
-                                    <img src="assets/img/project/project_1_1.jpg" alt="project image">
+                                    <img src="{{ asset('frontend/assets/img/project/project_1_1.jpg') }}" alt="project image" decoding="async" loading="lazy">
                                 </div>
                                 <div class="box-content">
-                                    <h3 class="box-title"><a href="case-studies-details.html">Top-notch Services</a></h3>
+                                    <h3 class="box-title"><a href="{{ frontend_route('frontend.about') }}">Top-notch Services</a></h3>
                                     <p class="box-text">Demergo victus aveho. Amor caries comptus ulterius considero. Abbas trucido
                                         aegrotatio patria contego celo. Color vergo ante tres amplitudo numquam cultellus aurum thalassinus.
                                     </p>
@@ -34,10 +34,10 @@
                         <div class="swiper-slide">
                             <div class="project-card">
                                 <div class="box-img global-img">
-                                    <img src="assets/img/project/project_1_2.jpg" alt="project image">
+                                    <img src="{{ asset('frontend/assets/img/project/project_1_2.jpg') }}" alt="project image" decoding="async" loading="lazy">
                                 </div>
                                 <div class="box-content">
-                                    <h3 class="box-title"><a href="case-studies-details.html">Better Comunication</a></h3>
+                                    <h3 class="box-title"><a href="{{ frontend_route('frontend.about') }}">Better Comunication</a></h3>
                                     <p class="box-text">Demergo victus aveho. Amor caries comptus ulterius considero. Abbas trucido
                                         aegrotatio patria contego celo. Color vergo ante tres amplitudo numquam cultellus aurum thalassinus.
                                     </p>
@@ -48,10 +48,10 @@
                         <div class="swiper-slide">
                             <div class="project-card">
                                 <div class="box-img global-img">
-                                    <img src="assets/img/project/project_1_3.jpg" alt="project image">
+                                    <img src="{{ asset('frontend/assets/img/project/project_1_3.jpg') }}" alt="project image" decoding="async" loading="lazy">
                                 </div>
                                 <div class="box-content">
-                                    <h3 class="box-title"><a href="case-studies-details.html">Patient happiness is our success</a></h3>
+                                    <h3 class="box-title"><a href="{{ frontend_route('frontend.about') }}">Patient happiness is our success</a></h3>
                                     <p class="box-text">Demergo victus aveho. Amor caries comptus ulterius considero. Abbas trucido
                                         aegrotatio patria contego celo. Color vergo ante tres amplitudo numquam cultellus aurum thalassinus.
                                     </p>
@@ -62,10 +62,10 @@
                         <div class="swiper-slide">
                             <div class="project-card">
                                 <div class="box-img global-img">
-                                    <img src="assets/img/project/project_1_1.jpg" alt="project image">
+                                    <img src="{{ asset('frontend/assets/img/project/project_1_1.jpg') }}" alt="project image" decoding="async" loading="lazy">
                                 </div>
                                 <div class="box-content">
-                                    <h3 class="box-title"><a href="case-studies-details.html">Top-notch Services</a></h3>
+                                    <h3 class="box-title"><a href="{{ frontend_route('frontend.about') }}">Top-notch Services</a></h3>
                                     <p class="box-text">Demergo victus aveho. Amor caries comptus ulterius considero. Abbas trucido
                                         aegrotatio patria contego celo. Color vergo ante tres amplitudo numquam cultellus aurum thalassinus.
                                     </p>
@@ -76,10 +76,10 @@
                         <div class="swiper-slide">
                             <div class="project-card">
                                 <div class="box-img global-img">
-                                    <img src="assets/img/project/project_1_2.jpg" alt="project image">
+                                    <img src="{{ asset('frontend/assets/img/project/project_1_2.jpg') }}" alt="project image" decoding="async" loading="lazy">
                                 </div>
                                 <div class="box-content">
-                                    <h3 class="box-title"><a href="case-studies-details.html">Better Comunication</a></h3>
+                                    <h3 class="box-title"><a href="{{ frontend_route('frontend.about') }}">Better Comunication</a></h3>
                                     <p class="box-text">Demergo victus aveho. Amor caries comptus ulterius considero. Abbas trucido
                                         aegrotatio patria contego celo. Color vergo ante tres amplitudo numquam cultellus aurum thalassinus.
                                     </p>
@@ -90,10 +90,10 @@
                         <div class="swiper-slide">
                             <div class="project-card">
                                 <div class="box-img global-img">
-                                    <img src="assets/img/project/project_1_3.jpg" alt="project image">
+                                    <img src="{{ asset('frontend/assets/img/project/project_1_3.jpg') }}" alt="project image" decoding="async" loading="lazy">
                                 </div>
                                 <div class="box-content">
-                                    <h3 class="box-title"><a href="case-studies-details.html">Patient happiness is our success</a></h3>
+                                    <h3 class="box-title"><a href="{{ frontend_route('frontend.about') }}">Patient happiness is our success</a></h3>
                                     <p class="box-text">Demergo victus aveho. Amor caries comptus ulterius considero. Abbas trucido
                                         aegrotatio patria contego celo. Color vergo ante tres amplitudo numquam cultellus aurum thalassinus.
                                     </p>

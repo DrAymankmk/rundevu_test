@@ -30,7 +30,7 @@
                             @endphp
                             <div class="choose-item wow fadeInUp" data-wow-delay="{{ $delay }}">
                                 <div class="box-icon">
-                                    <img src="{{ $iconUrl }}" alt="">
+                                    <img src="{{ $iconUrl }}" alt="" decoding="async" loading="lazy">
                                 </div>
                                 <div class="media-body">
                                     <h3 class="box-title">{{ $it?->title ?: ($defaultTitles[$idx] ?? __('Why us')) }}</h3>
@@ -42,7 +42,7 @@
                         @foreach($defaultTitles as $idx => $defTitle)
                             <div class="choose-item wow fadeInUp" data-wow-delay="{{ ['.3s', '.5s', '.7s', '.9s'][$idx] }}">
                                 <div class="box-icon">
-                                    <img src="{{ asset('frontend/assets/img/icon/' . $defaultIcons[$idx]) }}" alt="">
+                                    <img src="{{ asset('frontend/assets/img/icon/' . $defaultIcons[$idx]) }}" alt="" decoding="async" loading="lazy">
                                 </div>
                                 <div class="media-body">
                                     <h3 class="box-title">{{ $defTitle }}</h3>
@@ -67,24 +67,24 @@
                                 $galleryUrl = \App\Support\Cms\CmsGalleryMedia::accessibleUrl($media) ?? $media->getUrl();
                             @endphp
                             <div class="{{ $cls }} wow {{ $anim }} global-img" data-wow-delay="{{ $d }}">
-                                <img src="{{ $galleryUrl }}" alt="{{ \App\Support\Cms\CmsGalleryMedia::alt($media) }}">
+                                <img src="{{ $galleryUrl }}" alt="{{ \App\Support\Cms\CmsGalleryMedia::alt($media) }}" decoding="async" loading="lazy">
                             </div>
                         @endforeach
                     @else
                         <div class="img1 wow fadeInLeft global-img" data-wow-delay=".3s">
-                            <img src="{{ asset('frontend/assets/img/normal/' . $imgDefaults[0]) }}" alt="">
+                            <img src="{{ asset('frontend/assets/img/normal/' . $imgDefaults[0]) }}" alt="" decoding="async" loading="lazy">
                         </div>
                         <div class="img2 wow fadeInRight global-img" data-wow-delay=".6s">
-                            <img src="{{ asset('frontend/assets/img/normal/' . $imgDefaults[1]) }}" alt="">
+                            <img src="{{ asset('frontend/assets/img/normal/' . $imgDefaults[1]) }}" alt="" decoding="async" loading="lazy">
                         </div>
                         <div class="img3 wow fadeInUp global-img" data-wow-delay=".9s">
-                            <img src="{{ asset('frontend/assets/img/normal/' . $imgDefaults[2]) }}" alt="">
+                            <img src="{{ asset('frontend/assets/img/normal/' . $imgDefaults[2]) }}" alt="" decoding="async" loading="lazy">
                         </div>
                     @endif
                 </div>
             </div>
         </div>
     </div>
-    <div class="shape-mockup" data-bottom="10%" data-right="25%"><img src="{{ asset('frontend/assets/img/shape/shape-1.png') }}" alt=""></div>
-    <div class="shape-mockup jump" data-bottom="20%" data-right="0%"><img src="{{ asset('frontend/assets/img/shape/element-2.png') }}" alt=""></div>
+    <div class="shape-mockup" data-bottom="10%" data-right="25%"><img src="{{ asset('frontend/assets/img/shape/shape-1.png') }}" alt="" decoding="async" loading="lazy"></div>
+    <div class="shape-mockup jump" data-bottom="20%" data-right="0%"><img src="{{ asset('frontend/assets/img/shape/element-2.png') }}" alt="" decoding="async" loading="lazy"></div>
 </div>

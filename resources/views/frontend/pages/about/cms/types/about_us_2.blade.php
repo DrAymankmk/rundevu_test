@@ -12,7 +12,7 @@
 					<div class="about-wrapper">
 						<div class="img1">
 							<img src="{{ $primaryImg }}"
-								alt="{{ $primaryAlt !== '' ? $primaryAlt : $aboutAlt }}">
+								alt="{{ $primaryAlt !== '' ? $primaryAlt : $aboutAlt }}" decoding="async" loading="lazy">
 						</div>
 						<div class="">
 							<div
@@ -69,11 +69,11 @@
 					<div class="img-box-wrapp">
 						<div class="img1 reveal">
 							<img src="{{ $secondaryImg }}"
-								alt="{{ $secondaryAlt !== '' ? $secondaryAlt : $aboutAlt }}">
+								alt="{{ $secondaryAlt !== '' ? $secondaryAlt : $aboutAlt }}" decoding="async" loading="lazy">
 						</div>
 						<div class="img2 reveal">
 							<img src="{{ $videoImg }}"
-								alt="{{ $videoAlt !== '' ? $videoAlt : $aboutAlt }}">
+								alt="{{ $videoAlt !== '' ? $videoAlt : $aboutAlt }}" decoding="async" loading="lazy">
 						</div>
 					</div>
 					<div class="about-wrapp">
@@ -81,7 +81,7 @@
 							<div class="logo">
 								<img src="{{ asset('frontend/assets/img/logo.png') }}"
 									alt="{{ __('main.app_name') }}"
-									style="width: 80px; height: 50px;">
+									style="width: 80px; height: 50px;" decoding="async" loading="lazy">
 							</div>
 							<div class="discount-tag">
 								<span @if(str_contains($discountAnimeClass, 'discount-anime-plain'
@@ -95,6 +95,6 @@
 		</div>
 	</div>
 	<div class="shape-mockup" data-bottom="7%" data-left="0%">
-		<img src="{{ asset('frontend/assets/img/shape/element-1.png') }}" alt="">
+		<img src="{{ asset('frontend/assets/img/shape/element-1.png') }}" alt="" decoding="async" loading="lazy">
 	</div>
 </div>

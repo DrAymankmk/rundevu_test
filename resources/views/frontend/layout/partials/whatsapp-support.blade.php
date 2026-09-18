@@ -54,6 +54,7 @@
 				<span class="wa-modal__corner wa-modal__corner--br"></span>
 				<span class="wa-modal__scan" aria-hidden="true"></span>
 				<img class="wa-modal__qr" src="{{ $clinicQr }}" width="280" height="280"
+					loading="lazy" decoding="async"
 					alt="{{ __('main.wa_clinic_qr_alt') }}">
 			</div>
 			<p class="wa-modal__scan-hint"><i class="fas fa-camera"></i> {{ __('main.wa_scan_hint') }}</p>
@@ -85,6 +86,7 @@
 				<span class="wa-modal__corner wa-modal__corner--br"></span>
 				<span class="wa-modal__scan" aria-hidden="true"></span>
 				<img class="wa-modal__qr" src="{{ $patientQr }}" width="280" height="280"
+					loading="lazy" decoding="async"
 					alt="{{ __('main.wa_patient_qr_alt') }}">
 			</div>
 			<p class="wa-modal__scan-hint"><i class="fas fa-camera"></i> {{ __('main.wa_scan_hint') }}</p>

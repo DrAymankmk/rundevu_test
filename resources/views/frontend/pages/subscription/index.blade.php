@@ -2,7 +2,7 @@
 
 @section('content')
 
-<x-breadcrumb :title="__('main.subscription')" :bg="asset('assets/img/bg/breadcumb-bg.jpg')" />
+<x-breadcrumb :title="__('main.subscription')" />
 @if(isset($cmsPageSections) && $cmsPageSections->isNotEmpty())
 @foreach($cmsPageSections as $section)
 @include('frontend.pages.subscription.cms.render', [

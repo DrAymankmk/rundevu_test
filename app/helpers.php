@@ -220,3 +220,178 @@ if (! function_exists('frontend_language_url')) {
         return $url;
     }
 }
+
+if (! function_exists('frontend_hreflang_urls')) {
+    /**
+     * Map locale codes (plus x-default) to the current public URL.
+     *
+     * @param  array<string, string>  $overrides  locale => url
+     * @return array<string, string>
+     */
+    function frontend_hreflang_urls(?string $path = null, array $overrides = []): array
+    {
+        $path = $path ?? frontend_strip_locale_prefix('/' . ltrim(request()->path(), '/'));
+        $locales = config('app.locales');
+        if (! is_array($locales) || $locales === []) {
+            $locales = ['en', 'ar'];
+        }
+
+        $links = [];
+        foreach ($locales as $locale) {
+            $links[$locale] = $overrides[$locale] ?? frontend_url($path, [], $locale);
+        }
+
+        $defaultLocale = frontend_default_locale();
+        $links['x-default'] = $overrides[$defaultLocale] ?? $links[$defaultLocale] ?? frontend_url($path, [], $defaultLocale);
+
+        return $links;
+    }
+}
+
+if (! function_exists('frontend_media_url')) {
+    function frontend_media_url(?string $path): string
+    {
+        $path = trim((string) $path);
+        if ($path === '') {
+            return '';
+        }
+
+        if (preg_match('#^(https?:)?//#i', $path) || str_starts_with($path, 'data:')) {
+            return $path;
+        }
+
+        $path = ltrim($path, '/');
+        if (str_starts_with($path, 'frontend/')) {
+            return asset($path);
+        }
+        if (str_starts_with($path, 'assets/')) {
+            return asset('frontend/' . $path);
+        }
+
+        return asset($path);
+    }
+}
+
+if (! function_exists('frontend_breadcrumb_slot_map')) {
+    /**
+     * page_key => relative path under public/frontend/assets/img
+     *
+     * @return array<string, string>
+     */
+    function frontend_breadcrumb_slot_map(): array
+    {
+        static $map;
+
+        if ($map !== null) {
+            return $map;
+        }
+
+        $map = [];
+        if (class_exists(\App\Services\Frontend\FrontendMediaCatalog::class)) {
+            foreach (\App\Services\Frontend\FrontendMediaCatalog::breadcrumbSlots() as $slot) {
+                $pageKey = (string) ($slot['page_key'] ?? $slot['id'] ?? '');
+                $path = (string) ($slot['path'] ?? '');
+                if ($pageKey === '' || $path === '') {
+                    continue;
+                }
+                $prefix = 'frontend/assets/img/';
+                $file = str_starts_with($path, $prefix) ? substr($path, strlen($prefix)) : $path;
+                $map[$pageKey] = ltrim($file, '/');
+            }
+        }
+
+        if ($map === []) {
+            $map = ['default' => 'bg/breadcumb-bg.jpg'];
+        }
+
+        return $map;
+    }
+}
+
+if (! function_exists('frontend_breadcrumb_page_key')) {
+    function frontend_breadcrumb_page_key(?string $key = null): string
+    {
+        $slots = frontend_breadcrumb_slot_map();
+        if ($key && isset($slots[$key])) {
+            return $key;
+        }
+
+        $name = request()->route()?->getName() ?? '';
+        $name = (string) preg_replace('/^frontend\.(ar\.)?/', '', $name);
+
+        $routeMap = [
+            'about' => 'about',
+            'services' => 'services',
+            'faq' => 'faq',
+            'subscription' => 'subscription',
+            'contact' => 'contact',
+            'blog' => 'blog',
+            'blog.show' => 'blog_details',
+            'clinics' => 'clinics',
+            'clinics.show' => 'clinic_details',
+            'doctors' => 'doctors',
+            'doctors.show' => 'doctor_details',
+            'social' => 'social',
+        ];
+
+        $resolved = $routeMap[$name] ?? 'default';
+
+        return isset($slots[$resolved]) ? $resolved : 'default';
+    }
+}
+
+if (! function_exists('frontend_breadcrumb_image')) {
+    function frontend_breadcrumb_image(?string $keyOrFile = null): string
+    {
+        $slots = frontend_breadcrumb_slot_map();
+        $looksLikeFile = $keyOrFile
+            && (str_contains($keyOrFile, '/') || preg_match('/\.(jpe?g|png|webp|gif)$/i', $keyOrFile));
+
+        if ($looksLikeFile) {
+            $file = $keyOrFile;
+        } else {
+            $key = frontend_breadcrumb_page_key($keyOrFile);
+            $file = $slots[$key] ?? $slots['default'] ?? 'bg/breadcumb-bg.jpg';
+        }
+
+        $relative = 'frontend/assets/img/' . ltrim((string) $file, '/');
+        $absolute = public_path($relative);
+        if (! is_file($absolute) && ! empty($slots['default'])) {
+            $relative = 'frontend/assets/img/' . ltrim($slots['default'], '/');
+            $absolute = public_path($relative);
+        }
+
+        $url = asset($relative);
+        if (is_file($absolute)) {
+            $url .= '?v=' . filemtime($absolute);
+        }
+
+        return $url;
+    }
+}
+
+if (! function_exists('frontend_bg_style')) {
+    function frontend_bg_style(?string $path): string
+    {
+        $url = frontend_media_url($path);
+        if ($url === '') {
+            return '';
+        }
+
+        return "background-image: url('{$url}');";
+    }
+}
+
+if (! function_exists('website_social_platforms')) {
+    function website_social_platforms(): \Illuminate\Support\Collection
+    {
+        return app(\App\Services\Frontend\WebsiteLinkCatalog::class)->socialPlatforms();
+    }
+}
+
+if (! function_exists('website_store_url')) {
+    function website_store_url(string $key, ?string $fallback = null): string
+    {
+        return app(\App\Services\Frontend\WebsiteLinkCatalog::class)->storeUrl($key, $fallback);
+    }
+}

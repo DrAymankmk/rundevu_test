@@ -16,18 +16,11 @@
     $shareTitle = urlencode($title);
 @endphp
 
-<div class="breadcumb-wrapper" data-bg-src="{{ asset('frontend/assets/img/bg/breadcumb-bg.jpg') }}">
-    <div class="container">
-        <div class="breadcumb-content">
-            <h1 class="breadcumb-title">{{ $title }}</h1>
-            <ul class="breadcumb-menu">
-                <li><a href="{{ frontend_route('frontend.home') }}">{{ __('main.home') }}</a></li>
-                <li><a href="{{ frontend_route('frontend.blog') }}">{{ __('main.blogs') }}</a></li>
-                <li>{{ \Illuminate\Support\Str::limit($title, 40) }}</li>
-            </ul>
-        </div>
-    </div>
-</div>
+<x-breadcrumb
+    :title="$title"
+    :items="[['label' => __('main.blogs'), 'url' => frontend_route('frontend.blog')]]"
+    :current="\Illuminate\Support\Str::limit($title, 40)"
+/>
 
 <section class="th-blog-wrapper blog-details space-top space-extra-bottom">
     <div class="container">
@@ -35,7 +28,7 @@
             <div class="col-xxl-8 col-lg-7">
                 <div class="th-blog blog-single">
                     <div class="blog-img global-img">
-                        <img src="{{ $image }}" alt="{{ $title }}">
+                        <img src="{{ $image }}" alt="{{ $title }}" decoding="async" fetchpriority="high" width="800" height="500">
                     </div>
                     <div class="blog-content">
                         <div class="blog-meta">

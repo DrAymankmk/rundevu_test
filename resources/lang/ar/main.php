@@ -300,6 +300,7 @@ return [
 	'cms-links'=> 'الروابط',
     'cms-media'=> 'الوسائط',
     'website-media'=> 'وسائط الموقع',
+    'website-links'=> 'روابط التواصل والتطبيق',
     'blogs' => 'المدونة',
     'blog-posts' => 'المقالات',
     'blog-categories' => 'التصنيفات',
@@ -574,5 +575,6 @@ return [
     'wa_scan_hint' => 'وجّه الكاميرا نحو الرمز لبدء المحادثة',
     'wa_open_whatsapp' => 'فتح محادثة واتساب',
     'wa_close' => 'إغلاق',
+    'skip_to_content' => 'تخطى إلى المحتوى',
 
 ];

@@ -1,4 +1,5 @@
-	<footer class="footer-wrapper bg-title footer-layout1" data-bg-src="assets/img/bg/footer_bg_1.png">
+	<footer class="background-image footer-wrapper bg-title footer-layout1"
+		style="background-image: url('{{ asset('frontend/assets/img/bg/footer_bg_1.png') }}');">
 		<div class="widget-area">
 			<div class="container">
 				<div class="row justify-content-between">
@@ -6,10 +7,15 @@
 						<div class="widget footer-widget mb-0">
 							<div class="th-widget-about">
 								<div class="about-logo">
-									<a href="{{ frontend_route('frontend.home') }}"><img
+									<a
+										href="{{ frontend_route('frontend.home') }}"><img
 											style="height:50px; width:100px;"
+											width="100"
+											height="50"
 											src="{{ asset('frontend/assets/img/logo.png') }}"
-											alt="Randevu "></a>
+											decoding="async"
+											alt="{{ config('app.name', 'Randevu') }}"
+											loading="lazy"></a>
 								</div>
 								<p class="about-text">
 									{{ __('main.footer_description') }}
@@ -44,20 +50,20 @@
 							<h3 class="widget_title">Departments</h3>
 							<div class="menu-all-pages-container">
 								<ul class="menu">
-									<li><a href="about.html">Dental
+									<li><a href="{{ frontend_route('frontend.about') }}">Dental
 											Surgery</a>
 									</li>
-									<li><a href="contact.html">General
+									<li><a href="{{ frontend_route('frontend.contact') }}">General
 											Analysis</a>
 									</li>
-									<li><a href="course.html">Preventative
+									<li><a href="{{ frontend_route('frontend.services') }}">Preventative
 											Care</a>
 									</li>
-									<li><a href="course.html">Eye
+									<li><a href="{{ frontend_route('frontend.services') }}">Eye
 											Care
 											Solution</a>
 									</li>
-									<li><a href="contact.html">Population
+									<li><a href="{{ frontend_route('frontend.contact') }}">Population
 											Health</a>
 									</li>
 								</ul>
@@ -69,19 +75,19 @@
 							<h3 class="widget_title">Services</h3>
 							<div class="menu-all-pages-container">
 								<ul class="menu">
-									<li><a href="service.html">Primary
+									<li><a href="{{ frontend_route('frontend.services') }}">Primary
 											Care</a>
 									</li>
-									<li><a href="service.html">Mental
+									<li><a href="{{ frontend_route('frontend.services') }}">Mental
 											Care</a>
 									</li>
-									<li><a href="service.html">Speciality
+									<li><a href="{{ frontend_route('frontend.services') }}">Speciality
 											Care</a>
 									</li>
-									<li><a href="service.html">Dental
+									<li><a href="{{ frontend_route('frontend.services') }}">Dental
 											Care</a>
 									</li>
-									<li><a href="service.html">Eye
+									<li><a href="{{ frontend_route('frontend.services') }}">Eye
 											Care</a>
 									</li>
 								</ul>
@@ -107,19 +113,35 @@
 						</div>
 					</div>
 
+					@php
+					$appleUrl = website_store_url('apple');
+					$googleUrl = website_store_url('google_play');
+					@endphp
+					@if($appleUrl !== '' || $googleUrl !== '')
 					<div class="col-md-6 col-xl-3">
 						<h3 class="widget_title"> {{ __('main.download_app') }}</h3>
 
 						<div class="btn-group download-btn mt-50 justify-content-center justify-content-xl-start wow fadeInUp"
 							data-wow-delay=".2s">
-							<a href="https://www.apple.com/app-store/"><img
+							@if($appleUrl !== '')
+							<a href="{{ $appleUrl }}" rel="noopener noreferrer"
+								target="_blank"><img
 									src="{{asset('frontend/assets/img/icon/apple.svg') }}"
-									alt=""></a>
-							<a href="https://play.google.com/store/"><img
+									width="168" height="50" loading="lazy"
+									decoding="async"
+									alt="{{ __('main.app_store') }}"></a>
+							@endif
+							@if($googleUrl !== '')
+							<a href="{{ $googleUrl }}" rel="noopener noreferrer"
+								target="_blank"><img
 									src="{{asset('frontend/assets/img/icon/google-play.svg') }}"
-									alt=""></a>
+									width="168" height="50" loading="lazy"
+									decoding="async"
+									alt="{{ __('main.google_play') }}"></a>
+							@endif
 						</div>
 					</div>
+					@endif
 				</div>
 			</div>
 			<div class="container">
@@ -130,7 +152,7 @@
 								<p class="footer-info"><i
 										class="fa-sharp fa-solid fa-phone"></i>
 									<span><a class="text-inherit"
-											href="tel:+966580161257">00966580161257</a></span>
+											href="tel:+966530377588">00966530377588</a></span>
 								</p>
 								<p class="footer-info"><i
 										class="fa-sharp fa-solid fa-envelope"></i><span>
@@ -166,9 +188,13 @@
 											data-bs-toggle="modal"
 											data-bs-target="#bookDemoModal"><img
 												src="{{ asset('frontend/assets/img/icon/alarm.svg') }}"
-												alt="">
+												width="18"
+												height="18"
+												alt=""
+												decoding="async"
+												loading="lazy">
 											{{ __('main.book_demo') }}</a>
-										<!-- <a href="contact.html"
+										<!-- <a href="{{ frontend_route('frontend.contact') }}"
 											class="th-btn style2">Our
 											Specialists<i
 												class="fa-light fa-arrow-right-long ms-2"></i></a>
@@ -198,12 +224,13 @@
 					</div>
 				</div>
 			</div>
-			<div class="heart-rate2" data-bg-src=" {{ asset('frontend/assets/img/shape/preloader3.svg') }}">
+			<div class="background-image heart-rate2"
+				style="background-image: url('{{ asset('frontend/assets/img/shape/preloader3.svg') }}');">
 			</div>
-			<div class="heart-rate" data-bg-src=" {{ asset('frontend/assets/img/shape/preloader2.svg') }}">
+			<!-- <div class="background-image heart-rate" style="background-image: url('{{ asset('frontend/assets/img/shape/preloader2.svg') }}');">
 
 				<div class="fade-in"></div>
 
 				<div class="fade-out"></div>
-			</div>
+			</div> -->
 	</footer>

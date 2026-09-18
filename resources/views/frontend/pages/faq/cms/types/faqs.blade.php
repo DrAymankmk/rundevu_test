@@ -51,6 +51,6 @@ $accordionId = 'faqAccordion-' . $section->id;
 		</div>
 	</div>
 	<div class="shape-mockup movingX d-none d-xxl-block" data-bottom="0%" data-right="0%">
-		<img src="{{ asset('frontend/assets/img/shape/element-9.png') }}" alt="">
+		<img src="{{ asset('frontend/assets/img/shape/element-9.png') }}" alt="" decoding="async" loading="lazy">
 	</div>
 </div>

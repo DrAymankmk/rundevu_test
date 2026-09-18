@@ -1,8 +1,8 @@
 <!--==============================
     Service Area
     ==============================-->
-<section class="position-relative overflow-hidden space"
-	data-bg-src=" {{ asset('frontend/assets/img/bg/service_bg_1.jpg') }}" id="service-sec">
+<section class="background-image position-relative overflow-hidden space"
+ id="service-sec" style="background-image: url('{{ asset('frontend/assets/img/bg/service_bg_1.jpg') }}');">
 	<div class="container">
 		<div class="row justify-content-center">
 			<div class="col-xl-5">
@@ -25,11 +25,11 @@
 						<div class="service-content">
 							<div class="box-wrapp">
 								<div class="box-icon">
-									<img src=" {{ asset('frontend/assets/img/icon/service_1_1.svg') }}"
-										alt="Icon">
+									<img src="{{ asset('frontend/assets/img/icon/service_1_1.svg') }}"
+										alt="Icon" decoding="async" loading="lazy">
 								</div>
 								<h3 class="box-title"><a
-										href="service.html">General
+										href="{{ frontend_route('frontend.services') }}">General
 										& Family
 										Medicine</a>
 								</h3>
@@ -44,11 +44,11 @@
 							</div>
 							<div class="box-right-wrapp">
 								<div class="box-img global-img">
-									<img src=" {{ asset('frontend/assets/img/service/service_2_1.jpg') }}"
-										alt="">
+									<img src="{{ asset('frontend/assets/img/service/service_2_1.jpg') }}"
+										alt="" decoding="async" loading="lazy">
 								</div>
 								<div class="service-btn">
-									<a href="service.html"
+									<a href="{{ frontend_route('frontend.services') }}"
 										class="th-btn black-border">Read
 										More <i
 											class="fa-regular fa-arrow-right ms-2"></i>
@@ -63,11 +63,11 @@
 						<div class="service-content">
 							<div class="box-wrapp">
 								<div class="box-icon">
-									<img src=" {{ asset('frontend/assets/img/icon/service_1_2.svg') }}"
-										alt="Icon">
+									<img src="{{ asset('frontend/assets/img/icon/service_1_2.svg') }}"
+										alt="Icon" decoding="async" loading="lazy">
 								</div>
 								<h3 class="box-title"><a
-										href="service.html">Physical
+										href="{{ frontend_route('frontend.services') }}">Physical
 										Therapy &
 										Rehabilitation</a>
 								</h3>
@@ -82,11 +82,11 @@
 							</div>
 							<div class="box-right-wrapp">
 								<div class="box-img global-img">
-									<img src=" {{ asset('frontend/assets/img/service/service_2_2.jpg') }}"
-										alt="">
+									<img src="{{ asset('frontend/assets/img/service/service_2_2.jpg') }}"
+										alt="" decoding="async" loading="lazy">
 								</div>
 								<div class="service-btn">
-									<a href="service.html"
+									<a href="{{ frontend_route('frontend.services') }}"
 										class="th-btn black-border">Read
 										More <i
 											class="fa-regular fa-arrow-right ms-2"></i>
@@ -101,11 +101,11 @@
 						<div class="service-content">
 							<div class="box-wrapp">
 								<div class="box-icon">
-									<img src=" {{ asset('frontend/assets/img/icon/service_1_3.svg') }}"
-										alt="Icon">
+									<img src="{{ asset('frontend/assets/img/icon/service_1_3.svg') }}"
+										alt="Icon" decoding="async" loading="lazy">
 								</div>
 								<h3 class="box-title"><a
-										href="service.html">Travel
+										href="{{ frontend_route('frontend.services') }}">Travel
 										Medicine &
 										Vaccinations</a>
 								</h3>
@@ -120,11 +120,11 @@
 							</div>
 							<div class="box-right-wrapp">
 								<div class="box-img global-img">
-									<img src=" {{ asset('frontend/assets/img/service/service_2_3.jpg') }}"
-										alt="">
+									<img src="{{ asset('frontend/assets/img/service/service_2_3.jpg') }}"
+										alt="" decoding="async" loading="lazy">
 								</div>
 								<div class="service-btn">
-									<a href="service.html"
+									<a href="{{ frontend_route('frontend.services') }}"
 										class="th-btn black-border">Read
 										More <i
 											class="fa-regular fa-arrow-right ms-2"></i>
@@ -139,11 +139,11 @@
 						<div class="service-content">
 							<div class="box-wrapp">
 								<div class="box-icon">
-									<img src=" {{ asset('frontend/assets/img/icon/service_1_4.svg') }}"
-										alt="Icon">
+									<img src="{{ asset('frontend/assets/img/icon/service_1_4.svg') }}"
+										alt="Icon" decoding="async" loading="lazy">
 								</div>
 								<h3 class="box-title"><a
-										href="service.html">Diagnostic
+										href="{{ frontend_route('frontend.services') }}">Diagnostic
 										&
 										Laboratory</a>
 								</h3>
@@ -158,11 +158,11 @@
 							</div>
 							<div class="box-right-wrapp">
 								<div class="box-img global-img">
-									<img src=" {{ asset('frontend/assets/img/service/service_2_4.jpg') }}"
-										alt="">
+									<img src="{{ asset('frontend/assets/img/service/service_2_4.jpg') }}"
+										alt="" decoding="async" loading="lazy">
 								</div>
 								<div class="service-btn">
-									<a href="service.html"
+									<a href="{{ frontend_route('frontend.services') }}"
 										class="th-btn black-border">Read
 										More <i
 											class="fa-regular fa-arrow-right ms-2"></i>
@@ -174,7 +174,7 @@
 				</div>
 			</div>
 			<div class="text-center mt-60">
-				<a href="service.html" class="th-btn style2">Browse All <i
+				<a href="{{ frontend_route('frontend.services') }}" class="th-btn style2">Browse All <i
 						class="fa-light fa-arrow-right-long ms-2"></i></a>
 			</div>
 		</div>

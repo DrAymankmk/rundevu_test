@@ -54,7 +54,7 @@
  					<div class="header-button">
 						<!-- <a href="#" class="th-btn" data-bs-toggle="modal" data-bs-target="#bookDemoModal"><img
 								src="{{ asset('frontend/assets/img/icon/alarm.svg') }}"
-								alt=""> {{ __('main.book_demo') }}</a> -->
+								alt="" decoding="async" loading="lazy"> {{ __('main.book_demo') }}</a> -->
  						<!-- <form class="search-form">
  							<input type="text"
  								placeholder="{{ __('main.search') }}">
@@ -76,8 +76,11 @@
  						<div class="header-logo">
  							<a href="{{ frontend_route('frontend.home') }}"><img
  									src="{{ asset('frontend/assets/img/logo.png') }}"
+									width="100" height="50"
  									style="height:50px; width:100px;"
- 									alt="Randevu "></a>
+									fetchpriority="high"
+									decoding="async"
+ 									alt="{{ config('app.name', 'Randevu') }}"></a>
  						</div>
  					</div>
  					<div class="col-auto">
@@ -133,7 +136,7 @@
  							<!-- <a href="#"
  								class="icon-btn sideMenuToggler d-none d-lg-block"><img
  									src="{{ asset('frontend/assets/img/icon/grid.svg') }}"
- 									alt=""></a> -->
+ 									alt="" decoding="async" loading="lazy"></a> -->
 
  						</div>
  					</div>

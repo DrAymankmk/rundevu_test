@@ -2,15 +2,21 @@
 @php
 $sessionLang = session('lang');
 $effectiveLocale = $sessionLang !== null && $sessionLang !== ''
-? (string) $sessionLang
-: app()->getLocale();
+	? (string) $sessionLang
+	: app()->getLocale();
 $effectiveLocale = strtolower(trim(str_replace('_', '-', $effectiveLocale)));
 if ($effectiveLocale === '') {
-$effectiveLocale = strtolower((string) config('app.locale', 'en'));
+	$effectiveLocale = strtolower((string) config('app.locale', 'en'));
 }
 $htmlLang = explode('-', $effectiveLocale)[0] ?: $effectiveLocale;
 $rtlLangs = ['ar', 'fa', 'he', 'ur'];
 $isRtl = in_array($htmlLang, $rtlLangs, true);
+$frontendCss = static fn (string $file) => asset('frontend/assets/css/' . ltrim($file, '/'));
+$frontendJs = static fn (string $file) => asset('frontend/assets/js/' . ltrim($file, '/'));
+$logoUrl = asset('frontend/assets/img/logo.png');
+$themeCss = $isRtl ? $frontendCss('rtl_style.css') : $frontendCss('style.css');
+$fontUrl = 'https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;1,14..32,400&family=Outfit:wght@400;500;600;700&family=Saira:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap';
+$lcpImage = $seo['lcp_image'] ?? null;
 @endphp
 <html class="no-js" lang="{{ $htmlLang }}" dir="{{ $isRtl ? 'rtl' : 'ltr' }}">
 
@@ -18,371 +24,125 @@ $isRtl = in_array($htmlLang, $rtlLangs, true);
 	<meta charset="utf-8">
 	<meta name="csrf-token" content="{{ csrf_token() }}">
 	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	@include('frontend.layout.partials.seo-meta', ['seo' => $seo ?? []])
 	@include('frontend.layout.partials.google-tags')
-	<meta name="author" content="Randevu">
+	<meta name="author" content="{{ config('app.name', 'Randevu') }}">
+	<meta name="theme-color" content="#3E66F3">
+	<meta name="format-detection" content="telephone=no">
 
-	<!-- Mobile Specific Metas -->
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link rel="icon" type="image/png" href="{{ $logoUrl }}">
+	<link rel="apple-touch-icon" href="{{ $logoUrl }}">
 
-	<!-- Favicons - Place favicon.ico in the root directory -->
-	<link rel="apple-touch-icon" sizes="57x57" href=" {{ asset('frontend/assets/img/logo.png') }}">
-	<link rel="apple-touch-icon" sizes="60x60" href=" {{ asset('frontend/assets/img/logo.png') }}">
-	<link rel="icon" type="image/png" sizes="192x192" href=" {{ asset('frontend/assets/img/logo.png') }}">
-	<link rel="icon" type="image/png" sizes="32x32" href=" {{ asset('frontend/assets/img/logo.png') }}">
-	<link rel="icon" type="image/png" sizes="16x16" href=" {{ asset('frontend/assets/img/logo.png') }}">
-	<meta name="theme-color" content="#ffffff">
-
-	<!--==============================
-	  Google Fonts
-	============================== -->
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Outfit:wght@100..900&family=Saira:ital,wght@0,100..900;1,100..900&display=swap"
-		rel="stylesheet">
+	<link rel="preload" as="style" href="{{ $fontUrl }}">
+	<link rel="stylesheet" href="{{ $fontUrl }}" media="print" onload="this.media='all'">
+	<noscript>
+		<link rel="stylesheet" href="{{ $fontUrl }}">
+	</noscript>
 
-	<!--==============================
-	    All CSS File
-	============================== -->
-	<!-- Bootstrap -->
-	<link rel="stylesheet" href=" {{ asset('frontend/assets/css/bootstrap.min.css') }}">
-	<!-- Fontawesome Icon -->
-	<link rel="stylesheet" href=" {{ asset('frontend/assets/css/fontawesome.min.css') }}">
-	<!-- Magnific Popup -->
-	<link rel="stylesheet" href=" {{ asset('frontend/assets/css/magnific-popup.min.css') }}">
-	<!-- Swiper Slider -->
-	<link rel="stylesheet" href=" {{ asset('frontend/assets/css/swiper-bundle.min.css') }}">
-	<!-- Theme Custom CSS -->
-
-	@if($isRtl)
-	<link rel="stylesheet" href="{{ asset('frontend/assets/css/rtl_style.css') }}">
-	@else
-	<link rel="stylesheet" href="{{ asset('frontend/assets/css/style.css') }}">
+	<link rel="preload" as="style" href="{{ $frontendCss('bootstrap.min.css') }}">
+	<link rel="preload" as="style" href="{{ $themeCss }}">
+	<link rel="preload" as="image" href="{{ $logoUrl }}">
+	@if($lcpImage)
+	<link rel="preload" as="image" href="{{ $lcpImage }}" fetchpriority="high">
 	@endif
+	@stack('head')
 
-	<link rel="stylesheet" href="{{ asset('frontend/assets/css/randevu-overrides.css') }}">
-
+	<link rel="stylesheet" href="{{ $frontendCss('bootstrap.min.css') }}">
+	<link rel="stylesheet" href="{{ $frontendCss('fontawesome.min.css') }}">
+	<link rel="stylesheet" href="{{ $frontendCss('swiper-bundle.min.css') }}">
+	<link rel="stylesheet" href="{{ $themeCss }}">
+	<link rel="stylesheet" href="{{ $frontendCss('randevu-overrides.css') }}">
+	<link rel="stylesheet" href="{{ $frontendCss('magnific-popup.min.css') }}" media="print" onload="this.media='all'">
+	<noscript>
+		<link rel="stylesheet" href="{{ $frontendCss('magnific-popup.min.css') }}">
+	</noscript>
+	@stack('styles')
+	<style>
+		.skip-link {
+			position: absolute;
+			left: -9999px;
+			top: 0;
+			z-index: 10000;
+			background: #0b1b4a;
+			color: #fff;
+			padding: 8px 16px;
+		}
+		.skip-link:focus {
+			left: 8px;
+			top: 8px;
+		}
+	</style>
 </head>
 
 <body>
 	@include('frontend.layout.partials.google-tag-manager-noscript')
+	<a class="skip-link" href="#main-content">{{ __('main.skip_to_content') }}</a>
 
-	<!--[if lte IE 9]>
-    	<p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
-  <![endif]-->
-
-	<!--********************************
-   		Code Start From Here
-	******************************** -->
-
-	<!-- <div class="color-scheme-wrap active">
-		<button class="switchIcon"><i class="fa-solid fa-palette"></i></button>
-		<h4 class="color-scheme-wrap-title"><i class="far fa-palette me-2"></i>Style Swicher</h4>
-		<div class="color-switch-btns">
-			<button data-color="#3E66F3"><i class="fa-solid fa-droplet"></i></button>
-			<button data-color="#684DF4"><i class="fa-solid fa-droplet"></i></button>
-			<button data-color="#008080"><i class="fa-solid fa-droplet"></i></button>
-			<button data-color="#323F7C"><i class="fa-solid fa-droplet"></i></button>
-			<button data-color="#FC3737"><i class="fa-solid fa-droplet"></i></button>
-			<button data-color="#8a2be2"><i class="fa-solid fa-droplet"></i></button>
-		</div>
-		<a href="https://themeforest.net/user/themeholy" class="th-btn text-center w-100"><i
-				class="fa fa-shopping-cart me-2"></i> Purchase</a>
-	</div> -->
-	<!--==============================
-     Preloader
-  ==============================-->
-	<!-- <div class="preloader ">
-		<button class="th-btn preloaderCls">Cancel Preloader </button>
-		<div class="preloader-inner">
-			<img src=" {{ asset('frontend/assets/img/logo.png') }}" style="height:50px; width:100px;"
-				alt="img">
-			<div class="heart-rate">
-				<img src=" {{ asset('frontend/assets/img/shape/preloader.svg') }}" alt="">
-
-				<div class="fade-in"></div>
-
-				<div class="fade-out"></div>
-			</div>
-		</div>
-	</div> -->
-	<!--==============================
-    Sidemenu
-============================== -->
-	<!-- <div class="sidemenu-wrapper shopping-cart ">
-		<div class="sidemenu-content">
-			<button class="closeButton sideMenuCls"><i class="far fa-times"></i></button>
-			<div class="widget woocommerce widget_shopping_cart">
-				<h3 class="widget_title">Shopping cart</h3>
-				<div class="widget_shopping_cart_content">
-					<ul class="woocommerce-mini-cart cart_list product_list_widget ">
-						<li class="woocommerce-mini-cart-item mini_cart_item">
-							<a href="#"
-								class="remove remove_from_cart_button"><i
-									class="far fa-times"></i></a>
-							<a href="#"><img src=" {{ asset('frontend/assets/img/product/product_thumb_1_1.jpg') }}"
-									alt="Cart Image">Puregen Labs
-								Meclizine</a>
-							<span class="quantity">1 ×
-								<span
-									class="woocommerce-Price-amount amount">
-									<span
-										class="woocommerce-Price-currencySymbol">$</span>$55.00</span>
-							</span>
-						</li>
-						<li class="woocommerce-mini-cart-item mini_cart_item">
-							<a href="#"
-								class="remove remove_from_cart_button"><i
-									class="far fa-times"></i></a>
-							<a href="#"><img src=" {{ asset('frontend/assets/img/product/product_thumb_1_2.jpg') }}"
-									alt="Cart Image">Pranarom Pure
-								Essential Oil</a>
-							<span class="quantity">1 ×
-								<span
-									class="woocommerce-Price-amount amount">
-									<span
-										class="woocommerce-Price-currencySymbol">$</span>$15.00</span>
-							</span>
-						</li>
-						<li class="woocommerce-mini-cart-item mini_cart_item">
-							<a href="#"
-								class="remove remove_from_cart_button"><i
-									class="far fa-times"></i></a>
-							<a href="#"><img src=" {{ asset('frontend/assets/img/product/product_thumb_1_3.jpg') }}"
-									alt="Cart Image">Pediatric
-								Stethoscope</a>
-							<span class="quantity">1 ×
-								<span
-									class="woocommerce-Price-amount amount">
-									<span
-										class="woocommerce-Price-currencySymbol">$</span>$30.00</span>
-							</span>
-						</li>
-						<li class="woocommerce-mini-cart-item mini_cart_item">
-							<a href="#"
-								class="remove remove_from_cart_button"><i
-									class="far fa-times"></i></a>
-							<a href="#"><img src=" {{ asset('frontend/assets/img/product/product_thumb_1_4.jpg') }}"
-									alt="Cart Image">Puregen Labs
-								Allergy Relief</a>
-							<span class="quantity">1 ×
-								<span
-									class="woocommerce-Price-amount amount">
-									<span
-										class="woocommerce-Price-currencySymbol">$</span>$55.00</span>
-							</span>
-						</li>
-						<li class="woocommerce-mini-cart-item mini_cart_item">
-							<a href="#"
-								class="remove remove_from_cart_button"><i
-									class="far fa-times"></i></a>
-							<a href="#"><img src=" {{ asset('frontend/assets/img/product/product_thumb_1_5.jpg') }}"
-									alt="Cart Image">Digital
-								Thermometer</a>
-							<span class="quantity">1 ×
-								<span
-									class="woocommerce-Price-amount amount">
-									<span
-										class="woocommerce-Price-currencySymbol">$</span>$15.99</span>
-							</span>
-						</li>
-					</ul>
-					<p class="woocommerce-mini-cart__total total">
-						<strong>Subtotal:</strong>
-						<span class="woocommerce-Price-amount amount">
-							<span
-								class="woocommerce-Price-currencySymbol">$</span>170.99</span>
-					</p>
-					<p class="woocommerce-mini-cart__buttons buttons btn-wrap">
-						<a href="cart.html" class="th-btn wc-forward">View cart</a>
-						<a href="checkout.html"
-							class="th-btn checkout wc-forward">Checkout</a>
-					</p>
-				</div>
-			</div>
-		</div>
-	</div> -->
-	<!--==============================
-    Sidemenu
-============================== -->
-	<div class="sidemenu-wrapper ">
-		<div class="sidemenu-content">
-			<button class="closeButton sideMenuCls"><i class="far fa-times"></i></button>
-			<div class="widget footer-widget mb-0">
-				<div class="th-widget-about">
-					<div class="about-logo">
-						<a href="{{ frontend_route('frontend.home') }}"><img
-								src=" {{ asset('frontend/assets/img/logo.png') }}"
-								style="height:50px; width:100px;"
-								alt="Randevu "></a>
-					</div>
-					<p class="about-text">Medova is a convenience services to the
-						adaptability, Spacious modern villa living room
-						with centrally placed swimming pool blending indooroutdoor
-					</p>
-				</div>
-			</div>
-
-			<div class="widget footer-widget">
-				<span class="widget_title">Social Media:</span>
-				<div class="th-social">
-					<a href="https://facebook.com"><i class="fab fa-facebook-f"></i></a>
-					<a href="https://twitter.com"><i class="fab fa-twitter"></i></a>
-					<a href="https://pinterest.com"><i class="fab fa-pinterest-p"></i></a>
-					<a href="https://linkedin.com"><i class="fab fa-linkedin-in"></i></a>
-					<a href="https://linkedin.com"><i class="fab fa-instagram"></i></a>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="popup-search-box d-none d-lg-block">
-		<button class="searchClose"><i class="fal fa-times"></i></button>
-		<form action="#">
-			<input type="text" placeholder="What are you looking for?">
-			<button type="submit"><i class="fal fa-search"></i></button>
-		</form>
-	</div>
-	<!--==============================
-    Mobile Menu
-  ============================== -->
 	<div class="th-menu-wrapper">
 		<div class="th-menu-area text-center">
-			<button class="th-menu-toggle"><i class="fal fa-times"></i></button>
+			<button class="th-menu-toggle" type="button" aria-label="{{ __('main.wa_close') }}"><i class="fal fa-times"></i></button>
 			<div class="mobile-logo">
-				<a href="{{ frontend_route('frontend.home') }}"><img
-						src="{{ asset('frontend/assets/img/logo.png') }}"
-						alt="Randevu "></a>
+				<a href="{{ frontend_route('frontend.home') }}">
+					<img src="{{ $logoUrl }}" width="100" height="50" alt="{{ config('app.name', 'Randevu') }}" decoding="async" fetchpriority="high">
+				</a>
 			</div>
-
 			<div class="th-mobile-menu">
 				<ul>
-					<li><a href="{{ frontend_route('frontend.home') }}">Home</a></li>
-
-
-					<li><a href="{{ frontend_route('frontend.about') }}">About Us</a></li>
-					<li><a href="{{ frontend_route('frontend.services') }}">{{ __('main.services') }}</a>
-					</li>
-					<li><a href="{{ frontend_route('frontend.clinics') }}">{{ __('main.clinics') }}</a>
-					</li>
-					<li><a href="{{ frontend_route('frontend.doctors') }}">{{ __('doctors.page_title') }}</a>
-					</li>
-					<li><a href="{{ frontend_route('frontend.blog') }}">{{ __('main.blogs') }}</a>
-					</li>
-					<li class="menu-item-has-children">
-						<a href="#">Services</a>
-						<ul class="sub-menu">
-							<li><a href="service.html">Services</a></li>
-							<li><a href="service-details.html">Service
-									Details</a></li>
-						</ul>
-					</li>
-
-					<li class="menu-item-has-children">
-						<a href="#">Blog</a>
-						<ul class="sub-menu">
-							<li>
-								<a href="#">Blog Layout</a>
-								<ul class="sub-menu">
-									<li><a href="blog.html">Blog</a>
-									</li>
-									<li><a href="blog-grid.html">Blog
-											Grid</a>
-									</li>
-									<li><a href="blog-grid-sidebar.html">Blog
-											Grid With
-											Sidebar</a>
-									</li>
-									<li><a href="blog-list.html">Blog
-											List</a>
-									</li>
-								</ul>
-							</li>
-							<li><a href="blog-details.html">Blog Details</a>
-							</li>
-						</ul>
-					</li>
-
-					<!-- multi language menu -->
+					<li><a href="{{ frontend_route('frontend.home') }}">{{ __('main.home') }}</a></li>
+					<li><a href="{{ frontend_route('frontend.about') }}">{{ __('main.about') }}</a></li>
+					<li><a href="{{ frontend_route('frontend.services') }}">{{ __('main.services') }}</a></li>
+					<li><a href="{{ frontend_route('frontend.clinics') }}">{{ __('main.clinics') }}</a></li>
+					<li><a href="{{ frontend_route('frontend.doctors') }}">{{ __('doctors.page_title') }}</a></li>
+					<li><a href="{{ frontend_route('frontend.blog') }}">{{ __('main.blogs') }}</a></li>
+					<li><a href="{{ frontend_route('frontend.faq') }}">{{ __('main.faq') }}</a></li>
+					<li><a href="{{ frontend_route('frontend.subscription') }}">{{ __('main.subscription') }}</a></li>
+					<li><a href="{{ frontend_route('frontend.contact') }}">{{ __('main.contact') }}</a></li>
+					<li><a href="{{ frontend_route('frontend.social') }}">{{ __('main.social_media') }}</a></li>
 					@include('frontend.layout.partials.multi-language-menu')
 				</ul>
 			</div>
 		</div>
 	</div>
-	<!--==============================
-	Header Area
-==============================-->
 
-	@if(Route::is('frontend.about') || Route::is('frontend.services') || Route::is('frontend.faq') ||
-	Route::is('frontend.subscription') || Route::is('frontend.contact') || Route::is('frontend.clinics*') ||
-	Route::is('frontend.doctors*') || Route::is('frontend.blog') )
-	@include('frontend.layout.header_2')
+	@if(Route::is('frontend.home') || Route::is('frontend.ar.home'))
+		@include('frontend.layout.header_1')
 	@else
-	@include('frontend.layout.header_1')
+		@include('frontend.layout.header_2')
 	@endif
 
 	@include('frontend.layout.partials.book-demo-modal')
 
-	@yield('content')
+	<main id="main-content">
+		@yield('content')
+	</main>
 
-	<!--==============================
-        Footer Area
-    ==============================-->
 	@include('frontend.layout.footer')
-
 	@include('frontend.layout.partials.whatsapp-support')
 
-	<!--********************************
-			Code End  Here
-	******************************** -->
-	<!-- Scroll To Top -->
 	<div class="scroll-top">
-		<svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+		<svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102" aria-hidden="true">
 			<path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"
 				style="transition: stroke-dashoffset 10ms linear 0s; stroke-dasharray: 307.919, 307.919; stroke-dashoffset: 307.919;">
 			</path>
 		</svg>
 	</div>
 
-	<!--==============================
-    All Js File
-============================== -->
-	<!-- Jquery -->
-	<script src=" {{ asset('frontend/assets/js/vendor/jquery-3.7.1.min.js') }}"></script>
-	<!-- Swiper Slider -->
-	<script src=" {{ asset('frontend/assets/js/swiper-bundle.min.js') }}"></script>
-	<!-- Bootstrap -->
-	<script src=" {{ asset('frontend/assets/js/bootstrap.min.js') }}"></script>
-	<!-- Magnific Popup -->
-	<script src=" {{ asset('frontend/assets/js/jquery.magnific-popup.min.js') }}"></script>
-	<!-- Counter Up -->
-	<script src=" {{ asset('frontend/assets/js/jquery.counterup.min.js') }}"></script>
-	<!-- Circle Progress -->
-	<script src=" {{ asset('frontend/assets/js/circle-progress.js') }}"></script>
-	<!-- Range Slider -->
-	<script src=" {{ asset('frontend/assets/js/jquery-ui.min.js') }}"></script>
-	<!-- Imagesloadedr -->
-	<script src=" {{ asset('frontend/assets/js/imagesloaded.pkgd.min.js') }}"></script>
-	<!-- isotope -->
-	<script src=" {{ asset('frontend/assets/js/isotope.pkgd.min.js') }}"></script>
-	<!-- Nice-select -->
-	<script src=" {{ asset('frontend/assets/js/nice-select.min.js') }}"></script>
-	<!-- wow -->
-	<script src=" {{ asset('frontend/assets/js/wow.min.js') }}"></script>
-
-	<!-- 360 degree Js -->
-	<script src=" {{ asset('frontend/assets/js/threesixty.min.js') }}"></script>
-	<script src=" {{ asset('frontend/assets/js/panolens.min.js') }}"></script>
-
-	<!-- gsap area start -->
-	<script src=" {{ asset('frontend/assets/js/gsap.min.js') }}"></script>
-	<script src=" {{ asset('frontend/assets/js/ScrollTrigger.min.js') }}"></script>
-	<script src=" {{ asset('frontend/assets/js/SplitText.js') }}"></script>
-	<!-- gsap area end -->
-
-	<!-- Main Js File -->
-	<script src=" {{ asset('frontend/assets/js/main.js') }}"></script>
+	<script src="{{ $frontendJs('vendor/jquery-3.7.1.min.js') }}" defer></script>
+	<script src="{{ $frontendJs('swiper-bundle.min.js') }}" defer></script>
+	<script src="{{ $frontendJs('bootstrap.min.js') }}" defer></script>
+	<script src="{{ $frontendJs('jquery.magnific-popup.min.js') }}" defer></script>
+	<script src="{{ $frontendJs('jquery.counterup.min.js') }}" defer></script>
+	<script src="{{ $frontendJs('circle-progress.js') }}" defer></script>
+	<script src="{{ $frontendJs('nice-select.min.js') }}" defer></script>
+	<script src="{{ $frontendJs('wow.min.js') }}" defer></script>
+	<script src="{{ $frontendJs('gsap.min.js') }}" defer></script>
+	<script src="{{ $frontendJs('ScrollTrigger.min.js') }}" defer></script>
+	<script src="{{ $frontendJs('SplitText.js') }}" defer></script>
+	<script src="{{ $frontendJs('main.js') }}" defer></script>
 	@stack('scripts')
-
 </body>
 
 </html>

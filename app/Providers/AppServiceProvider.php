@@ -21,6 +21,8 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         require_once app_path('helpers.php');
+
+        $this->app->singleton(\App\Services\Frontend\WebsiteLinkCatalog::class);
     }
 
     /**
@@ -61,9 +63,12 @@ class AppServiceProvider extends ServiceProvider
         });
 
         View::composer('frontend.layout.app', function ($view) {
-            if (! array_key_exists('seo', $view->getData())) {
-                $view->with('seo', app(SeoResolver::class)->defaults());
+            $data = $view->getData();
+            $seo = $data['seo'] ?? app(SeoResolver::class)->defaults();
+            if (empty($seo['lcp_image']) && function_exists('frontend_breadcrumb_image')) {
+                $seo['lcp_image'] = frontend_breadcrumb_image();
             }
+            $view->with('seo', $seo);
         });
     }
 }

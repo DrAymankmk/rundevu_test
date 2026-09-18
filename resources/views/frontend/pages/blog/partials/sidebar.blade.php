@@ -54,7 +54,7 @@ $categorySlug = $categorySlug ?? request('category', '');
 			<div class="recent-post">
 				<div class="media-img">
 					<a href="{{ frontend_route('frontend.blog.show', $recent->getRouteSlug()) }}">
-						<img src="{{ $recentImage }}" alt="{{ $recentTitle }}">
+						<img src="{{ $recentImage }}" alt="{{ $recentTitle }}" decoding="async" loading="lazy">
 					</a>
 				</div>
 				<div class="media-body">

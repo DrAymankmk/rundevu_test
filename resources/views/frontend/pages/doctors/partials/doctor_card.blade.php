@@ -20,7 +20,7 @@ $columnClass = $columnClass ?? 'col-md-6 col-lg-3';
 		<div class="doctor-card-v2__media">
 			<a href="{{ frontend_route('frontend.doctors.show', $doctor) }}"
 				class="doctor-card-v2__image-link">
-				<img src="{{ $doctor->image }}" alt="{{ $doctor->name }}" loading="lazy">
+				<img src="{{ $doctor->image }}" alt="{{ $doctor->name }}" loading="lazy" decoding="async" width="400" height="400">
 			</a>
 
 			<span class="doctor-card-v2__badge doctor-card-v2__badge--rate">

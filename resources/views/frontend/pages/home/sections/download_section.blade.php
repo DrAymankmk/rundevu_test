@@ -1,10 +1,10 @@
-<section class="download-area space overflow-hidden" data-bg-src="assets/img/bg/download-bg-1.png">
+<section class="background-image download-area space overflow-hidden" style="background-image: url('{{ asset('frontend/assets/img/bg/download-bg-1.png') }}');">
 	<div class="container">
 		<div class="row gy-5 align-items-center">
 			<div class="col-xl-6">
 				<div class="download-img">
 					<div class="img1">
-						<img src="assets/img/normal/download-1-1.png" alt="img">
+						<img src="{{ asset('frontend/assets/img/normal/download-1-1.png') }}" alt="img" decoding="async" loading="lazy">
 					</div>
 				</div>
 			</div>
@@ -28,15 +28,25 @@
 							important for your specific patients</p>
 					</div>
 
+					@php
+						$appleUrl = website_store_url('apple');
+						$googleUrl = website_store_url('google_play');
+					@endphp
+					@if($appleUrl !== '' || $googleUrl !== '')
 					<div class="btn-group download-btn mt-50 justify-content-center justify-content-xl-start wow fadeInUp"
 						data-wow-delay=".2s">
-						<a href="https://www.apple.com/app-store/"><img
-								src="assets/img/icon/apple.svg"
-								alt=""></a>
-						<a href="https://play.google.com/store/"><img
-								src="assets/img/icon/google-play.svg"
-								alt=""></a>
+						@if($appleUrl !== '')
+						<a href="{{ $appleUrl }}" target="_blank" rel="noopener noreferrer"><img
+								src="{{ asset('frontend/assets/img/icon/apple.svg') }}"
+								alt="{{ __('main.app_store') }}" decoding="async" loading="lazy"></a>
+						@endif
+						@if($googleUrl !== '')
+						<a href="{{ $googleUrl }}" target="_blank" rel="noopener noreferrer"><img
+								src="{{ asset('frontend/assets/img/icon/google-play.svg') }}"
+								alt="{{ __('main.google_play') }}" decoding="async" loading="lazy"></a>
+						@endif
 					</div>
+					@endif
 				</div>
 			</div>
 		</div>

@@ -148,7 +148,8 @@
 			@php
 			$platformKey = $platform['key'] ?? 'social';
 			$brandColor = $platform['brand_color'] ?? '#3E66F3';
-			$isLightIcon = in_array($platformKey, ['snapchat'], true);
+			$platformTitle = $platform['title'] ?? __('main.social_platform_'.$platformKey);
+			$isLightIcon = $platform['is_light_icon'] ?? in_array($platformKey, ['snapchat'], true);
 			@endphp
 			<article class="social-platform-card{{ $isLightIcon ? ' is-light-icon' : '' }}"
 				style="--platform-color: {{ $brandColor }};">
@@ -156,14 +157,14 @@
 					<i class="{{ $platform['icon'] ?? 'fas fa-share-alt' }}"></i>
 				</div>
 				<h3 class="social-platform-name">
-					{{ __('main.social_platform_'.$platformKey) }}
+					{{ $platformTitle }}
 				</h3>
 				<p class="social-platform-text">
-					{{ __('main.social_platform_'.$platformKey.'_desc') }}
+					{{ $platform['description'] ?? __('main.social_platform_'.$platformKey.'_desc') }}
 				</p>
 				<a href="{{ $platform['url'] }}" class="social-platform-btn" target="_blank"
 					rel="noopener noreferrer"
-					aria-label="{{ __('main.visit_social_profile', ['platform' => __('main.social_platform_'.$platformKey)]) }}">
+					aria-label="{{ __('main.visit_social_profile', ['platform' => $platformTitle]) }}">
 					<span>{{ __('main.visit_profile') }}</span>
 					<i class="fa-regular fa-arrow-up-right-from-square"></i>
 				</a>

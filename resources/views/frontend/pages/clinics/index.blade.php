@@ -1,18 +1,7 @@
 @extends('frontend.layout.app')
 
 @section('content')
-<div class="breadcumb-wrapper" data-bg-src="{{ asset('frontend/assets/img/bg/breadcumb-clinics.jpg') }}">
-	<div class="container">
-		<div class="breadcumb-content">
-			<h1 class="breadcumb-title">{{ __('main.clinics') }}</h1>
-			<ul class="breadcumb-menu">
-				<li><a href="{{ frontend_route('frontend.home') }}">{{ __('main.home') }}</a>
-				</li>
-				<li>{{ __('main.clinics') }}</li>
-			</ul>
-		</div>
-	</div>
-</div>
+<x-breadcrumb :title="__('main.clinics')" />
 
 <section class="space-top space-extra-bottom clinics-listing-sec" style="padding: 40px;">
 	<div class="container">

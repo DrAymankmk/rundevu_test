@@ -5,16 +5,16 @@
     				<div class="service-card style2">
     					<div class="box-content">
     						<div class="box-icon">
-    							<img src="assets/img/icon/service_1_1.svg"
-    								alt="Icon">
+    							<img src="{{ asset('frontend/assets/img/icon/service_1_1.svg') }}"
+    								alt="Icon" decoding="async" loading="lazy">
     						</div>
     						<h3 class="box-title"><a
-    								href="service-details.html">General
+    								href="{{ frontend_route('frontend.services') }}">General
     								& Family Medicine</a></h3>
     						<p class="box-text">Considero doloremque bene itaque
     							voluptate sol. Campana quos ubi aro
     							astrum.Spoliatio utrimquesuspendo.</p>
-    						<a href="service-details.html"
+    						<a href="{{ frontend_route('frontend.services') }}"
     							class="th-btn black-border">Read More <i
     								class="fa-light fa-arrow-right-long ms-2"></i></a>
     					</div>
@@ -24,16 +24,16 @@
     				<div class="service-card style2">
     					<div class="box-content">
     						<div class="box-icon">
-    							<img src="assets/img/icon/service_1_2.svg"
-    								alt="Icon">
+    							<img src="{{ asset('frontend/assets/img/icon/service_1_2.svg') }}"
+    								alt="Icon" decoding="async" loading="lazy">
     						</div>
     						<h3 class="box-title"><a
-    								href="service-details.html">Physical
+    								href="{{ frontend_route('frontend.services') }}">Physical
     								Therapy & Rehabilitation</a></h3>
     						<p class="box-text">Considero doloremque bene itaque
     							voluptate sol. Campana quos ubi aro
     							astrum.Spoliatio utrimquesuspendo.</p>
-    						<a href="service-details.html"
+    						<a href="{{ frontend_route('frontend.services') }}"
     							class="th-btn black-border">Read More <i
     								class="fa-light fa-arrow-right-long ms-2"></i></a>
     					</div>
@@ -43,16 +43,16 @@
     				<div class="service-card style2">
     					<div class="box-content">
     						<div class="box-icon">
-    							<img src="assets/img/icon/service_1_3.svg"
-    								alt="Icon">
+    							<img src="{{ asset('frontend/assets/img/icon/service_1_3.svg') }}"
+    								alt="Icon" decoding="async" loading="lazy">
     						</div>
     						<h3 class="box-title"><a
-    								href="service-details.html">Travel
+    								href="{{ frontend_route('frontend.services') }}">Travel
     								Medicine & Vaccinations</a></h3>
     						<p class="box-text">Considero doloremque bene itaque
     							voluptate sol. Campana quos ubi aro
     							astrum.Spoliatio utrimquesuspendo.</p>
-    						<a href="service-details.html"
+    						<a href="{{ frontend_route('frontend.services') }}"
     							class="th-btn black-border">Read More <i
     								class="fa-light fa-arrow-right-long ms-2"></i></a>
     					</div>
@@ -62,16 +62,16 @@
     				<div class="service-card style2">
     					<div class="box-content">
     						<div class="box-icon">
-    							<img src="assets/img/icon/service_1_4.svg"
-    								alt="Icon">
+    							<img src="{{ asset('frontend/assets/img/icon/service_1_4.svg') }}"
+    								alt="Icon" decoding="async" loading="lazy">
     						</div>
     						<h3 class="box-title"><a
-    								href="service-details.html">Diagnostic
+    								href="{{ frontend_route('frontend.services') }}">Diagnostic
     								& Laboratory Services</a></h3>
     						<p class="box-text">Considero doloremque bene itaque
     							voluptate sol. Campana quos ubi aro
     							astrum.Spoliatio utrimquesuspendo.</p>
-    						<a href="service-details.html"
+    						<a href="{{ frontend_route('frontend.services') }}"
     							class="th-btn black-border">Read More <i
     								class="fa-light fa-arrow-right-long ms-2"></i></a>
     					</div>
@@ -81,16 +81,16 @@
     				<div class="service-card style2">
     					<div class="box-content">
     						<div class="box-icon">
-    							<img src="assets/img/icon/service_1_5.svg"
-    								alt="Icon">
+    							<img src="{{ asset('frontend/assets/img/icon/service_1_5.svg') }}"
+    								alt="Icon" decoding="async" loading="lazy">
     						</div>
     						<h3 class="box-title"><a
-    								href="service-details.html">Everyday
+    								href="{{ frontend_route('frontend.services') }}">Everyday
     								Emergency Dental Care</a></h3>
     						<p class="box-text">Considero doloremque bene itaque
     							voluptate sol. Campana quos ubi aro
     							astrum.Spoliatio utrimquesuspendo.</p>
-    						<a href="service-details.html"
+    						<a href="{{ frontend_route('frontend.services') }}"
     							class="th-btn black-border">Read More <i
     								class="fa-light fa-arrow-right-long ms-2"></i></a>
     					</div>
@@ -100,16 +100,16 @@
     				<div class="service-card style2">
     					<div class="box-content">
     						<div class="box-icon">
-    							<img src="assets/img/icon/service_1_6.svg"
-    								alt="Icon">
+    							<img src="{{ asset('frontend/assets/img/icon/service_1_6.svg') }}"
+    								alt="Icon" decoding="async" loading="lazy">
     						</div>
     						<h3 class="box-title"><a
-    								href="service-details.html">Post-Surgery
+    								href="{{ frontend_route('frontend.services') }}">Post-Surgery
     								Rehabilitation & Care</a></h3>
     						<p class="box-text">Considero doloremque bene itaque
     							voluptate sol. Campana quos ubi aro
     							astrum.Spoliatio utrimquesuspendo.</p>
-    						<a href="service-details.html"
+    						<a href="{{ frontend_route('frontend.services') }}"
     							class="th-btn black-border">Read More <i
     								class="fa-light fa-arrow-right-long ms-2"></i></a>
     					</div>
@@ -119,16 +119,16 @@
     				<div class="service-card style2">
     					<div class="box-content">
     						<div class="box-icon">
-    							<img src="assets/img/icon/service_1_7.svg"
-    								alt="Icon">
+    							<img src="{{ asset('frontend/assets/img/icon/service_1_7.svg') }}"
+    								alt="Icon" decoding="async" loading="lazy">
     						</div>
     						<h3 class="box-title"><a
-    								href="service-details.html">Medical
+    								href="{{ frontend_route('frontend.services') }}">Medical
     								Insurance Assistance</a></h3>
     						<p class="box-text">Considero doloremque bene itaque
     							voluptate sol. Campana quos ubi aro
     							astrum.Spoliatio utrimquesuspendo.</p>
-    						<a href="service-details.html"
+    						<a href="{{ frontend_route('frontend.services') }}"
     							class="th-btn black-border">Read More <i
     								class="fa-light fa-arrow-right-long ms-2"></i></a>
     					</div>
@@ -138,16 +138,16 @@
     				<div class="service-card style2">
     					<div class="box-content">
     						<div class="box-icon">
-    							<img src="assets/img/icon/service_1_8.svg"
-    								alt="Icon">
+    							<img src="{{ asset('frontend/assets/img/icon/service_1_8.svg') }}"
+    								alt="Icon" decoding="async" loading="lazy">
     						</div>
     						<h3 class="box-title"><a
-    								href="service-details.html">Pharmacy
+    								href="{{ frontend_route('frontend.services') }}">Pharmacy
     								& Medicine Delivery</a></h3>
     						<p class="box-text">Considero doloremque bene itaque
     							voluptate sol. Campana quos ubi aro
     							astrum.Spoliatio utrimquesuspendo.</p>
-    						<a href="service-details.html"
+    						<a href="{{ frontend_route('frontend.services') }}"
     							class="th-btn black-border">Read More <i
     								class="fa-light fa-arrow-right-long ms-2"></i></a>
     					</div>
@@ -157,16 +157,16 @@
     				<div class="service-card style2">
     					<div class="box-content">
     						<div class="box-icon">
-    							<img src="assets/img/icon/service_1_9.svg"
-    								alt="Icon">
+    							<img src="{{ asset('frontend/assets/img/icon/service_1_9.svg') }}"
+    								alt="Icon" decoding="async" loading="lazy">
     						</div>
     						<h3 class="box-title"><a
-    								href="service-details.html">Appointment
+    								href="{{ frontend_route('frontend.services') }}">Appointment
     								Booking System</a></h3>
     						<p class="box-text">Considero doloremque bene itaque
     							voluptate sol. Campana quos ubi aro
     							astrum.Spoliatio utrimquesuspendo.</p>
-    						<a href="service-details.html"
+    						<a href="{{ frontend_route('frontend.services') }}"
     							class="th-btn black-border">Read More <i
     								class="fa-light fa-arrow-right-long ms-2"></i></a>
     					</div>
@@ -176,17 +176,17 @@
     				<div class="service-card style2">
     					<div class="box-content">
     						<div class="box-icon">
-    							<img src="assets/img/icon/service_1_10.svg"
-    								alt="Icon">
+    							<img src="{{ asset('frontend/assets/img/icon/service_1_10.svg') }}"
+    								alt="Icon" decoding="async" loading="lazy">
     						</div>
     						<h3 class="box-title"><a
-    								href="service-details.html">Online
+    								href="{{ frontend_route('frontend.services') }}">Online
     								Doctor Low Cost Consultation</a>
     						</h3>
     						<p class="box-text">Considero doloremque bene itaque
     							voluptate sol. Campana quos ubi aro
     							astrum.Spoliatio utrimquesuspendo.</p>
-    						<a href="service-details.html"
+    						<a href="{{ frontend_route('frontend.services') }}"
     							class="th-btn black-border">Read More <i
     								class="fa-light fa-arrow-right-long ms-2"></i></a>
     					</div>
@@ -196,16 +196,16 @@
     				<div class="service-card style2">
     					<div class="box-content">
     						<div class="box-icon">
-    							<img src="assets/img/icon/service_1_11.svg"
-    								alt="Icon">
+    							<img src="{{ asset('frontend/assets/img/icon/service_1_11.svg') }}"
+    								alt="Icon" decoding="async" loading="lazy">
     						</div>
     						<h3 class="box-title"><a
-    								href="service-details.html">Telemedicine
+    								href="{{ frontend_route('frontend.services') }}">Telemedicine
     								for Rural Areas</a></h3>
     						<p class="box-text">Considero doloremque bene itaque
     							voluptate sol. Campana quos ubi aro
     							astrum.Spoliatio utrimquesuspendo.</p>
-    						<a href="service-details.html"
+    						<a href="{{ frontend_route('frontend.services') }}"
     							class="th-btn black-border">Read More <i
     								class="fa-light fa-arrow-right-long ms-2"></i></a>
     					</div>
@@ -215,16 +215,16 @@
     				<div class="service-card style2">
     					<div class="box-content">
     						<div class="box-icon">
-    							<img src="assets/img/icon/service_1_12.svg"
-    								alt="Icon">
+    							<img src="{{ asset('frontend/assets/img/icon/service_1_12.svg') }}"
+    								alt="Icon" decoding="async" loading="lazy">
     						</div>
     						<h3 class="box-title"><a
-    								href="service-details.html">Health &
+    								href="{{ frontend_route('frontend.services') }}">Health &
     								Wellness Programs</a></h3>
     						<p class="box-text">Considero doloremque bene itaque
     							voluptate sol. Campana quos ubi aro
     							astrum.Spoliatio utrimquesuspendo.</p>
-    						<a href="service-details.html"
+    						<a href="{{ frontend_route('frontend.services') }}"
     							class="th-btn black-border">Read More <i
     								class="fa-light fa-arrow-right-long ms-2"></i></a>
     					</div>
@@ -233,13 +233,13 @@
     		</div>
     		<div class="th-pagination  mt-50 mb-0 text-center">
     			<ul>
-    				<li><a href="service-details.html"><i
+    				<li><a href="{{ frontend_route('frontend.services') }}"><i
     							class="fa-regular fa-arrow-left"></i></a></li>
-    				<li><a href="service-details.html">1</a></li>
-    				<li><a href="service-details.html">2</a></li>
-    				<li><a href="service-details.html">3</a></li>
-    				<li><a href="service-details.html">4</a></li>
-    				<li><a href="service-details.html">Next <i
+    				<li><a href="{{ frontend_route('frontend.services') }}">1</a></li>
+    				<li><a href="{{ frontend_route('frontend.services') }}">2</a></li>
+    				<li><a href="{{ frontend_route('frontend.services') }}">3</a></li>
+    				<li><a href="{{ frontend_route('frontend.services') }}">4</a></li>
+    				<li><a href="{{ frontend_route('frontend.services') }}">Next <i
     							class="fa-regular fa-arrow-right"></i></a>
     				</li>
     			</ul>

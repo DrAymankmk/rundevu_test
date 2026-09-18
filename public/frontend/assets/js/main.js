@@ -50,7 +50,7 @@
 
 
     // $('select').niceSelect(); 
-    if ($('.nice-select').length) {
+    if ($('.nice-select').length && typeof $.fn.niceSelect === 'function') {
         $('.nice-select').niceSelect();
     }
 
@@ -625,6 +625,7 @@
     popupSideMenu('.shopping-cart', '.sideMenuToggler2', '.sideMenuCls', 'show');
 
     /*----------- 12. Magnific Popup ----------*/
+    if (typeof $.fn.magnificPopup === 'function') {
     /* magnificPopup img view */
     $(".popup-image").magnificPopup({
         type: "image",
@@ -647,6 +648,7 @@
         type: "inline",
         midClick: true,
     });
+    }
 
 
     if ($('[data-theme-color]').length > 0) {
@@ -760,13 +762,14 @@
     };
 
     var postionHandler = "[data-sec-pos]";
-    if ($(postionHandler).length) {
+    if ($(postionHandler).length && typeof $.fn.imagesLoaded === 'function') {
         $(postionHandler).imagesLoaded(function () {
             $(postionHandler).sectionPosition("data-sec-pos", "data-pos-for");
         });
     }
 
       /*----------- 15. Filter ----------*/
+      if ($(".filter-active").length && typeof $.fn.imagesLoaded === 'function' && typeof $.fn.isotope === 'function') {
       $(".filter-active").imagesLoaded(function () {
         var $filter = ".filter-active",
             $filterItem = ".filter-item",
@@ -857,12 +860,15 @@
             });
         });
     });
+      }
 
     /*----------- 15. Counter Up ----------*/
+    if (typeof $.fn.counterUp === 'function' && $(".counter-number").length) {
     $(".counter-number").counterUp({
         delay: 10,
         time: 1000,
     });
+    }
 
     /*----------- 17. Shape Mockup ----------*/
     $.fn.shapeMockup = function () {
@@ -923,6 +929,7 @@
         $(".shape-mockup2").shapeMockup2();
     }
     /*----------- 19. Price Slider ----------*/
+    if (typeof $.fn.slider === 'function' && $(".price_slider").length) {
     $(".price_slider").slider({
         range: true,
         min: 10,
@@ -935,6 +942,7 @@
     });
     $(".from").text("$" + $(".price_slider").slider("values", 0));
     $(".to").text("$" + $(".price_slider").slider("values", 1));
+    }
 
 
 
@@ -952,7 +960,7 @@
     // Check if there are any panorama images present
     const panoramaImages = $('.panorama-img');
 
-    if (panoramaImages.length > 0) {
+    if (panoramaImages.length > 0 && typeof PANOLENS !== 'undefined') {
         const imageContainer = $('.image-container');
 
         // Create a new PANOLENS.Viewer instance
@@ -1130,6 +1138,7 @@
     /* ==================================================
 			# Wow Init
 		 ===============================================*/
+    if (typeof WOW !== 'undefined') {
     var wow = new WOW({
         boxClass: 'wow',
         animateClass: 'animated',
@@ -1137,10 +1146,11 @@
         mobile: true,
         live: true
     });
-    new WOW().init(); 
+    new WOW().init();
+    } 
 
     	/* Image Reveal Animation */
-	if ($('.reveal').length) {
+	if ($('.reveal').length && typeof gsap !== 'undefined') {
         gsap.registerPlugin(ScrollTrigger);
         let revealContainers = document.querySelectorAll(".reveal");
         revealContainers.forEach((container) => {
@@ -1168,7 +1178,7 @@
     }
     
     /* Text Effect Animation */
-	if ($('.text-anime-style-1').length) {
+	if ($('.text-anime-style-1').length && typeof gsap !== 'undefined' && typeof SplitText !== 'undefined') {
 		let staggerAmount 	= 0.05,
 			translateXValue = 0,
 			delayValue 		= 0.5,
@@ -1187,7 +1197,7 @@
 		});		
 	}
 	
-	if ($('.text-anime-style-2').length) {				
+	if ($('.text-anime-style-2').length && typeof gsap !== 'undefined' && typeof SplitText !== 'undefined') {				
 		let	 staggerAmount 		= 0.03,
 			 translateXValue	= 20,
 			 delayValue 		= 0.1,
@@ -1208,7 +1218,7 @@
 		});		
 	}
 	
-	if ($('.text-anime-style-3').length) {		
+	if ($('.text-anime-style-3').length && typeof gsap !== 'undefined') {		
 		let	animatedTextElements = document.querySelectorAll('.text-anime-style-3');
 		
 		 animatedTextElements.forEach((element) => {

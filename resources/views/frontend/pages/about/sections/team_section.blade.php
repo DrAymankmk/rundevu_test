@@ -14,11 +14,11 @@
                 <div class="col-md-6 col-xl-3">
                     <div class="th-team team-card">
                         <div class="box-img">
-                            <img src="assets/img/team/team_1_1.png" alt="Team">
+                            <img src="{{ asset('frontend/assets/img/team/team_1_1.png') }}" alt="Team" decoding="async" loading="lazy">
                         </div>
                         <div class="box-content">
                             <div>
-                                <h3 class="box-title"><a href="doctor-details.html">Dr. Julia Jany</a></h3>
+                                <h3 class="box-title"><a href="{{ frontend_route('frontend.doctors') }}">Dr. Julia Jany</a></h3>
                                 <span class="team-desig">Gynecology Specialist</span>
                             </div>
                             <div class="team-social">
@@ -39,11 +39,11 @@
                 <div class="col-md-6 col-xl-3">
                     <div class="th-team team-card">
                         <div class="box-img">
-                            <img src="assets/img/team/team_1_2.png" alt="Team">
+                            <img src="{{ asset('frontend/assets/img/team/team_1_2.png') }}" alt="Team" decoding="async" loading="lazy">
                         </div>
                         <div class="box-content">
                             <div>
-                                <h3 class="box-title"><a href="doctor-details.html">Dr. Michel Liu</a></h3>
+                                <h3 class="box-title"><a href="{{ frontend_route('frontend.doctors') }}">Dr. Michel Liu</a></h3>
                                 <span class="team-desig">Heart Specialist</span>
                             </div>
                             <div class="team-social">
@@ -64,11 +64,11 @@
                 <div class="col-md-6 col-xl-3">
                     <div class="th-team team-card">
                         <div class="box-img">
-                            <img src="assets/img/team/team_1_3.png" alt="Team">
+                            <img src="{{ asset('frontend/assets/img/team/team_1_3.png') }}" alt="Team" decoding="async" loading="lazy">
                         </div>
                         <div class="box-content">
                             <div>
-                                <h3 class="box-title"><a href="doctor-details.html">Dr. Jesmine Ruby</a></h3>
+                                <h3 class="box-title"><a href="{{ frontend_route('frontend.doctors') }}">Dr. Jesmine Ruby</a></h3>
                                 <span class="team-desig">Neurology Specialist</span>
                             </div>
                             <div class="team-social">
@@ -89,11 +89,11 @@
                 <div class="col-md-6 col-xl-3">
                     <div class="th-team team-card">
                         <div class="box-img">
-                            <img src="assets/img/team/team_1_4.png" alt="Team">
+                            <img src="{{ asset('frontend/assets/img/team/team_1_4.png') }}" alt="Team" decoding="async" loading="lazy">
                         </div>
                         <div class="box-content">
                             <div>
-                                <h3 class="box-title"><a href="doctor-details.html">Dr. Alex Smith</a></h3>
+                                <h3 class="box-title"><a href="{{ frontend_route('frontend.doctors') }}">Dr. Alex Smith</a></h3>
                                 <span class="team-desig">Cardiology Specialist</span>
                             </div>
                             <div class="team-social">

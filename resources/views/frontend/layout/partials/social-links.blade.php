@@ -1,7 +1,5 @@
 @php
-	$socialPlatforms = collect(config('social.platforms', []))
-		->filter(static fn ($platform) => filled($platform['url'] ?? null))
-		->values();
+	$socialPlatforms = website_social_platforms();
 @endphp
 
 @if($socialPlatforms->isNotEmpty())
@@ -11,7 +9,7 @@
 	<a href="{{ $platform['url'] }}"
 		target="_blank"
 		rel="noopener noreferrer"
-		aria-label="{{ __('main.visit_social_profile', ['platform' => __('main.social_platform_'.($platform['key'] ?? 'social'))]) }}">
+		aria-label="{{ __('main.visit_social_profile', ['platform' => $platform['title'] ?? __('main.social_platform_'.($platform['key'] ?? 'social'))]) }}">
 		<i class="{{ $platform['icon'] ?? 'fas fa-share-alt' }}"></i>
 	</a>
 	@endforeach

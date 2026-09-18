@@ -43,6 +43,14 @@ class HomeController extends Controller
         }
 
         $seo = $this->seoResolver->resolveForCmsSlug('home', 'frontend.home');
+        $heroSection = $cmsPageSections->first(function ($section) {
+            $type = strtolower((string) ($section->type ?? ''));
+
+            return $type === 'hero' || str_contains((string) ($section->slug ?? ''), 'hero');
+        });
+        $seo['lcp_image'] = $heroSection
+            ? $heroSection->getMediaUrl('images', app()->getLocale(), asset('frontend/assets/img/hero/hero_bg_1_1.jpg'), true)
+            : asset('frontend/assets/img/hero/hero_bg_1_1.jpg');
 
         return view('frontend.pages.home.index', compact('cmsPage', 'cmsPageSections', 'seo'));
     }

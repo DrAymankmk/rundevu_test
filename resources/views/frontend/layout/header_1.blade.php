@@ -7,8 +7,11 @@
 						<div class="header-logo">
 							<a href="{{ frontend_route('frontend.home') }}"><img
 									src="{{ asset('frontend/assets/img/logo.png') }}"
+									width="100" height="50"
 									style="height:50px; width:100px;"
-									alt="Randevu "></a>
+									fetchpriority="high"
+									decoding="async"
+									alt="{{ config('app.name', 'Randevu') }}"></a>
 						</div>
 					</div>
 					<div class="col-auto d-none d-sm-block">
@@ -71,7 +74,7 @@
 							<!-- <a href="#"
 								class="icon-btn sideMenuToggler d-none d-lg-block"><img
 									src="{{ asset('frontend/assets/img/icon/grid.svg') }}"
-									alt=""></a> -->
+									alt="" decoding="async" loading="lazy"></a> -->
 						</div>
 					</div>
 				</div>
@@ -84,8 +87,10 @@
 							<div class="header-logo style1">
 								<a href="{{ frontend_route('frontend.home') }}"><img
 										src="{{ asset('frontend/assets/img/logo.png') }}"
+										width="100" height="50"
 										style="height:50px; width:100px;"
-										alt="Medova "></a>
+										decoding="async"
+										alt="{{ config('app.name', 'Randevu') }}" loading="lazy"></a>
 							</div>
 							<nav
 								class="main-menu style2 d-none d-lg-inline-block">
@@ -130,19 +135,19 @@
 							<a href="#" class="th-btn" data-bs-toggle="modal"
 								data-bs-target="#bookDemoModal"><img
 									src="{{ asset('frontend/assets/img/icon/alarm.svg') }}"
-									alt="">
+									width="18" height="18" alt="" decoding="async" loading="lazy">
 								{{ __('main.book_demo') }}</a>
 						</div>
 					</div>
 					<div class="col-auto">
 						<div class="header-button d-none d-lg-block">
-							<!-- <a href="contact.html" class="th-btn style2">Make
+							<!-- <a href="{{ frontend_route('frontend.contact') }}" class="th-btn style2">Make
 								Appointment <i
 									class="fa-solid fa-calendar-days ms-2"></i></a> -->
 							<a href="#" class="th-btn" data-bs-toggle="modal"
 								data-bs-target="#bookDemoModal"><img
 									src="{{ asset('frontend/assets/img/icon/alarm.svg') }}"
-									alt="">
+									width="18" height="18" alt="" decoding="async" loading="lazy">
 								{{ __('main.book_demo') }}</a>
 
 						</div>

@@ -144,6 +144,7 @@
 					<select id="wmSource" class="form-select">
 						<option value="">{{ __('website_media.all_sources') }}</option>
 						<option value="theme">{{ __('website_media.theme') }}</option>
+						<option value="breadcrumbs">{{ __('website_media.breadcrumbs') }}</option>
 						<option value="cms">{{ __('website_media.cms') }}</option>
 						<option value="blogs">{{ __('website_media.blogs') }}</option>
 						<option value="blog_categories">{{ __('website_media.blog_categories') }}</option>
@@ -210,7 +211,7 @@
 					<div class="mb-3">
 						<label class="form-label" for="wmEditFile">{{ __('website_media.replace_file') }}</label>
 						<input type="file" class="form-control" name="file" id="wmEditFile" accept="image/jpeg,image/png,image/gif,image/webp,image/svg+xml,video/mp4,video/webm">
-						<small class="text-muted">{{ __('website_media.leave_hint') }}</small>
+						<small class="text-muted">{{ __('website_media.leave_hint', ['max' => \App\Services\Frontend\FrontendMediaCatalog::maxUploadLabel()]) }}</small>
 					</div>
 					<div class="mb-0 d-none" id="wmEditNewWrap">
 						<label class="form-label">{{ __('website_media.new_preview') }}</label>
@@ -244,6 +245,8 @@ $(function () {
 		fileSize: @json(__('website_media.file_size')),
 		showing: @json(__('website_media.showing')),
 		selectFile: @json(__('website_media.select_file')),
+		fileTooLarge: @json(__('website_media.file_too_large')),
+		preparing: @json(__('website_media.preparing')),
 		uploading: @json(__('website_media.uploading')),
 		save: @json(__('website_media.save')),
 		loadError: @json(__('website_media.load_error')),
@@ -259,6 +262,7 @@ $(function () {
 		sources: {
 			all: @json(__('website_media.all_sources')),
 			theme: @json(__('website_media.theme')),
+			breadcrumbs: @json(__('website_media.breadcrumbs')),
 			cms: @json(__('website_media.cms')),
 			blogs: @json(__('website_media.blogs')),
 			blog_categories: @json(__('website_media.blog_categories')),
@@ -266,6 +270,9 @@ $(function () {
 			doctors: @json(__('website_media.doctors'))
 		}
 	};
+
+	const maxUploadBytes = {{ (int) ($maxUploadKb ?? 2048) * 1024 }};
+	const maxUploadLabel = @json(\App\Services\Frontend\FrontendMediaCatalog::maxUploadLabel());
 
 	let page = 1;
 	let lastMeta = null;
@@ -364,6 +371,108 @@ $(function () {
 			$ul.append(pageItem(String(i), i, false, i === meta.current_page));
 		}
 		$ul.append(pageItem('»', Math.min(meta.last_page, meta.current_page + 1), meta.current_page === meta.last_page, false));
+	}
+
+	function ajaxErrorText(xhr) {
+		const json = xhr.responseJSON || {};
+		if (json.errors) {
+			const first = Object.values(json.errors)[0];
+			if (Array.isArray(first) && first[0]) {
+				return first[0];
+			}
+		}
+		return json.message || i18n.loadError;
+	}
+
+	function loadImage(file) {
+		return new Promise(function (resolve, reject) {
+			const url = URL.createObjectURL(file);
+			const img = new Image();
+			img.onload = function () {
+				URL.revokeObjectURL(url);
+				resolve(img);
+			};
+			img.onerror = function () {
+				URL.revokeObjectURL(url);
+				reject(new Error(i18n.loadError));
+			};
+			img.src = url;
+		});
+	}
+
+	function canvasToBlob(canvas, type, quality) {
+		return new Promise(function (resolve) {
+			canvas.toBlob(function (blob) {
+				resolve(blob);
+			}, type, quality);
+		});
+	}
+
+	function fitImage(img, width, height) {
+		const canvas = document.createElement('canvas');
+		canvas.width = width;
+		canvas.height = height;
+		const ctx = canvas.getContext('2d');
+		ctx.fillStyle = '#ffffff';
+		ctx.fillRect(0, 0, width, height);
+		const scale = Math.max(width / img.width, height / img.height);
+		const drawW = img.width * scale;
+		const drawH = img.height * scale;
+		ctx.drawImage(img, (width - drawW) / 2, (height - drawH) / 2, drawW, drawH);
+		return canvas;
+	}
+
+	async function encodeCanvas(canvas, type) {
+		if (type === 'image/jpeg' || type === 'image/webp') {
+			let last = null;
+			for (let quality = 0.86; quality >= 0.45; quality -= 0.08) {
+				last = await canvasToBlob(canvas, type, quality);
+				if (last && last.size <= maxUploadBytes) {
+					return last;
+				}
+			}
+			return last;
+		}
+		return canvasToBlob(canvas, type);
+	}
+
+	async function prepareUploadFile(file, item) {
+		const raster = /image\/(jpeg|jpg|png|webp|gif)/i.test(file.type);
+		if (!raster) {
+			if (file.size > maxUploadBytes) {
+				throw new Error(i18n.fileTooLarge.replace(':max', maxUploadLabel));
+			}
+			return file;
+		}
+
+		const hintW = item && item.hint ? parseInt(item.hint.width, 10) : 0;
+		const hintH = item && item.hint ? parseInt(item.hint.height, 10) : 0;
+		const tooHeavy = file.size > maxUploadBytes;
+		const img = await loadImage(file);
+		const tooLarge = hintW > 0 && hintH > 0 && (img.width > hintW * 1.5 || img.height > hintH * 1.5);
+		if (!tooHeavy && !tooLarge) {
+			return file;
+		}
+
+		let width = hintW > 0 ? hintW : Math.min(img.width, 1920);
+		let height = hintH > 0 ? hintH : Math.round(img.height * (width / img.width));
+		const slotName = (item && item.file_name) ? item.file_name : (file.name || 'image.jpg');
+		const ext = slotName.split('.').pop().toLowerCase();
+		const type = ext === 'png' ? 'image/png' : (ext === 'webp' ? 'image/webp' : 'image/jpeg');
+		let blob = null;
+		for (let attempt = 0; attempt < 6; attempt++) {
+			const canvas = fitImage(img, Math.max(320, Math.round(width)), Math.max(180, Math.round(height)));
+			blob = await encodeCanvas(canvas, type);
+			if (blob && blob.size <= maxUploadBytes) {
+				break;
+			}
+			width *= 0.82;
+			height *= 0.82;
+		}
+		if (!blob || blob.size > maxUploadBytes) {
+			throw new Error(i18n.fileTooLarge.replace(':max', maxUploadLabel));
+		}
+		return new File([blob], slotName, { type: blob.type || type });
 	}
 
 	function loadMedia() {
@@ -501,7 +610,7 @@ $(function () {
 				error: function (xhr) {
 					Swal.fire({
 						icon: 'error',
-						text: (xhr.responseJSON && xhr.responseJSON.message) ? xhr.responseJSON.message : i18n.loadError
+						text: ajaxErrorText(xhr)
 					});
 				}
 			});
@@ -538,28 +647,30 @@ $(function () {
 			Swal.fire({ icon: 'warning', text: i18n.selectFile });
 			return;
 		}
-		const formData = new FormData(this);
-		const $btn = $('#wmEditSave').prop('disabled', true).text(i18n.uploading);
-		$.ajax({
-			url: @json(route('website-media.update')),
-			type: 'POST',
-			data: formData,
-			processData: false,
-			contentType: false,
-			success: function (res) {
-				modal.hide();
-				loadMedia();
-				Swal.fire({ icon: 'success', text: res.message });
-			},
-			error: function (xhr) {
-				Swal.fire({
-					icon: 'error',
-					text: (xhr.responseJSON && xhr.responseJSON.message) ? xhr.responseJSON.message : i18n.loadError
-				});
-			},
-			complete: function () {
-				$btn.prop('disabled', false).text(i18n.save);
-			}
+		const item = itemsByKey[$('#wmEditKey').val()] || {};
+		const $btn = $('#wmEditSave').prop('disabled', true).text(i18n.preparing);
+		prepareUploadFile($('#wmEditFile')[0].files[0], item).then(function (file) {
+			const formData = new FormData();
+			formData.append('_token', @json(csrf_token()));
+			formData.append('key', $('#wmEditKey').val());
+			formData.append('file', file, file.name);
+			$btn.text(i18n.uploading);
+			return $.ajax({
+				url: @json(route('website-media.update')),
+				type: 'POST',
+				data: formData,
+				processData: false,
+				contentType: false
+			});
+		}).then(function (res) {
+			modal.hide();
+			loadMedia();
+			Swal.fire({ icon: 'success', text: res.message });
+		}).catch(function (xhr) {
+			const text = xhr && xhr.responseJSON ? ajaxErrorText(xhr) : (xhr && xhr.message ? xhr.message : i18n.loadError);
+			Swal.fire({ icon: 'error', text: text });
+		}).finally(function () {
+			$btn.prop('disabled', false).text(i18n.save);
 		});
 	});
 

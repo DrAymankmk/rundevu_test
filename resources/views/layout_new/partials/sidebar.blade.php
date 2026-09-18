@@ -905,6 +905,12 @@
                                     <i class="ti ti-photo"></i><span>@lang('main.website-media')</span>
                                 </a>
                             </li>
+                            <li>
+                                <a href="{{ route('website-links.index') }}"
+                                   class="{{ Request::is('admin/website-links*') || Route::is('website-links.*') ? 'active' : '' }}">
+                                    <i class="ti ti-share"></i><span>@lang('main.website-links')</span>
+                                </a>
+                            </li>
                             <li class="submenu">
                                 <a href="javascript:void(0);"
                                    class="{{ Request::is('cms-pages', 'cms-sections', 'cms-items') || Request::is('admin/cms*') ? 'active subdrop' : '' }}">

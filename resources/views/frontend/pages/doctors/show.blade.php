@@ -28,24 +28,17 @@
 		->values();
 @endphp
 
-<div class="breadcumb-wrapper" data-bg-src="{{ asset('frontend/assets/img/bg/breadcumb-doctor-details.jpg') }}">
-	<div class="container">
-		<div class="breadcumb-content">
-			<h1 class="breadcumb-title">{{ $doctor->name }}</h1>
-			<ul class="breadcumb-menu">
-				<li><a href="{{ frontend_route('frontend.home') }}">{{ __('main.home') }}</a></li>
-				<li><a href="{{ frontend_route('frontend.doctors') }}">{{ __('doctors.page_title') }}</a></li>
-				<li>{{ \Illuminate\Support\Str::limit($doctor->name, 40) }}</li>
-			</ul>
-		</div>
-	</div>
-</div>
+<x-breadcrumb
+	:title="$doctor->name"
+	:items="[['label' => __('doctors.page_title'), 'url' => frontend_route('frontend.doctors')]]"
+	:current="\Illuminate\Support\Str::limit($doctor->name, 40)"
+/>
 
 <section class="space-top space-extra-bottom doctor-details-page">
 	<div class="container">
 		<div class="doctor-details-hero">
 			<div class="doctor-details-hero__media">
-				<img src="{{ $doctor->image }}" alt="{{ $doctor->name }}">
+				<img src="{{ $doctor->image }}" alt="{{ $doctor->name }}" decoding="async" fetchpriority="high" width="640" height="480">
 			</div>
 
 			<div class="doctor-details-hero__content">
@@ -163,7 +156,7 @@
 					</div>
 
 					<a href="{{ frontend_route('frontend.clinics.show', $parentClinic) }}" class="doctor-clinic-card">
-						<img src="{{ $parentClinic->image }}" alt="{{ $parentClinic->name }}">
+						<img src="{{ $parentClinic->image }}" alt="{{ $parentClinic->name }}" loading="lazy" decoding="async" width="120" height="120">
 						<div class="doctor-clinic-card__content">
 							<h4>{{ $parentClinic->name }}</h4>
 							@if($cityLabel)
@@ -196,7 +189,7 @@
 					<div class="doctor-review-card">
 						<div class="doctor-review-card__head">
 							<img src="{{ $review->users->image ?? asset('media/logo/logo.png') }}"
-								alt="{{ $review->users->name ?? '' }}">
+								alt="{{ $review->users->name ?? '' }}" loading="lazy" decoding="async" width="48" height="48">
 							<div>
 								<strong>{{ $review->users->name ?? '' }}</strong>
 								<div class="clinic-card-v2__stars">

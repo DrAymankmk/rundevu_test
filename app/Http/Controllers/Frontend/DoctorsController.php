@@ -56,6 +56,7 @@ class DoctorsController extends Controller
             'title' => __('doctors.page_title'),
             'description' => __('doctors.frontend_list_description'),
             'canonical' => frontend_route('frontend.doctors'),
+            'lcp_image' => frontend_breadcrumb_image('doctors'),
         ]);
 
         return view('frontend.pages.doctors.index', compact(
@@ -135,6 +136,7 @@ class DoctorsController extends Controller
             'description' => \Illuminate\Support\Str::limit(strip_tags((string) $info), 160),
             'image' => $doctor->image,
             'canonical' => frontend_route('frontend.doctors.show', $doctor),
+            'lcp_image' => frontend_breadcrumb_image('doctor_details'),
         ]);
 
         return view('frontend.pages.doctors.show', compact(

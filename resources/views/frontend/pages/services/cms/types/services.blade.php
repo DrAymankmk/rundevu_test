@@ -85,11 +85,11 @@ $serviceButtons->push(compact('href', 'label', 'target', 'rel', 'icon', 'btnClas
 							<img src="{{ $itemImg }}"
 								alt="{{ $itemAlt !== '' ? $itemAlt : strip_tags($itemTitle) }}"
 								class="w-100 rounded"
-								style="max-height: 200px; object-fit: cover;">
+								style="max-height: 200px; object-fit: cover;" decoding="async" loading="lazy">
 						</div>
 						@endif
 						<div class="box-icon">
-							<img src="{{ $icon }}" alt="">
+							<img src="{{ $icon }}" alt="" decoding="async" loading="lazy">
 						</div>
 						<h3 class="box-title"><a
 								href="{{ frontend_url('/contact') }}">{{ $itemTitle }}</a>

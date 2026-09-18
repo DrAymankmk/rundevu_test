@@ -58,6 +58,7 @@ class ClinicsController extends Controller
             'title' => __('main.clinics'),
             'description' => __('clinics.frontend_list_description'),
             'canonical' => frontend_route('frontend.clinics'),
+            'lcp_image' => frontend_breadcrumb_image('clinics'),
         ]);
 
         return view('frontend.pages.clinics.index', compact(
@@ -129,6 +130,7 @@ class ClinicsController extends Controller
             'description' => \Illuminate\Support\Str::limit(strip_tags((string) $info), 160),
             'image' => $clinic->image,
             'canonical' => frontend_route('frontend.clinics.show', $clinic),
+            'lcp_image' => frontend_breadcrumb_image('clinic_details'),
         ]);
 
         return view('frontend.pages.clinics.show', compact(

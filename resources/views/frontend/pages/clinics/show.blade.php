@@ -30,24 +30,17 @@
 		filled($clinic->youtube_url);
 @endphp
 
-<div class="breadcumb-wrapper" data-bg-src="{{ asset('frontend/assets/img/bg/breadcumb-clinic-details.jpg') }}">
-	<div class="container">
-		<div class="breadcumb-content">
-			<h1 class="breadcumb-title">{{ $clinic->name }}</h1>
-			<ul class="breadcumb-menu">
-				<li><a href="{{ frontend_route('frontend.home') }}">{{ __('main.home') }}</a></li>
-				<li><a href="{{ frontend_route('frontend.clinics') }}">{{ __('main.clinics') }}</a></li>
-				<li>{{ \Illuminate\Support\Str::limit($clinic->name, 40) }}</li>
-			</ul>
-		</div>
-	</div>
-</div>
+<x-breadcrumb
+	:title="$clinic->name"
+	:items="[['label' => __('main.clinics'), 'url' => frontend_route('frontend.clinics')]]"
+	:current="\Illuminate\Support\Str::limit($clinic->name, 40)"
+/>
 
 <section class="space-top space-extra-bottom clinic-details-page">
 	<div class="container">
 		<div class="clinic-details-hero">
 			<div class="clinic-details-hero__media">
-				<img src="{{ $clinic->image }}" alt="{{ $clinic->name }}">
+				<img src="{{ $clinic->image }}" alt="{{ $clinic->name }}" decoding="async" fetchpriority="high" width="640" height="480">
 			</div>
 
 			<div class="clinic-details-hero__content">
@@ -154,7 +147,7 @@
 						@foreach($clinic->medical_staff as $doctor)
 						<div class="col-sm-6 col-md-4">
 							<a href="{{ frontend_route('frontend.doctors.show', $doctor) }}" class="clinic-doctor-card">
-								<img src="{{ $doctor->image }}" alt="{{ $doctor->name }}">
+								<img src="{{ $doctor->image }}" alt="{{ $doctor->name }}" loading="lazy" decoding="async" width="80" height="80">
 								<div>
 									<h4>{{ $doctor->name }}</h4>
 									<span>{{ __('clinics.view_doctor') }}</span>
@@ -181,7 +174,7 @@
 					<div class="clinic-review-card">
 						<div class="clinic-review-card__head">
 							<img src="{{ $review->users->image ?? asset('media/logo/logo.png') }}"
-								alt="{{ $review->users->name ?? '' }}">
+								alt="{{ $review->users->name ?? '' }}" loading="lazy" decoding="async" width="48" height="48">
 							<div>
 								<strong>{{ $review->users->name ?? '' }}</strong>
 								<div class="clinic-card-v2__stars">

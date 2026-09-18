@@ -6,8 +6,8 @@
 		<div class="swiper-wrapper">
 			<div class="swiper-slide">
 				<div class="hero-inner">
-					<div class="th-hero-bg"
-						data-bg-src=" {{ asset('frontend/assets/img/hero/hero_bg_1_1.jpg') }}">
+					<div class="th-hero-bg background-image"
+						style="background-image: url('{{ asset('frontend/assets/img/hero/hero_bg_1_1.jpg') }}');">
 					</div>
 					<div class="container">
 						<div class="row align-items-end">
@@ -32,13 +32,13 @@
 									<div class="btn-group justify-content-xl-start justify-content-center"
 										data-ani="slideinup"
 										data-ani-delay="0.8s">
-										<a href="contact.html"
+										<a href="{{ frontend_route('frontend.contact') }}"
 											class="th-btn style1">Book
 											an
 											Appointment
 											<i
 												class="fa-solid fa-calendar-days ms-2"></i></a>
-										<a href="service.html"
+										<a href="{{ frontend_route('frontend.services') }}"
 											class="th-btn th-border">Our
 											Departments
 											<i
@@ -50,8 +50,8 @@
 								<div class="hero-image"
 									data-ani="slideinup"
 									data-ani-delay="0.4s">
-									<img src=" {{ asset('frontend/assets/img/hero/hero-image-1.png') }}"
-										alt="">
+									<img src="{{ asset('frontend/assets/img/hero/hero-image-1.png') }}"
+										alt="" decoding="async" fetchpriority="high" width="540" height="640">
 								</div>
 							</div>
 						</div>
@@ -60,8 +60,8 @@
 			</div>
 			<div class="swiper-slide">
 				<div class="hero-inner">
-					<div class="th-hero-bg"
-						data-bg-src=" {{ asset('frontend/assets/img/hero/hero_bg_1_1.jpg') }}">
+					<div class="th-hero-bg background-image"
+						style="background-image: url('{{ asset('frontend/assets/img/hero/hero_bg_1_1.jpg') }}');">
 					</div>
 					<div class="container">
 						<div class="row align-items-end">
@@ -85,13 +85,13 @@
 									<div class="btn-group justify-content-xl-start justify-content-center"
 										data-ani="slideinup"
 										data-ani-delay="0.8s">
-										<a href="contact.html"
+										<a href="{{ frontend_route('frontend.contact') }}"
 											class="th-btn style1">Book
 											an
 											Appointment
 											<i
 												class="fa-solid fa-calendar-days ms-2"></i></a>
-										<a href="service.html"
+										<a href="{{ frontend_route('frontend.services') }}"
 											class="th-btn th-border">Our
 											Departments
 											<i
@@ -103,8 +103,8 @@
 								<div class="hero-image"
 									data-ani="slideinup"
 									data-ani-delay="0.4s">
-									<img src=" {{ asset('frontend/assets/img/hero/hero-image-2.png') }}"
-										alt="">
+									<img src="{{ asset('frontend/assets/img/hero/hero-image-2.png') }}"
+										alt="" decoding="async" loading="lazy">
 								</div>
 							</div>
 						</div>
@@ -113,8 +113,8 @@
 			</div>
 			<div class="swiper-slide">
 				<div class="hero-inner">
-					<div class="th-hero-bg"
-						data-bg-src=" {{ asset('frontend/assets/img/hero/hero_bg_1_1.jpg') }}">
+					<div class="th-hero-bg background-image"
+						style="background-image: url('{{ asset('frontend/assets/img/hero/hero_bg_1_1.jpg') }}');">
 					</div>
 					<div class="container">
 						<div class="row align-items-end">
@@ -138,13 +138,13 @@
 									<div class="btn-group justify-content-xl-start justify-content-center"
 										data-ani="slideinup"
 										data-ani-delay="0.8s">
-										<a href="contact.html"
+										<a href="{{ frontend_route('frontend.contact') }}"
 											class="th-btn style1">Book
 											an
 											Appointment
 											<i
 												class="fa-solid fa-calendar-days ms-2"></i></a>
-										<a href="service.html"
+										<a href="{{ frontend_route('frontend.services') }}"
 											class="th-btn th-border">Our
 											Departments
 											<i
@@ -156,8 +156,8 @@
 								<div class="hero-image"
 									data-ani="slideinup"
 									data-ani-delay="0.4s">
-									<img src=" {{ asset('frontend/assets/img/hero/hero-image-3.png') }}"
-										alt="">
+									<img src="{{ asset('frontend/assets/img/hero/hero-image-3.png') }}"
+										alt="" decoding="async" loading="lazy">
 								</div>
 							</div>
 						</div>

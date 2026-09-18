@@ -19,14 +19,69 @@ class FrontendMediaCatalog
 {
     public const PER_PAGE = 24;
 
+    public const APP_MAX_UPLOAD_KB = 10240;
+
     public const SOURCES = [
         'theme',
+        'breadcrumbs',
         'cms',
         'blogs',
         'blog_categories',
         'clinics',
         'doctors',
     ];
+
+    public static function maxUploadKilobytes(): int
+    {
+        $bytes = [
+            self::iniToBytes((string) ini_get('upload_max_filesize')),
+            self::iniToBytes((string) ini_get('post_max_size')),
+            self::APP_MAX_UPLOAD_KB * 1024,
+        ];
+        $bytes = array_values(array_filter($bytes, static fn ($value) => $value > 0));
+        $limit = $bytes === [] ? (self::APP_MAX_UPLOAD_KB * 1024) : min($bytes);
+
+        return max(256, (int) floor(($limit - (100 * 1024)) / 1024));
+    }
+
+    public static function maxUploadLabel(): string
+    {
+        $bytes = self::maxUploadKilobytes() * 1024;
+        if ($bytes >= 1048576) {
+            $mb = $bytes / 1048576;
+
+            return rtrim(rtrim(number_format($mb, $mb >= 10 ? 0 : 1, '.', ''), '0'), '.') . ' MB';
+        }
+
+        return max(1, (int) round($bytes / 1024)) . ' KB';
+    }
+
+    private static function iniToBytes(string $value): int
+    {
+        $value = trim($value);
+        if ($value === '' || $value === '0') {
+            return 0;
+        }
+
+        $unit = strtolower(substr($value, -1));
+        $number = (float) $value;
+        if (! ctype_alpha($unit)) {
+            return (int) $number;
+        }
+
+        switch ($unit) {
+            case 'g':
+                $number *= 1024;
+                // no break
+            case 'm':
+                $number *= 1024;
+                // no break
+            case 'k':
+                $number *= 1024;
+        }
+
+        return (int) $number;
+    }
 
     /**
      * Recommended pixel sizes for each frontend media slot.
@@ -58,7 +113,7 @@ class FrontendMediaCatalog
                 'width' => 1920,
                 'height' => 400,
                 'label' => '1920 × 400 px',
-                'note' => 'Page breadcrumb banner background.',
+                'note' => 'Page breadcrumb banner. One file per public page; replace from Website Media.',
             ],
             'clinic' => [
                 'width' => 840,
@@ -219,34 +274,6 @@ class FrontendMediaCatalog
                 'hint_key' => 'theme_section_bg',
             ],
             [
-                'id' => 'breadcumb_clinics',
-                'path' => 'frontend/assets/img/bg/breadcumb-clinics.jpg',
-                'title' => 'Clinics list breadcrumb',
-                'slot' => 'Clinics page',
-                'hint_key' => 'theme_breadcrumb_bg',
-            ],
-            [
-                'id' => 'breadcumb_clinic_details',
-                'path' => 'frontend/assets/img/bg/breadcumb-clinic-details.jpg',
-                'title' => 'Clinic details breadcrumb',
-                'slot' => 'Clinic details page',
-                'hint_key' => 'theme_breadcrumb_bg',
-            ],
-            [
-                'id' => 'breadcumb_doctors',
-                'path' => 'frontend/assets/img/bg/breadcumb-doctors.jpg',
-                'title' => 'Doctors list breadcrumb',
-                'slot' => 'Doctors page',
-                'hint_key' => 'theme_breadcrumb_bg',
-            ],
-            [
-                'id' => 'breadcumb_doctor_details',
-                'path' => 'frontend/assets/img/bg/breadcumb-doctor-details.jpg',
-                'title' => 'Doctor details breadcrumb',
-                'slot' => 'Doctor details page',
-                'hint_key' => 'theme_breadcrumb_bg',
-            ],
-            [
                 'id' => 'why_choose_img_1',
                 'path' => 'frontend/assets/img/normal/choose-img-1.jpg',
                 'title' => 'Why Choose Us — photo 1',
@@ -292,6 +319,122 @@ class FrontendMediaCatalog
     }
 
     /**
+     * One replaceable breadcrumb banner per public page.
+     * Files live under public/frontend/assets/img/bg and are edited from /admin/website-media.
+     *
+     * @return array<int, array{id: string, page_key: string, path: string, title: string, slot: string, hint_key: string}>
+     */
+    public static function breadcrumbSlots(): array
+    {
+        return [
+            [
+                'id' => 'breadcumb_default',
+                'page_key' => 'default',
+                'path' => 'frontend/assets/img/bg/breadcumb-bg.jpg',
+                'title' => __('website_media.breadcrumb_default'),
+                'slot' => __('website_media.breadcrumb_slot_fallback'),
+                'hint_key' => 'theme_breadcrumb_bg',
+            ],
+            [
+                'id' => 'breadcumb_about',
+                'page_key' => 'about',
+                'path' => 'frontend/assets/img/bg/breadcumb-about.jpg',
+                'title' => __('website_media.breadcrumb_about'),
+                'slot' => __('website_media.breadcrumb_slot_about'),
+                'hint_key' => 'theme_breadcrumb_bg',
+            ],
+            [
+                'id' => 'breadcumb_services',
+                'page_key' => 'services',
+                'path' => 'frontend/assets/img/bg/breadcumb-services.jpg',
+                'title' => __('website_media.breadcrumb_services'),
+                'slot' => __('website_media.breadcrumb_slot_services'),
+                'hint_key' => 'theme_breadcrumb_bg',
+            ],
+            [
+                'id' => 'breadcumb_faq',
+                'page_key' => 'faq',
+                'path' => 'frontend/assets/img/bg/breadcumb-faq.jpg',
+                'title' => __('website_media.breadcrumb_faq'),
+                'slot' => __('website_media.breadcrumb_slot_faq'),
+                'hint_key' => 'theme_breadcrumb_bg',
+            ],
+            [
+                'id' => 'breadcumb_contact',
+                'page_key' => 'contact',
+                'path' => 'frontend/assets/img/bg/breadcumb-contact.jpg',
+                'title' => __('website_media.breadcrumb_contact'),
+                'slot' => __('website_media.breadcrumb_slot_contact'),
+                'hint_key' => 'theme_breadcrumb_bg',
+            ],
+            [
+                'id' => 'breadcumb_subscription',
+                'page_key' => 'subscription',
+                'path' => 'frontend/assets/img/bg/breadcumb-subscription.jpg',
+                'title' => __('website_media.breadcrumb_subscription'),
+                'slot' => __('website_media.breadcrumb_slot_subscription'),
+                'hint_key' => 'theme_breadcrumb_bg',
+            ],
+            [
+                'id' => 'breadcumb_blog',
+                'page_key' => 'blog',
+                'path' => 'frontend/assets/img/bg/breadcumb-blog.jpg',
+                'title' => __('website_media.breadcrumb_blog'),
+                'slot' => __('website_media.breadcrumb_slot_blog'),
+                'hint_key' => 'theme_breadcrumb_bg',
+            ],
+            [
+                'id' => 'breadcumb_blog_details',
+                'page_key' => 'blog_details',
+                'path' => 'frontend/assets/img/bg/breadcumb-blog-details.jpg',
+                'title' => __('website_media.breadcrumb_blog_details'),
+                'slot' => __('website_media.breadcrumb_slot_blog_details'),
+                'hint_key' => 'theme_breadcrumb_bg',
+            ],
+            [
+                'id' => 'breadcumb_clinics',
+                'page_key' => 'clinics',
+                'path' => 'frontend/assets/img/bg/breadcumb-clinics.jpg',
+                'title' => __('website_media.breadcrumb_clinics'),
+                'slot' => __('website_media.breadcrumb_slot_clinics'),
+                'hint_key' => 'theme_breadcrumb_bg',
+            ],
+            [
+                'id' => 'breadcumb_clinic_details',
+                'page_key' => 'clinic_details',
+                'path' => 'frontend/assets/img/bg/breadcumb-clinic-details.jpg',
+                'title' => __('website_media.breadcrumb_clinic_details'),
+                'slot' => __('website_media.breadcrumb_slot_clinic_details'),
+                'hint_key' => 'theme_breadcrumb_bg',
+            ],
+            [
+                'id' => 'breadcumb_doctors',
+                'page_key' => 'doctors',
+                'path' => 'frontend/assets/img/bg/breadcumb-doctors.jpg',
+                'title' => __('website_media.breadcrumb_doctors'),
+                'slot' => __('website_media.breadcrumb_slot_doctors'),
+                'hint_key' => 'theme_breadcrumb_bg',
+            ],
+            [
+                'id' => 'breadcumb_doctor_details',
+                'page_key' => 'doctor_details',
+                'path' => 'frontend/assets/img/bg/breadcumb-doctor-details.jpg',
+                'title' => __('website_media.breadcrumb_doctor_details'),
+                'slot' => __('website_media.breadcrumb_slot_doctor_details'),
+                'hint_key' => 'theme_breadcrumb_bg',
+            ],
+            [
+                'id' => 'breadcumb_social',
+                'page_key' => 'social',
+                'path' => 'frontend/assets/img/bg/breadcumb-social.jpg',
+                'title' => __('website_media.breadcrumb_social'),
+                'slot' => __('website_media.breadcrumb_slot_social'),
+                'hint_key' => 'theme_breadcrumb_bg',
+            ],
+        ];
+    }
+
+    /**
      * @return array{data: array<int, array<string, mixed>>, meta: array<string, mixed>, counts: array<string, int>}
      */
     public function paginate(array $filters, int $page = 1, int $perPage = self::PER_PAGE): array
@@ -326,6 +469,7 @@ class FrontendMediaCatalog
     public function collect(): Collection
     {
         return $this->themeItems()
+            ->concat($this->breadcrumbItems())
             ->concat($this->clinicItems())
             ->concat($this->doctorItems())
             ->concat($this->blogPostItems())
@@ -342,7 +486,7 @@ class FrontendMediaCatalog
             throw new \InvalidArgumentException(__('website_media.invalid_media'));
         }
 
-        if (in_array($source, ['theme', 'clinic', 'doctor', 'blog_post', 'blog_category'], true)
+        if (in_array($source, ['theme', 'breadcrumbs', 'clinic', 'doctor', 'blog_post', 'blog_category'], true)
             && ! Str::startsWith((string) $file->getMimeType(), 'image/')) {
             throw new \InvalidArgumentException(__('website_media.invalid_media'));
         }
@@ -351,6 +495,7 @@ class FrontendMediaCatalog
 
         switch ($source) {
             case 'theme':
+            case 'breadcrumbs':
                 $this->replaceThemeFile($id, $file);
                 break;
             case 'clinic':
@@ -439,6 +584,33 @@ class FrontendMediaCatalog
                 'title' => $slot['title'],
                 'subtitle' => $slot['slot'],
                 'collection' => 'theme',
+                'file_name' => basename($relative),
+                'url' => $exists ? asset($relative).'?v='.filemtime($absolute) : null,
+                'path' => $exists ? $absolute : null,
+                'has_image' => $exists,
+                'is_active' => true,
+                'updated_at' => $exists ? filemtime($absolute) : 0,
+                'hint' => $hint,
+                'mime_type' => $exists ? ($this->detectMime($absolute) ?: 'image/jpeg') : 'image/jpeg',
+            ]);
+        });
+    }
+
+    private function breadcrumbItems(): Collection
+    {
+        return collect(self::breadcrumbSlots())->map(function (array $slot) {
+            $relative = $slot['path'];
+            $absolute = public_path($relative);
+            $exists = is_file($absolute);
+            $hint = $this->hint($slot['hint_key']);
+
+            return $this->makeItem([
+                'key' => 'breadcrumbs:'.$slot['id'],
+                'source' => 'breadcrumbs',
+                'source_label' => 'breadcrumbs',
+                'title' => $slot['title'],
+                'subtitle' => $slot['slot'],
+                'collection' => 'breadcrumbs',
                 'file_name' => basename($relative),
                 'url' => $exists ? asset($relative).'?v='.filemtime($absolute) : null,
                 'path' => $exists ? $absolute : null,
@@ -1017,7 +1189,9 @@ class FrontendMediaCatalog
 
     private function replaceThemeFile(string $id, UploadedFile $file): void
     {
-        $slot = collect(self::themeSlots())->firstWhere('id', $id);
+        $slot = collect(self::themeSlots())
+            ->concat(self::breadcrumbSlots())
+            ->firstWhere('id', $id);
         if (! $slot) {
             throw new \InvalidArgumentException(__('website_media.invalid_media'));
         }

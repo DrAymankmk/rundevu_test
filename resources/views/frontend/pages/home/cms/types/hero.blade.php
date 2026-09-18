@@ -125,8 +125,8 @@ $slides->push([
         }
 }
 
-$appleUrl = 'https://apps.apple.com/us/app/randevu-%D8%B1%D8%A7%D9%86%D8%AF%D9%8A%D9%81%D9%88/id6761128352';
-$googleUrl = 'https://play.google.com/store/apps/details?id=com.takaful.rendezvous';
+$appleUrl = website_store_url('apple');
+$googleUrl = website_store_url('google_play');
 @endphp
 <div class="th-hero-wrapper hero-1" id="hero-{{ $section->id }}">
 	<div class="swiper th-slider" data-slider-options='{"effect":"fade"}'>
@@ -134,7 +134,7 @@ $googleUrl = 'https://play.google.com/store/apps/details?id=com.takaful.rendezvo
 			@foreach($slides as $slide)
 			<div class="swiper-slide">
 				<div class="hero-inner">
-					<div class="th-hero-bg" data-bg-src="{{ $bg }}"></div>
+					<div class="th-hero-bg" style="background-image: url('{{ $bg }}');"></div>
 					<div class="container">
 						<div class="row align-items-center">
 							<div class="col-xl-7">
@@ -184,18 +184,26 @@ $googleUrl = 'https://play.google.com/store/apps/details?id=com.takaful.rendezvo
 								<div class="hero-app-cta" style="padding-top: 280px;"
 									data-ani="slideinup"
 									data-ani-delay="0.5s">
+									@if($appleUrl !== '' || $googleUrl !== '')
 									<div class="hero-app-cta__stores">
+										@if($appleUrl !== '')
 										<a class="hero-app-cta__store" href="{{ $appleUrl }}"
 											target="_blank" rel="noopener noreferrer">
 											<img src="{{ asset('frontend/assets/img/icon/apple.svg') }}"
-												alt="{{ __('main.app_store') }}">
+												width="168" height="50"
+												alt="{{ __('main.app_store') }}" decoding="async" loading="lazy">
 										</a>
+										@endif
+										@if($googleUrl !== '')
 										<a class="hero-app-cta__store" href="{{ $googleUrl }}"
 											target="_blank" rel="noopener noreferrer">
 											<img src="{{ asset('frontend/assets/img/icon/google-play.svg') }}"
-												alt="{{ __('main.google_play') }}">
+												width="168" height="50"
+												alt="{{ __('main.google_play') }}" decoding="async" loading="lazy">
 										</a>
+										@endif
 									</div>
+									@endif
 									<a href="{{ frontend_route('frontend.subscription') }}"
 										class="th-btn style1" style="padding: 15px !important">
 										{{ __('main.register_clinic') }}

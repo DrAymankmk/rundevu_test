@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
 
 Route::get('/sitemap.xml', 'SitemapController')->name('sitemap');
+Route::get('/robots.txt', 'SeoFilesController@robots')->name('robots');
 
 Route::get('/clear', function () {
 //    Artisan::call('optimize:clear');
@@ -212,6 +213,14 @@ Route::group(["middleware" => ["auth", "setlocale"], 'prefix' => 'admin', 'names
     Route::get('website-media/data', 'FrontendMediaController@data')->name('website-media.data');
     Route::post('website-media/update', 'FrontendMediaController@update')->name('website-media.update');
     Route::post('website-media/convert', 'FrontendMediaController@convert')->name('website-media.convert');
+
+    Route::get('website-links', 'WebsiteLinkController@index')->name('website-links.index');
+    Route::get('website-links/create', 'WebsiteLinkController@create')->name('website-links.create');
+    Route::post('website-links', 'WebsiteLinkController@store')->name('website-links.store');
+    Route::get('website-links/{id}/edit', 'WebsiteLinkController@edit')->name('website-links.edit');
+    Route::put('website-links/{id}', 'WebsiteLinkController@update')->name('website-links.update');
+    Route::delete('website-links/{id}', 'WebsiteLinkController@destroy')->name('website-links.destroy');
+    Route::post('website-links/{id}/toggle-status', 'WebsiteLinkController@toggleStatus')->name('website-links.toggle-status');
 
 // cms links
     Route::group(['namespace' => 'CMS', 'prefix' => 'cms', 'as' => 'cms.'], function () {

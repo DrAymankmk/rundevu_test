@@ -53,7 +53,7 @@ return [
 ];
 };
 @endphp
-<section class="position-relative overflow-hidden space" data-bg-src="{{ $bg }}" id="section-{{ $section->id }}">
+<section class="background-image position-relative overflow-hidden space" id="section-{{ $section->id }}" style="background-image: url('{{ $bg }}');">
 	<div class="container">
 		<div class="row justify-content-center">
 			<div class="col-xl-5">
@@ -115,7 +115,7 @@ return [
 							<div class="box-right-wrapp">
 								<div class="box-img global-img">
 									<img src="{{ $simg }}"
-										alt="{{ $simgAlt }}">
+										alt="{{ $simgAlt }}" decoding="async" loading="lazy">
 								</div>
 								@if($itemLink)
 								<div class="service-btn">

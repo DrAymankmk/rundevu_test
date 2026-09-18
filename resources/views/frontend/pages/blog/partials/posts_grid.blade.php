@@ -22,7 +22,7 @@
     <div class="th-blog blog-single has-post-thumbnail single-grid">
         <div class="blog-img global-img">
             <a href="{{ frontend_route('frontend.blog.show', $post->getRouteSlug()) }}">
-                <img src="{{ $image }}" alt="{{ $title }}">
+                <img src="{{ $image }}" alt="{{ $title }}" loading="lazy" decoding="async">
             </a>
         </div>
         <div class="blog-content">

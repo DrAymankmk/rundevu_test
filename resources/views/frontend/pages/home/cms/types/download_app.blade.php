@@ -18,19 +18,19 @@ $google = $items->first(fn ($i) => str_contains(strtolower($i->slug ?? ''), 'goo
 str_contains(strtolower($i->slug ?? ''), 'play')) ?? $items->get(1);
 $appleIt = $apple ? ($apple->translation($locale) ?? $apple->translation($fb)) : null;
 $googleIt = $google ? ($google->translation($locale) ?? $google->translation($fb)) : null;
-$appleUrl = $appleIt?->content ? strip_tags($appleIt->content) :
-'https://apps.apple.com/us/app/randevu-%D8%B1%D8%A7%D9%86%D8%AF%D9%8A%D9%81%D9%88/id6761128352';
-$googleUrl = $googleIt?->content ? strip_tags($googleIt->content) :
-'https://play.google.com/store/apps/details?id=com.takaful.rendezvous';
+$cmsAppleUrl = $appleIt?->content ? strip_tags($appleIt->content) : '';
+$cmsGoogleUrl = $googleIt?->content ? strip_tags($googleIt->content) : '';
+$appleUrl = website_store_url('apple', $cmsAppleUrl);
+$googleUrl = website_store_url('google_play', $cmsGoogleUrl);
 @endphp
-<section class="download-area space overflow-hidden" data-bg-src="{{ asset('frontend/assets/img/download_bg.jpeg') }}"
+<section class="download-area space overflow-hidden background-image" style="background-image: url('{{ asset('frontend/assets/img/download_bg.jpeg') }}');"
 	id="section-{{ $section->id }}">
 	<div class="container">
 		<div class="row gy-5 align-items-center">
 			<div class="col-xl-6">
 				<div class="download-img">
 					<div class="img1">
-						<img src="{{ $phoneImg }}" alt="{{ $phoneAlt }}">
+						<img src="{{ $phoneImg }}" alt="{{ $phoneAlt }}" loading="lazy" decoding="async">
 					</div>
 				</div>
 			</div>
@@ -49,17 +49,25 @@ $googleUrl = $googleIt?->content ? strip_tags($googleIt->content) :
 							features are the most important for your specific
 							patients.")) !!}</p>
 					</div>
+					@if($appleUrl !== '' || $googleUrl !== '')
 					<div class="btn-group download-btn mt-50 justify-content-center justify-content-xl-start wow fadeInUp"
 						data-wow-delay=".2s">
+						@if($appleUrl !== '')
 						<a href="{{ $appleUrl }}" target="_blank"
 							rel="noopener noreferrer"><img
 								src="{{ asset('frontend/assets/img/icon/apple.svg') }}"
-								alt="App Store"></a>
+								width="168" height="50" loading="lazy" decoding="async"
+								alt="{{ __('main.app_store') }}"></a>
+						@endif
+						@if($googleUrl !== '')
 						<a href="{{ $googleUrl }}" target="_blank"
 							rel="noopener noreferrer"><img
 								src="{{ asset('frontend/assets/img/icon/google-play.svg') }}"
-								alt="Google Play"></a>
+								width="168" height="50" loading="lazy" decoding="async"
+								alt="{{ __('main.google_play') }}"></a>
+						@endif
 					</div>
+					@endif
 				</div>
 			</div>
 		</div>

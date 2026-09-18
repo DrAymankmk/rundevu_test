@@ -49,6 +49,7 @@ class BlogController extends Controller
             'title' => __('main.blogs'),
             'description' => __('blog.frontend_list_description'),
             'canonical' => frontend_route('frontend.blog'),
+            'lcp_image' => frontend_breadcrumb_image('blog'),
         ]);
 
         return view('frontend.pages.blog.index', compact(
@@ -127,6 +128,7 @@ class BlogController extends Controller
             'description' => $summary,
             'image' => $image,
             'canonical' => frontend_route('frontend.blog.show', $canonicalSlug !== '' ? $canonicalSlug : $slug),
+            'lcp_image' => $image ?: frontend_breadcrumb_image('blog_details'),
         ]);
 
         return view('frontend.pages.blog.blog_details', compact(

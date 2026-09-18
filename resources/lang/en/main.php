@@ -368,6 +368,7 @@ return [
     'cms-links' => 'Links',
     'cms-media' => 'Media',
     'website-media' => 'Website Media',
+    'website-links' => 'Social & App Links',
     'blogs' => 'Blogs',
     'blog-posts' => 'Posts',
     'blog-categories' => 'Categories',
@@ -567,4 +568,5 @@ return [
     'wa_scan_hint' => 'Point your camera at the code to start chatting',
     'wa_open_whatsapp' => 'Open WhatsApp chat',
     'wa_close' => 'Close',
+    'skip_to_content' => 'Skip to content',
 ];

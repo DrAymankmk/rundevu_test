@@ -131,6 +131,6 @@
         </div>
     </div>
     <div class="shape-mockup d-none d-xxl-block" data-top="0%" data-right="0%">
-        <img src="{{ asset('frontend/assets/img/shape/element-1.png') }}" alt="">
+        <img src="{{ asset('frontend/assets/img/shape/element-1.png') }}" alt="" decoding="async" loading="lazy">
     </div>
 </section>
