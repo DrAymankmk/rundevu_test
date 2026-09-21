@@ -10,15 +10,15 @@ collect();
 $defaultIcons = ['service_1_1.svg', 'service_1_2.svg', 'service_1_3.svg'];
 
 $resolveHref = static function (?string $raw): string {
-    $raw = trim((string) $raw);
-    if ($raw === '') {
-        return '#';
-    }
-    if (preg_match('#^(https?:)?//#i', $raw) || str_starts_with($raw, 'mailto:') || str_starts_with($raw, 'tel:')) {
-        return $raw;
-    }
+$raw = trim((string) $raw);
+if ($raw === '') {
+return '#';
+}
+if (preg_match('#^(https?:)?//#i', $raw) || str_starts_with($raw, 'mailto:') || str_starts_with($raw, 'tel:')) {
+return $raw;
+}
 
-    return frontend_url(str_starts_with($raw, '/') ? $raw : '/' . ltrim($raw, '/'));
+return frontend_url(str_starts_with($raw, '/') ? $raw : '/' . ltrim($raw, '/'));
 };
 
 $serviceButtons = collect();
@@ -85,15 +85,17 @@ $serviceButtons->push(compact('href', 'label', 'target', 'rel', 'icon', 'btnClas
 							<img src="{{ $itemImg }}"
 								alt="{{ $itemAlt !== '' ? $itemAlt : strip_tags($itemTitle) }}"
 								class="w-100 rounded"
-								style="max-height: 200px; object-fit: cover;" decoding="async" loading="lazy">
+								style="max-height: 200px; object-fit: cover;"
+								decoding="async" loading="lazy">
 						</div>
 						@endif
 						<div class="box-icon">
-							<img src="{{ $icon }}" alt="" decoding="async" loading="lazy">
+							<img src="{{ $icon }}" alt="" decoding="async"
+								loading="lazy">
 						</div>
-						<h3 class="box-title"><a
+						<h2 class="box-title"><a
 								href="{{ frontend_url('/contact') }}">{{ $itemTitle }}</a>
-						</h3>
+						</h2>
 						<p class="box-text">{!! $itemDesc !!}</p>
 						@if($serviceButtons->isNotEmpty())
 						<a href="{{ $serviceButtons->first()?->href ?? '#' }}"

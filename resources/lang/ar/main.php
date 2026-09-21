@@ -404,7 +404,7 @@ return [
     'google_play' => 'جوجل بلاي',
     'all_rights_reserved' => 'جميع الحقوق محفوظة',
     'for_emergency_call_now' => 'للطوارئ، اتصل الآن',
-    'social_media' => 'وسائط التواصل الاجتماعي',
+    'social_media' => 'وسائل التواصل الاجتماعي',
     'play_video' => 'تشغيل الفيديو',
     'follow_us' => 'تابعنا',
     'social_media_page_title' => 'تواصل مع رنديفو',
