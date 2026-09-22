@@ -389,6 +389,13 @@ if (! function_exists('website_social_platforms')) {
     }
 }
 
+if (! function_exists('website_store_platforms')) {
+    function website_store_platforms(): \Illuminate\Support\Collection
+    {
+        return app(\App\Services\Frontend\WebsiteLinkCatalog::class)->storePlatforms();
+    }
+}
+
 if (! function_exists('website_store_url')) {
     function website_store_url(string $key, ?string $fallback = null): string
     {

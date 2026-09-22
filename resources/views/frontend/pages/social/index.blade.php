@@ -17,6 +17,10 @@
 	gap: 1.5rem;
 }
 
+.social-platform-grid + .social-platform-grid {
+	margin-top: 1.5rem;
+}
+
 .social-platform-card {
 	position: relative;
 	display: flex;
@@ -138,10 +142,44 @@
 			<p class="mb-0">{{ __('main.social_media_page_subtitle') }}</p>
 		</div>
 
+		@if($storePlatforms->isNotEmpty())
+		<div class="social-platform-grid">
+			@foreach($storePlatforms as $platform)
+			@php
+			$platformKey = $platform['key'] ?? 'store';
+			$brandColor = $platform['brand_color'] ?? '#3E66F3';
+			$platformTitle = $platform['title'] ?? __('main.download_app');
+			$isLightIcon = $platform['is_light_icon'] ?? false;
+			$ctaLabel = __('main.download_now');
+			@endphp
+			<article class="social-platform-card{{ $isLightIcon ? ' is-light-icon' : '' }}"
+				style="--platform-color: {{ $brandColor }};">
+				<div class="social-platform-icon" aria-hidden="true">
+					<i class="{{ $platform['icon'] ?? 'fas fa-mobile-screen' }}"></i>
+				</div>
+				<h3 class="social-platform-name">
+					{{ $platformTitle }}
+				</h3>
+				<p class="social-platform-text">
+					{{ $platform['description'] ?? '' }}
+				</p>
+				<a href="{{ $platform['url'] }}" class="social-platform-btn" target="_blank"
+					rel="noopener noreferrer"
+					aria-label="{{ $ctaLabel }} - {{ $platformTitle }}">
+					<span>{{ $ctaLabel }}</span>
+					<i class="fa-regular fa-arrow-up-right-from-square"></i>
+				</a>
+			</article>
+			@endforeach
+		</div>
+		@endif
+
 		@if($platforms->isEmpty())
+		@if($storePlatforms->isEmpty())
 		<div class="alert alert-info text-center mb-0" role="alert">
 			{{ __('main.social_media_coming_soon') }}
 		</div>
+		@endif
 		@else
 		<div class="social-platform-grid">
 			@foreach($platforms as $platform)
@@ -172,16 +210,6 @@
 			@endforeach
 		</div>
 		@endif
-
-		<!-- <div class="social-page-cta mt-50">
-			<h3 class="text-white mb-15">{{ __('main.social_media_cta_title') }}</h3>
-			<p class="mb-25 text-white">{{ __('main.social_media_cta_text') }}</p>
-			<a href="{{ frontend_route('frontend.contact') }}" class="th-btn">
-				{{ __('main.contact') }}
-				<i
-					class="fa-regular fa-arrow-{{ app()->getLocale() === 'ar' ? 'left' : 'right' }} ms-2"></i>
-			</a>
-		</div> -->
 	</div>
 </section>
 @endsection

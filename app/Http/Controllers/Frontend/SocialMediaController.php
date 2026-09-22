@@ -14,6 +14,7 @@ class SocialMediaController extends Controller
     public function index()
     {
         $platforms = website_social_platforms();
+        $storePlatforms = website_store_platforms();
 
         $seo = $this->seoResolver->defaults([
             'title' => __('main.social_media'),
@@ -22,6 +23,6 @@ class SocialMediaController extends Controller
             'lcp_image' => frontend_breadcrumb_image('social'),
         ]);
 
-        return view('frontend.pages.social.index', compact('platforms', 'seo'));
+        return view('frontend.pages.social.index', compact('platforms', 'storePlatforms', 'seo'));
     }
 }

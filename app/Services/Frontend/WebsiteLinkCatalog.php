@@ -27,6 +27,21 @@ class WebsiteLinkCatalog
         return $this->configSocialPlatforms();
     }
 
+    public function storePlatforms(): Collection
+    {
+        $fromDb = $this->records()
+            ->where('type', WebsiteLink::TYPE_STORE)
+            ->where('is_active', true)
+            ->filter(static fn (WebsiteLink $link) => filled($link->url))
+            ->values();
+
+        if ($fromDb->isNotEmpty()) {
+            return $fromDb->map(fn (WebsiteLink $link) => $this->toPlatformArray($link))->values();
+        }
+
+        return $this->configStorePlatforms();
+    }
+
     public function storeUrl(string $key, ?string $fallback = null): string
     {
         $key = $this->normalizeStoreKey($key);
@@ -123,6 +138,45 @@ class WebsiteLinkCatalog
                     'is_light_icon' => $this->isLightColor($key, $color),
                 ];
             })
+            ->values();
+    }
+
+    private function configStorePlatforms(): Collection
+    {
+        $defaults = [
+            WebsiteLink::KEY_APPLE => [
+                'icon' => 'fab fa-apple',
+                'brand_color' => '#000000',
+                'title' => __('main.app_store'),
+                'description' => __('main.social_store_apple_desc'),
+            ],
+            WebsiteLink::KEY_GOOGLE_PLAY => [
+                'icon' => 'fab fa-google-play',
+                'brand_color' => '#34A853',
+                'title' => __('main.google_play'),
+                'description' => __('main.social_store_google_play_desc'),
+            ],
+        ];
+
+        return collect($defaults)
+            ->map(function (array $meta, string $key) {
+                $url = $this->storeUrl($key);
+                if ($url === '') {
+                    return null;
+                }
+
+                return [
+                    'id' => null,
+                    'key' => $key,
+                    'url' => $url,
+                    'icon' => $meta['icon'],
+                    'brand_color' => $meta['brand_color'],
+                    'title' => $meta['title'],
+                    'description' => $meta['description'],
+                    'is_light_icon' => false,
+                ];
+            })
+            ->filter()
             ->values();
     }
 
