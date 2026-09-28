@@ -35,4 +35,11 @@ return [
     'call_doctor' => 'اتصل بالطبيب',
     'back_to_doctors' => 'العودة إلى الأطباء',
     'clinic_affiliation' => 'يعمل في هذه العيادة',
+    'specialties_subtitle' => 'ابحث عن طبيب',
+    'specialties_title' => 'التخصصات',
+    'specialties_description' => 'اختر تخصصًا لعرض الأطباء الذين يعملون فيه.',
+    'specialties_prev' => 'التخصصات السابقة',
+    'specialties_next' => 'التخصصات التالية',
+    'specialty_doctors_title' => 'أطباء :specialty',
+    'specialty_list_description' => 'تصفح أطباء :specialty واطلع على ملفاتهم.',
 ];

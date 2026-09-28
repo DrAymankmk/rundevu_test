@@ -1,7 +1,20 @@
 @extends('frontend.layout.app')
 
 @section('content')
-<x-breadcrumb :title="__('doctors.page_title')" />
+@php
+	$activeSpecialty = $activeSpecialty ?? null;
+	$specialtyName = $specialtyName ?? '';
+	$listTitle = $listTitle ?? __('doctors.page_title');
+@endphp
+
+<x-breadcrumb
+	:title="$listTitle"
+	:current="$specialtyName !== '' ? $specialtyName : $listTitle"
+	:items="$activeSpecialty ? [['label' => __('doctors.page_title'), 'url' => frontend_route('frontend.doctors')]] : []"
+	page="doctors"
+/>
+
+@include('frontend.pages.home.sections.specialties_section')
 
 <section class="space-top space-extra-bottom doctors-listing-sec" style="padding: 40px 40px;">
 	<div class="container">

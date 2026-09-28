@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Models\CmsPage;
+use App\Models\Specialty;
 use App\Services\Seo\SeoResolver;
 
 class HomeController extends Controller
@@ -52,6 +53,15 @@ class HomeController extends Controller
             ? $heroSection->getMediaUrl('images', app()->getLocale(), asset('frontend/assets/img/hero/hero_bg_1_1.jpg'), true)
             : asset('frontend/assets/img/hero/hero_bg_1_1.jpg');
 
-        return view('frontend.pages.home.index', compact('cmsPage', 'cmsPageSections', 'seo'));
+        $locale = app()->getLocale();
+        $specialties = Specialty::assignFrontendSlugs(
+            Specialty::query()
+                ->where('status', 1)
+                ->whereNull('parent_id')
+                ->orderBy($locale === 'en' ? 'name_en' : 'name_ar')
+                ->get()
+        );
+
+        return view('frontend.pages.home.index', compact('cmsPage', 'cmsPageSections', 'seo', 'specialties'));
     }
 }

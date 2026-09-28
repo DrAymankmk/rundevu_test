@@ -184,6 +184,10 @@ return [
     'name' => 'Name',
     'image' => 'Image',
     'images' => 'Upload Image',
+    'icon' => 'Icon',
+    'remove_image' => 'Remove image',
+    'specialty_icon_hint' => 'Pick an icon, or upload an image below. The image is shown when both are set.',
+    'specialty_image_hint' => 'Optional. JPG, PNG, or WebP up to 4 MB.',
 
     'dashboard' => 'Dashboard',
 

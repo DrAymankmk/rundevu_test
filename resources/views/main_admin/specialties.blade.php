@@ -106,6 +106,13 @@
                         <tr id="row-{{ $specialization->id }}">
                         <td>
                             <div class="d-flex align-items-center">
+                                @if($specialization->imageUrl())
+                                    <img src="{{ $specialization->imageUrl() }}" alt="" width="36" height="36" class="rounded-circle me-2" style="object-fit: cover;">
+                                @elseif(filled($specialization->icon))
+                                    <span class="avatar avatar-sm bg-light text-primary me-2 d-inline-flex align-items-center justify-content-center">
+                                        <i class="{{ $specialization->icon }}"></i>
+                                    </span>
+                                @endif
                                 <div>
                                     <h6 class="mb-0 fs-14 fw-semibold"><a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#view_staff">{{ app()->getLocale() == 'en' ? $specialization->name_en : $specialization->name_ar }}</a></h6>
                                 </div>
@@ -138,7 +145,7 @@
                                         <h4 class="text-dark modal-title fw-bold">{{ trans('admin.Edit Specialization') }} {{ app()->getLocale() == 'en' ? $specialization->name_en : $specialization->name_ar }}</h4>
                                         <button type="button" class="btn-close btn-close-modal custom-btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="ti ti-x"></i></button>
                                     </div>
-                                    <form action="{{ route('update-MainSpecialty',$specialization->id) }}" method="POST">
+                                    <form action="{{ route('update-MainSpecialty',$specialization->id) }}" method="POST" enctype="multipart/form-data">
                                         @csrf
                                         <div class="modal-body">
                                             <div class="mb-3">
@@ -151,6 +158,12 @@
                                                 <input type="text" class="form-control"  placeholder="@lang('admin.name_en')" name="name_en"
                                                        value="{{$specialization->name_en}}" required>
                                             </div>
+                                            @include('main_admin.partials.specialty_media_fields', [
+                                                'inputId' => 'specialty_icon_'.$specialization->id,
+                                                'iconValue' => old('icon', $specialization->icon),
+                                                'imageUrl' => $specialization->imageUrl(),
+                                                'showRemove' => true,
+                                            ])
                                             <div class="mb-0">
                                                 <label class="form-label">{{ trans('admin.status') }}</label>
                                                 <select class="select" name="status">
@@ -198,7 +211,7 @@
                     <button type="button" class="btn-close btn-close-modal custom-btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="ti ti-x"></i></button>
                 </div>
                 <form id="add_department_form" action="{{ route('add-mainSpecialty') }}"
-                      method="POST">
+                      method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="modal-body">
                         <div class="mb-3">
@@ -212,6 +225,11 @@
                             <input type="text" class="form-control"  placeholder="@lang('admin.name_en')" name="name_en"
                                    value="{{old('name_en')}}" required>
                         </div>
+
+                        @include('main_admin.partials.specialty_media_fields', [
+                            'inputId' => 'specialty_icon_create',
+                            'iconValue' => old('icon'),
+                        ])
 
                         <div class="mb-0">
                             <label class="form-label">{{ trans('admin.status') }}</label>
@@ -231,6 +249,11 @@
         </div>
     </div>
     <!-- End Add Modal -->
+
+    @include('components.icon-picker', [
+        'renderSharedModal' => true,
+        'sharedModalId' => 'specialtyIconPicker',
+    ])
 
 
 

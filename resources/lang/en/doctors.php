@@ -35,4 +35,11 @@ return [
     'call_doctor' => 'Call doctor',
     'back_to_doctors' => 'Back to doctors',
     'clinic_affiliation' => 'Works at this clinic',
+    'specialties_subtitle' => 'Find a doctor',
+    'specialties_title' => 'Specialties',
+    'specialties_description' => 'Choose a specialty to see the doctors who practice it.',
+    'specialties_prev' => 'Previous specialties',
+    'specialties_next' => 'Next specialties',
+    'specialty_doctors_title' => ':specialty Doctors',
+    'specialty_list_description' => 'Browse :specialty doctors and view their profiles.',
 ];

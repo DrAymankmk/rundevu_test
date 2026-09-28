@@ -14,10 +14,14 @@
 			: ($specialty->name_ar ?: $specialty->name_en);
 	};
 	$hasActiveFilters = filled($search) || (int) $cityId > 0 || (int) $specialtyId > 0 || (int) $clinicId > 0;
+	$activeSpecialty = $activeSpecialty ?? null;
+	$formAction = ($activeSpecialty && filled($activeSpecialty->frontend_slug ?? null))
+		? frontend_route('frontend.doctors.show', $activeSpecialty->frontend_slug)
+		: frontend_route('frontend.doctors');
 @endphp
 
 <div class="doctors-filters mb-30">
-	<form action="{{ frontend_route('frontend.doctors') }}" method="GET" class="doctors-filters__panel">
+	<form action="{{ $formAction }}" method="GET" class="doctors-filters__panel" data-doctors-filters>
 		<div class="row gy-3 gx-3 align-items-end">
 			<div class="col-md-6 col-xl-3">
 				<label class="form-label fw-semibold mb-2">{{ __('main.search') }}</label>
@@ -45,10 +49,12 @@
 
 			<div class="col-md-6 col-xl-2">
 				<label class="form-label fw-semibold mb-2">{{ __('doctors.specialty') }}</label>
-				<select name="specialty_id" class="form-select">
-					<option value="">{{ __('doctors.all_specialties') }}</option>
+				<select name="specialty_id" class="form-select" data-specialty-select>
+					<option value="" data-url="{{ frontend_route('frontend.doctors') }}">{{ __('doctors.all_specialties') }}</option>
 					@foreach($specialties as $specialty)
-						<option value="{{ $specialty->id }}" {{ (int) $specialtyId === (int) $specialty->id ? 'selected' : '' }}>
+						<option value="{{ $specialty->id }}"
+							data-url="{{ frontend_route('frontend.doctors.show', $specialty->frontend_slug) }}"
+							{{ (int) $specialtyId === (int) $specialty->id ? 'selected' : '' }}>
 							{{ $specialtyName($specialty) }}
 						</option>
 					@endforeach
@@ -84,3 +90,23 @@
 		@endif
 	</form>
 </div>
+<script>
+	document.addEventListener('DOMContentLoaded', function () {
+		var form = document.querySelector('[data-doctors-filters]');
+		if (!form) {
+			return;
+		}
+
+		form.addEventListener('submit', function () {
+			var select = form.querySelector('[data-specialty-select]');
+			var option = select && select.selectedOptions ? select.selectedOptions[0] : null;
+			var url = option ? option.getAttribute('data-url') : '';
+			if (url) {
+				form.action = url;
+			}
+			if (select) {
+				select.disabled = true;
+			}
+		});
+	});
+</script>

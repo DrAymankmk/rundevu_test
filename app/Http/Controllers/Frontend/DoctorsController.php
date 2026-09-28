@@ -21,10 +21,17 @@ class DoctorsController extends Controller
 
     public function index(Request $request)
     {
+        return $this->renderIndex($request, null);
+    }
+
+    private function renderIndex(Request $request, ?Specialty $activeSpecialty)
+    {
         $locale = app()->getLocale();
         $search = trim((string) $request->get('q', ''));
         $cityId = (int) $request->get('city_id', 0);
-        $specialtyId = (int) $request->get('specialty_id', 0);
+        $specialtyId = $activeSpecialty
+            ? (int) $activeSpecialty->id
+            : (int) $request->get('specialty_id', 0);
         $clinicId = (int) $request->get('clinic_id', 0);
 
         $doctors = $this->filteredDoctorsQuery($search, $cityId, $specialtyId, $clinicId)
@@ -40,11 +47,20 @@ class DoctorsController extends Controller
             ->orderBy($locale === 'en' ? 'name_en' : 'name_ar')
             ->get();
 
-        $specialties = Specialty::query()
-            ->where('status', 1)
-            ->whereNull('parent_id')
-            ->orderBy($locale === 'en' ? 'name_en' : 'name_ar')
-            ->get();
+        $specialties = Specialty::assignFrontendSlugs(
+            Specialty::query()
+                ->where('status', 1)
+                ->whereNull('parent_id')
+                ->orderBy($locale === 'en' ? 'name_en' : 'name_ar')
+                ->get()
+        );
+
+        if ($activeSpecialty) {
+            $activeSpecialty->setAttribute(
+                'frontend_slug',
+                Specialty::frontendSlugMap()[(int) $activeSpecialty->id] ?? $activeSpecialty->frontend_slug
+            );
+        }
 
         $clinics = Clinic::query()
             ->where('app_type', 1)
@@ -52,10 +68,21 @@ class DoctorsController extends Controller
             ->orderBy('name')
             ->get(['id', 'name']);
 
+        $specialtyName = $activeSpecialty ? $activeSpecialty->localizedName($locale) : '';
+        $listTitle = $specialtyName !== ''
+            ? __('doctors.specialty_doctors_title', ['specialty' => $specialtyName])
+            : __('doctors.page_title');
+        $listDescription = $specialtyName !== ''
+            ? __('doctors.specialty_list_description', ['specialty' => $specialtyName])
+            : __('doctors.frontend_list_description');
+        $canonical = $activeSpecialty
+            ? frontend_route('frontend.doctors.show', $activeSpecialty->frontend_slug)
+            : frontend_route('frontend.doctors');
+
         $seo = $this->seoResolver->resolve(null, $locale, [
-            'title' => __('doctors.page_title'),
-            'description' => __('doctors.frontend_list_description'),
-            'canonical' => frontend_route('frontend.doctors'),
+            'title' => $listTitle,
+            'description' => $listDescription,
+            'canonical' => $canonical,
             'lcp_image' => frontend_breadcrumb_image('doctors'),
         ]);
 
@@ -68,11 +95,31 @@ class DoctorsController extends Controller
             'cityId',
             'specialtyId',
             'clinicId',
-            'seo'
+            'seo',
+            'activeSpecialty',
+            'specialtyName',
+            'listTitle'
         ));
     }
 
-    public function show(Clinic $doctor)
+    public function show(string $doctor)
+    {
+        $specialty = Specialty::findByFrontendSlug($doctor);
+        if ($specialty) {
+            return $this->renderIndex(request(), $specialty);
+        }
+
+        $model = Clinic::query()->where('slug', $doctor)->first();
+        if (! $model && ctype_digit($doctor)) {
+            $model = Clinic::query()->find((int) $doctor);
+        }
+
+        abort_unless($model, 404);
+
+        return $this->renderDoctor($model);
+    }
+
+    private function renderDoctor(Clinic $doctor)
     {
         $locale = app()->getLocale();
 
@@ -180,8 +227,17 @@ class DoctorsController extends Controller
         }
 
         if ($specialtyId > 0) {
-            $query->whereHas('specialties', function (Builder $q) use ($specialtyId) {
-                $q->where('specialty_id', $specialtyId);
+            $specialtyIds = Specialty::query()
+                ->where('status', 1)
+                ->where(function (Builder $q) use ($specialtyId) {
+                    $q->where('id', $specialtyId)
+                        ->orWhere('parent_id', $specialtyId);
+                })
+                ->pluck('id')
+                ->all();
+
+            $query->whereHas('specialties', function (Builder $q) use ($specialtyIds) {
+                $q->whereIn('specialty_id', $specialtyIds !== [] ? $specialtyIds : [0]);
             });
         }
 
