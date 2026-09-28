@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 
 class DoctorsController extends Controller
 {
-    private const PER_PAGE = 9;
+    private const PER_PAGE = 16;
 
     public function __construct(private SeoResolver $seoResolver)
     {

@@ -20,8 +20,8 @@
 		</div>
 
 		@if($clinics->hasPages())
-		<div class="th-pagination text-center mt-40">
-			{{ $clinics->links() }}
+		<div class="doctors-pagination-wrap">
+			{{ $clinics->links('frontend.partials.pagination') }}
 		</div>
 		@endif
 	</div>

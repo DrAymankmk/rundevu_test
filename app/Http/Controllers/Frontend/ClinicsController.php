@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 
 class ClinicsController extends Controller
 {
-    private const PER_PAGE = 9;
+    private const PER_PAGE = 16;
     private const NEAR_RADIUS_KM = 50;
 
     public function __construct(private SeoResolver $seoResolver)
