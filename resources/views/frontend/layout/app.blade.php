@@ -52,6 +52,9 @@ $lcpImage = $seo['lcp_image'] ?? null;
 
 	<link rel="stylesheet" href="{{ $frontendCss('bootstrap.min.css') }}">
 	<link rel="stylesheet" href="{{ $frontendCss('fontawesome.min.css') }}">
+	{{-- Only solid + brands ship now; preload solid for above-the-fold icons --}}
+	<link rel="preload" as="font" type="font/woff2" crossorigin
+		href="{{ asset('frontend/assets/fonts/fontawesome/fa-solid-900.woff2') }}">
 	<link rel="stylesheet" href="{{ $frontendCss('swiper-bundle.min.css') }}">
 	<link rel="stylesheet" href="{{ $themeCss }}">
 	<link rel="stylesheet" href="{{ $frontendCss('randevu-overrides.css') }}">
@@ -130,18 +133,57 @@ $lcpImage = $seo['lcp_image'] ?? null;
 		</svg>
 	</div>
 
+	{{-- Critical path: menu, slider, UI --}}
 	<script src="{{ $frontendJs('vendor/jquery-3.7.1.min.js') }}" defer></script>
 	<script src="{{ $frontendJs('swiper-bundle.min.js') }}" defer></script>
 	<script src="{{ $frontendJs('bootstrap.min.js') }}" defer></script>
-	<script src="{{ $frontendJs('jquery.magnific-popup.min.js') }}" defer></script>
-	<script src="{{ $frontendJs('jquery.counterup.min.js') }}" defer></script>
-	<script src="{{ $frontendJs('circle-progress.js') }}" defer></script>
-	<script src="{{ $frontendJs('nice-select.min.js') }}" defer></script>
-	<script src="{{ $frontendJs('wow.min.js') }}" defer></script>
-	<script src="{{ $frontendJs('gsap.min.js') }}" defer></script>
-	<script src="{{ $frontendJs('ScrollTrigger.min.js') }}" defer></script>
-	<script src="{{ $frontendJs('SplitText.js') }}" defer></script>
 	<script src="{{ $frontendJs('main.js') }}" defer></script>
+	{{-- Below-the-fold / enhancement libs: load after first paint so they don't block mobile PSI --}}
+	<script>
+	(function () {
+		var secondary = [
+			@json($frontendJs('jquery.magnific-popup.min.js')),
+			@json($frontendJs('jquery.counterup.min.js')),
+			@json($frontendJs('circle-progress.js')),
+			@json($frontendJs('nice-select.min.js')),
+			@json($frontendJs('wow.min.js')),
+			@json($frontendJs('gsap.min.js')),
+			@json($frontendJs('ScrollTrigger.min.js')),
+			@json($frontendJs('SplitText.js'))
+		];
+		function loadOne(src) {
+			return new Promise(function (resolve) {
+				var s = document.createElement('script');
+				s.src = src;
+				s.async = false;
+				s.onload = s.onerror = function () { resolve(); };
+				document.body.appendChild(s);
+			});
+		}
+		function loadSecondary() {
+			secondary.reduce(function (chain, src) {
+				return chain.then(function () { return loadOne(src); });
+			}, Promise.resolve()).then(function () {
+				document.dispatchEvent(new CustomEvent('rundevo:secondary-scripts'));
+				if (typeof window.rundevoInitEnhancements === 'function') {
+					window.rundevoInitEnhancements();
+				}
+			});
+		}
+		function schedule() {
+			if ('requestIdleCallback' in window) {
+				requestIdleCallback(loadSecondary, { timeout: 2500 });
+			} else {
+				setTimeout(loadSecondary, 1);
+			}
+		}
+		if (document.readyState === 'complete') {
+			schedule();
+		} else {
+			window.addEventListener('load', schedule, { once: true });
+		}
+	})();
+	</script>
 	@stack('scripts')
 </body>
 

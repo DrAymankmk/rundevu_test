@@ -142,8 +142,8 @@ $googleUrl = website_store_url('google_play');
 									<span class="sub-title"
 										data-ani="slideinup"
 										data-ani-delay="0.2s">{{ $slide['subtitle'] }}</span>
-									<h1 class="hero-title" style="font-size:55px;"
-										data-ani="slideinup"
+									<h1 class="hero-title fadein"
+										data-ani="fadein"
 										data-ani-delay="0.4s">
 										{!! $slide['title']
 										!!}</h1>

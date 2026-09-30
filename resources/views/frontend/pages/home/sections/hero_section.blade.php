@@ -18,8 +18,8 @@
 										data-ani-delay="0.2s">welcome
 										to
 										medova</span>
-									<h1 class="hero-title"
-										data-ani="slideinup"
+									<h1 class="hero-title fadein"
+										data-ani="fadein"
 										data-ani-delay="0.4s">
 										Your <span
 											class="text-theme">Health</span>,
@@ -72,8 +72,8 @@
 										data-ani-delay="0.2s">welcome
 										to
 										medova</span>
-									<h1 class="hero-title"
-										data-ani="slideinup"
+									<h1 class="hero-title fadein"
+										data-ani="fadein"
 										data-ani-delay="0.4s">
 										In Trusted
 										Hands
@@ -125,8 +125,8 @@
 										data-ani-delay="0.2s">welcome
 										to
 										medova</span>
-									<h1 class="hero-title"
-										data-ani="slideinup"
+									<h1 class="hero-title fadein"
+										data-ani="fadein"
 										data-ani-delay="0.4s">
 										Caring for
 										Every

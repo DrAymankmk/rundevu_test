@@ -49,10 +49,162 @@
     }
 
 
-    // $('select').niceSelect(); 
-    if ($('.nice-select').length && typeof $.fn.niceSelect === 'function') {
-        $('.nice-select').niceSelect();
-    }
+    window.rundevoInitEnhancements = function () {
+        if (window.__rundevoEnhancementsReady) {
+            return;
+        }
+
+        if ($('.nice-select').length && typeof $.fn.niceSelect === 'function') {
+            $('.nice-select').niceSelect();
+        }
+
+        if (typeof $.fn.magnificPopup === 'function') {
+            $(".popup-image").magnificPopup({
+                type: "image",
+                mainClass: 'mfp-zoom-in',
+                removalDelay: 260,
+                gallery: {
+                    enabled: true,
+                },
+            });
+            $(".popup-video").magnificPopup({
+                type: "iframe",
+                mainClass: 'mfp-zoom-in',
+                removalDelay: 260,
+            });
+            $(".popup-content").magnificPopup({
+                type: "inline",
+                midClick: true,
+            });
+        }
+
+        if (typeof $.fn.counterUp === 'function' && $(".counter-number").length) {
+            $(".counter-number").counterUp({
+                delay: 10,
+                time: 1000,
+            });
+        }
+
+        if (typeof WOW !== 'undefined') {
+            new WOW({
+                boxClass: 'wow',
+                animateClass: 'animated',
+                offset: 0,
+                mobile: true,
+                live: true
+            }).init();
+        }
+
+        if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+            gsap.registerPlugin(ScrollTrigger);
+        }
+
+        if ($('.reveal').length && typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+            let revealContainers = document.querySelectorAll(".reveal");
+            revealContainers.forEach((container) => {
+                let image = container.querySelector("img");
+                let tl = gsap.timeline({
+                    scrollTrigger: {
+                        trigger: container,
+                        toggleActions: "play none none none"
+                    }
+                });
+                tl.set(container, {
+                    autoAlpha: 1
+                });
+                tl.from(container, 1, {
+                    xPercent: -100,
+                    ease: "power2.out"
+                });
+                tl.from(image, 1, {
+                    xPercent: 100,
+                    scale: 1,
+                    delay: -1,
+                    ease: "power2.out"
+                });
+            });
+        }
+
+        if ($('.text-anime-style-1').length && typeof gsap !== 'undefined' && typeof SplitText !== 'undefined') {
+            let staggerAmount = 0.05,
+                delayValue = 0.5,
+                animatedTextElements = document.querySelectorAll('.text-anime-style-1');
+
+            animatedTextElements.forEach((element) => {
+                let animationSplitText = new SplitText(element, { type: "chars, words" });
+                gsap.from(animationSplitText.words, {
+                    duration: 1,
+                    delay: delayValue,
+                    x: 20,
+                    autoAlpha: 0,
+                    stagger: staggerAmount,
+                    scrollTrigger: { trigger: element, start: "top 85%" },
+                });
+            });
+        }
+
+        if ($('.text-anime-style-2').length && typeof gsap !== 'undefined' && typeof SplitText !== 'undefined') {
+            let staggerAmount = 0.03,
+                translateXValue = 20,
+                delayValue = 0.1,
+                easeType = "power2.out",
+                animatedTextElements = document.querySelectorAll('.text-anime-style-2');
+
+            animatedTextElements.forEach((element) => {
+                let animationSplitText = new SplitText(element, { type: "chars, words" });
+                gsap.from(animationSplitText.chars, {
+                    duration: 2,
+                    delay: delayValue,
+                    x: translateXValue,
+                    autoAlpha: 0,
+                    stagger: staggerAmount,
+                    ease: easeType,
+                    scrollTrigger: { trigger: element, start: "top 85%" },
+                });
+            });
+        }
+
+        if ($('.text-anime-style-3').length && typeof gsap !== 'undefined' && typeof SplitText !== 'undefined') {
+            let animatedTextElements = document.querySelectorAll('.text-anime-style-3');
+
+            animatedTextElements.forEach((element) => {
+                if (element.animation) {
+                    element.animation.progress(1).kill();
+                    element.split.revert();
+                }
+
+                element.split = new SplitText(element, {
+                    type: "lines,words,chars",
+                    linesClass: "split-line",
+                });
+                gsap.set(element, { perspective: 400 });
+                gsap.set(element.split.chars, {
+                    opacity: 0,
+                    x: "50",
+                });
+
+                element.animation = gsap.to(element.split.chars, {
+                    scrollTrigger: { trigger: element, start: "top 90%" },
+                    x: "0",
+                    y: "0",
+                    rotateX: "0",
+                    opacity: 1,
+                    duration: 1,
+                    ease: "back.out",
+                    stagger: 0.02,
+                });
+            });
+        }
+
+        if (
+            (typeof $.fn.magnificPopup === 'function' || typeof gsap !== 'undefined' || typeof WOW !== 'undefined')
+        ) {
+            window.__rundevoEnhancementsReady = true;
+        }
+    };
+
+    // Run immediately if libs were already present; otherwise wait for late load.
+    window.rundevoInitEnhancements();
 
 
     /*---------- 03. Mobile Menu Active ----------*/
@@ -624,33 +776,6 @@
     };
     popupSideMenu('.shopping-cart', '.sideMenuToggler2', '.sideMenuCls', 'show');
 
-    /*----------- 12. Magnific Popup ----------*/
-    if (typeof $.fn.magnificPopup === 'function') {
-    /* magnificPopup img view */
-    $(".popup-image").magnificPopup({
-        type: "image",
-        mainClass: 'mfp-zoom-in',
-        removalDelay: 260,
-        gallery: {
-            enabled: true,
-        },
-    });
-
-    /* magnificPopup video view */
-    $(".popup-video").magnificPopup({
-        type: "iframe",
-        mainClass: 'mfp-zoom-in',
-        removalDelay: 260,
-    });
-
-    /* magnificPopup video view */
-    $(".popup-content").magnificPopup({
-        type: "inline",
-        midClick: true,
-    });
-    }
-
-
     if ($('[data-theme-color]').length > 0) {
         $('[data-theme-color]').each(function () {
             var $color = $(this).attr('data-theme-color');
@@ -861,14 +986,6 @@
         });
     });
       }
-
-    /*----------- 15. Counter Up ----------*/
-    if (typeof $.fn.counterUp === 'function' && $(".counter-number").length) {
-    $(".counter-number").counterUp({
-        delay: 10,
-        time: 1000,
-    });
-    }
 
     /*----------- 17. Shape Mockup ----------*/
     $.fn.shapeMockup = function () {
@@ -1134,123 +1251,6 @@
             y.classList.toggle("hide");
         });
     }
-
-    /* ==================================================
-			# Wow Init
-		 ===============================================*/
-    if (typeof WOW !== 'undefined') {
-    var wow = new WOW({
-        boxClass: 'wow',
-        animateClass: 'animated',
-        offset: 0,
-        mobile: true,
-        live: true
-    });
-    new WOW().init();
-    } 
-
-    	/* Image Reveal Animation */
-	if ($('.reveal').length && typeof gsap !== 'undefined') {
-        gsap.registerPlugin(ScrollTrigger);
-        let revealContainers = document.querySelectorAll(".reveal");
-        revealContainers.forEach((container) => {
-            let image = container.querySelector("img");
-            let tl = gsap.timeline({
-                scrollTrigger: {
-                    trigger: container,
-                    toggleActions: "play none none none"
-                }
-            });
-            tl.set(container, {
-                autoAlpha: 1
-            });
-            tl.from(container, 1, {
-                xPercent: -100,
-                ease: Power2.out
-            });
-            tl.from(image, 1, {
-                xPercent: 100,
-                scale: 1,
-                delay: -1,
-                ease: Power2.out
-            });
-        });
-    }
-    
-    /* Text Effect Animation */
-	if ($('.text-anime-style-1').length && typeof gsap !== 'undefined' && typeof SplitText !== 'undefined') {
-		let staggerAmount 	= 0.05,
-			translateXValue = 0,
-			delayValue 		= 0.5,
-		   animatedTextElements = document.querySelectorAll('.text-anime-style-1');
-		
-		animatedTextElements.forEach((element) => {
-			let animationSplitText = new SplitText(element, { type: "chars, words" });
-				gsap.from(animationSplitText.words, {
-				duration: 1,
-				delay: delayValue,
-				x: 20,
-				autoAlpha: 0,
-				stagger: staggerAmount,
-				scrollTrigger: { trigger: element, start: "top 85%" },
-				});
-		});		
-	}
-	
-	if ($('.text-anime-style-2').length && typeof gsap !== 'undefined' && typeof SplitText !== 'undefined') {				
-		let	 staggerAmount 		= 0.03,
-			 translateXValue	= 20,
-			 delayValue 		= 0.1,
-			 easeType 			= "power2.out",
-			 animatedTextElements = document.querySelectorAll('.text-anime-style-2');
-		
-		animatedTextElements.forEach((element) => {
-			let animationSplitText = new SplitText(element, { type: "chars, words" });
-				gsap.from(animationSplitText.chars, {
-					duration: 2,
-					delay: delayValue,
-					x: translateXValue,
-					autoAlpha: 0,
-					stagger: staggerAmount,
-					ease: easeType,
-					scrollTrigger: { trigger: element, start: "top 85%"},
-				});
-		});		
-	}
-	
-	if ($('.text-anime-style-3').length && typeof gsap !== 'undefined') {		
-		let	animatedTextElements = document.querySelectorAll('.text-anime-style-3');
-		
-		 animatedTextElements.forEach((element) => {
-			//Reset if needed
-			if (element.animation) {
-				element.animation.progress(1).kill();
-				element.split.revert();
-			}
-
-			// element.split = new SplitText(element, {
-			// 	type: "lines,words,chars",
-			// 	linesClass: "split-line",
-			// });
-			gsap.set(element, { perspective: 400 });
-
-			gsap.set(element.split.chars, {
-				opacity: 0,
-				x: "50",
-			});
-
-			element.animation = gsap.to(element.split.chars, {
-				scrollTrigger: { trigger: element,	start: "top 90%" },
-				x: "0",
-				y: "0",
-				rotateX: "0",
-				opacity: 1,
-				duration: 1,
-				ease: Back.easeOut,
-				stagger: 0.02,
-			});
-		});		
-	}
 
     document.addEventListener("DOMContentLoaded", function () {
         const hotspotDots = document.querySelectorAll(".hotspot-dot");

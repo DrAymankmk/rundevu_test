@@ -2218,6 +2218,36 @@ body.wa-modal-open {
   }
 }
 
+/* Hero title: stable size (avoid global h1 88px → override jump) + CLS-safe fade */
+.hero-style1 .hero-title {
+  font-size: clamp(1.75rem, 4.2vw, 3.4375rem);
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+}
+
+.th-hero-wrapper .hero-title.fadein,
+.th-hero-wrapper .hero-title.slideinup {
+  /* Opacity-only entrance — transform translateY was flagged as a shifting element */
+  transform: none !important;
+}
+
+.swiper-slide-active .th-hero-wrapper .hero-title.slideinup {
+  --animation-name: fadein;
+}
+
+/*
+ * Font Awesome: map light/regular to solid so browsers never fetch
+ * fa-light-300 / fa-regular-400 (~700KB+). Brands + solid stay available.
+ */
+.fa-light,
+.fal,
+.fa-regular,
+.far {
+  font-family: "Font Awesome 6 Pro" !important;
+  font-weight: 900 !important;
+  --fa-style: 900;
+}
+
 
 
 
