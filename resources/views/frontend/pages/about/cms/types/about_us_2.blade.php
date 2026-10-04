@@ -79,9 +79,13 @@
 					<div class="about-wrapp">
 						<div class="discount-wrapp">
 							<div class="logo">
-								<img src="{{ asset('frontend/assets/img/logo.png') }}"
-									alt="{{ __('main.app_name') }}"
-									style="width: 80px; height: 50px;" decoding="async" loading="lazy">
+								@include('frontend.layout.partials.site-logo', [
+									'logoAlt' => __('main.app_name'),
+									'logoWidth' => 80,
+									'logoHeight' => 50,
+									'logoStyle' => 'width:80px; height:50px;',
+									'logoLoading' => 'lazy',
+								])
 							</div>
 							<div class="discount-tag">
 								<span @if(str_contains($discountAnimeClass, 'discount-anime-plain'

@@ -74,13 +74,9 @@
  				<div class="row align-items-center justify-content-between">
  					<div class="col-auto">
  						<div class="header-logo">
- 							<a href="{{ frontend_route('frontend.home') }}"><img
- 									src="{{ asset('frontend/assets/img/logo.png') }}"
-									width="100" height="50"
- 									style="height:50px; width:100px;"
-									fetchpriority="high"
-									decoding="async"
- 									alt="{{ config('app.name', 'Randevu') }}"></a>
+ 							<a href="{{ frontend_route('frontend.home') }}">
+								@include('frontend.layout.partials.site-logo', ['logoFetchPriority' => 'high'])
+							</a>
  						</div>
  					</div>
  					<div class="col-auto">

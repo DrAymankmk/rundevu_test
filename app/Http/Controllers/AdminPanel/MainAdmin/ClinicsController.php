@@ -116,6 +116,23 @@ class ClinicsController extends Controller
         return redirect()->back();
     }
 
+    public function doctor_seo_form($id)
+    {
+        $doctor = Clinic::with('seoMeta.translations')
+            ->where('app_type', 3)
+            ->findOrFail($id);
+
+        $languages = CmsLanguage::active()->ordered()->get();
+
+        return view('components.seo-form', [
+            'languages' => $languages,
+            'seo' => $doctor->seoMeta,
+            'instanceId' => 'doctor_seo_' . $doctor->id,
+            'formAction' => route('update-clinic-seo', $doctor->id),
+            'asCard' => false,
+        ]);
+    }
+
 
 
 

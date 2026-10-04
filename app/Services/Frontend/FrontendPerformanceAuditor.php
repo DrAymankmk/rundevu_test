@@ -202,6 +202,7 @@ class FrontendPerformanceAuditor
     {
         $checks = [];
         $limits = [
+            'public/frontend/assets/img/logo.png' => 15,
             'public/frontend/assets/img/icon/apple.svg' => 30,
             'public/frontend/assets/img/icon/google-play.svg' => 20,
             'public/frontend/assets/img/bg/breadcumb-bg.jpg' => 250,

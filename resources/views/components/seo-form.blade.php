@@ -2,10 +2,14 @@
 $languages = $languages ?? collect();
 $seo = $seo ?? null;
 $prefix = $prefix ?? 'seo';
+// Unique DOM ids when multiple SEO forms exist on one page (e.g. clinic page + doctor modal).
+$instanceId = preg_replace('/[^A-Za-z0-9_-]/', '_', (string) ($instanceId ?? $prefix));
 $formAction = $formAction ?? null;
 $submitLabel = $submitLabel ?? null;
+$asCard = $asCard ?? true;
 @endphp
 
+@if($asCard)
 <div class="card mt-3">
 	<div class="card-header d-flex align-items-center justify-content-between">
 		<h5 class="card-title mb-0">{{ __('seo.settings') }}</h5>
@@ -14,6 +18,7 @@ $submitLabel = $submitLabel ?? null;
 		@endif
 	</div>
 	<div class="card-body">
+@endif
 		@if($formAction)
 		<form action="{{ $formAction }}" method="POST" enctype="multipart/form-data">
 			@csrf
@@ -56,11 +61,11 @@ $submitLabel = $submitLabel ?? null;
 
 			<div class="form-check form-switch mb-3">
 				<input type="hidden" name="{{ $prefix }}[is_active]" value="0">
-				<input type="checkbox" class="form-check-input" id="seo_is_active_{{ $prefix }}"
+				<input type="checkbox" class="form-check-input" id="seo_is_active_{{ $instanceId }}"
 					name="{{ $prefix }}[is_active]" value="1"
 					{{ old($prefix.'.is_active', $seo?->is_active ?? true) ? 'checked' : '' }}>
 				<label class="form-check-label"
-					for="seo_is_active_{{ $prefix }}">{{ __('seo.active') }}</label>
+					for="seo_is_active_{{ $instanceId }}">{{ __('seo.active') }}</label>
 			</div>
 
 			<div class="mb-3">
@@ -82,7 +87,7 @@ $submitLabel = $submitLabel ?? null;
 				<li class="nav-item">
 					<button class="nav-link {{ $index === 0 ? 'active' : '' }}"
 						data-bs-toggle="tab"
-						data-bs-target="#seo-{{ $prefix }}-{{ $lang->code }}"
+						data-bs-target="#seo-{{ $instanceId }}-{{ $lang->code }}"
 						type="button">
 						{{ $lang->flag ?? '' }} {{ $lang->name }}
 					</button>
@@ -96,7 +101,7 @@ $submitLabel = $submitLabel ?? null;
 				$tr = $seo?->translations?->where('locale', $lang->code)->first();
 				@endphp
 				<div class="tab-pane fade {{ $index === 0 ? 'show active' : '' }}"
-					id="seo-{{ $prefix }}-{{ $lang->code }}">
+					id="seo-{{ $instanceId }}-{{ $lang->code }}">
 					<div class="mb-3">
 						<label class="form-label">{{ __('seo.meta_title') }}
 							({{ $lang->name }})</label>
@@ -108,15 +113,16 @@ $submitLabel = $submitLabel ?? null;
 							class="text-muted">{{ __('seo.meta_title_hint') }}</small>
 					</div>
 
-					<div class="mb-3">
-						<label class="form-label">{{ __('seo.meta_description') }}
-							({{ $lang->name }})</label>
-						<textarea class="form-control" rows="3"
-							name="{{ $prefix }}[translations][{{ $lang->code }}][meta_description]"
-							dir="{{ $lang->direction }}">{{ old($prefix.'.translations.'.$lang->code.'.meta_description', $tr?->meta_description) }}</textarea>
-						<small
-							class="text-muted">{{ __('seo.meta_description_hint') }}</small>
-					</div>
+					@include('components.rich-text-editor', [
+						'inputId' => 'seo_' . $instanceId . '_meta_description_' . $lang->code,
+						'inputName' => $prefix . '[translations][' . $lang->code . '][meta_description]',
+						'label' => __('seo.meta_description') . ' (' . $lang->name . ')',
+						'value' => old($prefix.'.translations.'.$lang->code.'.meta_description', $tr?->meta_description),
+						'direction' => $lang->direction,
+						'tabPaneId' => 'seo-' . $instanceId . '-' . $lang->code,
+						'placeholder' => __('seo.meta_description_hint'),
+					])
+					<small class="text-muted d-block mb-3">{{ __('seo.meta_description_hint') }}</small>
 
 					<div class="mb-3">
 						<label class="form-label">{{ __('seo.meta_keywords') }}
@@ -126,6 +132,17 @@ $submitLabel = $submitLabel ?? null;
 							value="{{ old($prefix.'.translations.'.$lang->code.'.meta_keywords', $tr?->meta_keywords) }}"
 							dir="{{ $lang->direction }}">
 					</div>
+
+					@include('components.rich-text-editor', [
+						'inputId' => 'seo_' . $instanceId . '_module_description_' . $lang->code,
+						'inputName' => $prefix . '[translations][' . $lang->code . '][module_description]',
+						'label' => __('seo.module_description') . ' (' . $lang->name . ')',
+						'value' => old($prefix.'.translations.'.$lang->code.'.module_description', $tr?->module_description),
+						'direction' => $lang->direction,
+						'tabPaneId' => 'seo-' . $instanceId . '-' . $lang->code,
+						'placeholder' => __('seo.module_description_hint'),
+					])
+					<small class="text-muted d-block mb-3">{{ __('seo.module_description_hint') }}</small>
 
 					<div class="row">
 						<div class="col-md-6 mb-3">
@@ -179,5 +196,7 @@ $submitLabel = $submitLabel ?? null;
 			</div>
 		</form>
 		@endif
+@if($asCard)
 	</div>
 </div>
+@endif

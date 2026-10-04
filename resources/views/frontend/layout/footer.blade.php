@@ -7,15 +7,9 @@
 						<div class="widget footer-widget mb-0">
 							<div class="th-widget-about">
 								<div class="about-logo">
-									<a
-										href="{{ frontend_route('frontend.home') }}"><img
-											style="height:50px; width:100px;"
-											width="100"
-											height="50"
-											src="{{ asset('frontend/assets/img/logo.png') }}"
-											decoding="async"
-											alt="{{ config('app.name', 'Randevu') }}"
-											loading="lazy"></a>
+									<a href="{{ frontend_route('frontend.home') }}">
+										@include('frontend.layout.partials.site-logo', ['logoLoading' => 'lazy'])
+									</a>
 								</div>
 								<p class="about-text">
 									{{ __('main.footer_description') }}

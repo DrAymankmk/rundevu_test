@@ -382,6 +382,40 @@ if (! function_exists('frontend_bg_style')) {
     }
 }
 
+if (! function_exists('frontend_logo_url')) {
+    /**
+     * Public URL for the Website Media theme logo (Dashboard → Website Media → theme:logo).
+     * Prefer WebP when a sibling logo.webp exists next to logo.png.
+     *
+     * @param  'auto'|'png'|'webp'  $format
+     */
+    function frontend_logo_url(string $format = 'auto'): string
+    {
+        $pngRelative = 'frontend/assets/img/logo.png';
+        $webpRelative = 'frontend/assets/img/logo.webp';
+        $pngAbsolute = public_path($pngRelative);
+        $webpAbsolute = public_path($webpRelative);
+
+        $relative = $pngRelative;
+        if ($format === 'webp' || ($format === 'auto' && is_file($webpAbsolute))) {
+            $relative = is_file($webpAbsolute) ? $webpRelative : $pngRelative;
+        }
+
+        $absolute = public_path($relative);
+        if (! is_file($absolute) && is_file($pngAbsolute)) {
+            $relative = $pngRelative;
+            $absolute = $pngAbsolute;
+        }
+
+        $url = asset($relative);
+        if (is_file($absolute)) {
+            $url .= '?v=' . filemtime($absolute);
+        }
+
+        return $url;
+    }
+}
+
 if (! function_exists('website_social_platforms')) {
     function website_social_platforms(): \Illuminate\Support\Collection
     {

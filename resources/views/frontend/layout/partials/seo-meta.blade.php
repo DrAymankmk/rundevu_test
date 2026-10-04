@@ -5,7 +5,7 @@
     $description = $seo['description'] ?? '';
     $canonical = $seo['canonical'] ?? url()->current();
     $ogLocale = $seo['og_locale'] ?? (app()->getLocale() === 'ar' ? 'ar_SA' : 'en_US');
-    $ogImage = $seo['og']['image'] ?? asset('frontend/assets/img/logo.png');
+    $ogImage = $seo['og']['image'] ?? frontend_logo_url('png');
     $schema = $seo['schema_json'] ?? null;
     if (is_string($schema) && $schema !== '') {
         $decoded = json_decode($schema, true);

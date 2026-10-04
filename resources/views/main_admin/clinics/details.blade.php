@@ -687,6 +687,23 @@
         @endcomponent
     </div>
 
+    <div class="modal fade" id="doctorSeoModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        {{ __('seo.edit_seo') }}
+                        <span class="text-muted fs-14" id="doctorSeoModalSubtitle"></span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="doctorSeoModalBody">
+                    <p class="text-muted mb-0">@lang('main.loading')</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- ========================
         End Page Content
     ========================= -->
@@ -697,6 +714,12 @@
             const model = document.getElementById('contract_model');
             const subscriptionFields = document.querySelectorAll('.contract-subscription-field');
             const commissionFields = document.querySelectorAll('.contract-commission-field');
+            const doctorSeoModalEl = document.getElementById('doctorSeoModal');
+            const doctorSeoModalBody = document.getElementById('doctorSeoModalBody');
+            const doctorSeoModalSubtitle = document.getElementById('doctorSeoModalSubtitle');
+            const doctorSeoModal = doctorSeoModalEl && window.bootstrap
+                ? bootstrap.Modal.getOrCreateInstance(doctorSeoModalEl)
+                : null;
 
             function toggleContractFields() {
                 if (!model) {
@@ -742,6 +765,50 @@
                     const clinic = this.getAttribute('data-clinic');
                     loadTabContent(id,clinic);
                 });
+            });
+
+            document.addEventListener('click', function (event) {
+                const trigger = event.target.closest('.edit-doctor-seo-btn');
+                if (!trigger || !doctorSeoModal || !doctorSeoModalBody) {
+                    return;
+                }
+
+                event.preventDefault();
+                const seoUrl = trigger.getAttribute('data-seo-url');
+                const doctorName = trigger.getAttribute('data-doctor-name') || '';
+                if (doctorSeoModalSubtitle) {
+                    doctorSeoModalSubtitle.textContent = doctorName ? ` - ${doctorName}` : '';
+                }
+                if (typeof window.teardownCmsQuillRoot === 'function') {
+                    doctorSeoModalBody.querySelectorAll('.cms-quill-root').forEach(function (wrap) {
+                        window.teardownCmsQuillRoot(wrap);
+                    });
+                }
+                doctorSeoModalBody.innerHTML = `<p class="text-muted mb-0">{{ trans('main.loading') }}</p>`;
+                doctorSeoModal.show();
+
+                fetch(seoUrl, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'text/html',
+                    },
+                })
+                    .then(res => {
+                        if (!res.ok) {
+                            throw new Error('Failed to load SEO form');
+                        }
+                        return res.text();
+                    })
+                    .then(html => {
+                        doctorSeoModalBody.innerHTML = html;
+                        // Scripts from AJAX HTML do not run; mount Quill on injected editors.
+                        if (typeof window.initCmsQuillRoots === 'function') {
+                            window.initCmsQuillRoots(doctorSeoModalBody);
+                        }
+                    })
+                    .catch(() => {
+                        doctorSeoModalBody.innerHTML = `<div class="text-danger">{{ __('cms.an_error_occurred') }}</div>`;
+                    });
             });
         });
     </script>

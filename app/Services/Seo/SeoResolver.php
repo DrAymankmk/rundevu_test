@@ -149,7 +149,7 @@ class SeoResolver
                     '@type' => 'Organization',
                     'name' => $siteName,
                     'url' => rtrim((string) config('app.url'), '/') ?: url('/'),
-                    'logo' => asset('frontend/assets/img/logo.png'),
+                    'logo' => function_exists('frontend_logo_url') ? frontend_logo_url('png') : asset('frontend/assets/img/logo.png'),
                     'email' => 'support@rundevo.net',
                     'telephone' => '+966580161257',
                 ],
@@ -215,6 +215,6 @@ class SeoResolver
             return asset($image);
         }
 
-        return asset('frontend/assets/img/logo.png');
+        return function_exists('frontend_logo_url') ? frontend_logo_url('png') : asset('frontend/assets/img/logo.png');
     }
 }

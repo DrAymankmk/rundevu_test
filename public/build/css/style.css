@@ -5836,6 +5836,7 @@ textarea.form-control-lg {
     display: flex;
     flex-shrink: 0;
     align-items: center;
+    justify-content: space-between;
     padding: var(--pr-modal-header-padding);
     border-bottom: var(--pr-modal-header-border-width) solid var(--pr-modal-header-border-color);
     border-top-left-radius: var(--pr-modal-inner-border-radius);
@@ -5843,10 +5844,11 @@ textarea.form-control-lg {
 }
 .modal-header .btn-close {
     padding: calc(var(--pr-modal-header-padding-y) * 0.5) calc(var(--pr-modal-header-padding-x) * 0.5);
-    margin-top: calc(-0.5 * var(--pr-modal-header-padding-y));
-    margin-right: calc(-0.5 * var(--pr-modal-header-padding-x));
-    margin-bottom: calc(-0.5 * var(--pr-modal-header-padding-y));
-    margin-left: auto;
+    margin-block: calc(-0.5 * var(--pr-modal-header-padding-y));
+    margin-inline-start: auto;
+    margin-inline-end: calc(-0.5 * var(--pr-modal-header-padding-x));
+    margin-left: unset;
+    margin-right: unset;
 }
 
 .modal-title {
@@ -7029,10 +7031,11 @@ textarea.form-control-lg {
 }
 .offcanvas-header .btn-close {
     padding: calc(var(--pr-offcanvas-padding-y) * 0.5) calc(var(--pr-offcanvas-padding-x) * 0.5);
-    margin-top: calc(-0.5 * var(--pr-offcanvas-padding-y));
-    margin-right: calc(-0.5 * var(--pr-offcanvas-padding-x));
-    margin-bottom: calc(-0.5 * var(--pr-offcanvas-padding-y));
-    margin-left: auto;
+    margin-block: calc(-0.5 * var(--pr-offcanvas-padding-y));
+    margin-inline-start: auto;
+    margin-inline-end: calc(-0.5 * var(--pr-offcanvas-padding-x));
+    margin-left: unset;
+    margin-right: unset;
 }
 
 .offcanvas-title {
@@ -26552,6 +26555,17 @@ img {
 
 [dir="rtl"] .footer-layout1 .footer-top-btn .btn-group {
     justify-content: flex-start !important;
+}
+
+/* Modal/offcanvas close: inline-end (right in LTR, left in RTL) */
+[dir="rtl"] .modal-header .btn-close,
+[dir="rtl"] .offcanvas-header .btn-close,
+[main-theme-layout="rtl"] .modal-header .btn-close,
+[main-theme-layout="rtl"] .offcanvas-header .btn-close {
+    margin-inline-start: auto;
+    margin-inline-end: calc(-0.5 * var(--pr-modal-header-padding-x, 1.25rem));
+    margin-left: unset;
+    margin-right: unset;
 }
 /*# sourceMappingURL=style.css.map */
 

@@ -106,15 +106,16 @@
 		return;
 	}
 
-	var lastY = window.scrollY || 0;
+	var lastY = 0;
 	var ticking = false;
 	var openModal = null;
 	var lastFocus = null;
+	var bound = false;
 
 	function setDockState() {
 		var y = window.scrollY || window.pageYOffset || 0;
 		var visible = y > 90;
-		dock.hidden = false;
+		// Class toggles only — avoid reading layout after writes (forced reflow).
 		dock.classList.toggle('is-visible', visible);
 		if (visible) {
 			dock.classList.toggle('is-down', y > lastY + 2);
@@ -124,14 +125,37 @@
 		ticking = false;
 	}
 
-	window.addEventListener('scroll', function () {
+	function onScroll() {
 		if (!ticking) {
 			window.requestAnimationFrame(setDockState);
 			ticking = true;
 		}
-	}, { passive: true });
+	}
 
-	setDockState();
+	function bindDock() {
+		if (bound) {
+			return;
+		}
+		bound = true;
+		dock.hidden = false;
+		lastY = window.scrollY || window.pageYOffset || 0;
+		setDockState();
+		window.addEventListener('scroll', onScroll, { passive: true });
+	}
+
+	function scheduleBind() {
+		if ('requestIdleCallback' in window) {
+			requestIdleCallback(bindDock, { timeout: 2500 });
+		} else {
+			setTimeout(bindDock, 1200);
+		}
+	}
+
+	if (document.readyState === 'complete') {
+		scheduleBind();
+	} else {
+		window.addEventListener('load', scheduleBind, { once: true });
+	}
 
 	function closeWaModal() {
 		if (!openModal) {

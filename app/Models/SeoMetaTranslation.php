@@ -15,6 +15,7 @@ class SeoMetaTranslation extends Model
         'meta_title',
         'meta_description',
         'meta_keywords',
+        'module_description',
         'og_title',
         'og_description',
         'og_image',

@@ -92,10 +92,10 @@ class FrontendMediaCatalog
     {
         return [
             'theme_logo' => [
-                'width' => 250,
-                'height' => 60,
-                'label' => '250 × 60 px',
-                'note' => 'Header & footer logo. Displayed at about 250 × 60.',
+                'width' => 200,
+                'height' => 100,
+                'label' => '200 × 100 px',
+                'note' => 'Header & footer logo (theme:logo). Displayed at about 100 × 50; upload 200 × 100 for retina. Prefer PNG/WebP under ~15 KB. Use Convert to fit.',
             ],
             'theme_hero_bg' => [
                 'width' => 1920,
@@ -1204,6 +1204,14 @@ class FrontendMediaCatalog
 
         if (is_file($absolute)) {
             @unlink($absolute);
+        }
+
+        // Drop stale WebP sibling so the header does not keep an old optimized logo.
+        if (($slot['id'] ?? '') === 'logo') {
+            $webp = $directory . DIRECTORY_SEPARATOR . 'logo.webp';
+            if (is_file($webp)) {
+                @unlink($webp);
+            }
         }
 
         $file->move($directory, basename($absolute));

@@ -28,7 +28,16 @@
                 <td>{{ $account->created_at->format('d M Y') }}</td>
                 <td><span class="badge @if($account->status == 1) badge-soft-success border border-success @else badge-soft-danger border border-danger @endif  px-2 py-1 fs-13 fw-medium">@if($account->status == 1) @lang('admin.Active') @else @lang('admin.Inactive') @endif </span></td>
                 <td>
-                    {{--                                <a href="{{ route('SubSpecialties', $user->id) }}" class="link-reset fs-18 p-1"> <i class="ti ti-eye"></i></a>--}}
+                    @if((int) $type->id === 3)
+                    <a href="javascript:void(0);"
+                       class="link-reset fs-18 p-1 edit-doctor-seo-btn"
+                       title="{{ __('seo.edit_seo') }}"
+                       data-doctor-id="{{ $account->id }}"
+                       data-doctor-name="{{ $account->name }}"
+                       data-seo-url="{{ route('doctor-seo-form', $account->id) }}">
+                        <i class="ti ti-world-www"></i>
+                    </a>
+                    @endif
                     <a href="javascript:void(0);"
                        class="link-reset fs-18 p-1 delete-btn"
                        data-route="{{ route('destroy-clinic', $account->id) }}"

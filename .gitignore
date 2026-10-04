@@ -18,4 +18,4 @@ yarn-error.log
 /resources/view/analytics/
 dashboards_layouts
 /public/media
-
+/public/frontend/assets/img/*

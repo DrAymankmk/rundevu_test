@@ -133,14 +133,21 @@
 
 		<div class="row gy-4 mt-1">
 			<div class="col-lg-8">
-				@if(filled($info))
+				@php
+					$moduleDescription = $doctor->seoMeta?->getTranslatedAttribute('module_description', $locale);
+				@endphp
+				@if(filled($moduleDescription) || filled($info))
 				<div class="doctor-details-panel">
 					<div class="doctor-details-panel__head">
 						<span class="doctor-details-panel__icon"><i class="fa-solid fa-circle-info"></i></span>
 						<h3>{{ __('doctors.about') }}</h3>
 					</div>
 					<div class="doctor-details-panel__body">
-						{!! nl2br(e($info)) !!}
+						@if(filled($moduleDescription))
+							{!! $moduleDescription !!}
+						@else
+							{!! nl2br(e($info)) !!}
+						@endif
 					</div>
 				</div>
 				@endif

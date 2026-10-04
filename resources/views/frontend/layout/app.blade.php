@@ -11,12 +11,30 @@ if ($effectiveLocale === '') {
 $htmlLang = explode('-', $effectiveLocale)[0] ?: $effectiveLocale;
 $rtlLangs = ['ar', 'fa', 'he', 'ur'];
 $isRtl = in_array($htmlLang, $rtlLangs, true);
-$frontendCss = static fn (string $file) => asset('frontend/assets/css/' . ltrim($file, '/'));
-$frontendJs = static fn (string $file) => asset('frontend/assets/js/' . ltrim($file, '/'));
-$logoUrl = asset('frontend/assets/img/logo.png');
-$themeCss = $isRtl ? $frontendCss('rtl_style.css') : $frontendCss('style.css');
+$frontendCss = static function (string $file): string {
+	$relative = 'frontend/assets/css/' . ltrim($file, '/');
+	$path = public_path($relative);
+	$version = is_file($path) ? (string) filemtime($path) : '1';
+
+	return asset($relative) . '?v=' . $version;
+};
+$frontendJs = static function (string $file): string {
+	$relative = 'frontend/assets/js/' . ltrim($file, '/');
+	$path = public_path($relative);
+	$version = is_file($path) ? (string) filemtime($path) : '1';
+
+	return asset($relative) . '?v=' . $version;
+};
+$logoPngUrl = frontend_logo_url('png');
+$logoWebpUrl = is_file(public_path('frontend/assets/img/logo.webp')) ? frontend_logo_url('webp') : null;
+$logoPreloadUrl = $logoWebpUrl ?: $logoPngUrl;
+$themeCss = $isRtl ? $frontendCss('rtl_style.min.css') : $frontendCss('style.min.css');
 $fontUrl = 'https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;1,14..32,400&family=Outfit:wght@400;500;600;700&family=Saira:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap';
 $lcpImage = $seo['lcp_image'] ?? null;
+$deferCss = static function (string $href): string {
+	return '<link rel="stylesheet" href="' . e($href) . '" media="print" onload="this.media=\'all\'">'
+		. '<noscript><link rel="stylesheet" href="' . e($href) . '"></noscript>';
+};
 @endphp
 <html class="no-js" lang="{{ $htmlLang }}" dir="{{ $isRtl ? 'rtl' : 'ltr' }}">
 
@@ -31,8 +49,8 @@ $lcpImage = $seo['lcp_image'] ?? null;
 	<meta name="theme-color" content="#3E66F3">
 	<meta name="format-detection" content="telephone=no">
 
-	<link rel="icon" type="image/png" href="{{ $logoUrl }}">
-	<link rel="apple-touch-icon" href="{{ $logoUrl }}">
+	<link rel="icon" type="image/png" href="{{ $logoPngUrl }}">
+	<link rel="apple-touch-icon" href="{{ $logoPngUrl }}">
 
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -44,24 +62,25 @@ $lcpImage = $seo['lcp_image'] ?? null;
 
 	<link rel="preload" as="style" href="{{ $frontendCss('bootstrap.min.css') }}">
 	<link rel="preload" as="style" href="{{ $themeCss }}">
-	<link rel="preload" as="image" href="{{ $logoUrl }}">
+	@if($logoWebpUrl)
+	<link rel="preload" as="image" href="{{ $logoPreloadUrl }}" type="image/webp">
+	@else
+	<link rel="preload" as="image" href="{{ $logoPreloadUrl }}">
+	@endif
 	@if($lcpImage)
 	<link rel="preload" as="image" href="{{ $lcpImage }}" fetchpriority="high">
 	@endif
 	@stack('head')
 
+	{{-- Critical CSS only (blocks first paint). Everything else is deferred. --}}
 	<link rel="stylesheet" href="{{ $frontendCss('bootstrap.min.css') }}">
-	<link rel="stylesheet" href="{{ $frontendCss('fontawesome.min.css') }}">
-	{{-- Only solid + brands ship now; preload solid for above-the-fold icons --}}
+	<link rel="stylesheet" href="{{ $themeCss }}">
+	{!! $deferCss($frontendCss('randevu-overrides.min.css')) !!}
+	{!! $deferCss($frontendCss('fontawesome.min.css')) !!}
 	<link rel="preload" as="font" type="font/woff2" crossorigin
 		href="{{ asset('frontend/assets/fonts/fontawesome/fa-solid-900.woff2') }}">
-	<link rel="stylesheet" href="{{ $frontendCss('swiper-bundle.min.css') }}">
-	<link rel="stylesheet" href="{{ $themeCss }}">
-	<link rel="stylesheet" href="{{ $frontendCss('randevu-overrides.css') }}">
-	<link rel="stylesheet" href="{{ $frontendCss('magnific-popup.min.css') }}" media="print" onload="this.media='all'">
-	<noscript>
-		<link rel="stylesheet" href="{{ $frontendCss('magnific-popup.min.css') }}">
-	</noscript>
+	{!! $deferCss($frontendCss('swiper-bundle.min.css')) !!}
+	{!! $deferCss($frontendCss('magnific-popup.min.css')) !!}
 	@stack('styles')
 	<style>
 		.skip-link {
@@ -89,7 +108,7 @@ $lcpImage = $seo['lcp_image'] ?? null;
 			<button class="th-menu-toggle" type="button" aria-label="{{ __('main.wa_close') }}"><i class="fal fa-times"></i></button>
 			<div class="mobile-logo">
 				<a href="{{ frontend_route('frontend.home') }}">
-					<img src="{{ $logoUrl }}" width="100" height="50" alt="{{ config('app.name', 'Randevu') }}" decoding="async" fetchpriority="high">
+					@include('frontend.layout.partials.site-logo', ['logoFetchPriority' => 'high'])
 				</a>
 			</div>
 			<div class="th-mobile-menu">
@@ -137,7 +156,7 @@ $lcpImage = $seo['lcp_image'] ?? null;
 	<script src="{{ $frontendJs('vendor/jquery-3.7.1.min.js') }}" defer></script>
 	<script src="{{ $frontendJs('swiper-bundle.min.js') }}" defer></script>
 	<script src="{{ $frontendJs('bootstrap.min.js') }}" defer></script>
-	<script src="{{ $frontendJs('main.js') }}" defer></script>
+	<script src="{{ $frontendJs('main.min.js') }}" defer></script>
 	{{-- Below-the-fold / enhancement libs: load after first paint so they don't block mobile PSI --}}
 	<script>
 	(function () {
