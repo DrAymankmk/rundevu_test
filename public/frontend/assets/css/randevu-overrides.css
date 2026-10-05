@@ -479,7 +479,7 @@ html[dir="rtl"] .discount-tag {
 
 .clinic-details-panel__head {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 12px;
   margin-bottom: 16px;
 }

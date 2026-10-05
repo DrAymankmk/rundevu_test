@@ -121,14 +121,18 @@
 
 		<div class="row gy-4 mt-1">
 			<div class="col-lg-8">
-				@if(filled($info))
+				@php
+					$moduleDescription = $clinic->seoMeta?->getTranslatedAttribute('module_description', $locale);
+					$aboutText = filled($moduleDescription) ? $moduleDescription : $info;
+				@endphp
+				@if(filled($aboutText))
 				<div class="clinic-details-panel">
 					<div class="clinic-details-panel__head">
 						<span class="clinic-details-panel__icon"><i class="fa-solid fa-circle-info"></i></span>
 						<h3>{{ __('clinics.about') }}</h3>
 					</div>
 					<div class="clinic-details-panel__body">
-						{!! nl2br(e($info)) !!}
+						{!! $aboutText !!}
 					</div>
 				</div>
 				@endif
