@@ -27,10 +27,43 @@
 	background: #f4f7fb;
 	font-weight: 600;
 }
+.ql-snow .ql-picker.ql-size {
+	width: 78px;
+}
+.ql-snow .ql-picker.ql-size .ql-picker-label::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item::before {
+	content: 'Normal';
+}
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="10px"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="10px"]::before { content: '10px'; }
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="12px"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="12px"]::before { content: '12px'; }
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="14px"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="14px"]::before { content: '14px'; }
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="16px"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="16px"]::before { content: '16px'; }
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="18px"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="18px"]::before { content: '18px'; }
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="20px"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="20px"]::before { content: '20px'; }
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="24px"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="24px"]::before { content: '24px'; }
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="28px"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="28px"]::before { content: '28px'; }
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="32px"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="32px"]::before { content: '32px'; }
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="36px"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="36px"]::before { content: '36px'; }
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="48px"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="48px"]::before { content: '48px'; }
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value="64px"]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value="64px"]::before { content: '64px'; }
 </style>
 <script src="{{ asset('admin/js/quill.min.js') }}"></script>
 <script>
 (function () {
+	var FONT_SIZES = ['10px', '12px', '14px', '16px', '18px', '20px', '24px', '28px', '32px', '36px', '48px', '64px'];
+
 	function parseOptions(wrap) {
 		var raw = wrap.getAttribute('data-quill-options') || '{}';
 		try {
@@ -38,6 +71,17 @@
 		} catch (e) {
 			return {};
 		}
+	}
+
+	function registerFontSize() {
+		if (typeof Quill === 'undefined' || Quill.__cmsFontSizeRegistered) {
+			return;
+		}
+
+		var SizeStyle = Quill.import('attributors/style/size');
+		SizeStyle.whitelist = FONT_SIZES;
+		Quill.register(SizeStyle, true);
+		Quill.__cmsFontSizeRegistered = true;
 	}
 
 	function registerTableBlot() {
@@ -204,6 +248,7 @@
 				return;
 			}
 
+			registerFontSize();
 			registerTableBlot();
 
 			var opts = parseOptions(wrap);
@@ -214,7 +259,7 @@
 						container: [
 							[{ 'header': [1, 2, 3, 4, 5, 6, false] }],
 							[{ 'font': [] }],
-							[{ 'size': [] }],
+							[{ 'size': FONT_SIZES }],
 							['bold', 'italic', 'underline', 'strike'],
 							[{ 'color': [] }, { 'background': [] }],
 							[{ 'script': 'sub'}, { 'script': 'super' }],
