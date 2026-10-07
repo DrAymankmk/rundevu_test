@@ -65,6 +65,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'setlocale' => \App\Http\Middleware\SetLocale::class,
         'clinic.module' => \App\Http\Middleware\EnsureClinicModuleAccess::class,
-
+        'log.website.visit' => \App\Http\Middleware\LogWebsiteVisit::class,
     ];
 }

@@ -196,6 +196,8 @@
             @include('components.seo-form', [
                 'languages' => $languages,
                 'seo' => $clinic->seoMeta,
+                'entity' => $clinic,
+                'showEntitySlugs' => true,
                 'formAction' => route('update-clinic-seo', $clinic->id),
             ])
 

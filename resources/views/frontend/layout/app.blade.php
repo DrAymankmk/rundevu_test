@@ -1,10 +1,8 @@
 <!doctype html>
 @php
-$sessionLang = session('lang');
-$effectiveLocale = $sessionLang !== null && $sessionLang !== ''
-	? (string) $sessionLang
-	: app()->getLocale();
-$effectiveLocale = strtolower(trim(str_replace('_', '-', $effectiveLocale)));
+// Locale is resolved from the URL by SetLocale middleware (not session).
+// Avoid preferring session('lang') — that key is shared with the admin dashboard.
+$effectiveLocale = strtolower(trim(str_replace('_', '-', (string) app()->getLocale())));
 if ($effectiveLocale === '') {
 	$effectiveLocale = strtolower((string) config('app.locale', 'en'));
 }
@@ -203,6 +201,18 @@ $deferCss = static function (string $href): string {
 		}
 	})();
 	</script>
+	@if(config('website_visit_logs.enabled', true) && !empty($websiteVisitLogId))
+	<script>
+	window.__VISIT_LOG__ = {
+		id: {{ (int) $websiteVisitLogId }},
+		token: @json($websiteVisitLogToken ?? ''),
+		heartbeat: {{ (int) config('website_visit_logs.heartbeat_seconds', 15) }},
+		endpoint: @json(route('website-visit-logs.beacon')),
+		csrf: @json(csrf_token())
+	};
+	</script>
+	<script src="{{ $frontendJs('visit-tracker.js') }}" defer></script>
+	@endif
 	@stack('scripts')
 </body>
 

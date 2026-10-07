@@ -7,6 +7,8 @@ $instanceId = preg_replace('/[^A-Za-z0-9_-]/', '_', (string) ($instanceId ?? $pr
 $formAction = $formAction ?? null;
 $submitLabel = $submitLabel ?? null;
 $asCard = $asCard ?? true;
+$entity = $entity ?? null;
+$showEntitySlugs = (bool) ($showEntitySlugs ?? false);
 @endphp
 
 @if($asCard)
@@ -102,6 +104,23 @@ $asCard = $asCard ?? true;
 				@endphp
 				<div class="tab-pane fade {{ $index === 0 ? 'show active' : '' }}"
 					id="seo-{{ $instanceId }}-{{ $lang->code }}">
+					@if($showEntitySlugs && $entity)
+					@php
+						$entitySlugValue = $lang->code === 'en'
+							? old($prefix.'.slugs.en', $entity->slug_en)
+							: old($prefix.'.slugs.'.$lang->code, $entity->slug);
+					@endphp
+					<div class="mb-3">
+						<label class="form-label">{{ __('seo.slug') }}
+							({{ $lang->name }})</label>
+						<input type="text" class="form-control"
+							name="{{ $prefix }}[slugs][{{ $lang->code }}]"
+							value="{{ $entitySlugValue }}"
+							dir="{{ $lang->direction }}">
+						<small class="text-muted">{{ __('seo.slug_hint') }}</small>
+					</div>
+					@endif
+
 					<div class="mb-3">
 						<label class="form-label">{{ __('seo.meta_title') }}
 							({{ $lang->name }})</label>

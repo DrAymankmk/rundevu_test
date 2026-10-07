@@ -12,6 +12,8 @@ return [
     'meta_keywords' => 'Meta Keywords',
     'module_description' => 'Module Description',
     'module_description_hint' => 'Optional long text shown on the module page. Not used in SEO meta tags.',
+    'slug' => 'URL Slug',
+    'slug_hint' => 'Used in the frontend details URL for this language.',
     'edit_seo' => 'Edit SEO',
     'og_title' => 'OG Title',
     'og_description' => 'OG Description',

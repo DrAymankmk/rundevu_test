@@ -27,7 +27,8 @@ class SetLocale
         }
 
         $segment = strtolower((string) $request->segment(1));
-        $isAdmin = $segment === 'admin';
+        // Prefer path match so locale logic stays correct behind subdirectory installs.
+        $isAdmin = $request->is('admin') || $request->is('admin/*') || $segment === 'admin';
 
         if ($isAdmin) {
             // Admin keeps session-based locale switching.
@@ -55,7 +56,9 @@ class SetLocale
             $lang = $default;
         }
 
-        Session::put('lang', $lang);
+        // Do NOT write session('lang') here. Admin locale switching uses that same key;
+        // overwriting it on every frontend/beacon request resets dashboard language to English.
+        // Frontend locale comes from the URL for this request via App::setLocale().
         App::setLocale($lang);
 
         return $next($request);

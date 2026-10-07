@@ -129,8 +129,12 @@ class ClinicsController extends Controller
             'title' => $clinic->name,
             'description' => \Illuminate\Support\Str::limit(strip_tags((string) $info), 160),
             'image' => $clinic->image,
-            'canonical' => frontend_route('frontend.clinics.show', $clinic),
+            'canonical' => frontend_route('frontend.clinics.show', $clinic, true, $locale),
             'lcp_image' => frontend_breadcrumb_image('clinic_details'),
+            'hreflang_overrides' => [
+                'en' => frontend_route('frontend.clinics.show', $clinic, true, 'en'),
+                'ar' => frontend_route('frontend.clinics.show', $clinic, true, 'ar'),
+            ],
         ]);
 
         return view('frontend.pages.clinics.show', compact(

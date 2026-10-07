@@ -72,11 +72,31 @@ class SitemapController extends Controller
         }
 
         foreach ($this->publicClinics(1) as $clinic) {
-            $urls[] = $this->localizedUrl('/clinics/' . $clinic->slug, $clinic->updated_at, 'weekly', '0.6');
+            $overrides = [];
+            foreach ((array) config('app.locales', ['en', 'ar']) as $locale) {
+                $overrides[$locale] = frontend_route('frontend.clinics.show', $clinic, true, $locale);
+            }
+            $urls[] = $this->localizedUrl(
+                '/clinics/' . $clinic->localizedSlug(frontend_default_locale()),
+                $clinic->updated_at,
+                'weekly',
+                '0.6',
+                $overrides
+            );
         }
 
         foreach ($this->publicClinics(3) as $doctor) {
-            $urls[] = $this->localizedUrl('/doctors/' . $doctor->slug, $doctor->updated_at, 'weekly', '0.6');
+            $overrides = [];
+            foreach ((array) config('app.locales', ['en', 'ar']) as $locale) {
+                $overrides[$locale] = frontend_route('frontend.doctors.show', $doctor, true, $locale);
+            }
+            $urls[] = $this->localizedUrl(
+                '/doctors/' . $doctor->localizedSlug(frontend_default_locale()),
+                $doctor->updated_at,
+                'weekly',
+                '0.6',
+                $overrides
+            );
         }
 
         return $urls;
@@ -165,9 +185,14 @@ class SitemapController extends Controller
             return Clinic::query()
                 ->where('status', 1)
                 ->where('app_type', $appType)
-                ->whereNotNull('slug')
-                ->where('slug', '!=', '')
-                ->get(['slug', 'updated_at']);
+                ->where(function ($query) {
+                    $query->where(function ($q) {
+                        $q->whereNotNull('slug')->where('slug', '!=', '');
+                    })->orWhere(function ($q) {
+                        $q->whereNotNull('slug_en')->where('slug_en', '!=', '');
+                    });
+                })
+                ->get(['slug', 'slug_en', 'updated_at']);
         } catch (Throwable $exception) {
             return collect();
         }

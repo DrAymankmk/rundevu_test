@@ -12,6 +12,8 @@ return [
     'meta_keywords' => 'كلمات Meta',
     'module_description' => 'وصف العرض فى الصفحة',
     'module_description_hint' => 'نص طويل اختياري يظهر في صفحة العرض. لا يُستخدم في وسوم SEO.',
+    'slug' => 'رابط الصفحة (Slug)',
+    'slug_hint' => 'يُستخدم في رابط صفحة التفاصيل لهذه اللغة.',
     'edit_seo' => 'تعديل SEO',
     'og_title' => 'عنوان OG',
     'og_description' => 'وصف OG',

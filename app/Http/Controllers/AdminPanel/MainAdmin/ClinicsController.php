@@ -107,8 +107,12 @@ class ClinicsController extends Controller
     {
         $clinic = Clinic::findOrFail($id);
 
-        $request->validate(SeoSyncService::validationRules());
+        $request->validate(array_merge(SeoSyncService::validationRules(), [
+            'seo.slugs.ar' => ['nullable', 'string', 'max:255'],
+            'seo.slugs.en' => ['nullable', 'string', 'max:255'],
+        ]));
 
+        $this->syncEntitySlugs($clinic, $request->input('seo.slugs', []));
         $seoSync->sync($clinic, $request);
 
         session()->flash('success', trans('messages.updated'));
@@ -127,10 +131,39 @@ class ClinicsController extends Controller
         return view('components.seo-form', [
             'languages' => $languages,
             'seo' => $doctor->seoMeta,
+            'entity' => $doctor,
+            'showEntitySlugs' => true,
             'instanceId' => 'doctor_seo_' . $doctor->id,
             'formAction' => route('update-clinic-seo', $doctor->id),
             'asCard' => false,
         ]);
+    }
+
+    private function syncEntitySlugs(Clinic $clinic, array $slugs): void
+    {
+        if ($slugs === []) {
+            return;
+        }
+
+        $updates = [];
+
+        if (array_key_exists('ar', $slugs)) {
+            $raw = trim((string) $slugs['ar']);
+            $updates['slug'] = $raw !== ''
+                ? Clinic::uniqueSlug($raw, $clinic->id, 'ar')
+                : Clinic::uniqueSlug((string) ($clinic->name ?: 'clinic-'.$clinic->id), $clinic->id, 'ar');
+        }
+
+        if (array_key_exists('en', $slugs)) {
+            $raw = trim((string) $slugs['en']);
+            $updates['slug_en'] = $raw !== ''
+                ? Clinic::uniqueSlug($raw, $clinic->id, 'en')
+                : Clinic::uniqueSlug((string) ($clinic->name ?: 'clinic-'.$clinic->id), $clinic->id, 'en');
+        }
+
+        if ($updates !== []) {
+            $clinic->forceFill($updates)->save();
+        }
     }
 
 

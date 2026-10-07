@@ -1678,6 +1678,12 @@ html[dir="rtl"] .discount-tag {
   box-shadow: 0 0 0 2px #0f172a;
 }
 
+.wa-support__badge.fa-whatsapp:before {
+  position: absolute;
+  left: 4px;
+  top: 3px;
+}
+
 .wa-support__copy {
   display: flex;
   flex-direction: column;
@@ -1986,6 +1992,13 @@ body.wa-modal-open {
 [dir="rtl"] .wa-support__pulse {
   left: auto;
   right: 8px;
+}
+
+[dir="rtl"] .wa-support__badge.fa-whatsapp:before {
+  position: absolute;
+  left: auto;
+  right: 3px;
+  top: 3px;
 }
 
 [dir="rtl"] .scroll-top {

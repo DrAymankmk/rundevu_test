@@ -103,9 +103,9 @@ $registerFrontendRoutes = function (bool $arabicBlogFlat = false) use ($frontend
         Route::get('/blog/{slug}', 'BlogController@show')->name('blog.show');
     }
     Route::get('/clinics', 'ClinicsController@index')->name('clinics');
-    Route::get('/clinics/{clinic}', 'ClinicsController@show')->name('clinics.show')->where('clinic', '^[A-Za-z0-9\-]+$');
+    Route::get('/clinics/{clinic}', 'ClinicsController@show')->name('clinics.show')->where('clinic', '^[\p{L}\p{N}\-_]+$');
     Route::get('/doctors', 'DoctorsController@index')->name('doctors');
-    Route::get('/doctors/{doctor}', 'DoctorsController@show')->name('doctors.show')->where('doctor', '^[A-Za-z0-9\-]+$');
+    Route::get('/doctors/{doctor}', 'DoctorsController@show')->name('doctors.show')->where('doctor', '^[\p{L}\p{N}\-_]+$');
     Route::get('/social-media', 'SocialMediaController@index')->name('social');
     Route::post('/book-demo', 'ContactController@bookDemo')->name('book_demo');
     Route::post('/contact', 'ContactController@submitContact')->name('contact.submit');
@@ -124,14 +124,18 @@ $registerFrontendRoutes = function (bool $arabicBlogFlat = false) use ($frontend
 };
 
 // English (default): unprefixed URLs — /about, /blog/{english_slug}
-Route::group(['namespace' => 'Frontend', 'middleware' => 'setlocale', 'as' => 'frontend.'], function () use ($registerFrontendRoutes) {
+Route::group(['namespace' => 'Frontend', 'middleware' => ['setlocale', 'log.website.visit'], 'as' => 'frontend.'], function () use ($registerFrontendRoutes) {
     $registerFrontendRoutes(false);
 });
 
 // Arabic: /ar prefix — /ar/about, blog details at /ar/{arabic_slug}
-Route::group(['namespace' => 'Frontend', 'prefix' => 'ar', 'middleware' => 'setlocale', 'as' => 'frontend.ar.'], function () use ($registerFrontendRoutes) {
+Route::group(['namespace' => 'Frontend', 'prefix' => 'ar', 'middleware' => ['setlocale', 'log.website.visit'], 'as' => 'frontend.ar.'], function () use ($registerFrontendRoutes) {
     $registerFrontendRoutes(true);
 });
+
+Route::post('website-visit-logs/beacon', 'Frontend\WebsiteVisitLogBeaconController@store')
+    ->middleware(['setlocale', 'throttle:60,1'])
+    ->name('website-visit-logs.beacon');
 
 // Legacy language switch route (rewrites current path to /ar/... or unprefixed)
 Route::get('language/{lang}', function (string $lang) {
@@ -221,6 +225,13 @@ Route::group(["middleware" => ["auth", "setlocale"], 'prefix' => 'admin', 'names
     Route::put('website-links/{id}', 'WebsiteLinkController@update')->name('website-links.update');
     Route::delete('website-links/{id}', 'WebsiteLinkController@destroy')->name('website-links.destroy');
     Route::post('website-links/{id}/toggle-status', 'WebsiteLinkController@toggleStatus')->name('website-links.toggle-status');
+
+    Route::get('website-visit-logs', 'WebsiteVisitLogController@index')->name('website-visit-logs.index');
+    Route::get('website-visit-logs/data', 'WebsiteVisitLogController@data')->name('website-visit-logs.data');
+    Route::get('website-visit-logs/stats', 'WebsiteVisitLogController@stats')->name('website-visit-logs.stats');
+    Route::post('website-visit-logs/bulk-delete', 'WebsiteVisitLogController@bulkDestroy')->name('website-visit-logs.bulk-delete');
+    Route::get('website-visit-logs/{id}', 'WebsiteVisitLogController@show')->name('website-visit-logs.show');
+    Route::delete('website-visit-logs/{id}', 'WebsiteVisitLogController@destroy')->name('website-visit-logs.destroy');
 
 // cms links
     Route::group(['namespace' => 'CMS', 'prefix' => 'cms', 'as' => 'cms.'], function () {

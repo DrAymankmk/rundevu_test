@@ -174,6 +174,19 @@ if (! function_exists('frontend_route')) {
             }
         }
 
+        if (in_array($suffix, ['clinics.show', 'doctors.show'], true)) {
+            $param = $parameters;
+            if (is_array($parameters)) {
+                $param = $parameters['clinic']
+                    ?? $parameters['doctor']
+                    ?? ($parameters[0] ?? null);
+            }
+
+            if ($param instanceof \App\Models\Clinic) {
+                $parameters = [$param->localizedSlug($locale)];
+            }
+        }
+
         return route($routeName, $parameters, $absolute);
     }
 }
@@ -203,6 +216,11 @@ if (! function_exists('frontend_language_url')) {
             $blogPath = $resolveBlogPath($segments[1]);
             if ($blogPath !== null) {
                 $path = $blogPath;
+            }
+        } elseif (count($segments) === 2 && in_array($segments[0], ['clinics', 'doctors'], true)) {
+            $entity = \App\Models\Clinic::findByLocalizedSlug($segments[1]);
+            if ($entity) {
+                $path = '/' . $segments[0] . '/' . $entity->localizedSlug($lang);
             }
         } elseif (count($segments) === 1 && ! in_array($segments[0], frontend_reserved_path_segments(), true)) {
             $blogPath = $resolveBlogPath($segments[0]);

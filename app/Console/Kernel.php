@@ -17,6 +17,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('takafol:send-operational-notifications')->dailyAt('08:00');
         $schedule->command('loyalty:expire-points')->dailyAt('00:10');
+        $schedule->command('website-visit-logs:prune')->dailyAt('01:20');
     }
 
     /**

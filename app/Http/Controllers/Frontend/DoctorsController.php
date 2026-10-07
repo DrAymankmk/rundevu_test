@@ -109,7 +109,7 @@ class DoctorsController extends Controller
             return $this->renderIndex(request(), $specialty);
         }
 
-        $model = Clinic::query()->where('slug', $doctor)->first();
+        $model = Clinic::findByLocalizedSlug($doctor);
         if (! $model && ctype_digit($doctor)) {
             $model = Clinic::query()->find((int) $doctor);
         }
@@ -182,8 +182,12 @@ class DoctorsController extends Controller
             'title' => $doctor->name,
             'description' => \Illuminate\Support\Str::limit(strip_tags((string) $info), 160),
             'image' => $doctor->image,
-            'canonical' => frontend_route('frontend.doctors.show', $doctor),
+            'canonical' => frontend_route('frontend.doctors.show', $doctor, true, $locale),
             'lcp_image' => frontend_breadcrumb_image('doctor_details'),
+            'hreflang_overrides' => [
+                'en' => frontend_route('frontend.doctors.show', $doctor, true, 'en'),
+                'ar' => frontend_route('frontend.doctors.show', $doctor, true, 'ar'),
+            ],
         ]);
 
         return view('frontend.pages.doctors.show', compact(
