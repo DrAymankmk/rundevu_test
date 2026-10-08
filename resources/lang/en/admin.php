@@ -9,6 +9,7 @@ return [
     'takafol_title' => 'Randevou',
     'my_points' => 'My Points',
     'points' => 'Points',
+    'setting' => 'Settings',
     'complaints_box' => 'Complaints Box',
     'add_posts' => 'Add Posts',
     'attendance_register' => 'Attendance Register',

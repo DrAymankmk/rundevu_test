@@ -200,7 +200,12 @@
 							class="fa-solid fa-comments"></i></span>
 					<span>@lang('admin.chat_list')</span></a></li>
 
-
+			@clinicModule('points')
+			<li><a href="{{ route('loyalty.redemptions') }}"><span
+						class="menu-side clinic-admin-menu-icon"><i
+							class="fa-solid fa-gift"></i></span>
+					<span>@lang('main.loyalty_program')</span></a></li>
+			@endclinicModule
 			<!-- pharmacy -->
 			@elseif(in_array(auth()->user()->app_type, [5, 4, 25, 26]))
 			@clinicModule('points')
