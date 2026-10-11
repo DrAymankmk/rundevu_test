@@ -9587,6 +9587,22 @@ blockquote.has-very-dark-gray-color {
   letter-spacing: 0.02em;
   color: rgba(92, 95, 113, 0.9);
 }
+.blog-desc table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.25rem 0;
+}
+.blog-desc th,
+.blog-desc td {
+  border: 1px solid #d9dde7;
+  padding: 10px 12px;
+  vertical-align: top;
+}
+.blog-desc th {
+  background: #f5f7fb;
+  font-weight: 600;
+  color: var(--title-color);
+}
 
 .share-links-title {
   font-size: 20px;

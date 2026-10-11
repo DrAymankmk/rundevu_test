@@ -10,7 +10,9 @@ class MainRepository extends BaseRepository
     public function checkJwtAuth($input)
     {
         $token = request()->bearerToken();
-        return Clinic::where('jwt_token', $token)->first();
+        $clinic = Clinic::where('jwt_token', $token)->first();
+        $this->syncPushToken($clinic, request());
+        return $clinic;
     }
 
     public function checkIfAccountExists($email)

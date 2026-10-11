@@ -6,11 +6,15 @@ use App\Events\ReservationChatMessageEvent;
 
 use App\Http\Controllers\API\APIController;
 use App\Http\Controllers\Controller;
+use App\Models\Notifications;
 use App\Models\ReservationChat;
 use App\Models\Reservations;
 use Illuminate\Http\Request;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class ChatController extends Controller
 {
@@ -135,12 +139,15 @@ class ChatController extends Controller
             ], 422);
         }
 
+        $reservation = Reservations::whereId($request->reservation_id)->first();
+        $receiverId = (int) $reservation->user_id;
+
         $data = [
             'sender_id' => auth()->id(),
-            'receiver_id' => $request->receiver_id,
+            'receiver_id' => $receiverId,
             'reservation_id' => $request->reservation_id,
             'message' => $request->message,
-            'user_id' => Reservations::whereId($request->reservation_id)->first()->parent_id,
+            'user_id' => $receiverId,
             'sender_type' => 2,
             'receiver_type' => 1,
             'is_read' => false,
@@ -153,12 +160,60 @@ class ChatController extends Controller
 
         $chat = ReservationChat::create($data);
         $chat->load(['sender', 'receiver']);
+
+        $notification = $this->reservationChatNotificationText($reservation, $chat);
+
+        $receiver = User::select('id', 'platform', 'firebase_token')->find($receiverId);
+        Log::channel('push')->info('Reception chat message to user: sending push notification.', [
+            'chat_id' => $chat->id,
+            'reservation_id' => $reservation->id,
+            'clinic_id' => $reservation->clinic_id,
+            'sender_id' => auth()->id(),
+            'user_id' => $receiverId,
+            'user_platform' => optional($receiver)->platform,
+            'user_has_token' => filled(optional($receiver)->firebase_token),
+            'has_file' => $request->hasFile('file'),
+        ]);
+
+        Notifications::create([
+            'clinic_id' => $reservation->clinic_id,
+            'user_id' => $receiverId,
+            'receiver_id' => $receiverId,
+            'type' => 1,
+            'app_type' => 1,
+            'title_ar' => $notification['title_ar'],
+            'title_en' => $notification['title_en'],
+            'message_ar' => $notification['message_ar'],
+            'message_en' => $notification['message_en'],
+        ]);
+
         broadcast(new ReservationChatMessageEvent($chat))->toOthers();
 
         return response()->json([
             'success' => true,
             'message' => $chat
         ]);
+    }
+
+    private function reservationChatNotificationText(Reservations $reservation, ReservationChat $message): array
+    {
+        $bookingNumber = $reservation->booking_number ?: $reservation->id;
+        $messageText = trim((string) $message->message);
+
+        if ($messageText !== '') {
+            $messagePreview = Str::limit($messageText, 80);
+        } elseif ($message->file || $message->record) {
+            $messagePreview = 'تم إرسال مرفق جديد في شات الحجز.';
+        } else {
+            $messagePreview = 'لديك رسالة جديدة في شات الحجز.';
+        }
+
+        return [
+            'title_ar' => 'رسالة جديدة من حجز رقم ' . $bookingNumber,
+            'title_en' => 'New message from booking #' . $bookingNumber,
+            'message_ar' => $messagePreview,
+            'message_en' => $messagePreview,
+        ];
     }
 
     public function bookingChat($bookingId)

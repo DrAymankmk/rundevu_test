@@ -12,22 +12,15 @@
     $categoryNames = $post->categories->map(function ($category) {
         return $category->getTranslatedAttribute('title') ?: $category->name;
     })->filter()->values();
-    $shareUrl = urlencode(route('frontend.blog.show', $post->slug));
+    $shareUrl = urlencode(frontend_route('frontend.blog.show', $post->getRouteSlug()));
     $shareTitle = urlencode($title);
 @endphp
 
-<div class="breadcumb-wrapper" data-bg-src="{{ asset('frontend/assets/img/bg/breadcumb-bg.jpg') }}">
-    <div class="container">
-        <div class="breadcumb-content">
-            <h1 class="breadcumb-title">{{ $title }}</h1>
-            <ul class="breadcumb-menu">
-                <li><a href="{{ route('frontend.home') }}">{{ __('main.home') }}</a></li>
-                <li><a href="{{ route('frontend.blog') }}">{{ __('main.blogs') }}</a></li>
-                <li>{{ \Illuminate\Support\Str::limit($title, 40) }}</li>
-            </ul>
-        </div>
-    </div>
-</div>
+<x-breadcrumb
+    :title="$title"
+    :items="[['label' => __('main.blogs'), 'url' => frontend_route('frontend.blog')]]"
+    :current="\Illuminate\Support\Str::limit($title, 40)"
+/>
 
 <section class="th-blog-wrapper blog-details space-top space-extra-bottom">
     <div class="container">
@@ -35,17 +28,17 @@
             <div class="col-xxl-8 col-lg-7">
                 <div class="th-blog blog-single">
                     <div class="blog-img global-img">
-                        <img src="{{ $image }}" alt="{{ $title }}">
+                        <img src="{{ $image }}" alt="{{ $title }}" decoding="async" fetchpriority="high" width="800" height="500">
                     </div>
                     <div class="blog-content">
                         <div class="blog-meta">
                             @if($date)
-                            <a href="{{ route('frontend.blog') }}">
+                            <a href="{{ frontend_route('frontend.blog') }}">
                                 <i class="fa-solid fa-calendar-days"></i>{{ $date }}
                             </a>
                             @endif
                             @if($categoryNames->isNotEmpty())
-                            <a href="{{ route('frontend.blog', ['category' => $post->categories->first()->slug]) }}">
+                            <a href="{{ frontend_route('frontend.blog', ['category' => $post->categories->first()->slug]) }}">
                                 <i class="fa-solid fa-tags"></i>{{ $categoryNames->implode(', ') }}
                             </a>
                             @endif
@@ -68,7 +61,7 @@
                                     <span class="share-links-title">{{ __('blog.tags') }}:</span>
                                     <div class="tagcloud">
                                         @foreach($tags as $tag)
-                                        <a href="{{ route('frontend.blog', ['q' => $tag]) }}">{{ $tag }}</a>
+                                        <a href="{{ frontend_route('frontend.blog', ['q' => $tag]) }}">{{ $tag }}</a>
                                         @endforeach
                                     </div>
                                     @endif

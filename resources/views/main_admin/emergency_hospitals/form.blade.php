@@ -48,7 +48,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">City *</label>
-                                <select name="city_id" class="form-control" required>
+                                <select name="city_id" id="city_id" class="form-control" required>
                                     <option value="">Select</option>
                                     @foreach($cities as $city)
                                         <option value="{{ $city->id }}" {{ old('city_id', $hospital->city_id) == $city->id ? 'selected' : '' }}>
@@ -59,11 +59,11 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Region</label>
-                                <select name="region_id" class="form-control">
+                                <select name="region_id" id="region_id" class="form-control">
                                     <option value="">Select</option>
                                     @foreach($regions as $region)
                                         <option value="{{ $region->id }}" {{ old('region_id', $hospital->region_id) == $region->id ? 'selected' : '' }}>
-                                            {{ app()->getLocale() == 'en' ? ($region->name_en ?? $region->name) : ($region->name_ar ?? $region->name) }}
+                                            {{ app()->getLocale() == 'en' ? ($region->name_en ?: $region->name_ar) : ($region->name_ar ?: $region->name_en) }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -112,6 +112,32 @@
     </div>
 
     <script>
+        document.getElementById('city_id').addEventListener('change', function () {
+            const regionSelect = document.getElementById('region_id');
+            const isEnglish = @json(app()->getLocale() == 'en');
+
+            regionSelect.innerHTML = '<option value="">Select</option>';
+
+            if (!this.value) {
+                return;
+            }
+
+            fetch(@json(route('emergency-hospitals.regions')) + '?city_id=' + encodeURIComponent(this.value), {
+                headers: { 'Accept': 'application/json' }
+            })
+                .then(function (response) { return response.json(); })
+                .then(function (regions) {
+                    regions.forEach(function (region) {
+                        const option = document.createElement('option');
+                        option.value = region.id;
+                        option.textContent = isEnglish
+                            ? (region.name_en || region.name_ar)
+                            : (region.name_ar || region.name_en);
+                        regionSelect.appendChild(option);
+                    });
+                });
+        });
+
         let map, marker, autocomplete;
 
         function initEmergencyHospitalMap() {

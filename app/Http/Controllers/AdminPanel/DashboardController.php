@@ -194,6 +194,16 @@ class DashboardController extends Controller
                     ->orderBy('package_end_date')
                     ->get();
 
+                $data['trial_expiring_clinics_week'] = Clinic::whereNotNull('trial_ends_at')
+                    ->whereBetween('trial_ends_at', [$now, $now->copy()->addWeek()])
+                    ->orderBy('trial_ends_at')
+                    ->get();
+
+                $data['trial_expiring_clinics_month'] = Clinic::whereNotNull('trial_ends_at')
+                    ->whereBetween('trial_ends_at', [$now, $now->copy()->addMonth()])
+                    ->orderBy('trial_ends_at')
+                    ->get();
+
                 return view('home.main_dashboard', compact('data'));
             }  else {
                 $data['lang'] = app()->getLocale() ?? 'en';

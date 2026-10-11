@@ -288,7 +288,7 @@
                                     <td>{{ number_format((float) $reservation->price, 2) }}</td>
                                     <td>{{ number_format((float) $reservation->platform_commission_rate, 2) }}%</td>
                                     <td>{{ number_format((float) $reservation->platform_commission_amount, 2) }}</td>
-                                    <td>{{ number_format((float) $reservation->clinic_net_amount, 2) }}</td>
+                                    <td>{{ number_format(max((float) $reservation->price - (float) $reservation->platform_commission_amount, 0), 2) }}</td>
                                     <td>{{ $settlementDirectionLabel($reservation->settlement_direction) }}</td>
                                 </tr>
                             @empty

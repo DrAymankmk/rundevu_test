@@ -10,7 +10,7 @@ use App\Services\Seo\SeoSyncService;
 use App\Support\Cms\CmsGalleryMedia;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class BlogPostController extends Controller
 {
@@ -21,7 +21,7 @@ class BlogPostController extends Controller
 
     public function data(Request $request): JsonResponse
     {
-        $query = BlogPost::with(['categories.translations', 'translations']);
+        $query = BlogPost::with(['categories.translations', 'translations', 'media']);
 
         if ($request->has('search') && !empty($request->search['value'])) {
             $search = $request->search['value'];
@@ -30,6 +30,7 @@ class BlogPostController extends Controller
                     ->orWhere('slug', 'like', "%{$search}%")
                     ->orWhereHas('translations', function ($q2) use ($search) {
                         $q2->where('title', 'like', "%{$search}%")
+                            ->orWhere('slug', 'like', "%{$search}%")
                             ->orWhere('summary', 'like', "%{$search}%");
                     });
             });
@@ -63,8 +64,8 @@ class BlogPostController extends Controller
                 'id' => $post->id,
                 'name' => $post->name,
                 'title' => $translation ? $translation->title : '-',
-                'slug' => $post->slug,
-                'image' => $post->getImageUrl('thumb'),
+                'slug' => $post->getSlug($locale),
+                'image' => $post->getImageUrl('thumb', $locale),
                 'categories' => $post->categories->map(function (BlogCategory $category) use ($locale) {
                     return $category->getTranslatedAttribute('title', $locale) ?: $category->name;
                 })->implode(', '),
@@ -92,25 +93,12 @@ class BlogPostController extends Controller
 
     public function store(Request $request, SeoSyncService $seoSync)
     {
-        $validated = $request->validate(array_merge([
-            'name' => 'required|string|max:255',
-            'slug' => 'nullable|string|max:255|unique:blog_posts,slug',
-            'is_active' => 'nullable|boolean',
-            'publish_date' => 'nullable|date',
-            'category_ids' => 'nullable|array',
-            'category_ids.*' => 'integer|exists:blog_categories,id',
-            'translations' => 'required|array',
-            'translations.*.title' => 'required|string|max:255',
-            'translations.*.summary' => 'required|string',
-            'translations.*.content' => 'required|string',
-            'translations.*.tags' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,gif,webp|max:5120',
-            'image_alt' => 'nullable|string|max:255',
-        ], SeoSyncService::validationRules()));
+        $validated = $request->validate(array_merge($this->postRules(), SeoSyncService::validationRules()));
+        $resolvedSlugs = $this->resolveTranslationSlugs($validated['translations']);
 
         $post = BlogPost::create([
             'name' => $validated['name'],
-            'slug' => $validated['slug'] ?: Str::slug($validated['name']),
+            'slug' => $this->parentSlug($resolvedSlugs),
             'is_active' => $request->boolean('is_active'),
             'publish_date' => $validated['publish_date'] ?? null,
         ]);
@@ -118,15 +106,17 @@ class BlogPostController extends Controller
         foreach ($validated['translations'] as $locale => $translationData) {
             $post->translations()->create([
                 'locale' => $locale,
+                'slug' => $resolvedSlugs[$locale],
                 'title' => $translationData['title'],
                 'summary' => $translationData['summary'],
                 'content' => $translationData['content'],
                 'tags' => $this->parseTags($translationData['tags'] ?? null),
             ]);
+
+            $this->syncTranslationImage($post, $request, $locale);
         }
 
         $post->categories()->sync($validated['category_ids'] ?? []);
-        $this->syncImage($post, $request);
         $seoSync->sync($post, $request);
 
         return redirect()->route('blog.posts.index')
@@ -135,7 +125,7 @@ class BlogPostController extends Controller
 
     public function edit($id)
     {
-        $post = BlogPost::with(['categories', 'translations', 'seoMeta.translations'])->findOrFail($id);
+        $post = BlogPost::with(['categories', 'translations', 'seoMeta.translations', 'media'])->findOrFail($id);
         $categories = BlogCategory::with('translations')->orderBy('name')->get();
         $languages = CmsLanguage::active()->ordered()->get();
 
@@ -146,26 +136,16 @@ class BlogPostController extends Controller
     {
         $post = BlogPost::findOrFail($id);
 
-        $validated = $request->validate(array_merge([
-            'name' => 'required|string|max:255',
-            'slug' => 'nullable|string|max:255|unique:blog_posts,slug,' . $post->id,
-            'is_active' => 'nullable|boolean',
-            'publish_date' => 'nullable|date',
-            'category_ids' => 'nullable|array',
-            'category_ids.*' => 'integer|exists:blog_categories,id',
-            'translations' => 'required|array',
-            'translations.*.title' => 'required|string|max:255',
-            'translations.*.summary' => 'required|string',
-            'translations.*.content' => 'required|string',
-            'translations.*.tags' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,gif,webp|max:5120',
-            'image_alt' => 'nullable|string|max:255',
-            'remove_image' => 'nullable|boolean',
-        ], SeoSyncService::validationRules()));
+        $validated = $request->validate(array_merge(
+            $this->postRules($post->id),
+            ['translations.*.remove_image' => 'nullable|boolean'],
+            SeoSyncService::validationRules()
+        ));
+        $resolvedSlugs = $this->resolveTranslationSlugs($validated['translations'], $post->id);
 
         $post->update([
             'name' => $validated['name'],
-            'slug' => $validated['slug'] ?: Str::slug($validated['name']),
+            'slug' => $this->parentSlug($resolvedSlugs, $post->id),
             'is_active' => $request->boolean('is_active'),
             'publish_date' => $validated['publish_date'] ?? null,
         ]);
@@ -174,21 +154,18 @@ class BlogPostController extends Controller
             $post->translations()->updateOrCreate(
                 ['locale' => $locale],
                 [
+                    'slug' => $resolvedSlugs[$locale],
                     'title' => $translationData['title'],
                     'summary' => $translationData['summary'],
                     'content' => $translationData['content'],
                     'tags' => $this->parseTags($translationData['tags'] ?? null),
                 ]
             );
+
+            $this->syncTranslationImage($post, $request, $locale);
         }
 
         $post->categories()->sync($validated['category_ids'] ?? []);
-
-        if ($request->boolean('remove_image')) {
-            $post->clearMediaCollection('image');
-        }
-
-        $this->syncImage($post, $request);
         $seoSync->sync($post, $request);
 
         return redirect()->route('blog.posts.index')
@@ -198,7 +175,7 @@ class BlogPostController extends Controller
     public function destroy($id): JsonResponse
     {
         $post = BlogPost::findOrFail($id);
-        $post->clearMediaCollection('image');
+        $post->clearAllMedia();
         $post->categories()->detach();
         $post->delete();
 
@@ -220,6 +197,71 @@ class BlogPostController extends Controller
         ]);
     }
 
+    private function postRules(?int $ignorePostId = null): array
+    {
+        $slugRule = Rule::unique('blog_post_translations', 'slug');
+        $parentSlugRule = Rule::unique('blog_posts', 'slug');
+        if ($ignorePostId) {
+            $slugRule->where(fn ($query) => $query->where('blog_post_id', '!=', $ignorePostId));
+            $parentSlugRule->ignore($ignorePostId);
+        }
+
+        return [
+            'name' => 'required|string|max:255',
+            'is_active' => 'nullable|boolean',
+            'publish_date' => 'nullable|date',
+            'category_ids' => 'nullable|array',
+            'category_ids.*' => 'integer|exists:blog_categories,id',
+            'translations' => 'required|array',
+            'translations.*.title' => 'required|string|max:255',
+            'translations.*.slug' => ['nullable', 'string', 'max:255', $slugRule, $parentSlugRule],
+            'translations.*.summary' => 'required|string',
+            'translations.*.content' => 'required|string',
+            'translations.*.tags' => 'nullable|string',
+            'translations.*.image' => 'nullable|image|mimes:jpeg,png,gif,webp|max:5120',
+            'translations.*.image_alt' => 'nullable|string|max:255',
+        ];
+    }
+
+    /**
+     * @param  array<string, array<string, mixed>>  $translations
+     * @return array<string, string>
+     */
+    private function resolveTranslationSlugs(array $translations, ?int $ignorePostId = null): array
+    {
+        $resolved = [];
+
+        foreach ($translations as $locale => $translationData) {
+            $slug = BlogPost::makeSlug((string) ($translationData['slug'] ?? ''));
+            if ($slug === '') {
+                $slug = BlogPost::makeSlug((string) ($translationData['title'] ?? ''));
+            }
+
+            $slug = BlogPost::uniqueSlug($slug, $ignorePostId);
+
+            if (in_array($slug, $resolved, true)) {
+                $slug = BlogPost::uniqueSlug($slug . '-' . $locale, $ignorePostId);
+            }
+
+            $resolved[$locale] = $slug;
+        }
+
+        return $resolved;
+    }
+
+    /**
+     * @param  array<string, string>  $resolvedSlugs
+     */
+    private function parentSlug(array $resolvedSlugs, ?int $ignorePostId = null): string
+    {
+        $defaultLocale = CmsLanguage::getDefault()?->code;
+        $slug = ($defaultLocale && isset($resolvedSlugs[$defaultLocale]))
+            ? $resolvedSlugs[$defaultLocale]
+            : (reset($resolvedSlugs) ?: 'post');
+
+        return BlogPost::uniqueSlug($slug, $ignorePostId);
+    }
+
     private function parseTags(?string $tags): array
     {
         if ($tags === null || trim($tags) === '') {
@@ -233,21 +275,43 @@ class BlogPostController extends Controller
             ->all();
     }
 
-    private function syncImage(BlogPost $post, Request $request): void
+    private function syncTranslationImage(BlogPost $post, Request $request, string $locale): void
     {
-        if ($request->hasFile('image') && $request->file('image')->isValid()) {
-            $post->clearMediaCollection('image');
+        $collection = BlogPost::imageCollection($locale);
+        $isDefault = CmsLanguage::getDefault()?->code === $locale;
+        $file = $request->file("translations.{$locale}.image");
+
+        if ($file && $file->isValid()) {
+            $post->clearMediaCollection($collection);
+            if ($isDefault) {
+                $post->clearMediaCollection('image');
+            }
             CmsGalleryMedia::addFileWithAlt(
                 $post,
-                $request->file('image'),
-                'image',
-                $request->input('image_alt')
+                $file,
+                $collection,
+                $request->input("translations.{$locale}.image_alt")
             );
             return;
         }
 
-        if ($request->filled('image_alt')) {
-            CmsGalleryMedia::persistCollectionAlt($post, 'image', $request->input('image_alt'));
+        if ($request->boolean("translations.{$locale}.remove_image")) {
+            $post->clearMediaCollection($collection);
+            if ($isDefault) {
+                $post->clearMediaCollection('image');
+            }
+            return;
+        }
+
+        if ($request->exists("translations.{$locale}.image_alt")) {
+            $altCollection = $post->getFirstMedia($collection)
+                ? $collection
+                : ($isDefault ? 'image' : $collection);
+            CmsGalleryMedia::persistCollectionAlt(
+                $post,
+                $altCollection,
+                $request->input("translations.{$locale}.image_alt")
+            );
         }
     }
 }

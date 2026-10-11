@@ -128,15 +128,8 @@
                                     </div>
                                     <div class="col-12 col-md-6 col-xl-4">
                                         <div class="form-group local-forms">
-                                            <label>@lang('admin.payment_method') <span
-                                                    class="login-danger">*</span></label>
-                                            <select class="form-control select" name="payment_method" value="{{old('payment_method')}}">
-                                                <option selected
-                                                        disabled>@lang('admin.select') @lang('admin.payment_method')</option>
-                                                @foreach($data['payment_method'] as $payment)
-                                                    <option value="{{ $payment->id }}">{{ $payment->name }}</option>
-                                                @endforeach
-                                            </select>
+                                            <label>@lang('admin.payment_method')</label>
+                                            <input type="text" class="form-control" value="@lang('admin.cash')" readonly>
                                         </div>
                                     </div>
                                     <div class="col-12 col-md-6 col-xl-4">

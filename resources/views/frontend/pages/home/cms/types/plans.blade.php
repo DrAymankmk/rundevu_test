@@ -116,7 +116,7 @@
                                 </div>
                             </div>
                         @endif
-                        <a href="{{ route('frontend.subscription', ['package' => $package->id]) }}"
+                        <a href="{{ frontend_route('frontend.subscription', ['package' => $package->id]) }}"
                             class="th-btn black-border fw-btn">
                             {{ __('main.choose_plan') }}
                             <i class="fa-regular fa-arrow-left ms-2"></i>
@@ -131,6 +131,6 @@
         </div>
     </div>
     <div class="shape-mockup d-none d-xxl-block" data-top="0%" data-right="0%">
-        <img src="{{ asset('frontend/assets/img/shape/element-1.png') }}" alt="">
+        <img src="{{ asset('frontend/assets/img/shape/element-1.png') }}" alt="" decoding="async" loading="lazy">
     </div>
 </section>

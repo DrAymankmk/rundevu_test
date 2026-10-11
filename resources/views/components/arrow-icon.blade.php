@@ -1,5 +1,5 @@
 @php
-    $locale = strtolower(trim(str_replace('_', '-', (string) (session('lang') ?: app()->getLocale()))));
+    $locale = strtolower(trim(str_replace('_', '-', (string) app()->getLocale())));
     $lang = explode('-', $locale)[0] ?: $locale;
     $rtlLangs = ['ar', 'fa', 'he', 'ur'];
     $isRtl = in_array($lang, $rtlLangs, true);

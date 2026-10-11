@@ -49,9 +49,9 @@ class FinancialSettlementReportService
             ->selectRaw('COUNT(*) as completed_bookings_count')
             ->selectRaw('COALESCE(SUM(price), 0) as total_collected')
             ->selectRaw('COALESCE(SUM(platform_commission_amount), 0) as platform_commission')
-            ->selectRaw('COALESCE(SUM(clinic_net_amount), 0) as clinic_net_amount')
+            ->selectRaw('COALESCE(SUM(COALESCE(price, 0) - COALESCE(platform_commission_amount, 0)), 0) as clinic_net_amount')
             ->selectRaw("COALESCE(SUM(CASE WHEN settlement_direction = 'clinic_pays_platform' THEN platform_commission_amount ELSE 0 END), 0) as clinic_due_to_platform")
-            ->selectRaw("COALESCE(SUM(CASE WHEN settlement_direction = 'platform_pays_clinic' THEN clinic_net_amount ELSE 0 END), 0) as platform_due_to_clinic")
+            ->selectRaw("COALESCE(SUM(CASE WHEN settlement_direction = 'platform_pays_clinic' THEN COALESCE(price, 0) - COALESCE(platform_commission_amount, 0) ELSE 0 END), 0) as platform_due_to_clinic")
             ->selectRaw("COALESCE(SUM(CASE WHEN payment_method = 'online' AND payment_status != 1 THEN price ELSE 0 END), 0) as pending_online_amount")
             ->first();
 
@@ -73,9 +73,9 @@ class FinancialSettlementReportService
             ->selectRaw('COUNT(*) as completed_bookings_count')
             ->selectRaw('COALESCE(SUM(price), 0) as total_collected')
             ->selectRaw('COALESCE(SUM(platform_commission_amount), 0) as platform_commission')
-            ->selectRaw('COALESCE(SUM(clinic_net_amount), 0) as clinic_net_amount')
+            ->selectRaw('COALESCE(SUM(COALESCE(price, 0) - COALESCE(platform_commission_amount, 0)), 0) as clinic_net_amount')
             ->selectRaw("COALESCE(SUM(CASE WHEN settlement_direction = 'clinic_pays_platform' THEN platform_commission_amount ELSE 0 END), 0) as clinic_due_to_platform")
-            ->selectRaw("COALESCE(SUM(CASE WHEN settlement_direction = 'platform_pays_clinic' THEN clinic_net_amount ELSE 0 END), 0) as platform_due_to_clinic")
+            ->selectRaw("COALESCE(SUM(CASE WHEN settlement_direction = 'platform_pays_clinic' THEN COALESCE(price, 0) - COALESCE(platform_commission_amount, 0) ELSE 0 END), 0) as platform_due_to_clinic")
             ->groupBy('clinic_id')
             ->orderByDesc(DB::raw('SUM(platform_commission_amount)'))
             ->get()
@@ -105,7 +105,7 @@ class FinancialSettlementReportService
             ->selectRaw('COUNT(*) as bookings_count')
             ->selectRaw('COALESCE(SUM(price), 0) as total_collected')
             ->selectRaw('COALESCE(SUM(platform_commission_amount), 0) as platform_commission')
-            ->selectRaw('COALESCE(SUM(clinic_net_amount), 0) as clinic_net_amount')
+            ->selectRaw('COALESCE(SUM(COALESCE(price, 0) - COALESCE(platform_commission_amount, 0)), 0) as clinic_net_amount')
             ->groupBy('payment_method', 'settlement_direction')
             ->get()
             ->map(function ($row) {

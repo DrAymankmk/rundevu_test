@@ -45,11 +45,11 @@
 // Full filled modals
 .modal-filled {
     color: $white;
-    
+
     .modal-header {
         background-color: rgba($white, 0.1);
     }
-    
+
     .modal-title {
         color: $white;
     }
@@ -64,7 +64,7 @@
     backdrop-filter: blur(10px);
 }
 .btn-close-modal {
-	width: 16px;
+    width: 16px;
     height: 16px;
     border-radius: 50%;
     margin: 0;
@@ -73,9 +73,29 @@
     align-items: center;
     justify-content: center;
     opacity: 1;
-	&:hover {
-		transition: all 0.5s;
-	}
+    &:hover {
+        transition: all 0.5s;
+    }
+}
+
+// Keep close control on the inline-end side (right in LTR, left in RTL)
+.modal-header .btn-close,
+.offcanvas-header .btn-close {
+    margin-block: calc(-0.5 * var(--pr-modal-header-padding-y, var(--pr-offcanvas-padding-y, 1rem)));
+    margin-inline-start: auto;
+    margin-inline-end: calc(-0.5 * var(--pr-modal-header-padding-x, var(--pr-offcanvas-padding-x, 1rem)));
+    margin-left: unset;
+    margin-right: unset;
+}
+
+[dir="rtl"] .modal-header .btn-close,
+[dir="rtl"] .offcanvas-header .btn-close,
+[main-theme-layout="rtl"] .modal-header .btn-close,
+[main-theme-layout="rtl"] .offcanvas-header .btn-close {
+    margin-inline-start: auto;
+    margin-inline-end: calc(-0.5 * var(--pr-modal-header-padding-x, var(--pr-offcanvas-padding-x, 1rem)));
+    margin-left: unset;
+    margin-right: unset;
 }
 .offcanvas.offcanvas-large {
     width: 800px;

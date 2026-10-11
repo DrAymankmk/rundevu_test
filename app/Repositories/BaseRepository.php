@@ -62,4 +62,36 @@ class BaseRepository
     {
         return call_user_func(static::MODEL.'::query');
     }
+
+    protected function pushTokenFromRequest($request)
+    {
+        foreach (['firebase_token', 'fcm_token', 'push_token', 'device_token', 'firebaseToken', 'fcmToken', 'pushToken', 'deviceToken'] as $field) {
+            if ($request->filled($field)) {
+                return $request->input($field);
+            }
+        }
+
+        foreach (['firebase-token', 'fcm-token', 'push-token', 'device-token', 'x-firebase-token', 'x-fcm-token', 'x-push-token', 'x-device-token'] as $header) {
+            if ($request->headers->has($header)) {
+                return $request->headers->get($header);
+            }
+        }
+
+        return null;
+    }
+
+    protected function syncPushToken($model, $request): void
+    {
+        if (!$model) {
+            return;
+        }
+
+        $pushToken = $this->pushTokenFromRequest($request);
+        if (!$pushToken || $model->firebase_token === $pushToken) {
+            return;
+        }
+
+        $model->firebase_token = $pushToken;
+        $model->save();
+    }
 }

@@ -24,7 +24,7 @@
                 <div class="col-sm-12">
                     <div class="card">
                         <div class="card-body">
-                            <form class="needs-validation" novalidate=""
+                            <form class="needs-validation" novalidate="" id="clinic-profile-form"
                                   action="{{ route('edit-profile', Auth::user()->id) }}"
                                   method="POST" enctype="multipart/form-data">
                                 {{ method_field('POST') }}
@@ -307,13 +307,16 @@
 
 
         var marker = null;
-        var placeSearch, autocomplete;
+        var placeSearch, autocomplete, geocoder, map;
+        var selectedAddress = '';
+        var isGeocodingBeforeSubmit = false;
 
         function initMap() {
+            geocoder = new google.maps.Geocoder();
             autocomplete =
                 new google.maps.places.Autocomplete((document.getElementById('autocomplete')),
                 );
-            var map = new google.maps.Map(document.getElementById('shoplocation'), {
+            map = new google.maps.Map(document.getElementById('shoplocation'), {
                 zoom: 13,
                 center: {
                     lat: {{ $data['clinic']->lat ?? 0.0 }},
@@ -324,27 +327,99 @@
             marker = new google.maps.Marker({
                 position: MaekerPos,
                 map: map,
+                draggable: true,
                 label: {
                     text: "{{ $data['clinic']->address ?? '' }} ",
                 }
             });
             // Add a marker at the center of the map.
             autocomplete.addListener('place_changed', function () {
-                placeMarkerAndPanTo(autocomplete.getPlace().geometry.location, map);
-                document.getElementById("lat").value = autocomplete.getPlace().geometry.location.lat();
-                document.getElementById("lng").value = autocomplete.getPlace().geometry.location.lng();
+                var place = autocomplete.getPlace();
+                if (!place.geometry) {
+                    geocodeAddress(document.getElementById('autocomplete').value);
+                    return;
+                }
+
+                placeMarkerAndPanTo(place.geometry.location, map, false);
+                setLatLng(place.geometry.location);
+                if (place.formatted_address) {
+                    document.getElementById('autocomplete').value = place.formatted_address;
+                    selectedAddress = place.formatted_address;
+                } else {
+                    selectedAddress = document.getElementById('autocomplete').value;
+                }
             });
             map.addListener('click', function (e) {
-                placeMarkerAndPanTo(e.latLng, map);
-                document.getElementById("lat").value = e.latLng.lat();
-                document.getElementById("lng").value = e.latLng.lng();
+                placeMarkerAndPanTo(e.latLng, map, true);
+            });
+            marker.addListener('dragend', function (e) {
+                placeMarkerAndPanTo(e.latLng, map, true);
+            });
+
+            var form = document.getElementById('clinic-profile-form');
+            form.addEventListener('submit', function (event) {
+                var address = document.getElementById('autocomplete').value.trim();
+                var lat = document.getElementById('lat').value;
+                var lng = document.getElementById('lng').value;
+
+                if (isGeocodingBeforeSubmit || !address || (address === selectedAddress && lat && lng)) {
+                    return;
+                }
+
+                event.preventDefault();
+                geocodeAddress(address, function () {
+                    isGeocodingBeforeSubmit = true;
+                    form.submit();
+                }, function () {
+                    isGeocodingBeforeSubmit = true;
+                    form.submit();
+                });
             });
         }
 
-        function placeMarkerAndPanTo(latLng, map) {
-            map.setZoom(9);
+        function setLatLng(latLng) {
+            document.getElementById("lat").value = latLng.lat();
+            document.getElementById("lng").value = latLng.lng();
+        }
+
+        function placeMarkerAndPanTo(latLng, map, updateAddress) {
+            map.setZoom(15);
             marker.setPosition(latLng);
             map.panTo(latLng);
+            setLatLng(latLng);
+
+            if (updateAddress) {
+                reverseGeocode(latLng);
+            }
+        }
+
+        function reverseGeocode(latLng) {
+            geocoder.geocode({ location: latLng }, function (results, status) {
+                if (status === 'OK' && results[0]) {
+                    document.getElementById('autocomplete').value = results[0].formatted_address;
+                    selectedAddress = results[0].formatted_address;
+                }
+            });
+        }
+
+        function geocodeAddress(address, successCallback, failureCallback) {
+            if (!address) {
+                if (failureCallback) failureCallback();
+                return;
+            }
+
+            geocoder.geocode({ address: address }, function (results, status) {
+                if (status === 'OK' && results[0]) {
+                    var location = results[0].geometry.location;
+                    placeMarkerAndPanTo(location, map, false);
+                    document.getElementById('autocomplete').value = results[0].formatted_address;
+                    selectedAddress = results[0].formatted_address;
+                    if (successCallback) successCallback();
+                    return;
+                }
+
+                if (failureCallback) failureCallback();
+            });
         }
     </script>
     <script async defer

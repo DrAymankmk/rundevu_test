@@ -141,16 +141,22 @@
                                                    required="">
                                         </div>
                                         <div class="col-md-6 mb-3">
+                                            <label for="name_en">@lang('admin.name_en')</label>
+                                            <input class="form-control" id="name_en" type="text"
+                                                   placeholder="@lang('admin.name_en')" value="{{ old('name_en') }}"
+                                                   name="name_en">
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="col-md-6 mb-3">
                                             <label for="validationCustom01">@lang('admin.mobile_number')</label>
                                             <label for="validationCustom02"> </label>
                                             <input class="form-control" id="validationCustom02" type="number"
                                                    placeholder="@lang('admin.mobile_number')" value="{{ old('phone') }}"
                                                    name="phone"
-                                                   required="">
+                                            required="">
 
                                         </div>
-                                    </div>
-                                    <div class="form-row">
                                         <div class="col-md-6 mb-3">
                                             <label for="validationCustomUsername">@lang('admin.email')</label>
                                             <div class="input-group">
@@ -177,7 +183,8 @@
                                             <div class="invalid-feedback">{{ $errors->first('gender') }}</div>
                                         </div>
 
-                                        <div class="col-md-6 mb-3" style="display: none">
+                                        @if($data['app_type']->id == 2)
+                                        <div class="col-md-6 mb-3">
                                             <label for="validationCustom03">@lang('admin.password')</label>
                                             <input class="form-control" id="validationCustom03" type="password"
                                                    placeholder="@lang('admin.password')" value="12345678"
@@ -186,6 +193,7 @@
                                                 .
                                             </div>
                                         </div>
+                                            @endif
                                     </div>
 
                                     @if($data['app_type']->id == 3)

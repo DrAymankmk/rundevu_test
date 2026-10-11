@@ -4,12 +4,12 @@
                 <div class="col-xxl-6">
                     <div class="img-box4 me-xl-3">
                         <div class="img1 reveal">
-                            <img src="assets/img/normal/about_4_1.jpg" alt="About">
+                            <img src="{{ asset('frontend/assets/img/normal/about_4_1.jpg') }}" alt="About" decoding="async" loading="lazy">
                         </div>
                         <div class="about-wrapp">
                             <div class="discount-wrapp">
                                 <div class="logo">
-                                    <img src="assets/img/shape/logo.svg" alt="">
+                                    <img src="{{ asset('frontend/assets/img/shape/logo.svg') }}" alt="" decoding="async" loading="lazy">
                                 </div>
                                 <div class="discount-tag">
                                     <span class="discount-anime">Medova Medical clinic * Medical services * </span>
@@ -45,7 +45,7 @@
                                 </ul>
                             </div>
                             <div class="btn-group mt-40 wow fadeInUp" data-wow-delay=".5s">
-                                <a href="about.html" class="th-btn style2">More About Us <i class="fa-light fa-arrow-right-long ms-2"></i></a>
+                                <a href="{{ frontend_route('frontend.about') }}" class="th-btn style2">More About Us <i class="fa-light fa-arrow-right-long ms-2"></i></a>
                                 <div class="call-info">
                                     <div class="call-icon"><a href="tel:+00123456789"><i class="fa-solid fa-phone-volume"></i></a>
                                     </div>
@@ -56,7 +56,7 @@
                             </div>
                         </div>
                         <div class="video-img2 wow fadeInUp">
-                            <img src="assets/img/normal/about-video.jpg" alt="About">
+                            <img src="{{ asset('frontend/assets/img/normal/about-video.jpg') }}" alt="About" decoding="async" loading="lazy">
                             <a href="https://www.youtube.com/watch?v=_sI_Ps7JSEk" class="video-play-btn popup-video">
                                 <i class="fa-solid fa-play"></i></a>
                         </div>

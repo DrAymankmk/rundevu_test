@@ -2,17 +2,29 @@
     <div class="sidebar-inner slimscroll">
         <div id="sidebar-menu" class="sidebar-menu">
             <ul>
-                <li><a href="{{ route('admin.dashboard') }}"><span class="menu-side"><img
-                                src="/assets/img/icons/menu-icon-01.svg"
-                                alt=""></span>
-                        <span>@lang('admin.dashboard')</span></a></li>
+
+
+                @if(!in_array(auth()->user()->app_type, [5, 4, 25, 26]))
+                    <li><a href="{{ route('admin.dashboard') }}"><span class="menu-side"><img
+                                    src="/assets/img/icons/menu-icon-01.svg"
+                                    alt=""></span>
+                            <span>@lang('admin.dashboard')</span></a></li>
+                @endif
                 <li><a href="{{ route('profile') }}"><span
                             class="menu-side clinic-admin-menu-icon"><i
                                 class="fa-solid fa-user-gear"></i></span>
                         <span>@lang('admin.doctor.personal_information')</span></a>
                 </li>
 
-                @if(auth()->user()->app_type == 6 )
+                @if(auth()->user()->app_type != 6)
+                    <li><a href="{{ route('notifications') }}"><span class="menu-side"><img
+                                    style="background-color: #888"
+                                    src="/media/icons/notifications.png"
+                                    alt=""></span>
+                            <span>@lang('admin.doctor.Notifications')</span></a></li>
+                @endif
+
+                @if(auth()->user()->app_type == 6)
 
                     <li><a href="{{ route('notifications') }}"><span class="menu-side"><img
                                     style="background-color: #888"
@@ -195,12 +207,52 @@
                 <li><a href="{{ route('chatList') }}"><span class="menu-side clinic-admin-menu-icon"><i
                                 class="fa-solid fa-comments"></i></span>
                         <span>@lang('admin.chat_list')</span></a></li>
+                <li><a href="{{ route('reception.patient-messages') }}"><span class="menu-side clinic-admin-menu-icon"><i
+                                class="fa-solid fa-message"></i></span>
+                        <span>@lang('admin.patient_messages')</span></a></li>
+
+                @clinicModule('points')
+                <li><a href="{{ route('loyalty.redemptions') }}"><span
+                            class="menu-side clinic-admin-menu-icon"><i
+                                class="fa-solid fa-gift"></i></span>
+                        <span>@lang('main.loyalty_program')</span></a></li>
+                @endclinicModule
+                <!-- pharmacy -->
+            @elseif(in_array(auth()->user()->app_type, [5, 4, 25, 26]))
+                @clinicModule('points')
+                <li><a href="{{ route('loyalty.redemptions') }}"><span
+                            class="menu-side clinic-admin-menu-icon"><i
+                                class="fa-solid fa-gift"></i></span>
+                        <span>@lang('main.loyalty_program')</span></a></li>
+                @endclinicModule
+                <!-- <li><a href="{{ route('points') }}"><span class="menu-side"><img
+							style="background-color: #888"
+							src="/media/icons/my_points.png" alt=""></span>
+					<span>@lang('admin.My Points')</span></a></li> -->
+                <li><a href="{{ route('change-password') }}"><span class="menu-side"><img
+                                style="background-color: #888"
+                                src="/media/icons/change_password.png"
+                                alt=""></span>
+                        <span>@lang('admin.Change Password')</span></a></li>
+                <li><a href="{{ route('setting','about') }}"><span class="menu-side"><img
+                                style="background-color: #888"
+                                src="/media/icons/abut_app.png" alt=""></span>
+                        <span>@lang('admin.About The App')</span></a></li>
+                <li><a href="{{ route('setting','privacy') }}"><span class="menu-side"><img
+                                style="background-color: #888"
+                                src="/media/icons/Privacy Policy.png"
+                                alt=""></span>
+                        <span>@lang('admin.Privacy Policy')</span></a></li>
+                <li><a href="{{ route('setting','terms') }}"><span class="menu-side"><img
+                                style="background-color: #888"
+                                src="/media/icons/Terms of use.png" alt=""></span>
+                        <span>@lang('admin.Terms of use')</span></a></li>
 
 
             @else
 
                 <!-- clinic -->
-                @if(in_array(auth()->user()->app_type, [1, 7,11]))
+                @if(in_array(auth()->user()->app_type, [1, 7,11 , 5]))
                     <li><a href="{{ route('admin.doctors.ratings') }}"
                            class="{{ request()->routeIs('admin.doctors.ratings') ? 'active' : '' }}"><span
                                 class="menu-side clinic-admin-menu-icon"><i

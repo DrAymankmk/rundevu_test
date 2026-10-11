@@ -29,7 +29,13 @@ class Notify implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        // Public channel
+        $appType = $this->data['app_type'] ?? null;
+        $receiverId = $this->data['receiver_id'] ?? null;
+
+        if ($appType && $receiverId) {
+            return new Channel('takafoul-notify.' . $appType . '.' . $receiverId);
+        }
+
         return new Channel('takafoul-notify');
     }
 

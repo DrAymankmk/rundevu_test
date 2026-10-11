@@ -197,7 +197,7 @@
     <script src="{{URL::asset('build/js/sortable.js')}}"></script>
 @endif
 
-@if (Route::is(['ui-sweetalerts']) || Route::is('cms.*'))
+@if (Route::is(['ui-sweetalerts']) || Route::is('cms.*') || Route::is('website-media.*'))
     <!-- Sweet Alerts js -->
     <script src="{{URL::asset('build/plugins/sweetalert2/sweetalert2.min.js')}}"></script>
     @if (Route::is(['ui-sweetalerts']))

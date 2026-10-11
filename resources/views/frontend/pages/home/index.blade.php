@@ -4,9 +4,13 @@
     @if(isset($cmsPageSections) && $cmsPageSections->isNotEmpty())
         @foreach($cmsPageSections as $section)
             @include('frontend.pages.home.cms.render', ['section' => $section])
+            @if($loop->first)
+                @include('frontend.pages.home.sections.specialties_section')
+            @endif
         @endforeach
     @else
         @include('frontend.pages.home.sections.hero_section')
+        @include('frontend.pages.home.sections.specialties_section')
         @include('frontend.pages.home.sections.features_section')
         @include('frontend.pages.home.sections.about_section')
         @include('frontend.pages.home.sections.services_section')

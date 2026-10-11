@@ -28,6 +28,7 @@ class ClinicDoctorsResource extends JsonResource
             'type' => (string) ($this->doctor_list_type ?? ''),
             'image' => $this->image,
             'name' => $this->name,
+            'name_en' => $this->name_en,
             'phone' => $this->phone,
             'bio_ar' => $bioAr,
             'bio_en' => $bioEn,
@@ -57,6 +58,7 @@ class ClinicDoctorsResource extends JsonResource
             'lng' => !empty($clinic_location->lng) ? (string)$clinic_location->lng : "0.0",
             'terms' => (string) ($terms ?? ''),
             'address' => !empty($clinic_location->address) ? (string)$clinic_location->address : "0.0",
+            'address_en' => !empty($clinic_location->address_en) ? (string)$clinic_location->address_en : "",
             'booking_policy' => $this->bookingPolicy(),
         ];
     }

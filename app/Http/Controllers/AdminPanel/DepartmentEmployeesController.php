@@ -87,35 +87,11 @@ class DepartmentEmployeesController extends Controller
                     );
                 }
 
-                if ($request->specialist_id) {
-                    ClinicSpecialist::updateOrCreate(
-                        [
-                            'clinic_id' => $add_employee->id,
-                            'specialty_id' => $request->specialist_id,
-                        ],
-                        [
-                            'clinic_id' => $add_employee->id,
-                            'specialty_id' => $request->specialist_id,
-                            'type' => 1,
-                        ]
-                    );
-                }
-
-                if ($request->sub_specialist_ids) {
-                    foreach ($request->sub_specialist_ids as $specialists) {
-                        ClinicSpecialist::updateOrCreate(
-                            [
-                                'clinic_id' => $add_employee->id,
-                                'specialty_id' => $specialists,
-                            ],
-                            [
-                                'clinic_id' => $add_employee->id,
-                                'specialty_id' => $specialists,
-                                'type' => 2,
-                            ]
-                        );
-                    }
-                }
+                $this->syncDoctorSpecialists(
+                    $add_employee->id,
+                    $request->specialist_id,
+                    (array) $request->input('sub_specialist_ids', [])
+                );
             } else {
                 if ($request->specialist_ids) {
                     foreach ($request->specialist_ids as $specialists) {
@@ -170,15 +146,14 @@ class DepartmentEmployeesController extends Controller
     public function update_department_employee($id, Request $request)
     {
         $data = $request->all();
-        $add_employee = Clinic::where('id', $request->id)->first();
-        if ($request->password) {
-            $add_employee->password = '';
-            $add_employee->save();
-            if ($add_employee) {
-                $add_employee->password = Hash::make($request->password);
-                $add_employee->save();
-            }
+        $add_employee = Clinic::where('id', $id)->firstOrFail();
+
+        if ($request->filled('password')) {
+            $data['password'] = Hash::make($request->password);
+        } else {
+            unset($data['password']);
         }
+
         $add_employee->update($data);
 
 
@@ -200,35 +175,11 @@ class DepartmentEmployeesController extends Controller
                 );
             }
 
-            if ($request->specialist_id) {
-                ClinicSpecialist::updateOrCreate(
-                    [
-                        'clinic_id' => $id,
-                        'specialty_id' => $request->specialist_id,
-                    ],
-                    [
-                        'clinic_id' => $id,
-                        'specialty_id' => $request->specialist_id,
-                        'type' => 1,
-                    ]
-                );
-            }
-
-            if ($request->sub_specialist_ids) {
-                foreach ($request->sub_specialist_ids as $specialists) {
-                    ClinicSpecialist::updateOrCreate(
-                        [
-                            'clinic_id' => $id,
-                            'specialty_id' => $specialists,
-                        ],
-                        [
-                            'clinic_id' => $id,
-                            'specialty_id' => $specialists,
-                            'type' => 2,
-                        ]
-                    );
-                }
-            }
+            $this->syncDoctorSpecialists(
+                $id,
+                $request->specialist_id,
+                (array) $request->input('sub_specialist_ids', [])
+            );
         } else {
             $selected = $request->specialist_ids ?: [];
             $current = ClinicSpecialist::where('clinic_id', $id)->where('type', 1)->pluck('specialty_id')->toArray();
@@ -259,5 +210,44 @@ class DepartmentEmployeesController extends Controller
         Clinic::where('id', $id)->delete();
         session()->flash('success', trans('messages.deleted'));
         return redirect()->back();
+    }
+
+    private function syncDoctorSpecialists($clinicId, $specialistId, array $subSpecialistIds = [])
+    {
+        $specialistId = $specialistId ?: null;
+        $subSpecialistIds = array_values(array_unique(array_filter($subSpecialistIds)));
+
+        if ($specialistId && !empty($subSpecialistIds)) {
+            $subSpecialistIds = Specialty::where('parent_id', $specialistId)
+                ->whereIn('id', $subSpecialistIds)
+                ->pluck('id')
+                ->toArray();
+        } else {
+            $subSpecialistIds = [];
+        }
+
+        $subSpecialistIds = array_values(array_diff($subSpecialistIds, [$specialistId]));
+
+        ClinicSpecialist::where('clinic_id', $clinicId)
+            ->whereIn('type', [1, 2])
+            ->delete();
+
+        if ($specialistId) {
+            ClinicSpecialist::create([
+                'clinic_id' => $clinicId,
+                'specialty_id' => $specialistId,
+                'type' => 1,
+                'status' => 1,
+            ]);
+        }
+
+        foreach ($subSpecialistIds as $subSpecialistId) {
+            ClinicSpecialist::create([
+                'clinic_id' => $clinicId,
+                'specialty_id' => $subSpecialistId,
+                'type' => 2,
+                'status' => 1,
+            ]);
+        }
     }
 }

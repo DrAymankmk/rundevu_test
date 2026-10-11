@@ -35,8 +35,8 @@ class EmergencyHospitalController extends Controller
     {
         return view('main_admin.emergency_hospitals.form', [
             'hospital' => new EmergencyHospital(),
-            'cities' => City::where('status', 1)->get(),
-            'regions' => Regions::all(),
+            'cities' => $this->cities(),
+            'regions' => $this->regionsForCity(old('city_id')),
             'route' => route('emergency-hospitals.store'),
             'method' => 'POST',
         ]);
@@ -53,10 +53,12 @@ class EmergencyHospitalController extends Controller
 
     public function edit($id)
     {
+        $hospital = EmergencyHospital::findOrFail($id);
+
         return view('main_admin.emergency_hospitals.form', [
-            'hospital' => EmergencyHospital::findOrFail($id),
-            'cities' => City::where('status', 1)->get(),
-            'regions' => Regions::all(),
+            'hospital' => $hospital,
+            'cities' => $this->cities(),
+            'regions' => $this->regionsForCity(old('city_id', $hospital->city_id)),
             'route' => route('emergency-hospitals.update', $id),
             'method' => 'PUT',
         ]);
@@ -91,6 +93,29 @@ class EmergencyHospitalController extends Controller
         $hospital->save();
 
         return response()->json(['status' => true, 'message' => trans('messages.update_status')]);
+    }
+
+    public function regions(Request $request)
+    {
+        return response()->json($this->regionsForCity($request->city_id));
+    }
+
+    private function cities()
+    {
+        return City::where('status', 1)->select('id', 'name_ar', 'name_en')->get();
+    }
+
+    private function regionsForCity($cityId)
+    {
+        if (!$cityId) {
+            return collect();
+        }
+
+        return Regions::where('city_id', $cityId)
+            ->where('status', 1)
+            ->select('id', 'name_ar', 'name_en')
+            ->orderBy('name_ar')
+            ->get();
     }
 
     private function validatedData(Request $request, $requireImage = false)

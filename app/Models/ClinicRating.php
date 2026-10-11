@@ -17,15 +17,47 @@ class ClinicRating extends Model
 
     public static function rate($clinic_id)
     {
-        $sum = 0;
-        $rates = ClinicRating::where('clinic_id', $clinic_id)->where('comment','!=',null)->get();
-        if (sizeof($rates) > 0) {
-            foreach ($rates as $rate) {
-                $sum += $rate->rate_value;
-            }
-            return (string)round(($sum / sizeof($rates)), 1);
-        } else {
-            return (string)0;
+        $doctorIds = Clinic::where('parent_id', $clinic_id)
+            ->where('app_type', 3)
+            ->where('status', 1)
+            ->pluck('id');
+
+        if ($doctorIds->isEmpty()) {
+            return (string) 0;
         }
+
+        $doctorRates = ReservationRate::query()
+            ->whereIn('doctor_id', $doctorIds)
+            ->whereNotNull('comment')
+            ->where('comment', '!=', '')
+            ->whereNotNull('rate_value')
+            ->selectRaw('doctor_id, AVG(rate_value) as doctor_rate')
+            ->groupBy('doctor_id')
+            ->get();
+
+        if ($doctorRates->isEmpty()) {
+            return (string) 0;
+        }
+
+        return (string) round((float) $doctorRates->avg('doctor_rate'), 1);
+    }
+
+    public static function rateCount($clinic_id): int
+    {
+        $doctorIds = Clinic::where('parent_id', $clinic_id)
+            ->where('app_type', 3)
+            ->where('status', 1)
+            ->pluck('id');
+
+        if ($doctorIds->isEmpty()) {
+            return 0;
+        }
+
+        return ReservationRate::query()
+            ->whereIn('doctor_id', $doctorIds)
+            ->whereNotNull('comment')
+            ->where('comment', '!=', '')
+            ->whereNotNull('rate_value')
+            ->count();
     }
 }

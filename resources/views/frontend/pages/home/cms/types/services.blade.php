@@ -17,7 +17,7 @@ if (preg_match('#^(https?:)?//#i', $raw) || str_starts_with($raw, 'mailto:') || 
 return $raw;
 }
 
-return str_starts_with($raw, '/') ? url($raw) : url('/' . ltrim($raw, '/'));
+return frontend_url(str_starts_with($raw, '/') ? $raw : '/' . ltrim($raw, '/'));
 };
 
 $getItemLink = static function ($item) use ($locale, $fb, $resolveHref) {
@@ -53,7 +53,7 @@ return [
 ];
 };
 @endphp
-<section class="position-relative overflow-hidden space" data-bg-src="{{ $bg }}" id="section-{{ $section->id }}">
+<section class="background-image position-relative overflow-hidden space" id="section-{{ $section->id }}" style="background-image: url('{{ $bg }}');">
 	<div class="container">
 		<div class="row justify-content-center">
 			<div class="col-xl-5">
@@ -115,7 +115,7 @@ return [
 							<div class="box-right-wrapp">
 								<div class="box-img global-img">
 									<img src="{{ $simg }}"
-										alt="{{ $simgAlt }}">
+										alt="{{ $simgAlt }}" decoding="async" loading="lazy">
 								</div>
 								@if($itemLink)
 								<div class="service-btn">
@@ -150,7 +150,7 @@ return [
 				</div>
 				@endforelse
 				<div class="text-center mt-60">
-					<a href="{{route('frontend.services')}}"
+					<a href="{{frontend_route('frontend.services')}}"
 						class="th-btn style2">{{__('main.browse_all')}}
 
 						<i class="fa-light fa-arrow-right-long ms-2"></i></a>

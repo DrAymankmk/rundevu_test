@@ -41,11 +41,11 @@ collect();
 						<div class="project-card">
 							<div class="box-img global-img">
 								<img src="{{ $item->getMediaUrl('images', $locale, null, true) }}"
-									alt="{{ $item->getMediaAlt('images', $locale, true) }}">
+									alt="{{ $item->getMediaAlt('images', $locale, true) }}" loading="lazy" decoding="async">
 							</div>
 							<div class="box-content">
 								<h3 class="box-title"><a
-										href="case-studies-details.html">{{ $title }}</a>
+										href="{{ frontend_route('frontend.about') }}">{{ $title }}</a>
 								</h3>
 								<p class="box-text">{!! $content !!}</p>
 							</div>
@@ -56,7 +56,7 @@ collect();
 						<div class="project-card">
 							<div class="box-img global-img">
 								<img src="{{ asset('frontend/assets/img/project/project_1_1.jpg') }}"
-									alt="project image">
+									alt="project image" decoding="async" loading="lazy">
 							</div>
 						</div>
 					</div>

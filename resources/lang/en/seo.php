@@ -10,6 +10,9 @@ return [
     'meta_title' => 'Meta Title',
     'meta_description' => 'Meta Description',
     'meta_keywords' => 'Meta Keywords',
+    'module_description' => 'Module Description',
+    'module_description_hint' => 'Optional long text shown on the module page. Not used in SEO meta tags.',
+    'edit_seo' => 'Edit SEO',
     'og_title' => 'OG Title',
     'og_description' => 'OG Description',
     'twitter_title' => 'Twitter Title',
@@ -19,4 +22,6 @@ return [
     'current_og_image' => 'Current OG Image',
     'meta_title_hint' => 'Recommended: up to 60 characters',
     'meta_description_hint' => 'Recommended: up to 160 characters',
+    'slug' => 'URL Slug',
+    'slug_hint' => 'Used in the frontend details URL for this language.',
 ];

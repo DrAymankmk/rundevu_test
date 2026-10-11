@@ -50,10 +50,10 @@
                         <div class="swiper-slide">
                             <div class="project-card">
                                 <div class="box-img global-img">
-                                    <img src="{{ $slide['img'] }}" alt="{{ $slide['alt'] ?? '' }}">
+                                    <img src="{{ $slide['img'] }}" alt="{{ $slide['alt'] ?? '' }}" decoding="async" loading="lazy">
                                 </div>
                                 <div class="box-content">
-                                    <h3 class="box-title"><a href="{{ url('/contact') }}">{{ $slide['title'] ?: __('Project') }}</a></h3>
+                                    <h3 class="box-title"><a href="{{ frontend_url('/contact') }}">{{ $slide['title'] ?: __('Project') }}</a></h3>
                                     <p class="box-text">{!! $slide['text'] ?: e(__('Quality care and trusted medical services.')) !!}</p>
                                 </div>
                             </div>

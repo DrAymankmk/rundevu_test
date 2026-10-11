@@ -170,6 +170,25 @@ return [
         'all'=>'show all points'
     ],
 
+    'loyalty' => [
+        'points' => 'Loyalty points',
+        'rewards_store' => 'Rewards store',
+        'coupon_not_found' => 'Coupon not found',
+        'coupon_redeemed' => 'Coupon redeemed',
+        'my_coupons' => 'My coupons',
+        'share_recorded' => 'Share recorded',
+        'app_share_points_awarded' => 'App share points awarded',
+        'app_share_recorded' => 'App share recorded',
+        'coupon_not_available' => 'Coupon is not available.',
+        'coupon_already_requested' => 'You have already requested this coupon.',
+        'points_exchange_not_configured' => 'Points exchange rate is not configured.',
+        'not_enough_points' => 'Not enough points.',
+        'coupon_usage_limit_reached' => 'Coupon usage limit reached.',
+        'redemption_not_confirmable' => 'Redemption is not confirmable.',
+        'invalid_otp' => 'Invalid OTP code.',
+        'otp_expired' => 'OTP has expired.',
+    ],
+
     'notifications'=>[
         'all'=>'show Notifications list'
     ],

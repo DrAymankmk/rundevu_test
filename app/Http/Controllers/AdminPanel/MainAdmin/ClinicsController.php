@@ -71,7 +71,7 @@ class ClinicsController extends Controller
             ->withCount(['clinic_points', 'posts'])
             ->whereId($clinic_id)
             ->first();
-        $app_types = AppType::whereIn('id', [2,3,5,8,9,10,25,26,27])->get();
+        $app_types = AppType::whereIn('id', [2,3])->get();
         $data['rating'] = ClinicRating::where('clinic_id', $clinic_id)->where('comment', '!=', null)->avg('rate_value');
         $languages = CmsLanguage::active()->ordered()->get();
         return view('main_admin.clinics.details', compact('clinic','data','app_types', 'languages'));
@@ -95,7 +95,11 @@ class ClinicsController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
+        $request->validate($this->locationRules());
+
         $data = $request->except(array_merge(['_token'], $this->contractFields()));
+        $data['lat'] = $request->filled('lat') ? $request->lat : null;
+        $data['lng'] = $request->filled('lng') ? $request->lng : null;
         $data['created_by'] = Auth::user()->id;
         $edit_clinic->update($data);
         $this->syncContract($edit_clinic, $request);
@@ -107,13 +111,63 @@ class ClinicsController extends Controller
     {
         $clinic = Clinic::findOrFail($id);
 
-        $request->validate(SeoSyncService::validationRules());
+        $request->validate(array_merge(SeoSyncService::validationRules(), [
+            'seo.slugs.ar' => ['nullable', 'string', 'max:255'],
+            'seo.slugs.en' => ['nullable', 'string', 'max:255'],
+        ]));
 
+        $this->syncEntitySlugs($clinic, $request->input('seo.slugs', []));
         $seoSync->sync($clinic, $request);
 
         session()->flash('success', trans('messages.updated'));
 
         return redirect()->back();
+    }
+
+    public function doctor_seo_form($id)
+    {
+        $doctor = Clinic::with('seoMeta.translations')
+            ->where('app_type', 3)
+            ->findOrFail($id);
+
+        $languages = CmsLanguage::active()->ordered()->get();
+
+        return view('components.seo-form', [
+            'languages' => $languages,
+            'seo' => $doctor->seoMeta,
+            'entity' => $doctor,
+            'showEntitySlugs' => true,
+            'instanceId' => 'doctor_seo_' . $doctor->id,
+            'formAction' => route('update-clinic-seo', $doctor->id),
+            'asCard' => false,
+        ]);
+    }
+
+    private function syncEntitySlugs(Clinic $clinic, array $slugs): void
+    {
+        if ($slugs === []) {
+            return;
+        }
+
+        $updates = [];
+
+        if (array_key_exists('ar', $slugs)) {
+            $raw = trim((string) $slugs['ar']);
+            $updates['slug'] = $raw !== ''
+                ? Clinic::uniqueSlug($raw, $clinic->id, 'ar')
+                : Clinic::uniqueSlug((string) ($clinic->name ?: 'clinic-'.$clinic->id), $clinic->id, 'ar');
+        }
+
+        if (array_key_exists('en', $slugs)) {
+            $raw = trim((string) $slugs['en']);
+            $updates['slug_en'] = $raw !== ''
+                ? Clinic::uniqueSlug($raw, $clinic->id, 'en')
+                : Clinic::uniqueSlug((string) ($clinic->name ?: 'clinic-'.$clinic->id), $clinic->id, 'en');
+        }
+
+        if ($updates !== []) {
+            $clinic->forceFill($updates)->save();
+        }
     }
 
 
@@ -178,6 +232,8 @@ class ClinicsController extends Controller
         return redirect()->back();
     }
 
+
+
     public function loadTabContent($id, $clinic_id)
     {
         $type = AppType::findOrFail($id);
@@ -234,7 +290,11 @@ class ClinicsController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
+        $request->validate($this->locationRules());
+
         $data = $request->except(array_merge(['_token', 'specialty_id'], $this->contractFields()));
+        $data['lat'] = $request->filled('lat') ? $request->lat : null;
+        $data['lng'] = $request->filled('lng') ? $request->lng : null;
         // إعداد البيانات
         $data['password'] = Hash::make($request->password);
         $data['jwt_token'] = Str::random(75);
@@ -282,11 +342,22 @@ class ClinicsController extends Controller
         return [
             'contract_model',
             'commission_rate',
+            'minimum_consultation_commission',
             'annual_subscription_amount',
             'annual_subscription_starts_at',
             'annual_subscription_ends_at',
             'rendezvous_badge_enabled',
             'payment_method',
+        ];
+    }
+
+    private function locationRules(): array
+    {
+        return [
+            'address' => ['nullable', 'string', 'max:255'],
+            'address_en' => ['nullable', 'string', 'max:255'],
+            'lat' => ['nullable', 'numeric', 'between:-90,90'],
+            'lng' => ['nullable', 'numeric', 'between:-180,180'],
         ];
     }
 
@@ -299,9 +370,11 @@ class ClinicsController extends Controller
                 ClinicContract::CASH_COMMISSION,
             ])],
             'commission_rate' => ['nullable', 'numeric', 'min:0', 'max:100'],
+            'minimum_consultation_commission' => ['nullable', 'numeric', 'min:0'],
             'annual_subscription_amount' => ['nullable', 'numeric', 'min:0'],
             'annual_subscription_starts_at' => ['nullable', 'date_format:Y-m-d'],
             'annual_subscription_ends_at' => ['nullable', 'date_format:Y-m-d', 'after_or_equal:annual_subscription_starts_at'],
+            'trial_ends_at' => ['nullable', 'date_format:Y-m-d'],
             'rendezvous_badge_enabled' => ['nullable', 'boolean'],
             'payment_method' => ['nullable', Rule::in([
                 ClinicContract::PAYMENT_CASH,
@@ -313,6 +386,13 @@ class ClinicsController extends Controller
     private function syncContract(Clinic $clinic, Request $request): ClinicContract
     {
         $contractModel = $request->input('contract_model', ClinicContract::CASH_COMMISSION);
+        $paymentMethod = $request->input('payment_method', ClinicContract::PAYMENT_CASH);
+
+        if ($contractModel === ClinicContract::ONLINE_PAYMENT_COMMISSION) {
+            $paymentMethod = ClinicContract::PAYMENT_ONLINE;
+        } elseif ($contractModel === ClinicContract::CASH_COMMISSION) {
+            $paymentMethod = ClinicContract::PAYMENT_CASH;
+        }
 
         return ClinicContract::updateOrCreate(
             ['clinic_id' => $clinic->id],
@@ -321,6 +401,9 @@ class ClinicsController extends Controller
                 'commission_rate' => $contractModel === ClinicContract::ANNUAL_SUBSCRIPTION
                     ? 0
                     : (float) $request->input('commission_rate', 0),
+                'minimum_consultation_commission' => $contractModel === ClinicContract::ANNUAL_SUBSCRIPTION
+                    ? 0
+                    : (float) $request->input('minimum_consultation_commission', 0),
                 'annual_subscription_amount' => $contractModel === ClinicContract::ANNUAL_SUBSCRIPTION
                     ? $request->input('annual_subscription_amount')
                     : null,
@@ -331,7 +414,7 @@ class ClinicsController extends Controller
                     ? $request->input('annual_subscription_ends_at')
                     : null,
                 'rendezvous_badge_enabled' => (bool) $request->input('rendezvous_badge_enabled'),
-                'payment_method' => $request->input('payment_method', ClinicContract::PAYMENT_CASH),
+                'payment_method' => $paymentMethod,
             ]
         );
     }

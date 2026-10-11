@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     'system_manager' => 'System Manager',
     'system_supervisor' => 'SuperVisor',
     'profile' => 'Profile',
@@ -9,7 +8,10 @@ return [
     'takafol_title' => 'Randevou',
     'my_points' => 'My Points',
     'points' => 'Points',
+    'setting' => 'Settings',
     'complaints_box' => 'Complaints Box',
+    'patient_messages' => 'Patient Messages',
+    'patient_message' => 'Message',
     'add_posts' => 'Add Posts',
     'attendance_register' => 'Attendance Register',
     'Manage facility data' => 'profile',
@@ -22,6 +24,7 @@ return [
     'Attendance and Departure' => 'Attendance & Departure',
     'My Points' => 'My Points',
     'Complaints Box' => 'Complaints Box',
+    'Patient Messages' => 'Patient Messages',
     'Change Password' => 'Change Password',
     'About The App' => 'About The App',
     'Privacy Policy' => 'Privacy Policy',
@@ -184,7 +187,10 @@ return [
     'name' => 'Name',
     'image' => 'Image',
     'images' => 'Upload Image',
-
+    'icon' => 'Icon',
+    'remove_image' => 'Remove image',
+    'specialty_icon_hint' => 'Pick an icon, or upload an image below. The image is shown when both are set.',
+    'specialty_image_hint' => 'Optional. JPG, PNG, or WebP up to 4 MB.',
     'dashboard' => 'Dashboard',
 
     'enter' => 'Enter',

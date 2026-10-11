@@ -271,13 +271,13 @@
                                                                     type="button"><i class="fa-solid fa-cancel m-r-5"></i> @lang('admin.cancel')
                                                                 </a>
                                                             @endif
-                                                            @if($reservation->status_id == 2)
-                                                                <a  href="javascript:void(0)" onclick="selectRow(event)"
-                                                                    class="dropdown-item" data-bs-toggle="modal"
-                                                                    data-bs-target="#waitingList_appointment_{{$reservation->id}}"
-                                                                    type="button"><i class="fa-solid fa-list-ul m-r-5"></i> @lang('admin.doctor.waiting_list')
-                                                                </a>
-                                                            @endif
+{{--                                                            @if($reservation->status_id == 2)--}}
+{{--                                                                <a  href="javascript:void(0)" onclick="selectRow(event)"--}}
+{{--                                                                    class="dropdown-item" data-bs-toggle="modal"--}}
+{{--                                                                    data-bs-target="#waitingList_appointment_{{$reservation->id}}"--}}
+{{--                                                                    type="button"><i class="fa-solid fa-list-ul m-r-5"></i> @lang('admin.doctor.waiting_list')--}}
+{{--                                                                </a>--}}
+{{--                                                            @endif--}}
 
 
                                                             <!-- زر إنهاء الحجز -->

@@ -6,14 +6,18 @@
 			<div class="col-xxl-4">
 				<div class="img-box4 me-xl-3">
 					<div class="img1 reveal">
-						<img src="{{ $primaryImg }}" alt="{{ $primaryAlt !== '' ? $primaryAlt : $aboutAlt }}">
+						<img src="{{ $primaryImg }}" alt="{{ $primaryAlt !== '' ? $primaryAlt : $aboutAlt }}" decoding="async" loading="lazy">
 					</div>
 					<div class="about-wrapp" style="right: 0px;">
 						<div class="discount-wrapp">
 							<div class="logo">
-								<img src="{{ asset('frontend/assets/img/logo.png') }}"
-									alt="{{ __('main.app_name') }}"
-									style="width: 80px; height: 50px;">
+								@include('frontend.layout.partials.site-logo', [
+									'logoAlt' => __('main.app_name'),
+									'logoWidth' => 80,
+									'logoHeight' => 50,
+									'logoStyle' => 'width:80px; height:50px;',
+									'logoLoading' => 'lazy',
+								])
 							</div>
 							<div class="discount-tag">
 								<span @if(str_contains($discountAnimeClass, 'discount-anime-plain'
@@ -25,7 +29,7 @@
 				</div>
 				<div class="img-box4 me-xl-3">
 					<div class="img1 reveal">
-						<img src="{{ $secondaryImg }}" alt="{{ $secondaryAlt !== '' ? $secondaryAlt : $aboutAlt }}">
+						<img src="{{ $secondaryImg }}" alt="{{ $secondaryAlt !== '' ? $secondaryAlt : $aboutAlt }}" decoding="async" loading="lazy">
 					</div>
 				</div>
 			</div>
@@ -77,7 +81,7 @@
 						@endif
 					</div>
 					<div class="video-img2 wow fadeInUp" style="width: 320px;">
-						<img src="{{ $videoImg }}" alt="{{ $videoAlt !== '' ? $videoAlt : $aboutAlt }}">
+						<img src="{{ $videoImg }}" alt="{{ $videoAlt !== '' ? $videoAlt : $aboutAlt }}" decoding="async" loading="lazy">
 						@if(filled($videoUrl))
 						@if($videoIsLocal)
 						<a href="#about-inline-video-{{ $section->id }}"

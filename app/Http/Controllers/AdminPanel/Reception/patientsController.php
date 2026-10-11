@@ -20,7 +20,7 @@ class patientsController extends Controller
     function add_patient()
     {
         $insurance_companies = InsuranceCompanies::where('status', 1)->select('id', 'name_' . $this->lang() . ' as name')->get();
-        $cities = City::where('status', 1)->select('id', 'name_' . $this->lang() . ' as name')->get();
+        $cities = collect();
         $nationality = Country::where('status', 1)->select('id', 'name_' . $this->lang() . ' as name')->get();
         return view('reception.add-patient', compact('insurance_companies', 'cities', 'nationality'));
     }
@@ -37,6 +37,19 @@ class patientsController extends Controller
     {
         $regions = Regions::where(['city_id' => $request->city_id, 'status' => 1])->select('id', 'name_' . $this->lang() . ' as name')->orderBy('id', 'desc')->get();
         return response()->json($regions);
+    }
+
+    public function getCities(Request $request)
+    {
+        $cities = City::where([
+            'country_id' => $request->country_id,
+            'status' => 1,
+        ])
+            ->select('id', 'name_' . $this->lang() . ' as name')
+            ->orderBy('name_' . $this->lang())
+            ->get();
+
+        return response()->json($cities);
     }
 
     // create patient
@@ -158,7 +171,14 @@ class patientsController extends Controller
         $nameWithoutHyphens = str_replace('-', ' ', $patient->name); // Replace hyphens with spaces
         $nameParts = explode(' ', $nameWithoutHyphens); // Split the name into parts
         $insurance_companies = InsuranceCompanies::where('status', 1)->select('id', 'name_' . $this->lang() . ' as name')->get();
-        $cities = City::where('status', 1)->select('id', 'name_' . $this->lang() . ' as name')->get();
+        $countryId = $patient->nationality_id ?: optional($patient->city)->country_id;
+        $cities = City::where('status', 1)
+            ->when($countryId, function ($query) use ($countryId) {
+                $query->where('country_id', $countryId);
+            })
+            ->select('id', 'name_' . $this->lang() . ' as name')
+            ->orderBy('name_' . $this->lang())
+            ->get();
         $nationality = Country::where('status', 1)->select('id', 'name_' . $this->lang() . ' as name')->get();
         return view('reception.edit-patient', compact('insurance_companies', 'cities', 'nationality', 'patient', 'nameParts'));
     }

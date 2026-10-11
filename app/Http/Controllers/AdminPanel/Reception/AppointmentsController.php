@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers\AdminPanel\Reception;
 
+use App\Events\UserNotificationEvent;
 use App\Http\Controllers\Controller;
+use App\Models\City;
 use App\Models\Clinic;
+use App\Models\ClinicContract;
 use App\Models\ClinicSpecialist;
+use App\Models\Country;
 use App\Models\Notifications;
 use App\Models\Reservations;
 use App\Models\Specialty;
@@ -128,7 +132,7 @@ class AppointmentsController extends Controller
         $waiting_list_reservation->waiting_list = $check_last_waiting_list_reservation ? $check_last_waiting_list_reservation->waiting_list + 1 : 1;
         $waiting_list_reservation->status_id = 1;
         $waiting_list_reservation->save();
-        $this->notifyReservationUser($waiting_list_reservation, 'approved');
+        $this->notifyReservationUser($waiting_list_reservation, 'waiting');
         $message = trans('admin.confirm_waitingList_reservation');
         return response()->json($message);
     }
@@ -140,6 +144,8 @@ class AppointmentsController extends Controller
         $data['doctors'] = Clinic::where('parent_id', auth()->user()->parent_id)->where('app_type', 3)->get();
         $data['patients'] = User::orderBy('id', 'desc')->get();
         $data['specializations'] = ClinicSpecialist::with('specialties')->where('clinic_id', $clinic_id)->where('type', 1)->where('status', 1)->get();
+        $data['cities'] = City::where('status', 1)->select('id', 'name_' . $this->lang() . ' as name')->get();
+        $data['nationality'] = Country::where('status', 1)->select('id', 'name_' . $this->lang() . ' as name')->get();
         return view('reception.add_appointment', compact('data'));
     }
 
@@ -177,14 +183,12 @@ class AppointmentsController extends Controller
             ->first();
 
 
-        $exists = Reservations::where('doctor_id', $request->doctor_id)
-            ->whereDate('date', $request->date)
-            ->where('appointment', $appointmentTime)
-            ->where('clinic_id', auth()->user()->parent_id)
-            ->where(function ($query) {
-                $query->whereNull('status_id')
-                    ->orWhereIn('status_id', [1, 2, 3]);
-            })
+        $exists = Reservations::blocksAppointmentSlot(
+            $request->doctor_id,
+            $request->date,
+            $appointmentTime,
+            auth()->user()->parent_id
+        )
             ->exists();
 
         if ($exists) {
@@ -202,14 +206,53 @@ class AppointmentsController extends Controller
         $data['parent_id'] = $patient->parent_id ?? $patient->id;
         $data['appointment'] = $appointmentTime;
         $data['status_id'] = 1;
+        $data['booking_flow'] = 'instant';
+
+        $clinic = Clinic::with('contract')->find(auth()->user()->parent_id);
+        $contract = $clinic && $clinic->contract
+            ? $clinic->contract
+            : new ClinicContract(ClinicContract::defaultAttributes());
+        $price = (float) ($request->price ?? 0);
+        $isCommissionContract = in_array($contract->contract_model, [ClinicContract::ONLINE_PAYMENT_COMMISSION, ClinicContract::CASH_COMMISSION], true);
+        $percentageCommission = round($price * ((float) $contract->commission_rate / 100), 2);
+        $commissionAmount = $isCommissionContract
+            ? max($percentageCommission, (float) $contract->minimum_consultation_commission)
+            : 0;
+
+        $data['payment_method'] = $contract->payment_method ?? ClinicContract::PAYMENT_CASH;
+        $data['payment_status'] = 1;
+        $data['platform_commission_rate'] = (float) $contract->commission_rate;
+        $data['platform_commission_amount'] = $commissionAmount;
+        $data['clinic_net_amount'] = max($price - $commissionAmount, 0);
+        $data['settlement_direction'] = $this->settlementDirection($contract->contract_model);
+        $data['financial_cycle_date'] = now()->startOfMonth()->toDateString();
         $create_reservation = Reservations::create($data);
         if ($create_reservation) {
+            User::where('id', $request->patient_id)->update([
+                'nationality_id' => $request->filled('nationality_id') ? $request->nationality_id : null,
+                'city_id' => $request->filled('city_id') ? $request->city_id : null,
+                'region_id' => $request->filled('region_id') ? $request->region_id : null,
+            ]);
+
             Reservations::generate_qrCode($create_reservation->booking_number);
             session()->flash('success', __(trans('admin.success_reservation')));
             return redirect()->back();
         } else {
             return redirect()->back();
         }
+    }
+
+    private function settlementDirection($contractModel)
+    {
+        if ($contractModel === ClinicContract::ONLINE_PAYMENT_COMMISSION) {
+            return 'platform_pays_clinic';
+        }
+
+        if ($contractModel === ClinicContract::CASH_COMMISSION) {
+            return 'clinic_pays_platform';
+        }
+
+        return 'annual_subscription_only';
     }
 
 
@@ -243,17 +286,19 @@ class AppointmentsController extends Controller
                 ]);
             }
 
-            Notifications::create([
+            $notification = Notifications::create([
                 'clinic_id' => $reservation->clinic_id,
-                'user_id' => $reservation->user_id,
-                'receiver_id' => $reservation->user_id,
+                'user_id' => $this->reservationNotificationUserId($reservation),
+                'receiver_id' => $this->reservationNotificationUserId($reservation),
                 'type' => 1,
                 'app_type' => 1,
-                'title_ar' => 'Rate your booking',
+                'title_ar' => 'قيّم حجزك',
                 'title_en' => 'Rate your booking',
-                'message_ar' => 'Booking #' . $reservation->booking_number . ' is completed. You can rate it now.',
+                'message_ar' => 'تم إنهاء الحجز رقم ' . $reservation->booking_number . '. يمكنك تقييم التجربة الآن.',
                 'message_en' => 'Booking #' . $reservation->booking_number . ' is completed. You can rate it now.',
             ]);
+
+            broadcast(new UserNotificationEvent($notification))->toOthers();
 
             return response()->json([
                 'message' => trans('messages.reservation.completed_success')
@@ -271,16 +316,23 @@ class AppointmentsController extends Controller
     {
         $reservation->loadMissing('user');
 
-        $isApproved = $status === 'approved';
-        $titleAr = $isApproved ? 'تم تأكيد الحجز' : 'تم رفض الحجز';
-        $titleEn = $isApproved ? 'Booking approved' : 'Booking rejected';
-        $messageAr = ($isApproved ? 'تم تأكيد' : 'تم رفض') . ' الحجز رقم ' . $reservation->booking_number;
-        $messageEn = 'Booking #' . $reservation->booking_number . ' has been ' . ($isApproved ? 'approved.' : 'rejected. No available slots.');
+        if ($status === 'waiting') {
+            $titleAr = 'تمت إضافتك لقائمة الانتظار';
+            $titleEn = 'Added to waiting list';
+            $messageAr = 'تمت إضافة الحجز رقم ' . $reservation->booking_number . ' إلى قائمة الانتظار، دورك رقم ' . $reservation->waiting_list;
+            $messageEn = 'Booking #' . $reservation->booking_number . ' has been added to the waiting list. Your turn is #' . $reservation->waiting_list . '.';
+        } else {
+            $isApproved = $status === 'approved';
+            $titleAr = $isApproved ? 'تم تأكيد الحجز' : 'تم إلغاء الحجز';
+            $titleEn = $isApproved ? 'Booking approved' : 'Booking cancelled';
+            $messageAr = ($isApproved ? 'تم تأكيد' : 'تم إلغاء') . ' الحجز رقم ' . $reservation->booking_number;
+            $messageEn = 'Booking #' . $reservation->booking_number . ' has been ' . ($isApproved ? 'approved.' : 'cancelled.');
+        }
 
-        Notifications::create([
+        $notification = Notifications::create([
             'clinic_id' => $reservation->clinic_id,
-            'user_id' => $reservation->user_id,
-            'receiver_id' => $reservation->user_id,
+            'user_id' => $this->reservationNotificationUserId($reservation),
+            'receiver_id' => $this->reservationNotificationUserId($reservation),
             'type' => 1,
             'app_type' => 1,
             'title_ar' => $titleAr,
@@ -288,6 +340,8 @@ class AppointmentsController extends Controller
             'message_ar' => $messageAr,
             'message_en' => $messageEn,
         ]);
+
+        broadcast(new UserNotificationEvent($notification))->toOthers();
 
         if ($reservation->user && $reservation->user->email) {
             try {
@@ -298,5 +352,10 @@ class AppointmentsController extends Controller
                 report($exception);
             }
         }
+    }
+
+    private function reservationNotificationUserId(Reservations $reservation)
+    {
+        return $reservation->parent_id ?: $reservation->user_id;
     }
 }

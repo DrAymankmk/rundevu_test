@@ -15,8 +15,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        $schedule->command('clinic-offers:delete-expired')->dailyAt('00:05');
         $schedule->command('takafol:send-operational-notifications')->dailyAt('08:00');
         $schedule->command('loyalty:expire-points')->dailyAt('00:10');
+        $schedule->command('website-visit-logs:prune')->dailyAt('01:20');
     }
 
     /**

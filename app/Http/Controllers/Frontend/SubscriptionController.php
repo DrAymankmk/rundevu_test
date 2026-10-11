@@ -240,7 +240,7 @@ class SubscriptionController extends Controller
             }
 
             return redirect()
-                ->route('frontend.subscription')
+                ->to(frontend_route('frontend.subscription'))
                 ->with('success', __('main.clinic_registered_successfully'));
         } catch (ValidationException $e) {
             DB::rollBack();
@@ -276,9 +276,9 @@ class SubscriptionController extends Controller
         $causes = array_values(array_filter(array_map('strval', $causes)));
 
         return redirect()
-            ->route('frontend.subscription', array_filter([
+            ->to(frontend_route('frontend.subscription', array_filter([
                 'package' => $request->input('package'),
-            ]))
+            ])))
             ->withInput($request->except(['password', 'medical_commercial_license']))
             ->with('registration_error_title', $title ?? __('main.registration_failed'))
             ->with('registration_errors', $causes)

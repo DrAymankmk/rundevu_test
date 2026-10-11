@@ -186,24 +186,66 @@
             document.getElementById('avatar').src = URL.createObjectURL(e.target.files[0]);
         }
         $(document).ready(function () {
+            function setSelectOptions($select, placeholder, rows, selectedId = null) {
+                $select.html('<option value="" disabled selected>' + placeholder + '</option>');
+                $.each(rows, function (key, value) {
+                    var selected = selectedId && String(selectedId) === String(value.id);
+                    $select.append(new Option(value.name, value.id, selected, selected));
+                });
+                $select.prop('disabled', rows.length === 0);
+                $select.trigger('change.select2');
+            }
+
+            function resetLocationSelects() {
+                setSelectOptions($('#city_id'), "{{ trans('admin.reception.select_city') }}", []);
+                setSelectOptions($('#region_id'), "{{ trans('admin.reception.select_region') }}", []);
+            }
+
+            $('#nationality_id').on('change', function () {
+                var country_id = this.value;
+                resetLocationSelects();
+
+                if (!country_id) {
+                    return;
+                }
+
+                $.ajax({
+                    url: '{{ route('getCities') }}',
+                    type: 'get',
+                    dataType: 'json',
+                    data: {
+                        country_id: country_id
+                    },
+                    success: function (res) {
+                        if (res.length > 0) {
+                            setSelectOptions($('#city_id'), "{{ trans('admin.reception.select_city') }}", res);
+                        } else {
+                            setSelectOptions($('#city_id'), "{{ trans('admin.no_data') }}", []);
+                        }
+                    }
+                });
+            });
 
             $('#city_id').on('change', function () {
                 var city_id = this.value;
-                var lang = $('#lang').val();
-                $('#region_id').html('');
+                setSelectOptions($('#region_id'), "{{ trans('admin.reception.select_region') }}", []);
+
+                if (!city_id) {
+                    return;
+                }
+
                 $.ajax({
-                    url: '{{ route('getRegions') }}?city_id=' + city_id,
+                    url: '{{ route('getRegions') }}',
                     type: 'get',
                     dataType: 'json',
+                    data: {
+                        city_id: city_id
+                    },
                     success: function (res) {
                         if (res.length > 0) { // all was ok
-                            var region_text = "{{ trans('admin.reception.select_region') }}"
-                            $('#region_id').html('<option value="" disabled> '+ region_text +' </option>');
-                            $.each(res, function (key, value) {
-                                $('#region_id').append('<option value="' + value.id + '">' + value.name + '</option>');
-                            });
+                            setSelectOptions($('#region_id'), "{{ trans('admin.reception.select_region') }}", res);
                         } else {
-                            $('#region_id').html('<option value="" disabled selected>{{ trans('admin.no_data') }} </option>');
+                            setSelectOptions($('#region_id'), "{{ trans('admin.no_data') }}", []);
                         }
                     }
                 });

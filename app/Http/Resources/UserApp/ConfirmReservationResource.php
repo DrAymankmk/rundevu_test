@@ -16,6 +16,8 @@ class ConfirmReservationResource extends JsonResource
      */
     public function toArray($request)
     {
+        $lang = $request->header('lang') == 'en' ? 'en' : 'ar';
+
         return [
             'id'            => $this->id,
             'clinic_id'          => $this->clinic_id,
@@ -28,7 +30,7 @@ class ConfirmReservationResource extends JsonResource
             'doctor_id'          => $this->doctor_id,
             'doctor_name'          => optional($this->doctor)->name,
             'doctor_image'          => optional($this->doctor)->image,
-            'specialties' => optional($this->doctor)->specialties ? "Obstetrics and Gynecology": "",
+            'specialties' => $this->reservationSpecialtyName($lang),
             'status_id'          => $this->status_id,
             'date'          => $this->date,
             'appointment'          => $this->appointment,
@@ -44,5 +46,20 @@ class ConfirmReservationResource extends JsonResource
             'user_image'          => optional($this->user)->image,
             'booking_number'      =>  asset('media/reservations/' . $this->booking_number. '.' . 'png')
         ];
+    }
+
+    private function reservationSpecialtyName($lang)
+    {
+        $nameColumn = $lang == 'en' ? 'name_en' : 'name_ar';
+
+        if ($this->sub_specialist_id && $this->specialty) {
+            return (string) ($this->specialty->{$nameColumn} ?? '');
+        }
+
+        $doctorSpecialty = optional($this->doctor)->specialties
+            ? optional($this->doctor)->specialties->first()
+            : null;
+
+        return (string) (optional(optional($doctorSpecialty)->specialties)->{$nameColumn} ?? '');
     }
 }

@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\AdminPanel\MainAdmin;
 
+use App\Events\UserNotificationEvent;
 use App\Http\Controllers\Controller;
+use App\Models\Clinic;
 use App\Models\Notifications;
 use App\Models\Package;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class NotificationsController extends Controller
 {
@@ -17,7 +18,7 @@ class NotificationsController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Notifications::select('id', 'title_' . $this->lang() . ' as title', 'message_' . $this->lang() . ' as message', 'flag', 'url', 'coupon_status', 'image','created_at','admin_id');
+        $query = Notifications::select('id', 'title_' . $this->lang() . ' as title', 'message_' . $this->lang() . ' as message', 'flag', 'url', 'coupon_status', 'image','created_at','admin_id','is_read');
         if ($request->date_from) {
             $query->whereBetween('created_at', array($request->date_from, $request->date_to));
         }
@@ -53,11 +54,39 @@ class NotificationsController extends Controller
             'message_ar' => 'required|string',
             'choices-single-groups' => 'required|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
-            'clinic_id' => 'nullable|exists:clinics,id',
+            'clinic_id' => 'required_if:choices-single-groups,00|nullable|exists:clinics,id',
         ]);
-        $data = $request->all();
+
+        $data = $request->only([
+            'title_en',
+            'title_ar',
+            'message_en',
+            'message_ar',
+            'image',
+        ]);
+
+        $receiverType = $request->input('choices-single-groups');
+
+        if ($receiverType === '00') {
+            $clinic = Clinic::findOrFail($request->clinic_id);
+            $data['clinic_id'] = $clinic->id;
+            $data['receiver_id'] = $clinic->id;
+            $data['type'] = 2;
+            $data['app_type'] = $clinic->app_type;
+        } elseif ($receiverType === '000') {
+            $data['type'] = 0;
+            $data['app_type'] = 1;
+        } elseif ($receiverType === '0') {
+            $data['type'] = 0;
+            $data['app_type'] = 0;
+        } else {
+            $data['type'] = 0;
+            $data['app_type'] = 1;
+        }
+
         $add_notification = Notifications::create($data);
         if ($add_notification) {
+            broadcast(new UserNotificationEvent($add_notification))->toOthers();
             return redirect()->route('notificationsList.index')
                 ->with('success', __('main.notification_created_successfully'));
         }

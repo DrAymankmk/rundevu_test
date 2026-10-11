@@ -154,6 +154,7 @@
             <div class="card shadow-sm">
                 <div class="card-body">
                     <form class="needs-validation"
+                          id="clinic-create-form"
                           action="{{ route('create-clinic') }}"
                           method="POST"
                           enctype="multipart/form-data"
@@ -186,6 +187,12 @@
                                             @enderror
                                     </div>
                                 </div>
+                                <div class="col-12 mb-3">
+                                    <label class="form-label">@lang('admin.address_en')</label>
+                                    <input type="text" class="form-control form-control-lg @error('address_en') is-invalid @enderror"
+                                           name="address_en" value="{{ old('address_en') }}">
+                                    <div class="invalid-feedback">{{ $errors->first('address_en') }}</div>
+                                </div>
                                 <div class="col-12">
                                     <div id="shoplocation" class="map-container"></div>
                                 </div>
@@ -215,6 +222,13 @@
                                             @lang('main.Please enter clinic name')
                                             @enderror
                                     </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">@lang('admin.name_en')</label>
+                                    <input class="form-control form-control-lg @error('name_en') is-invalid @enderror"
+                                           type="text" name="name_en" value="{{ old('name_en') }}">
+                                    <div class="invalid-feedback">{{ $errors->first('name_en') }}</div>
                                 </div>
 
                                 <!-- Clinic Description -->
@@ -416,7 +430,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">@lang('main.contract_payment_method')</label>
-                                    <select name="payment_method" class="form-control form-control-lg">
+                                    <select name="payment_method" id="payment_method" class="form-control form-control-lg">
                                         <option value="cash" {{ old('payment_method', 'cash') === 'cash' ? 'selected' : '' }}>@lang('main.payment_cash')</option>
                                         <option value="online" {{ old('payment_method') === 'online' ? 'selected' : '' }}>@lang('main.payment_online')</option>
                                     </select>
@@ -430,6 +444,22 @@
                                            max="100"
                                            step="0.01"
                                            value="{{ old('commission_rate', 0) }}">
+                                </div>
+                                <div class="col-md-6 contract-commission-field">
+                                    <label class="form-label">@lang('main.minimum_consultation_commission')</label>
+                                    <input class="form-control form-control-lg @error('minimum_consultation_commission') is-invalid @enderror"
+                                           type="number"
+                                           name="minimum_consultation_commission"
+                                           min="0"
+                                           step="0.01"
+                                           value="{{ old('minimum_consultation_commission', 0) }}">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">@lang('main.trial_ends_at')</label>
+                                    <input class="form-control form-control-lg @error('trial_ends_at') is-invalid @enderror"
+                                           type="date"
+                                           name="trial_ends_at"
+                                           value="{{ old('trial_ends_at') }}">
                                 </div>
                                 <div class="col-md-4 contract-subscription-field">
                                     <label class="form-label">@lang('main.annual_subscription_amount')</label>
@@ -537,10 +567,13 @@
 
     <!-- Google Maps Script -->
     <script>
-        let map, marker, autocomplete;
+        let map, marker, autocomplete, geocoder;
+        let selectedAddress = '';
+        let isGeocodingBeforeSubmit = false;
 
         function initMap() {
             const defaultLocation = { lat: 21.485811, lng: 39.192505 };
+            geocoder = new google.maps.Geocoder();
 
             map = new google.maps.Map(document.getElementById('shoplocation'), {
                 zoom: 12,
@@ -564,16 +597,26 @@
 
             autocomplete.addListener('place_changed', function () {
                 const place = autocomplete.getPlace();
-                if (!place.geometry) return;
-                setMarker(place.geometry.location);
+                if (!place.geometry) {
+                    geocodeAddress(document.getElementById('autocomplete').value);
+                    return;
+                }
+
+                setMarker(place.geometry.location, false);
+                if (place.formatted_address) {
+                    document.getElementById('autocomplete').value = place.formatted_address;
+                    selectedAddress = place.formatted_address;
+                } else {
+                    selectedAddress = document.getElementById('autocomplete').value;
+                }
             });
 
             map.addListener('click', function (e) {
-                setMarker(e.latLng);
+                setMarker(e.latLng, true);
             });
 
             marker.addListener('dragend', function (e) {
-                setLatLng(e.latLng);
+                setMarker(e.latLng, true);
             });
 
             // استعادة الموقع المحفوظ إذا وجد
@@ -583,17 +626,69 @@
             @else
             setLatLng(marker.getPosition());
             @endif
+
+            const form = document.getElementById('clinic-create-form');
+            form.addEventListener('submit', function (event) {
+                const address = document.getElementById('autocomplete').value.trim();
+                const lat = document.getElementById('lat').value;
+                const lng = document.getElementById('lng').value;
+
+                if (isGeocodingBeforeSubmit || !address || (address === selectedAddress && lat && lng)) {
+                    return;
+                }
+
+                event.preventDefault();
+                geocodeAddress(address, function () {
+                    isGeocodingBeforeSubmit = true;
+                    form.submit();
+                }, function () {
+                    isGeocodingBeforeSubmit = true;
+                    form.submit();
+                });
+            });
         }
 
-        function setMarker(location) {
+        function setMarker(location, updateAddress = false) {
             marker.setPosition(location);
             map.panTo(location);
             setLatLng(location);
+
+            if (updateAddress) {
+                reverseGeocode(location);
+            }
         }
 
         function setLatLng(location) {
-            document.getElementById('lat').value = location.lat();
-            document.getElementById('lng').value = location.lng();
+            document.getElementById('lat').value = typeof location.lat === 'function' ? location.lat() : location.lat;
+            document.getElementById('lng').value = typeof location.lng === 'function' ? location.lng() : location.lng;
+        }
+
+        function reverseGeocode(location) {
+            geocoder.geocode({ location: location }, function (results, status) {
+                if (status === 'OK' && results[0]) {
+                    document.getElementById('autocomplete').value = results[0].formatted_address;
+                    selectedAddress = results[0].formatted_address;
+                }
+            });
+        }
+
+        function geocodeAddress(address, successCallback, failureCallback) {
+            if (!address) {
+                if (failureCallback) failureCallback();
+                return;
+            }
+
+            geocoder.geocode({ address: address }, function (results, status) {
+                if (status === 'OK' && results[0]) {
+                    setMarker(results[0].geometry.location, false);
+                    document.getElementById('autocomplete').value = results[0].formatted_address;
+                    selectedAddress = results[0].formatted_address;
+                    if (successCallback) successCallback();
+                    return;
+                }
+
+                if (failureCallback) failureCallback();
+            });
         }
     </script>
 
@@ -604,13 +699,44 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const model = document.getElementById('contract_model');
+            const paymentMethod = document.getElementById('payment_method');
             const subscriptionFields = document.querySelectorAll('.contract-subscription-field');
             const commissionFields = document.querySelectorAll('.contract-commission-field');
+            const paymentOptions = {
+                cash: '@lang('main.payment_cash')',
+                online: '@lang('main.payment_online')',
+            };
+
+            function setPaymentOptions(options, selectedValue) {
+                paymentMethod.innerHTML = '';
+                options.forEach(value => {
+                    const option = document.createElement('option');
+                    option.value = value;
+                    option.textContent = paymentOptions[value];
+                    option.selected = value === selectedValue;
+                    paymentMethod.appendChild(option);
+                });
+            }
 
             function toggleContractFields() {
                 const isSubscription = model.value === 'annual_subscription';
                 subscriptionFields.forEach(field => field.style.display = isSubscription ? '' : 'none');
                 commissionFields.forEach(field => field.style.display = isSubscription ? 'none' : '');
+
+                if (!paymentMethod) {
+                    return;
+                }
+
+                if (model.value === 'online_payment_commission') {
+                    setPaymentOptions(['online'], 'online');
+                    paymentMethod.disabled = true;
+                } else if (model.value === 'cash_commission') {
+                    setPaymentOptions(['cash'], 'cash');
+                    paymentMethod.disabled = true;
+                } else {
+                    setPaymentOptions(['cash', 'online'], paymentMethod.value || 'cash');
+                    paymentMethod.disabled = false;
+                }
             }
 
             if (model) {

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Events\Notify;
+use App\Services\FirebasePushNotificationService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -19,19 +20,64 @@ class Notifications extends Model
                 return;
             }
 
-            broadcast(new Notify([
-                'id' => $notification->id,
-                'group_key' => $notification->broadcastGroupKey(),
-                'title_ar' => $notification->title_ar,
-                'title_en' => $notification->title_en,
-                'message_ar' => $notification->message_ar,
-                'message_en' => $notification->message_en,
-                'receiver_id' => $notification->receiver_id,
-                'clinic_id' => $notification->clinic_id,
-                'app_type' => $notification->app_type,
-                'type' => $notification->type,
-            ]));
+            try {
+                broadcast(new Notify([
+                    'id' => $notification->id,
+                    'group_key' => $notification->broadcastGroupKey(),
+                    'title_ar' => $notification->title_ar,
+                    'title_en' => $notification->title_en,
+                    'message_ar' => $notification->message_ar,
+                    'message_en' => $notification->message_en,
+                    'receiver_id' => $notification->receiver_id,
+                    'clinic_id' => $notification->clinic_id,
+                    'app_type' => $notification->app_type,
+                    'type' => $notification->type,
+                ]));
+            } catch (\Throwable $exception) {
+                report($exception);
+            }
         });
+
+        static::created(function (Notifications $notification) {
+            try {
+                app(FirebasePushNotificationService::class)->sendForNotification($notification);
+            } catch (\Throwable $exception) {
+                report($exception);
+            }
+        });
+    }
+
+    /**
+     * Pusher channels for user app notifications.
+     * - one user  : user-notify.{user_id}
+     * - all users : users-notify
+     */
+    public function userAppBroadcastChannels()
+    {
+        $type = (int) $this->type;
+        $appType = (int) $this->app_type;
+
+        // Admin "send to all" (users + clinics)
+        if ($type === 0 && $appType === 0) {
+            return ['users-notify'];
+        }
+
+        if ($appType !== 1) {
+            return [];
+        }
+
+        $userId = $this->user_id ?: ($type === 1 ? $this->receiver_id : null);
+
+        if ($userId) {
+            return ['user-notify.' . $userId];
+        }
+
+        // General notification for all app users (new offer, offer expiry, admin broadcast)
+        if ($type === 0) {
+            return ['users-notify'];
+        }
+
+        return [];
     }
 
     public function shouldBroadcastToAdminPanel()
@@ -46,11 +92,13 @@ class Notifications extends Model
 
         $request = request();
 
-        if ($request && !$request->is('api/*')) {
-            return false;
+        if ($request && $request->is('api/*')) {
+            return true;
         }
 
-        return true;
+        return (int) $this->type === 2
+            && !empty($this->receiver_id)
+            && !empty($this->clinic_id);
     }
 
     public static function createForAdminPanel($clinicId, array $data, $receptionId = null)

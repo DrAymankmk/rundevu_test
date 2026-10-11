@@ -10,7 +10,7 @@ class ComplaintBox extends Model
     use HasFactory;
     public $table = 'complaint_boxes';
 
-    public $fillable = ['user_id', 'clinic_id', 'image', 'complain', 'reply','created_at'];
+    public $fillable = ['user_id', 'clinic_id', 'image', 'complain', 'reply','created_at','type'];
 
     protected static function booted()
     {

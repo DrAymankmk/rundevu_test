@@ -137,20 +137,27 @@
                                             <label for="validationCustom01">@lang('admin.name')</label>
                                             <input class="form-control" id="validationCustom01" type="text"
                                                    placeholder="@lang('admin.name')"
-                                                   value="{{ $data['employee']->name }}" name="name"
+                                                   value="{{ old('name', $data['employee']->name) }}" name="name"
                                                    required="">
                                         </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="name_en">@lang('admin.name_en')</label>
+                                            <input class="form-control" id="name_en" type="text"
+                                                   placeholder="@lang('admin.name_en')"
+                                                   value="{{ old('name_en', $data['employee']->name_en) }}"
+                                                   name="name_en">
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
                                         <div class="col-md-6 mb-3">
                                             <label for="validationCustom01">@lang('admin.mobile_number')</label>
                                             <label for="validationCustom02"> </label>
                                             <input class="form-control" id="validationCustom02" type="number"
                                                    placeholder="@lang('admin.mobile_number')"
-                                                   value="{{ $data['employee']->phone }}" name="phone"
+                                                   value="{{ old('phone', $data['employee']->phone) }}" name="phone"
                                                    required="">
 
                                         </div>
-                                    </div>
-                                    <div class="form-row">
                                         <div class="col-md-6 mb-3">
                                             <label for="validationCustomUsername">@lang('admin.email')</label>
                                             <div class="input-group">
@@ -159,7 +166,7 @@
                                                 </div>
                                                 <input class="form-control" id="validationCustomUsername" type="email"
                                                        placeholder="@lang('admin.email')"
-                                                       value="{{ $data['employee']->email }}"
+                                                       value="{{ old('email', $data['employee']->email) }}"
                                                        name="email" aria-describedby="inputGroupPrepend"
                                                        required="">
                                                 <div class="invalid-feedback">@lang('admin.enter') @lang('admin.email')
@@ -182,7 +189,8 @@
 
 
 
-                                        <div class="col-md-6 mb-3" style="display: none">
+                                        @if($data['employee']->app_type == 2)
+                                        <div class="col-md-6 mb-3">
                                             <label for="validationCustom03">@lang('admin.password')</label>
                                             <input class="form-control" id="validationCustom03" type="password"
                                                    placeholder="@lang('admin.password')"
@@ -191,6 +199,7 @@
                                                 .
                                             </div>
                                         </div>
+                                            @endif
                                     </div>
 
 
@@ -228,7 +237,7 @@
                                                     for="sub_specialist_ids">@lang('admin.sub_specialization')</label>
                                                 <select id="sub_specialist_ids"
                                                         class="js-example-placeholder-multiple form-control"
-                                                        name="sub_specialist_ids[]" multiple="multiple" required>
+                                                        name="sub_specialist_ids[]" multiple="multiple">
                                                     @foreach($data['sub_specializations'] as $specialist)
                                                         <option
                                                             value="{{ $specialist->id }}" {{ (!in_array($specialist->id,$data['sub_specialty_ids'])) ? '' : 'selected'}}>{{ app()->getLocale() == 'en' ? $specialist->name_en : $specialist->name_ar }}</option>
@@ -375,10 +384,38 @@
 @section('scripts')
     <script>
         $(document).ready(function () {
+            function initSubSpecialistsSelect() {
+                var $subSpecialists = $('#sub_specialist_ids');
+
+                if ($.fn.select2) {
+                    if ($subSpecialists.hasClass('select2-hidden-accessible')) {
+                        $subSpecialists.select2('destroy');
+                    }
+
+                    $subSpecialists.select2({
+                        width: '100%',
+                        placeholder: '@lang('admin.select')',
+                        allowClear: true,
+                        closeOnSelect: false,
+                        dir: '{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}'
+                    });
+                }
+            }
+
+            initSubSpecialistsSelect();
 
             $('#specialist_id').on('change', function () {
                 var specialist_id = this.value;
-                $('#sub_specialist_ids').html('').trigger('change');
+                var $subSpecialists = $('#sub_specialist_ids');
+
+                $subSpecialists.val(null).empty();
+                initSubSpecialistsSelect();
+
+                if (!specialist_id) {
+                    $subSpecialists.trigger('change');
+                    return;
+                }
+
                 $.ajax({
                     url: '{{ route('getSubSpecialist') }}?specialist_id=' + specialist_id,
                     type: 'get',
@@ -387,13 +424,16 @@
                         if (res.specialists_count > 0) { // all was ok
                             {{--$('#sub_specialist_ids').html('<option value="">@lang('admin.select')</option>');--}}
                             $.each(res.data, function (key, value) {
-                                $('#sub_specialist_ids').append('<option value="' + value
-                                    .id + '">' + value.name + '</option>');
+                                $subSpecialists.append(new Option(value.name, value.id, false, false));
                             });
-                            $('#sub_specialist_ids').trigger('change');
-                        } else {
-                            $('#sub_specialist_ids').html('').trigger('change');
                         }
+
+                        initSubSpecialistsSelect();
+                        $subSpecialists.trigger('change');
+                    },
+                    error: function () {
+                        initSubSpecialistsSelect();
+                        $subSpecialists.trigger('change');
                     }
                 });
             });

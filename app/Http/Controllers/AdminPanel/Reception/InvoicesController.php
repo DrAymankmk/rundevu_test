@@ -7,7 +7,6 @@ use App\Models\Clinic;
 use App\Models\ClinicSpecialist;
 use App\Models\invoices;
 use App\Models\PatientService;
-use App\Models\PaymentMethod;
 use App\Models\Reservations;
 use App\Models\Service;
 use App\Models\Specialty;
@@ -65,7 +64,6 @@ class InvoicesController extends Controller
         $clinic_id = auth()->user()->parent_id;
         $reception_ids = Clinic::where('parent_id', auth()->user()->parent_id)->where('app_type', 2)->pluck('id');
         $data['patients'] = User::whereIn('reception_id', $reception_ids)->orderBy('id', 'desc')->get();
-        $data['payment_method'] = PaymentMethod::where('clinic_id', auth()->user()->parent_id)->select('id', 'name_' . $this->lang() . ' as name')->get();
 
         $data['specializations'] = ClinicSpecialist::with('specialties')->where('clinic_id', $clinic_id)->where('type', 1)->where('status', 1)->get();
         $data['patient_id'] = $patient_id ?? null;
@@ -81,7 +79,6 @@ class InvoicesController extends Controller
         if ($reservation->invoice) {
             return redirect()->route('invoice-view', $reservation->invoice->id);
         }
-        $data['payment_method'] = PaymentMethod::where('clinic_id', auth()->user()->parent_id)->select('id', 'name_' . $this->lang() . ' as name')->get();
         $data['specializations'] = ClinicSpecialist::with('specialties')->where('clinic_id', $reservation->doctor_id)->where('type', 1)->where('status', 1)->get();
         $data['patient_id'] = $patient_id ?? null;
         $data['tax'] = Clinic::whereId(auth()->user()->id)->select('id', 'tax')->first();
@@ -126,6 +123,7 @@ class InvoicesController extends Controller
             : null;
 
         $data['reception_id'] = $reception;
+        $data['payment_method'] = null; // cash only
         $data['doctor_id'] = $request->doctor_id;
         $data['total_price'] = $reservation ? $reservationPrice : ($request->total ?? $request->reservation_total);
         $data['total_amount_paid'] = $request->reservation_id ? $data['total_price'] : $request->amount_paid;

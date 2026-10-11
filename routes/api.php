@@ -29,6 +29,9 @@ Route::group(['namespace' => 'API'], function () {
     // login app
     Route::post('login', 'AuthController@login');
 
+    // refresh push notification token for clinic/reception/doctor apps
+    Route::post('refresh-firebase-token', 'AuthController@refresh_firebase_token');
+
     // check phone exist or not
     Route::post('check-phone', 'AuthController@check_phone');
 

@@ -32,6 +32,7 @@ class DoctorDetailsResource extends JsonResource
             'parent_id' => $this->parent_id,
             'image' => $this->image,
             'name' => $this->name,
+            'name_en' => $this->name_en,
             'phone' => (string) ($this->phone ?? ''),
             'email' => (string) ($this->email ?? ''),
             'gender' => (string) ($this->gender ?? ''),
@@ -51,11 +52,13 @@ class DoctorDetailsResource extends JsonResource
             'clinic' => [
                 'id' => optional($clinic)->id,
                 'name' => (string) (optional($clinic)->name ?? ''),
+                'name_en' => (string) (optional($clinic)->name_en ?? ''),
                 'image' => optional($clinic)->image,
                 'phone' => (string) (optional($clinic)->phone ?? ''),
                 'lat' => !empty(optional($clinic)->lat) ? (string) $clinic->lat : '0.0',
                 'lng' => !empty(optional($clinic)->lng) ? (string) $clinic->lng : '0.0',
                 'address' => !empty(optional($clinic)->address) ? (string) $clinic->address : '0.0',
+                'address_en' => (string) (optional($clinic)->address_en ?? ''),
             ],
             'specialties' => $this->specialtyNames($this->specialties, $lang),
             'specialties_list' => $this->specialties->map(function ($item) use ($lang) {

@@ -9,6 +9,7 @@ use App\Models\LoyaltyPointTransaction;
 use App\Models\LoyaltyRewardCoupon;
 use App\Models\PointsExchange;
 use App\Models\User;
+use App\Models\UserPoints;
 use App\Models\VerificationCode;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -17,12 +18,18 @@ class LoyaltyPointsService
 {
     public function balance(int $userId): int
     {
-        return (int) LoyaltyPointTransaction::where('user_id', $userId)
+        $loyaltyBalance = (int) LoyaltyPointTransaction::where('user_id', $userId)
             ->where('status', 1)
             ->where(function ($query) {
                 $query->whereNull('expires_at')->orWhere('expires_at', '>', now());
             })
             ->sum('points');
+
+        $legacyBalance = (int) UserPoints::where('user_id', $userId)
+            ->where('status', 1)
+            ->sum('point');
+
+        return $loyaltyBalance + $legacyBalance;
     }
 
     public function award(User $user, string $ruleKey, array $meta = []): ?LoyaltyPointTransaction
@@ -80,40 +87,64 @@ class LoyaltyPointsService
     public function redeem(User $user, LoyaltyRewardCoupon $coupon): LoyaltyCouponRedemption
     {
         if ($coupon->status != 1 || $coupon->expires_at->lt(today())) {
-            throw new \RuntimeException('Coupon is not available.');
+            throw new \RuntimeException(trans('messages.loyalty.coupon_not_available'));
         }
 
-        if ($coupon->usage_limit > 0) {
-            $usageCount = LoyaltyCouponRedemption::where('coupon_id', $coupon->id)
-                ->whereIn('status', ['pending', 'otp_sent', 'used'])
-                ->count();
+        $alreadyRedeemed = LoyaltyCouponRedemption::where('coupon_id', $coupon->id)
+            ->where('user_id', $user->id)
+            ->whereIn('status', ['pending', 'otp_sent', 'used', 'expired'])
+            ->exists();
 
-            if ($usageCount >= $coupon->usage_limit) {
-                throw new \RuntimeException('Coupon usage limit reached.');
-            }
+        if ($alreadyRedeemed) {
+            throw new \RuntimeException(trans('messages.loyalty.coupon_already_requested'));
         }
 
         $exchange = PointsExchange::latestActive();
 
         if (! $exchange) {
-            throw new \RuntimeException('Points exchange rate is not configured.');
+            throw new \RuntimeException(trans('messages.loyalty.points_exchange_not_configured'));
         }
 
         $pointsCost = $coupon->pointsCost($exchange);
 
         if ($pointsCost <= 0) {
-            throw new \RuntimeException('Coupon is not available.');
+            throw new \RuntimeException(trans('messages.loyalty.coupon_not_available'));
         }
 
         if ($this->balance($user->id) < $pointsCost) {
-            throw new \RuntimeException('Not enough points.');
+            throw new \RuntimeException(trans('messages.loyalty.not_enough_points'));
         }
 
         return DB::transaction(function () use ($user, $coupon, $pointsCost) {
+            $lockedCoupon = LoyaltyRewardCoupon::where('id', $coupon->id)->lockForUpdate()->first();
+
+            if (!$lockedCoupon || $lockedCoupon->status != 1 || $lockedCoupon->expires_at->lt(today())) {
+                throw new \RuntimeException(trans('messages.loyalty.coupon_not_available'));
+            }
+
+            $alreadyRedeemed = LoyaltyCouponRedemption::where('coupon_id', $lockedCoupon->id)
+                ->where('user_id', $user->id)
+                ->whereIn('status', ['pending', 'otp_sent', 'used', 'expired'])
+                ->exists();
+
+            if ($alreadyRedeemed) {
+                throw new \RuntimeException(trans('messages.loyalty.coupon_already_requested'));
+            }
+
+            if ($lockedCoupon->usage_limit > 0) {
+                $usageCount = LoyaltyCouponRedemption::where('coupon_id', $lockedCoupon->id)
+                    ->whereIn('status', ['pending', 'otp_sent', 'used'])
+                    ->count();
+
+                if ($usageCount >= $lockedCoupon->usage_limit) {
+                    throw new \RuntimeException(trans('messages.loyalty.coupon_usage_limit_reached'));
+                }
+            }
+
             $redemption = LoyaltyCouponRedemption::create([
-                'coupon_id' => $coupon->id,
+                'coupon_id' => $lockedCoupon->id,
                 'user_id' => $user->id,
-                'clinic_id' => $coupon->clinic_id,
+                'clinic_id' => $lockedCoupon->clinic_id,
                 'code' => strtoupper(Str::random(10)),
                 'points_spent' => $pointsCost,
                 'status' => 'pending',
@@ -121,7 +152,7 @@ class LoyaltyPointsService
 
             LoyaltyPointTransaction::create([
                 'user_id' => $user->id,
-                'clinic_id' => $coupon->clinic_id,
+                'clinic_id' => $lockedCoupon->clinic_id,
                 'source_type' => LoyaltyCouponRedemption::class,
                 'source_id' => $redemption->id,
                 'type' => 'spend',
@@ -161,15 +192,15 @@ class LoyaltyPointsService
     public function confirmRedemption(LoyaltyCouponRedemption $redemption, string $otp, int $confirmedByClinicId): LoyaltyCouponRedemption
     {
         if (!in_array($redemption->status, ['pending', 'otp_sent'], true)) {
-            throw new \RuntimeException('Redemption is not confirmable.');
+            throw new \RuntimeException(trans('messages.loyalty.redemption_not_confirmable'));
         }
 
         if (!$redemption->otp_code || $redemption->otp_code !== $otp) {
-            throw new \RuntimeException('Invalid OTP code.');
+            throw new \RuntimeException(trans('messages.loyalty.invalid_otp'));
         }
 
         if ($redemption->otp_expires_at && $redemption->otp_expires_at->lt(now())) {
-            throw new \RuntimeException('OTP has expired.');
+            throw new \RuntimeException(trans('messages.loyalty.otp_expired'));
         }
 
         $redemption->update([

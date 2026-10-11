@@ -27,6 +27,7 @@ class UpdateOrCreateOffersRequest extends Request
             'discount' => ['required', 'integer'],
             'title_ar' => ['required', 'string'],
             'title_en' => ['required', 'string'],
+            'image' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:5120'],
             'offer_id' => ['nullable', 'exists:clinic_offers,id'],
             'specialty_id' => ['nullable', 'exists:specialties,id'],
             'start_date' => ['nullable', 'date'],

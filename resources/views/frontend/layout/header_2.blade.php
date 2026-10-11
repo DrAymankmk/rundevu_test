@@ -52,9 +52,9 @@
  				</div>
  				<div class="col-auto">
  					<div class="header-button">
-						<a href="#" class="th-btn" data-bs-toggle="modal" data-bs-target="#bookDemoModal"><img
+						<!-- <a href="#" class="th-btn" data-bs-toggle="modal" data-bs-target="#bookDemoModal"><img
 								src="{{ asset('frontend/assets/img/icon/alarm.svg') }}"
-								alt=""> {{ __('main.book_demo') }}</a>
+								alt="" decoding="async" loading="lazy"> {{ __('main.book_demo') }}</a> -->
  						<!-- <form class="search-form">
  							<input type="text"
  								placeholder="{{ __('main.search') }}">
@@ -74,39 +74,44 @@
  				<div class="row align-items-center justify-content-between">
  					<div class="col-auto">
  						<div class="header-logo">
- 							<a href="{{ route('frontend.home') }}"><img
- 									src="{{ asset('frontend/assets/img/logo.png') }}"
- 									style="height:50px; width:100px;"
- 									alt="Randevu "></a>
+ 							<a href="{{ frontend_route('frontend.home') }}">
+								@include('frontend.layout.partials.site-logo', ['logoFetchPriority' => 'high'])
+							</a>
  						</div>
  					</div>
  					<div class="col-auto">
  						<nav class="main-menu style2 d-none d-lg-inline-block">
  							<ul>
- 								<li><a href="{{ route('frontend.home') }}">
+ 								<li><a href="{{ frontend_route('frontend.home') }}">
  										{{ __('main.home') }}</a>
  								</li>
- 								<li><a href="{{ route('frontend.about') }}">
+ 								<li><a href="{{ frontend_route('frontend.about') }}">
  										{{ __('main.about') }}</a>
  								</li>
- 								<li><a href="{{ route('frontend.services') }}">
+ 								<li><a href="{{ frontend_route('frontend.services') }}">
  										{{ __('main.services') }}</a>
  								</li>
- 								<li><a href="{{ route('frontend.faq') }}">
+ 								<li><a href="{{ frontend_route('frontend.faq') }}">
  										{{ __('main.faq') }}</a>
  								</li>
-								<li><a href="{{ route('frontend.blog') }}">
+								<li><a href="{{ frontend_route('frontend.blog') }}">
 										{{ __('main.blogs') }}</a>
 								</li>
+								<li><a href="{{ frontend_route('frontend.clinics') }}">
+										{{ __('main.clinics') }}</a>
+								</li>
+								<li><a href="{{ frontend_route('frontend.doctors') }}">
+										{{ __('doctors.page_title') }}</a>
+								</li>
 
- 								<li><a href="{{ route('frontend.subscription') }}">
+ 								<li><a href="{{ frontend_route('frontend.subscription') }}">
  										{{ __('main.subscription') }}</a>
  								</li>
 
-								<li><a href="{{ route('frontend.contact') }}">
+								<li><a href="{{ frontend_route('frontend.contact') }}">
 										{{ __('main.contact') }}</a>
 								</li>
-								<li><a href="{{ route('frontend.social') }}">
+								<li><a href="{{ frontend_route('frontend.social') }}">
 										{{ __('main.social_media') }}</a>
 								</li>
  								<!-- multi language menu -->
@@ -127,7 +132,7 @@
  							<!-- <a href="#"
  								class="icon-btn sideMenuToggler d-none d-lg-block"><img
  									src="{{ asset('frontend/assets/img/icon/grid.svg') }}"
- 									alt=""></a> -->
+ 									alt="" decoding="async" loading="lazy"></a> -->
 
  						</div>
  					</div>

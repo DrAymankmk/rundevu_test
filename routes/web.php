@@ -3,9 +3,12 @@
 
 use App\Events\Notify;
 use App\Models\CmsLanguage;
+use App\Models\Clinic;
 use App\Models\Language;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Schema;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,7 +24,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
 
 Route::get('/sitemap.xml', 'SitemapController')->name('sitemap');
-
+Route::get('/robots.txt', 'SeoFilesController@robots')->name('robots');
 Route::get('/clear', function () {
 //    Artisan::call('optimize:clear');
     Artisan::call('config:clear');
@@ -87,7 +90,9 @@ Route::get('/changeLanguageAdmin/{lang}', function ($lang) {
 //     return view('welcome');
 // });
 
-Route::group(['namespace' => 'Frontend', 'middleware' => 'setlocale' , 'as' => 'frontend.'], function () {
+$frontendReservedSlugs = 'about|services|faq|subscription|contact|blog|clinics|doctors|social-media|language|register|terms|clear|pusher|test|sitemap\.xml';
+
+$registerFrontendRoutes = function (bool $arabicBlogFlat = false) use ($frontendReservedSlugs) {
     Route::get('/', 'HomeController@index')->name('home');
     Route::get('/about', 'AboutController@index')->name('about');
     Route::get('/services', 'ServiceController@index')->name('services');
@@ -97,28 +102,47 @@ Route::group(['namespace' => 'Frontend', 'middleware' => 'setlocale' , 'as' => '
     Route::get('/contact', 'ContactController@index')->name('contact');
     Route::get('/blog', 'BlogController@index')->name('blog');
     Route::get('/blog/load-more', 'BlogController@loadMore')->name('blog.load-more');
-    Route::get('/blog/{slug}', 'BlogController@show')->name('blog.show');
-    Route::get('/social-media', 'SocialMediaController@index')->name('social');
+    if (! $arabicBlogFlat) {
+        Route::get('/blog/{slug}', 'BlogController@show')->name('blog.show');
+    }
+    Route::get('/clinics', 'ClinicsController@index')->name('clinics');
+    Route::get('/clinics/{clinic}', 'ClinicsController@show')->name('clinics.show')->where('clinic', '^[\p{L}\p{N}\-_]+$');
+    Route::get('/doctors', 'DoctorsController@index')->name('doctors');
+    Route::get('/doctors/{doctor}', 'DoctorsController@show')->name('doctors.show')->where('doctor', '^[\p{L}\p{N}\-_]+$');    Route::get('/social-media', 'SocialMediaController@index')->name('social');
     Route::post('/book-demo', 'ContactController@bookDemo')->name('book_demo');
     Route::post('/contact', 'ContactController@submitContact')->name('contact.submit');
-    Route::get('language/{lang}', function (string $lang) {
-        $codes = Language::query()->where('status', 1)->pluck('code')->all();
-        if ($codes === [] && Schema::hasTable('cms_languages')) {
-            $codes = CmsLanguage::query()->active()->ordered()->pluck('code')->all();
-        }
-        if ($codes === []) {
-            $codes = array_values(array_unique(array_filter([
-                (string) config('app.locale'),
-                (string) config('app.fallback_locale', 'en'),
-            ])));
-        }
-        $lang = in_array($lang, $codes, true) ? $lang : ($codes[0] ?? 'en');
-        session(['lang' => $lang]);
-        App::setLocale($lang);
 
-        return redirect()->back();
-    })->name('language.switch');
+    if ($arabicBlogFlat) {
+        // Legacy: /ar/blog/{slug} → /ar/{slug}
+        Route::get('/blog/{slug}', function (string $slug) {
+            return redirect()->to(frontend_route('frontend.blog.show', $slug, true, 'ar'), 301);
+        })->where('slug', '^[\p{L}\p{N}\-_]+$');
+
+        // Arabic blog details: /ar/{arabic_slug}
+        Route::get('/{slug}', 'BlogController@show')
+            ->name('blog.show')
+            ->where('slug', '^(?!' . $frontendReservedSlugs . ')[\p{L}\p{N}\-_]+$');
+    }
+};
+
+// English (default): unprefixed URLs — /about, /blog/{english_slug}
+Route::group(['namespace' => 'Frontend', 'middleware' => ['setlocale', 'log.website.visit'], 'as' => 'frontend.'], function () use ($registerFrontendRoutes) {
+    $registerFrontendRoutes(false);
 });
+
+// Arabic: /ar prefix — /ar/about, blog details at /ar/{arabic_slug}
+Route::group(['namespace' => 'Frontend', 'prefix' => 'ar', 'middleware' => ['setlocale', 'log.website.visit'], 'as' => 'frontend.ar.'], function () use ($registerFrontendRoutes) {
+    $registerFrontendRoutes(true);
+});
+
+Route::post('website-visit-logs/beacon', 'Frontend\WebsiteVisitLogBeaconController@store')
+    ->middleware(['setlocale', 'throttle:60,1'])
+    ->name('website-visit-logs.beacon');
+
+// Legacy language switch route (rewrites current path to /ar/... or unprefixed)
+Route::get('language/{lang}', function (string $lang) {
+    return redirect()->to(frontend_language_url($lang));
+})->middleware('setlocale')->name('frontend.language.switch');
 
 Route::post('register', 'RegisterController@register')->name('register');
 
@@ -136,6 +160,328 @@ Route::group(['namespace' => 'AdminPanel', 'prefix' => 'admin'], function () {
 
 
 Route::group(["middleware" => ["auth", "setlocale"], 'prefix' => 'admin', 'namespace' => 'AdminPanel'], function () {
+
+
+    Route::get('maintenance/add-clinic-slugs', function () {
+        $columnAdded = false;
+        $updatedCount = 0;
+        $uniqueIndexAdded = false;
+        $parentForeignKeys = [
+            [
+                'table' => 'customers',
+                'constraint' => 'customers_clinic_id_foreign',
+                'column' => 'clinic_id',
+            ],
+            [
+                'table' => 'sale_invoices',
+                'constraint' => 'sale_invoices_clinic_id_foreign',
+                'column' => 'clinic_id',
+            ],
+            [
+                'table' => 'patient_sale_invoices',
+                'constraint' => 'patient_sale_invoices_clinic_id_foreign',
+                'column' => 'clinic_id',
+            ],
+            [
+                'table' => 'stores',
+                'constraint' => 'stores_clinic_id_foreign',
+                'column' => 'clinic_id',
+            ],
+            [
+                'table' => 'suppliers',
+                'constraint' => 'suppliers_clinic_id_foreign',
+                'column' => 'clinic_id',
+            ],
+        ];
+        $droppedParentForeignKeys = [];
+
+        $foreignKeyExists = function (string $table, string $constraint): bool {
+            return DB::table('information_schema.TABLE_CONSTRAINTS')
+                ->where('CONSTRAINT_SCHEMA', DB::getDatabaseName())
+                ->where('TABLE_NAME', $table)
+                ->where('CONSTRAINT_NAME', $constraint)
+                ->where('CONSTRAINT_TYPE', 'FOREIGN KEY')
+                ->exists();
+        };
+
+        $dropParentForeignKeys = function () use ($parentForeignKeys, $foreignKeyExists, &$droppedParentForeignKeys) {
+            foreach ($parentForeignKeys as $foreignKey) {
+                if (! $foreignKeyExists($foreignKey['table'], $foreignKey['constraint'])) {
+                    continue;
+                }
+
+                DB::statement(sprintf(
+                    'ALTER TABLE `%s` DROP FOREIGN KEY `%s`',
+                    $foreignKey['table'],
+                    $foreignKey['constraint']
+                ));
+
+                $droppedParentForeignKeys[] = $foreignKey;
+            }
+        };
+
+        $restoreParentForeignKeys = function () use (&$droppedParentForeignKeys, $foreignKeyExists) {
+            foreach ($droppedParentForeignKeys as $foreignKey) {
+                if ($foreignKeyExists($foreignKey['table'], $foreignKey['constraint'])) {
+                    continue;
+                }
+
+                DB::statement(sprintf(
+                    'ALTER TABLE `%s` ADD CONSTRAINT `%s` FOREIGN KEY (`%s`) REFERENCES `clinics` (`parent_id`) ON DELETE CASCADE ON UPDATE CASCADE',
+                    $foreignKey['table'],
+                    $foreignKey['constraint'],
+                    $foreignKey['column']
+                ));
+            }
+        };
+
+        if (! Schema::hasColumn('clinics', 'slug')) {
+            $dropParentForeignKeys();
+
+            try {
+                DB::statement('ALTER TABLE `clinics` ADD COLUMN `slug` VARCHAR(255) NULL');
+            } finally {
+                $restoreParentForeignKeys();
+            }
+
+            $columnAdded = true;
+        }
+
+        $usedSlugs = [];
+
+        Clinic::query()
+            ->orderBy('id')
+            ->get(['id', 'name', 'slug'])
+            ->each(function (Clinic $clinic) use (&$updatedCount, &$usedSlugs) {
+                $currentSlug = trim((string) $clinic->slug);
+
+                if ($currentSlug !== '' && ! isset($usedSlugs[$currentSlug])) {
+                    $usedSlugs[$currentSlug] = true;
+                    return;
+                }
+
+                $clinic->forceFill([
+                    'slug' => Clinic::uniqueSlug($clinic->name ?: $currentSlug ?: ('clinic-'.$clinic->id), $clinic->id),
+                ])->saveQuietly();
+
+                $usedSlugs[$clinic->slug] = true;
+                $updatedCount++;
+            });
+
+        $indexExists = DB::table('information_schema.STATISTICS')
+            ->where('TABLE_SCHEMA', DB::getDatabaseName())
+            ->where('TABLE_NAME', 'clinics')
+            ->where('INDEX_NAME', 'clinics_slug_unique')
+            ->exists();
+
+        if (! $indexExists) {
+            $dropParentForeignKeys();
+
+            try {
+                DB::statement('ALTER TABLE `clinics` ADD UNIQUE INDEX `clinics_slug_unique` (`slug`)');
+            } finally {
+                $restoreParentForeignKeys();
+            }
+
+            $uniqueIndexAdded = true;
+        }
+
+        return response()->json([
+            'success' => true,
+            'column_added' => $columnAdded,
+            'updated_clinics' => $updatedCount,
+            'unique_index_added' => $uniqueIndexAdded,
+            'temporarily_dropped_parent_foreign_keys' => array_column($droppedParentForeignKeys, 'constraint'),
+        ]);
+    })->name('maintenance.add-clinic-slugs');
+
+    Route::get('maintenance/fill-clinic-slug-en', function () {
+        $updatedCount = 0;
+
+        Clinic::query()
+            ->orderBy('id')
+            ->get(['id', 'name', 'slug', 'slug_en'])
+            ->each(function (Clinic $clinic) use (&$updatedCount) {
+                if (filled($clinic->slug_en)) {
+                    return;
+                }
+
+                $source = filled($clinic->slug)
+                    ? (string) $clinic->slug
+                    : (string) ($clinic->name ?: ('clinic-'.$clinic->id));
+
+                $clinic->forceFill([
+                    'slug_en' => Clinic::uniqueSlug($source, $clinic->id, 'en'),
+                ])->saveQuietly();
+
+                $updatedCount++;
+            });
+
+        $hasUnique = collect(DB::select("SHOW INDEX FROM clinics WHERE Column_name = 'slug_en' AND Non_unique = 0"))
+            ->isNotEmpty();
+
+        return response()->json([
+            'success' => true,
+            'updated_clinics' => $updatedCount,
+            'has_unique_slug_en_index' => $hasUnique,
+        ]);
+    })->name('maintenance.fill-clinic-slug-en');
+
+    Route::get('maintenance/clinic-schema-debug', function () {
+        $database = DB::getDatabaseName();
+
+        return response()->json([
+            'foreign_keys_on_clinics' => DB::table('information_schema.KEY_COLUMN_USAGE')
+                ->select([
+                    'TABLE_NAME',
+                    'COLUMN_NAME',
+                    'CONSTRAINT_NAME',
+                    'REFERENCED_TABLE_NAME',
+                    'REFERENCED_COLUMN_NAME',
+                ])
+                ->where('TABLE_SCHEMA', $database)
+                ->where(function ($query) {
+                    $query->where('TABLE_NAME', 'clinics')
+                        ->orWhere('REFERENCED_TABLE_NAME', 'clinics');
+                })
+                ->whereNotNull('REFERENCED_TABLE_NAME')
+                ->orderBy('TABLE_NAME')
+                ->orderBy('COLUMN_NAME')
+                ->get(),
+            'clinics_indexes' => DB::table('information_schema.STATISTICS')
+                ->select([
+                    'INDEX_NAME',
+                    'COLUMN_NAME',
+                    'NON_UNIQUE',
+                    'SEQ_IN_INDEX',
+                ])
+                ->where('TABLE_SCHEMA', $database)
+                ->where('TABLE_NAME', 'clinics')
+                ->orderBy('INDEX_NAME')
+                ->orderBy('SEQ_IN_INDEX')
+                ->get(),
+        ]);
+    })->name('maintenance.clinic-schema-debug');
+
+    Route::get('maintenance/seed-doctor-ratings', function () {
+        $now = now();
+        $userId = DB::table('users')->value('id');
+
+        if (! $userId) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No users found. Doctor ratings were not seeded.',
+            ], 422);
+        }
+
+        $createdReservations = 0;
+        $createdRatings = 0;
+        $updatedRatings = 0;
+        $seededComments = ['Seeded doctor rating', 'Auto generated rating'];
+
+        DB::transaction(function () use ($now, $userId, $seededComments, &$createdReservations, &$createdRatings, &$updatedRatings) {
+            $doctors = DB::table('clinics')
+                ->where('app_type', 3)
+                ->select('id', 'parent_id')
+                ->get();
+
+            foreach ($doctors as $doctor) {
+                $reservation = DB::table('reservations')
+                    ->where('doctor_id', $doctor->id)
+                    ->select('id', 'clinic_id', 'user_id')
+                    ->latest('id')
+                    ->first();
+
+                if (! $reservation) {
+                    $clinicId = $doctor->parent_id ?: $doctor->id;
+                    $reservationId = DB::table('reservations')->insertGetId([
+                        'booking_number' => random_int(100000000, 999999999),
+                        'user_id' => $userId,
+                        'parent_id' => $userId,
+                        'doctor_id' => $doctor->id,
+                        'clinic_id' => $clinicId,
+                        'date' => $now->toDateString(),
+                        'appointment' => '12:00',
+                        'status_id' => 6,
+                        'payment_status' => 1,
+                        'booking_flow' => 'instant',
+                        'payment_method' => 'cash',
+                        'financial_cycle_date' => $now->copy()->startOfMonth()->toDateString(),
+                        'created_at' => $now,
+                        'updated_at' => $now,
+                    ]);
+
+                    $reservation = (object) [
+                        'id' => $reservationId,
+                        'clinic_id' => $clinicId,
+                        'user_id' => $userId,
+                    ];
+
+                    $createdReservations++;
+                }
+
+                $ratingValue = random_int(4, 5);
+                $existingSeededRating = DB::table('reservation_rates')
+                    ->where('doctor_id', $doctor->id)
+                    ->whereIn('comment', $seededComments)
+                    ->latest('id')
+                    ->first();
+
+                if ($existingSeededRating) {
+                    DB::table('reservation_rates')
+                        ->where('id', $existingSeededRating->id)
+                        ->update([
+                            'clinic_id' => $reservation->clinic_id,
+                            'reservation_id' => $reservation->id,
+                            'user_id' => $reservation->user_id,
+                            'comment' => 'Seeded doctor rating',
+                            'rate_value' => $ratingValue,
+                            'updated_at' => $now,
+                        ]);
+
+                    $updatedRatings++;
+                    continue;
+                }
+
+                DB::table('reservation_rates')->insert([
+                    'clinic_id' => $reservation->clinic_id,
+                    'doctor_id' => $doctor->id,
+                    'reservation_id' => $reservation->id,
+                    'user_id' => $reservation->user_id,
+                    'comment' => 'Seeded doctor rating',
+                    'rate_value' => $ratingValue,
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ]);
+
+                $createdRatings++;
+            }
+        });
+
+        $ratings = DB::table('clinics')
+            ->leftJoin('reservation_rates', function ($join) {
+                $join->on('reservation_rates.doctor_id', '=', 'clinics.id')
+                    ->whereNotNull('reservation_rates.comment');
+            })
+            ->where('clinics.app_type', 3)
+            ->groupBy('clinics.id', 'clinics.name')
+            ->select(
+                'clinics.id',
+                'clinics.name',
+                DB::raw('COUNT(reservation_rates.id) as rate_count'),
+                DB::raw('ROUND(AVG(reservation_rates.rate_value), 1) as rate')
+            )
+            ->orderBy('clinics.id')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'created_ratings' => $createdRatings,
+            'updated_ratings' => $updatedRatings,
+            'created_reservations' => $createdReservations,
+            'ratings' => $ratings,
+        ]);
+    })->name('maintenance.seed-doctor-ratings');
 
 
 
@@ -190,6 +536,27 @@ Route::group(["middleware" => ["auth", "setlocale"], 'prefix' => 'admin', 'names
         Route::put('media/{id}', 'MediaController@update')->name('media.update');
         Route::delete('media/{id}', 'MediaController@destroy')->name('media.destroy');
     });
+
+    Route::get('website-media', 'FrontendMediaController@index')->name('website-media.index');
+    Route::get('website-media/data', 'FrontendMediaController@data')->name('website-media.data');
+    Route::post('website-media/update', 'FrontendMediaController@update')->name('website-media.update');
+    Route::post('website-media/convert', 'FrontendMediaController@convert')->name('website-media.convert');
+
+
+    Route::get('website-links', 'WebsiteLinkController@index')->name('website-links.index');
+    Route::get('website-links/create', 'WebsiteLinkController@create')->name('website-links.create');
+    Route::post('website-links', 'WebsiteLinkController@store')->name('website-links.store');
+    Route::get('website-links/{id}/edit', 'WebsiteLinkController@edit')->name('website-links.edit');
+    Route::put('website-links/{id}', 'WebsiteLinkController@update')->name('website-links.update');
+    Route::delete('website-links/{id}', 'WebsiteLinkController@destroy')->name('website-links.destroy');
+    Route::post('website-links/{id}/toggle-status', 'WebsiteLinkController@toggleStatus')->name('website-links.toggle-status');
+
+    Route::get('website-visit-logs', 'WebsiteVisitLogController@index')->name('website-visit-logs.index');
+    Route::get('website-visit-logs/data', 'WebsiteVisitLogController@data')->name('website-visit-logs.data');
+    Route::get('website-visit-logs/stats', 'WebsiteVisitLogController@stats')->name('website-visit-logs.stats');
+    Route::post('website-visit-logs/bulk-delete', 'WebsiteVisitLogController@bulkDestroy')->name('website-visit-logs.bulk-delete');
+    Route::get('website-visit-logs/{id}', 'WebsiteVisitLogController@show')->name('website-visit-logs.show');
+    Route::delete('website-visit-logs/{id}', 'WebsiteVisitLogController@destroy')->name('website-visit-logs.destroy');
 
 // cms links
     Route::group(['namespace' => 'CMS', 'prefix' => 'cms', 'as' => 'cms.'], function () {
@@ -396,6 +763,7 @@ Route::group(["middleware" => ["auth", "setlocale"], 'prefix' => 'admin', 'names
         Route::get('add-patient', 'patientsController@add_patient')->name('add-patient');
         Route::post('create-patient', 'patientsController@create_patient')->name('create-patient');
         Route::get('getInsuranceClasses', 'patientsController@getInsuranceClasses')->name('getInsuranceClasses');
+        Route::get('getCities', 'patientsController@getCities')->name('getCities');
         Route::get('getRegions', 'patientsController@getRegions')->name('getRegions');
         Route::get('patients', 'patientsController@patients')->name('patients');
         Route::get('edit-patient/{id}', 'patientsController@edit_patient')->name('edit-patient');
@@ -725,6 +1093,7 @@ Route::group(["middleware" => ["auth", "setlocale"], 'prefix' => 'admin', 'names
 
     // ContactUs requests
     Route::get('contactUs', 'ContactUsController@index')->name('contactUs');
+    Route::get('patient-messages', 'ContactUsController@patientMessages')->name('reception.patient-messages');
     Route::post('add-reply/{id}', 'ContactUsController@add_reply')->name('add-reply');
     Route::get('reply/{id}', 'ContactUsController@reply')->name('reply');
 
@@ -929,6 +1298,7 @@ Route::group(["middleware" => ["auth", "setlocale"], 'prefix' => 'admin', 'names
         Route::get('doctor-details/{clinic_id}', 'ClinicsController@doctor_details')->name('doctor-details');
         Route::post('update-clinic/{id}', 'ClinicsController@update_clinic')->name('update-clinic');
         Route::post('update-clinic-seo/{id}', 'ClinicsController@update_clinic_seo')->name('update-clinic-seo');
+        Route::get('doctor-seo-form/{id}', 'ClinicsController@doctor_seo_form')->name('doctor-seo-form');
         Route::delete('destroy-clinic/{id}', 'ClinicsController@destroy_clinic')->name('destroy-clinic');
         Route::get('update-status-clinic/{id}/{status}', 'ClinicsController@update_status_clinic')->name('update-status-clinic');
         Route::get('/load-tab-content/{app_id}/{clinic_id}', 'ClinicsController@loadTabContent')->name('load-tab-content');
@@ -961,6 +1331,7 @@ Route::group(["middleware" => ["auth", "setlocale"], 'prefix' => 'admin', 'names
         Route::resource('reports', 'ReportController');
         Route::resource('packages', 'PackagesController');
         Route::resource('demo-requests', 'DemoRequestController');
+        Route::get('emergency-hospitals/regions', 'EmergencyHospitalController@regions')->name('emergency-hospitals.regions');
         Route::get('emergency-hospitals/{id}/status/{status}', 'EmergencyHospitalController@toggleStatus')->name('emergency-hospitals.status');
         Route::resource('emergency-hospitals', 'EmergencyHospitalController')->except(['show']);
         Route::get('contact-us', 'ContactUsMessageController@index')->name('contact-us.index');

@@ -198,6 +198,39 @@
                                         </div>
                                     </div>
 
+                                    <div class="col-12 col-md-4">
+                                        <div class="form-group local-forms">
+                                            <label for="nationality_id">@lang('admin.patient_nationality')</label>
+                                            <select class="form-control select" id="nationality_id" name="nationality_id">
+                                                <option value="">@lang('admin.select')</option>
+                                                @foreach($data['nationality'] as $national)
+                                                    <option value="{{ $national->id }}" {{ (string) old('nationality_id') === (string) $national->id ? 'selected' : '' }}>{{ $national->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-md-4">
+                                        <div class="form-group local-forms">
+                                            <label for="city_id">@lang('admin.reception.region')</label>
+                                            <select class="form-control select" id="city_id" name="city_id">
+                                                <option value="">@lang('admin.reception.select_city')</option>
+                                                @foreach($data['cities'] as $city)
+                                                    <option value="{{ $city->id }}" {{ (string) old('city_id') === (string) $city->id ? 'selected' : '' }}>{{ $city->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-md-4">
+                                        <div class="form-group local-forms">
+                                            <label for="region_id">@lang('admin.reception.city')</label>
+                                            <select class="form-control select" id="region_id" name="region_id" disabled>
+                                                <option value="">@lang('admin.reception.select_region')</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
 {{--                                    <div class="col-12">--}}
 {{--                                        <div id="patient-confirmation" class="ajax-status-box">--}}
 {{--                                            <span class="status-text"></span>--}}
@@ -217,7 +250,7 @@
                                                 <option value="">@lang('admin.select')</option>
                                                 @foreach($data['specializations'] as $specialist)
                                                     <option value="{{ $specialist->specialty_id }}">
-                                                        {{ app()->getLocale() == 'en' ? $specialist->specialties->name_en : $specialist->specialties->name_ar }}
+                                                        {{ app()->getLocale() == 'en' ? $specialist->specialties->name_en ?? null : $specialist->specialties->name_ar ?? null }}
                                                     </option>
                                                 @endforeach
                                             </select>
@@ -322,6 +355,9 @@
             $('#specialist_id').select2({ width: '100%' });
             $('#doctor_id').select2({ width: '100%' });
             $('#appointment').select2({ width: '100%' });
+            $('#nationality_id').select2({ width: '100%' });
+            $('#city_id').select2({ width: '100%' });
+            $('#region_id').select2({ width: '100%' });
 
             function showGlobalStatus(text = 'Loading...') {
                 $('#ajax-global-status .status-text').text(text);
@@ -350,11 +386,61 @@
                 $('#appointment_hint').text('اختر الطبيب والتاريخ أولًا لتحميل الأوقات.');
             }
 
+            function resetRegions(message = '{{ __("admin.reception.select_region") }}') {
+                $('#region_id')
+                    .prop('disabled', true)
+                    .html('<option value="">' + message + '</option>')
+                    .trigger('change');
+            }
+
+            function loadRegions(cityId, selectedRegionId = null) {
+                resetRegions();
+
+                if (!cityId) {
+                    return;
+                }
+
+                $.ajax({
+                    url: '{{ route('getRegions') }}',
+                    type: 'GET',
+                    dataType: 'json',
+                    data: {
+                        city_id: cityId
+                    },
+                    success: function (res) {
+                        let options = '<option value="">{{ __("admin.reception.select_region") }}</option>';
+
+                        if (res && res.length > 0) {
+                            $.each(res, function (key, value) {
+                                let selected = parseInt(value.id) === parseInt(selectedRegionId) ? 'selected' : '';
+                                options += `<option value="${value.id}" ${selected}>${value.name}</option>`;
+                            });
+
+                            $('#region_id')
+                                .html(options)
+                                .prop('disabled', false)
+                                .trigger('change');
+                        } else {
+                            $('#region_id')
+                                .html('<option value="">{{ __("admin.no_data") }}</option>')
+                                .prop('disabled', true)
+                                .trigger('change');
+                        }
+                    },
+                    error: function () {
+                        resetRegions('{{ __("admin.no_data") }}');
+                    }
+                });
+            }
+
             $('#patient').on('change', function () {
                 let patientId = $(this).val();
 
                 $('#patient-confirmation').removeClass('show');
                 if (!patientId) {
+                    $('#nationality_id').val('').trigger('change');
+                    $('#city_id').val('').trigger('change.select2');
+                    resetRegions();
                     return;
                 }
 
@@ -371,6 +457,10 @@
                         }
 
                         let patient = res.patient;
+                        $('#nationality_id').val(patient.nationality_id || '').trigger('change');
+                        $('#city_id').val(patient.city_id || '').trigger('change.select2');
+                        loadRegions(patient.city_id, patient.region_id);
+
                         let status = res.status === 'valid'
                             ? '{{ app()->getLocale() == 'ar' ? 'ملف المريض صالح' : 'Patient file is valid' }}'
                             : '{{ app()->getLocale() == 'ar' ? 'ملف المريض غير صالح' : 'Patient file is invalid' }}';
@@ -382,6 +472,17 @@
                     }
                 });
             });
+
+            $('#city_id').on('change', function () {
+                loadRegions($(this).val());
+            });
+
+            const initialCityId = '{{ old('city_id') }}';
+            const initialRegionId = '{{ old('region_id') }}';
+
+            if (initialCityId) {
+                loadRegions(initialCityId, initialRegionId);
+            }
 
             $('#specialist_id').on('change', function () {
                 let specialist_id = $(this).val();

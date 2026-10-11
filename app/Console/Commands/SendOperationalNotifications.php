@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Events\UserNotificationEvent;
 use App\Models\Clinic;
 use App\Models\ClinicOffer;
 use App\Models\Notifications;
@@ -87,14 +88,14 @@ class SendOperationalNotifications extends Command
             ->whereDate('start_date', $today->toDateString())
             ->chunkById(100, function ($offers) {
                 foreach ($offers as $offer) {
-                    $messageAr = 'Offer "' . $offer->title_ar . '" starts today.';
+                    $messageAr = 'العرض "' . $offer->title_ar . '" يبدأ اليوم.';
                     $messageEn = 'Offer "' . $offer->title_en . '" starts today.';
 
                     $this->createNotificationOnce([
                         'clinic_id' => $offer->clinic_id,
                         'type' => 0,
                         'app_type' => 1,
-                        'title_ar' => 'Offer started',
+                        'title_ar' => 'بدأ العرض',
                         'title_en' => 'Offer started',
                         'message_ar' => $messageAr,
                         'message_en' => $messageEn,
@@ -125,10 +126,10 @@ class SendOperationalNotifications extends Command
                 }
             });
 
-        ClinicOffer::whereNotNull('end_date')
-            ->whereDate('end_date', '<', $today->toDateString())
-            ->where('status', 1)
-            ->update(['status' => 0]);
+        $deletedExpiredOffers = ClinicOffer::deleteExpired($today);
+        if ($deletedExpiredOffers > 0) {
+            $this->info("Deleted expired offers: {$deletedExpiredOffers}");
+        }
 
         Clinic::whereIn('app_type', [1, 7])
             ->chunkById(100, function ($clinics) use ($today) {
@@ -167,7 +168,8 @@ class SendOperationalNotifications extends Command
             ->exists();
 
         if (!$exists) {
-            Notifications::create($data);
+            $notification = Notifications::create($data);
+            broadcast(new UserNotificationEvent($notification))->toOthers();
         }
     }
 

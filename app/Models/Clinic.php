@@ -8,11 +8,13 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
 use App\Traits\HasSeo;
+use Str;
+
 class Clinic extends Authenticatable
 {
     use HasFactory,HasRoles,HasSeo;
     protected $fillable = [
-        'name', 'email', 'password', 'phone', 'image', 'qr_code', 'status', 'app_type', 'parent_id', 'city_id', 'lat', 'lng', 'address',
+        'name', 'name_en','slug','slug_en', 'email', 'password', 'phone', 'image', 'qr_code', 'status', 'app_type', 'parent_id', 'city_id', 'lat', 'lng', 'address', 'address_en',
         'gender', 'date_created','package_end_date', 'communication_officer','communication_officer_phone', 'specialization', 'firebase_token', 'platform', 'device_token', 'jwt_token', 'info', 'info_ar', 'consultation_price', 'degree_id', 'ID_Number',
         'facebook_url', 'instagram_url', 'tiktok_url', 'snapchat_url', 'youtube_url'
         ,'is_manager','nursing_point_id','notes','role_id','points_enabled','points_category','enabled_modules',
@@ -25,6 +27,147 @@ class Clinic extends Authenticatable
         'consultation_price' => 'decimal:2',
     ];
 
+    protected static function booted()
+    {
+        static::creating(function (Clinic $clinic) {
+            $seed = $clinic->name ?: ('clinic-'.Str::random(6));
+
+            if (! filled($clinic->slug)) {
+                // `slug` is used for Arabic frontend URLs.
+                $clinic->slug = static::uniqueSlug($seed, null, 'ar');
+            }
+
+            if (! filled($clinic->slug_en)) {
+                $clinic->slug_en = static::uniqueSlug($seed, null, 'en');
+            }
+        });
+
+        static::updating(function (Clinic $clinic) {
+            $seed = $clinic->name ?: ('clinic-'.$clinic->id);
+
+            if (! filled($clinic->slug)) {
+                $clinic->slug = static::uniqueSlug($seed, $clinic->id, 'ar');
+            }
+
+            if (! filled($clinic->slug_en)) {
+                $clinic->slug_en = static::uniqueSlug($seed, $clinic->id, 'en');
+            }
+        });
+    }
+
+    public function getRouteKey()
+    {
+        return $this->localizedSlug();
+    }
+
+    /**
+     * Locale-aware public URL slug.
+     * - ar => `slug`
+     * - en => `slug_en` (falls back to `slug`)
+     */
+    public function localizedSlug(?string $locale = null): string
+    {
+        $locale = $locale ?? app()->getLocale();
+
+        if ($locale === 'en') {
+            if (filled($this->slug_en)) {
+                return (string) $this->slug_en;
+            }
+
+            return filled($this->slug) ? (string) $this->slug : (string) $this->getKey();
+        }
+
+        if (filled($this->slug)) {
+            return (string) $this->slug;
+        }
+
+        return filled($this->slug_en) ? (string) $this->slug_en : (string) $this->getKey();
+    }
+
+    public function resolveRouteBinding($value, $field = null)
+    {
+        return static::query()
+            ->where(function ($query) use ($value, $field) {
+                if ($field && $field !== 'slug') {
+                    $query->where($field, $value);
+                } else {
+                    $query->where('slug', $value)
+                        ->orWhere('slug_en', $value);
+                }
+
+                // Keep old numeric detail URLs working until links are fully migrated.
+                if (ctype_digit((string) $value)) {
+                    $query->orWhere($this->getKeyName(), (int) $value);
+                }
+            })
+            ->firstOrFail();
+    }
+
+    public static function makeSlug(string $value, string $locale = 'en'): string
+    {
+        $value = trim($value);
+        if ($value === '') {
+            return '';
+        }
+
+        if ($locale === 'ar') {
+            $slug = Str::slug($value, '-', null);
+
+            return $slug !== '' ? $slug : Str::slug($value);
+        }
+
+        // Prefer ASCII URL slugs for English frontend routes.
+        $slug = Str::slug($value, '-');
+        if ($slug !== '') {
+            return $slug;
+        }
+
+        $ascii = @iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $value);
+        $slug = Str::slug(is_string($ascii) ? $ascii : $value, '-');
+
+        return $slug;
+    }
+
+    public static function uniqueSlug(string $value, ?int $ignoreId = null, string $locale = 'en'): string
+    {
+        $slug = static::makeSlug($value, $locale);
+        if ($slug === '') {
+            $slug = $ignoreId ? 'clinic-'.$ignoreId : 'clinic';
+        }
+
+        $base = $slug;
+        $i = 2;
+
+        while (static::slugExists($slug, $ignoreId)) {
+            $slug = $base.'-'.$i;
+            $i++;
+        }
+
+        return $slug;
+    }
+
+    public static function slugExists(string $slug, ?int $ignoreId = null): bool
+    {
+        $query = static::query()->where(function ($q) use ($slug) {
+            $q->where('slug', $slug)->orWhere('slug_en', $slug);
+        });
+
+        if ($ignoreId) {
+            $query->where('id', '!=', $ignoreId);
+        }
+
+        return $query->exists();
+    }
+
+    public static function findByLocalizedSlug(string $slug): ?self
+    {
+        return static::query()
+            ->where(function ($query) use ($slug) {
+                $query->where('slug', $slug)->orWhere('slug_en', $slug);
+            })
+            ->first();
+    }
+
     public function contractOwner()
     {
         if ((int) $this->app_type === 3 && $this->parent_id) {
@@ -33,6 +176,7 @@ class Clinic extends Authenticatable
 
         return $this;
     }
+
 
     public function contract()
     {
@@ -165,7 +309,7 @@ class Clinic extends Authenticatable
 
     function clinic_doctor()
     {
-        return $this->belongsTo(Clinic::class, 'parent_id')->select('id', 'name', 'image', DB::raw('DATE(created_at) as created_date'));
+        return $this->belongsTo(Clinic::class, 'parent_id')->select('id', 'name','slug','slug_en', 'image', DB::raw('DATE(created_at) as created_date'));
     }
 
     function owner () {
@@ -206,7 +350,7 @@ class Clinic extends Authenticatable
         return $this->hasMany(ClinicSpecialist::class, 'clinic_id')->where('type', 1)->select('id', 'specialty_id','clinic_id');
     }
 
-      function specialty()
+    function specialty()
     {
         return $this->hasMany(ClinicSpecialist::class, 'clinic_id')->where('type', 1)->select('id', 'specialty_id','clinic_id');
     }
@@ -224,14 +368,14 @@ class Clinic extends Authenticatable
 
     function reception_staff()
     {
-        return $this->hasMany(Clinic::class, 'parent_id')->where('app_type', 2)->select('id', 'name', 'phone', 'image');
+        return $this->hasMany(Clinic::class, 'parent_id')->where(['app_type'=>2,'status'=>1])->select('id', 'name', 'phone', 'image');
     }
 
     function medical_staff()
     {
         return $this->hasMany(Clinic::class, 'parent_id')
-            ->where('app_type', 3)
-            ->select('id', 'parent_id', 'app_type', 'name', 'phone', 'image', 'info', 'info_ar', 'consultation_price');
+            ->where(['app_type'=>3,'status'=>1])
+            ->select('id', 'parent_id', 'app_type', 'name', 'name_en', 'slug','slug_en', 'phone', 'image', 'info', 'info_ar', 'consultation_price');
     }
 
     function branches()
@@ -239,7 +383,7 @@ class Clinic extends Authenticatable
         return $this->hasMany(Clinic::class, 'parent_id')
             ->where('app_type', 7)
             ->where('status', 1)
-            ->select('id', 'parent_id', 'app_type', 'name', 'email', 'phone', 'image', 'lat', 'lng', 'address', 'status');
+            ->select('id', 'parent_id', 'app_type', 'name','slug','slug_en', 'email', 'phone', 'image', 'lat', 'lng', 'address', 'status');
     }
 
 

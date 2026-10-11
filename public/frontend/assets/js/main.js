@@ -49,10 +49,162 @@
     }
 
 
-    // $('select').niceSelect(); 
-    if ($('.nice-select').length) {
-        $('.nice-select').niceSelect();
-    }
+    window.rundevoInitEnhancements = function () {
+        if (window.__rundevoEnhancementsReady) {
+            return;
+        }
+
+        if ($('.nice-select').length && typeof $.fn.niceSelect === 'function') {
+            $('.nice-select').niceSelect();
+        }
+
+        if (typeof $.fn.magnificPopup === 'function') {
+            $(".popup-image").magnificPopup({
+                type: "image",
+                mainClass: 'mfp-zoom-in',
+                removalDelay: 260,
+                gallery: {
+                    enabled: true,
+                },
+            });
+            $(".popup-video").magnificPopup({
+                type: "iframe",
+                mainClass: 'mfp-zoom-in',
+                removalDelay: 260,
+            });
+            $(".popup-content").magnificPopup({
+                type: "inline",
+                midClick: true,
+            });
+        }
+
+        if (typeof $.fn.counterUp === 'function' && $(".counter-number").length) {
+            $(".counter-number").counterUp({
+                delay: 10,
+                time: 1000,
+            });
+        }
+
+        if (typeof WOW !== 'undefined') {
+            new WOW({
+                boxClass: 'wow',
+                animateClass: 'animated',
+                offset: 0,
+                mobile: true,
+                live: true
+            }).init();
+        }
+
+        if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+            gsap.registerPlugin(ScrollTrigger);
+        }
+
+        if ($('.reveal').length && typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+            let revealContainers = document.querySelectorAll(".reveal");
+            revealContainers.forEach((container) => {
+                let image = container.querySelector("img");
+                let tl = gsap.timeline({
+                    scrollTrigger: {
+                        trigger: container,
+                        toggleActions: "play none none none"
+                    }
+                });
+                tl.set(container, {
+                    autoAlpha: 1
+                });
+                tl.from(container, 1, {
+                    xPercent: -100,
+                    ease: "power2.out"
+                });
+                tl.from(image, 1, {
+                    xPercent: 100,
+                    scale: 1,
+                    delay: -1,
+                    ease: "power2.out"
+                });
+            });
+        }
+
+        if ($('.text-anime-style-1').length && typeof gsap !== 'undefined' && typeof SplitText !== 'undefined') {
+            let staggerAmount = 0.05,
+                delayValue = 0.5,
+                animatedTextElements = document.querySelectorAll('.text-anime-style-1');
+
+            animatedTextElements.forEach((element) => {
+                let animationSplitText = new SplitText(element, { type: "chars, words" });
+                gsap.from(animationSplitText.words, {
+                    duration: 1,
+                    delay: delayValue,
+                    x: 20,
+                    autoAlpha: 0,
+                    stagger: staggerAmount,
+                    scrollTrigger: { trigger: element, start: "top 85%" },
+                });
+            });
+        }
+
+        if ($('.text-anime-style-2').length && typeof gsap !== 'undefined' && typeof SplitText !== 'undefined') {
+            let staggerAmount = 0.03,
+                translateXValue = 20,
+                delayValue = 0.1,
+                easeType = "power2.out",
+                animatedTextElements = document.querySelectorAll('.text-anime-style-2');
+
+            animatedTextElements.forEach((element) => {
+                let animationSplitText = new SplitText(element, { type: "chars, words" });
+                gsap.from(animationSplitText.chars, {
+                    duration: 2,
+                    delay: delayValue,
+                    x: translateXValue,
+                    autoAlpha: 0,
+                    stagger: staggerAmount,
+                    ease: easeType,
+                    scrollTrigger: { trigger: element, start: "top 85%" },
+                });
+            });
+        }
+
+        if ($('.text-anime-style-3').length && typeof gsap !== 'undefined' && typeof SplitText !== 'undefined') {
+            let animatedTextElements = document.querySelectorAll('.text-anime-style-3');
+
+            animatedTextElements.forEach((element) => {
+                if (element.animation) {
+                    element.animation.progress(1).kill();
+                    element.split.revert();
+                }
+
+                element.split = new SplitText(element, {
+                    type: "lines,words,chars",
+                    linesClass: "split-line",
+                });
+                gsap.set(element, { perspective: 400 });
+                gsap.set(element.split.chars, {
+                    opacity: 0,
+                    x: "50",
+                });
+
+                element.animation = gsap.to(element.split.chars, {
+                    scrollTrigger: { trigger: element, start: "top 90%" },
+                    x: "0",
+                    y: "0",
+                    rotateX: "0",
+                    opacity: 1,
+                    duration: 1,
+                    ease: "back.out",
+                    stagger: 0.02,
+                });
+            });
+        }
+
+        if (
+            (typeof $.fn.magnificPopup === 'function' || typeof gsap !== 'undefined' || typeof WOW !== 'undefined')
+        ) {
+            window.__rundevoEnhancementsReady = true;
+        }
+    };
+
+    // Run immediately if libs were already present; otherwise wait for late load.
+    window.rundevoInitEnhancements();
 
 
     /*---------- 03. Mobile Menu Active ----------*/
@@ -186,7 +338,7 @@
         progressPath.style.transition = progressPath.style.WebkitTransition = 'none';
         progressPath.style.strokeDasharray = pathLength + ' ' + pathLength;
         progressPath.style.strokeDashoffset = pathLength;
-        progressPath.getBoundingClientRect();
+        // Avoid synchronous layout flush (getBoundingClientRect) after style writes.
         progressPath.style.transition = progressPath.style.WebkitTransition = 'stroke-dashoffset 10ms linear';
         var updateProgress = function () {
             var scroll = $(window).scrollTop();
@@ -194,7 +346,12 @@
             var progress = pathLength - (scroll * pathLength / height);
             progressPath.style.strokeDashoffset = progress;
         }
-        updateProgress();
+        // Defer first paint-sensitive measurement until idle.
+        if ('requestIdleCallback' in window) {
+            requestIdleCallback(updateProgress, { timeout: 2000 });
+        } else {
+            setTimeout(updateProgress, 0);
+        }
         $(window).scroll(updateProgress);
         var offset = 50;
         var duration = 750;
@@ -454,7 +611,7 @@
         });
     }
     if ($(".product-thumb").length) {
-        $(".product-thumb").activateSliderThumbs({ 
+        $(".product-thumb").activateSliderThumbs({
             sliderTab: true,
             tabButton: ".tab-btn",
         });
@@ -531,8 +688,8 @@
         if (
             !$($email).val() ||
             !$($email)
-            .val()
-            .match(/^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/)
+                .val()
+                .match(/^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/)
         ) {
             $($email).addClass(invalidCls);
             valid = false;
@@ -624,31 +781,6 @@
     };
     popupSideMenu('.shopping-cart', '.sideMenuToggler2', '.sideMenuCls', 'show');
 
-    /*----------- 12. Magnific Popup ----------*/
-    /* magnificPopup img view */
-    $(".popup-image").magnificPopup({
-        type: "image",
-        mainClass: 'mfp-zoom-in',
-        removalDelay: 260,
-        gallery: {
-            enabled: true,
-        },
-    });
-
-    /* magnificPopup video view */
-    $(".popup-video").magnificPopup({
-        type: "iframe",
-        mainClass: 'mfp-zoom-in',
-        removalDelay: 260,
-    });
-
-    /* magnificPopup video view */
-    $(".popup-content").magnificPopup({
-        type: "inline",
-        midClick: true,
-    });
-
-
     if ($('[data-theme-color]').length > 0) {
         $('[data-theme-color]').each(function () {
             var $color = $(this).attr('data-theme-color');
@@ -692,8 +824,8 @@
             return this.each(function () {
                 var r = "eefec303079ad17405c889e092e105b0";
                 // Because it's hard to split a <br/> tag consistently across browsers,
-                // (*ahem* IE *ahem*), we replaces all <br/> instances with an md5 hash 
-                // (of the word "split").  If you're trying to use this plugin on that 
+                // (*ahem* IE *ahem*), we replaces all <br/> instances with an md5 hash
+                // (of the word "split").  If you're trying to use this plugin on that
                 // md5 hash string, it will fail because you're being ridiculous.
                 injector($(this).children("br").replaceWith(r).end(), r, 'line', '');
             });
@@ -760,109 +892,105 @@
     };
 
     var postionHandler = "[data-sec-pos]";
-    if ($(postionHandler).length) {
+    if ($(postionHandler).length && typeof $.fn.imagesLoaded === 'function') {
         $(postionHandler).imagesLoaded(function () {
             $(postionHandler).sectionPosition("data-sec-pos", "data-pos-for");
         });
     }
 
-      /*----------- 15. Filter ----------*/
-      $(".filter-active").imagesLoaded(function () {
-        var $filter = ".filter-active",
-            $filterItem = ".filter-item",
-            $filterMenu = ".filter-menu-active";
+    /*----------- 15. Filter ----------*/
+    if ($(".filter-active").length && typeof $.fn.imagesLoaded === 'function' && typeof $.fn.isotope === 'function') {
+        $(".filter-active").imagesLoaded(function () {
+            var $filter = ".filter-active",
+                $filterItem = ".filter-item",
+                $filterMenu = ".filter-menu-active";
 
-        if ($($filter).length > 0) {
-            var $grid = $($filter).isotope({
-                itemSelector: $filterItem,
-                filter: "*",
-                masonry: {
-                    // use outer width of grid-sizer for columnWidth
-                    columnWidth: 1,
-                },
-            });
-
-            // filter items on button click
-            $($filterMenu).on("click", "button", function () {
-                var filterValue = $(this).attr("data-filter");
-                $grid.isotope({
-                    filter: filterValue,
-                });
-            });
-
-            // Menu Active Class
-            $($filterMenu).on("click", "button", function (event) {
-                event.preventDefault();
-                $(this).addClass("active");
-                $(this).siblings(".active").removeClass("active");
-            });
-        }
-        $('.load-more-btn').on('click', function() {
-            var $icon = $(this).find('i');
-            $icon.addClass('fa-spin-pulse');
-            
-            setTimeout(function() {
-                $icon.removeClass('fa-spin-pulse');
-            }, 1000);
-            
-            var $button = $(this);
-            setTimeout(function() {
-                var $closestLoadMoreActive = $button.prev('.load-more-active');
-                if ($closestLoadMoreActive.length === 0) {
-                    $closestLoadMoreActive = $button.closest('.container').find('.load-more-active');
-                }
-                $closestLoadMoreActive.find('.load-more.d-none, .accordion-card.style2.d-none, .filter-item.d-none').removeClass('d-none');
-                
+            if ($($filter).length > 0) {
                 var $grid = $($filter).isotope({
+                    itemSelector: $filterItem,
+                    filter: "*",
+                    masonry: {
+                        // use outer width of grid-sizer for columnWidth
+                        columnWidth: 1,
+                    },
+                });
+
+                // filter items on button click
+                $($filterMenu).on("click", "button", function () {
+                    var filterValue = $(this).attr("data-filter");
+                    $grid.isotope({
+                        filter: filterValue,
+                    });
+                });
+
+                // Menu Active Class
+                $($filterMenu).on("click", "button", function (event) {
+                    event.preventDefault();
+                    $(this).addClass("active");
+                    $(this).siblings(".active").removeClass("active");
+                });
+            }
+            $('.load-more-btn').on('click', function() {
+                var $icon = $(this).find('i');
+                $icon.addClass('fa-spin-pulse');
+
+                setTimeout(function() {
+                    $icon.removeClass('fa-spin-pulse');
+                }, 1000);
+
+                var $button = $(this);
+                setTimeout(function() {
+                    var $closestLoadMoreActive = $button.prev('.load-more-active');
+                    if ($closestLoadMoreActive.length === 0) {
+                        $closestLoadMoreActive = $button.closest('.container').find('.load-more-active');
+                    }
+                    $closestLoadMoreActive.find('.load-more.d-none, .accordion-card.style2.d-none, .filter-item.d-none').removeClass('d-none');
+
+                    var $grid = $($filter).isotope({
+                        filter: "*",
+                    });
+                }, 700);
+            });
+        });
+
+
+        $(".masonary-active").imagesLoaded(function () {
+            var $filter = ".masonary-active",
+                $filterItem = ".filter-item";
+
+            if ($($filter).length > 0) {
+                $($filter).isotope({
+                    itemSelector: $filterItem,
+                    filter: "*",
+                    masonry: {
+                        // use outer width of grid-sizer for columnWidth
+                        columnWidth: 1,
+                    },
+                });
+            }
+        });
+
+        $(".masonary-active, .woocommerce-Reviews .comment-list").imagesLoaded(function () {
+            var $filter = ".masonary-active, .woocommerce-Reviews .comment-list",
+                $filterItem = ".filter-item, .woocommerce-Reviews .comment-list li";
+
+            if ($($filter).length > 0) {
+                $($filter).isotope({
+                    itemSelector: $filterItem,
+                    filter: "*",
+                    masonry: {
+                        // use outer width of grid-sizer for columnWidth
+                        columnWidth: 1,
+                    },
+                });
+            }
+            $('[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+                $($filter).isotope({
                     filter: "*",
                 });
-            }, 700);
-        });
-    });
-    
-
-    $(".masonary-active").imagesLoaded(function () {
-        var $filter = ".masonary-active",
-            $filterItem = ".filter-item";
-
-        if ($($filter).length > 0) {
-            $($filter).isotope({
-                itemSelector: $filterItem,
-                filter: "*",
-                masonry: {
-                    // use outer width of grid-sizer for columnWidth
-                    columnWidth: 1,
-                },
-            });
-        }
-    });
-
-    $(".masonary-active, .woocommerce-Reviews .comment-list").imagesLoaded(function () {
-        var $filter = ".masonary-active, .woocommerce-Reviews .comment-list",
-            $filterItem = ".filter-item, .woocommerce-Reviews .comment-list li";
-
-        if ($($filter).length > 0) {
-            $($filter).isotope({
-                itemSelector: $filterItem,
-                filter: "*",
-                masonry: {
-                    // use outer width of grid-sizer for columnWidth
-                    columnWidth: 1,
-                },
-            });
-        }
-        $('[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
-            $($filter).isotope({
-                filter: "*",
             });
         });
-    });
-
-    /*----------- 15. Counter Up ----------*/
-    $(".counter-number").counterUp({
-        delay: 10,
-        time: 1000,
-    });
+    }
 
     /*----------- 17. Shape Mockup ----------*/
     $.fn.shapeMockup = function () {
@@ -923,18 +1051,20 @@
         $(".shape-mockup2").shapeMockup2();
     }
     /*----------- 19. Price Slider ----------*/
-    $(".price_slider").slider({
-        range: true,
-        min: 10,
-        max: 100,
-        values: [10, 75],
-        slide: function (event, ui) {
-            $(".from").text("$" + ui.values[0]);
-            $(".to").text("$" + ui.values[1]);
-        }
-    });
-    $(".from").text("$" + $(".price_slider").slider("values", 0));
-    $(".to").text("$" + $(".price_slider").slider("values", 1));
+    if (typeof $.fn.slider === 'function' && $(".price_slider").length) {
+        $(".price_slider").slider({
+            range: true,
+            min: 10,
+            max: 100,
+            values: [10, 75],
+            slide: function (event, ui) {
+                $(".from").text("$" + ui.values[0]);
+                $(".to").text("$" + ui.values[1]);
+            }
+        });
+        $(".from").text("$" + $(".price_slider").slider("values", 0));
+        $(".to").text("$" + $(".price_slider").slider("values", 1));
+    }
 
 
 
@@ -952,7 +1082,7 @@
     // Check if there are any panorama images present
     const panoramaImages = $('.panorama-img');
 
-    if (panoramaImages.length > 0) {
+    if (panoramaImages.length > 0 && typeof PANOLENS !== 'undefined') {
         const imageContainer = $('.image-container');
 
         // Create a new PANOLENS.Viewer instance
@@ -978,14 +1108,14 @@
 
     /*  footer animation  */
     $(".th-screen").length && $(window).on("scroll", function () {
-            ! function (t, a = 0) {
-                var i = $(window).scrollTop(),
-                    o = i + $(window).height(),
-                    s = $(t).offset().top;
-                return s + $(t).height() - parseInt(a) <= o && s >= i
-            }
-            (".th-screen", 200) ? $(".th-screen").removeClass("th-visible"): $(".th-screen").addClass("th-visible")
-        }),
+        ! function (t, a = 0) {
+            var i = $(window).scrollTop(),
+                o = i + $(window).height(),
+                s = $(t).offset().top;
+            return s + $(t).height() - parseInt(a) <= o && s >= i
+        }
+        (".th-screen", 200) ? $(".th-screen").removeClass("th-visible"): $(".th-screen").addClass("th-visible")
+    }),
 
         /*----------- 00. Woocommerce Toggle ----------*/
         // Ship To Different Address
@@ -1127,151 +1257,36 @@
         });
     }
 
-    /* ==================================================
-			# Wow Init
-		 ===============================================*/
-    var wow = new WOW({
-        boxClass: 'wow',
-        animateClass: 'animated',
-        offset: 0,
-        mobile: true,
-        live: true
-    });
-    new WOW().init(); 
-
-    	/* Image Reveal Animation */
-	if ($('.reveal').length) {
-        gsap.registerPlugin(ScrollTrigger);
-        let revealContainers = document.querySelectorAll(".reveal");
-        revealContainers.forEach((container) => {
-            let image = container.querySelector("img");
-            let tl = gsap.timeline({
-                scrollTrigger: {
-                    trigger: container,
-                    toggleActions: "play none none none"
-                }
-            });
-            tl.set(container, {
-                autoAlpha: 1
-            });
-            tl.from(container, 1, {
-                xPercent: -100,
-                ease: Power2.out
-            });
-            tl.from(image, 1, {
-                xPercent: 100,
-                scale: 1,
-                delay: -1,
-                ease: Power2.out
-            });
-        });
-    }
-    
-    /* Text Effect Animation */
-	if ($('.text-anime-style-1').length) {
-		let staggerAmount 	= 0.05,
-			translateXValue = 0,
-			delayValue 		= 0.5,
-		   animatedTextElements = document.querySelectorAll('.text-anime-style-1');
-		
-		animatedTextElements.forEach((element) => {
-			let animationSplitText = new SplitText(element, { type: "chars, words" });
-				gsap.from(animationSplitText.words, {
-				duration: 1,
-				delay: delayValue,
-				x: 20,
-				autoAlpha: 0,
-				stagger: staggerAmount,
-				scrollTrigger: { trigger: element, start: "top 85%" },
-				});
-		});		
-	}
-	
-	if ($('.text-anime-style-2').length) {				
-		let	 staggerAmount 		= 0.03,
-			 translateXValue	= 20,
-			 delayValue 		= 0.1,
-			 easeType 			= "power2.out",
-			 animatedTextElements = document.querySelectorAll('.text-anime-style-2');
-		
-		animatedTextElements.forEach((element) => {
-			let animationSplitText = new SplitText(element, { type: "chars, words" });
-				gsap.from(animationSplitText.chars, {
-					duration: 2,
-					delay: delayValue,
-					x: translateXValue,
-					autoAlpha: 0,
-					stagger: staggerAmount,
-					ease: easeType,
-					scrollTrigger: { trigger: element, start: "top 85%"},
-				});
-		});		
-	}
-	
-	if ($('.text-anime-style-3').length) {		
-		let	animatedTextElements = document.querySelectorAll('.text-anime-style-3');
-		
-		 animatedTextElements.forEach((element) => {
-			//Reset if needed
-			if (element.animation) {
-				element.animation.progress(1).kill();
-				element.split.revert();
-			}
-
-			// element.split = new SplitText(element, {
-			// 	type: "lines,words,chars",
-			// 	linesClass: "split-line",
-			// });
-			gsap.set(element, { perspective: 400 });
-
-			gsap.set(element.split.chars, {
-				opacity: 0,
-				x: "50",
-			});
-
-			element.animation = gsap.to(element.split.chars, {
-				scrollTrigger: { trigger: element,	start: "top 90%" },
-				x: "0",
-				y: "0",
-				rotateX: "0",
-				opacity: 1,
-				duration: 1,
-				ease: Back.easeOut,
-				stagger: 0.02,
-			});
-		});		
-	}
-
     document.addEventListener("DOMContentLoaded", function () {
         const hotspotDots = document.querySelectorAll(".hotspot-dot");
         const productHotspotDots = document.querySelectorAll(".product-hotspot-dot");
-    
+
         let activeIndex = null; // Track the active hotspot index
-    
+
         hotspotDots.forEach((dot, index) => {
             dot.addEventListener("mouseenter", function () {
                 // Hide all product hotspot dots
                 productHotspotDots.forEach(dot => dot.classList.remove("show"));
-    
+
                 // Show the corresponding product-hotspot-dot
                 const productDot = document.querySelector(`.product-hotspot-dot${index + 1}`);
                 productDot.classList.add("show");
-    
+
                 // Update the active index
                 activeIndex = index + 1;
             });
         });
-    
+
         productHotspotDots.forEach((productDot) => {
             productDot.addEventListener("mouseenter", function () {
                 this.classList.add("show");
             });
-    
+
             productDot.addEventListener("mouseleave", function () {
                 this.classList.remove("show"); // Hide when mouse leaves
             });
         });
-    
+
         // Click anywhere outside to hide all product-hotspot-dot elements
         document.addEventListener("click", function (event) {
             if (!event.target.closest(".hotspot-dot") && !event.target.closest(".product-hotspot-dot")) {
@@ -1341,14 +1356,14 @@
 
 
     // // /*----------- 00. Right Click Disable ----------*/
-    //   window.addEventListener('contextmenu', function (e) { 
-    //     // do something here... 
-    //     e.preventDefault();   
-    //   }, false);  
+    //   window.addEventListener('contextmenu', function (e) {
+    //     // do something here...
+    //     e.preventDefault();
+    //   }, false);
 
     // // /*----------- 00. Inspect Element Disable ----------*/
     //   document.onkeydown = function (e) {
-    //     if (event.keyCode == 123) { 
+    //     if (event.keyCode == 123) {
     //       return false;
     //     }
     //     if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) {
@@ -1360,9 +1375,9 @@
     //     if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) {
     //       return false;
     //     }
-    //     if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) { 
+    //     if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) {
     //       return false;
     //     }
-    //   }   
+    //   }
 
 })(jQuery);

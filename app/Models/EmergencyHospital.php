@@ -47,11 +47,16 @@ class EmergencyHospital extends Model
         return $this->belongsTo(Regions::class, 'region_id');
     }
 
-    public static function nearby($lat, $lng, $radius = 50)
+    public static function nearby($lat, $lng, $radius = null)
     {
-        return static::select(DB::raw('emergency_hospitals.*, ( 6371 * acos( cos( radians(' . (float) $lat . ') ) * cos( radians( lat ) ) * cos( radians( lng ) - radians(' . (float) $lng . ') ) + sin( radians(' . (float) $lat . ') ) * sin( radians( lat ) ) ) ) AS distance'))
+        $query = static::select(DB::raw('emergency_hospitals.*, ( 6371 * acos( cos( radians(' . (float) $lat . ') ) * cos( radians( lat ) ) * cos( radians( lng ) - radians(' . (float) $lng . ') ) + sin( radians(' . (float) $lat . ') ) * sin( radians( lat ) ) ) ) AS distance'))
             ->where('status', 1)
-            ->having('distance', '<', $radius)
             ->orderBy('distance');
+
+        if ($radius) {
+            $query->having('distance', '<', (float) $radius);
+        }
+
+        return $query;
     }
 }

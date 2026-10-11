@@ -205,27 +205,38 @@
                                     <i class="ti ti-hospital"></i><span>@lang('main.clinics')</span>
                                 </a>
                             </li>
-                            <li
-                                class="{{ Request::is('admin/loyalty-organizations', 'loyalty-organizations*') ? 'active' : '' }}">
-                                <a href="{{ route('loyalty-organizations') }}">
+
+                            <li class="submenu">
+                                <a href="javascript:void(0);"
+                                   class="{{ Request::is('admin/loyalty-organizations*', 'loyalty-organizations*', 'admin/loyalty-point-rules*', 'loyalty-point-rules*', 'admin/points-exchanges*', 'points-exchanges*') ? 'active subdrop' : '' }}">
                                     <i
-                                        class="ti ti-gift"></i><span>@lang('main.loyalty_organizations')</span>
+                                        class="ti ti-gift"></i><span>@lang('admin.points')</span>
+                                    <span class="menu-arrow"></span>
                                 </a>
+                                <ul>
+                                    <li>
+                                        <a href="{{ route('loyalty-organizations') }}"
+                                           class="{{ Request::is('admin/loyalty-organizations*', 'loyalty-organizations*') ? 'active' : '' }}">
+                                            @lang('main.loyalty_organizations')
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('loyalty-point-rules') }}"
+                                           class="{{ Request::is('admin/loyalty-point-rules*', 'loyalty-point-rules*') ? 'active' : '' }}">
+                                            @lang('main.loyalty_point_rules')
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('points-exchanges.index') }}"
+                                           class="{{ Request::is('admin/points-exchanges*', 'points-exchanges*') ? 'active' : '' }}">
+                                            @lang('main.points_exchanges')
+                                        </a>
+                                    </li>
+                                </ul>
                             </li>
-                            <li
-                                class="{{ Request::is('admin/loyalty-point-rules', 'loyalty-point-rules*') ? 'active' : '' }}">
-                                <a href="{{ route('loyalty-point-rules') }}">
-                                    <i
-                                        class="ti ti-list-check"></i><span>@lang('main.loyalty_point_rules')</span>
-                                </a>
-                            </li>
-                            <li
-                                class="{{ Request::is('admin/points-exchanges', 'points-exchanges*') ? 'active' : '' }}">
-                                <a href="{{ route('points-exchanges.index') }}">
-                                    <i
-                                        class="ti ti-arrows-exchange"></i><span>@lang('main.points_exchanges')</span>
-                                </a>
-                            </li>
+
+
+
                             <li class="{{ Request::is('admin/emergency-hospitals*', 'emergency-hospitals*') ? 'active' : '' }}">
                                 <a href="{{ route('emergency-hospitals.index') }}">
                                     <i class="ti ti-emergency-bed"></i><span>مستشفيات الطوارئ</span>
@@ -252,22 +263,38 @@
                                     <i class="ti ti-user-shield"></i><span>@lang('admin.reception.appointments_list')</span>
                                 </a>
                             </li>
-                            <li class="{{ Request::is('main-specialties') ? 'active' : '' }}">
-                                <a href="{{ route('main-specialties') }}">
-                                    <i class="ti ti-user-shield"></i><span>@lang('admin.specialties')</span>
+                            <li class="{{ request()->routeIs('reception.patient-messages') ? 'active' : '' }}">
+                                <a href="{{ route('reception.patient-messages') }}">
+                                    <i class="ti ti-message"></i><span>@lang('admin.patient_messages')</span>
                                 </a>
                             </li>
-                            <li class="{{ Request::is('cities') ? 'active' : '' }}">
-                                <a href="{{route('cities')}}">
-                                    <i class="ti ti-asset"></i><span>@lang('admin.cities')</span>
+                            <li class="submenu">
+                                <a href="javascript:void(0);"
+                                   class="{{ Request::is('main-specialties*', 'admin/main-specialties*', 'cities*', 'admin/cities*', 'packages*', 'admin/packages*') ? 'active subdrop' : '' }}">
+                                    <i
+                                        class="ti ti-settings"></i><span>@lang('admin.setting')</span>
+                                    <span class="menu-arrow"></span>
                                 </a>
-                            </li>
-
-
-                            <li class="{{ Request::is('packages.index') ? 'active' : '' }}">
-                                <a href="{{ route('packages.index') }}">
-                                    <i class="ti ti-user-cog"></i><span>@lang('main.packages')</span>
-                                </a>
+                                <ul>
+                                    <li>
+                                        <a href="{{ route('main-specialties') }}"
+                                           class="{{ Request::is('main-specialties*', 'admin/main-specialties*') ? 'active' : '' }}">
+                                            @lang('admin.specialties')
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('cities') }}"
+                                           class="{{ Request::is('cities*', 'admin/cities*') ? 'active' : '' }}">
+                                            @lang('admin.cities')
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('packages.index') }}"
+                                           class="{{ Request::is('packages*', 'admin/packages*') ? 'active' : '' }}">
+                                            @lang('main.packages')
+                                        </a>
+                                    </li>
+                                </ul>
                             </li>
 
                             <li class="{{ Request::is('notificationsList') ? 'active' : '' }}">
@@ -898,10 +925,33 @@
                     </li>
                     <li>
                         <ul>
+                            <li>
+                                <a href="{{ route('website-media.index') }}"
+                                   class="{{ Request::is('admin/website-media*') || Route::is('website-media.*') ? 'active' : '' }}">
+                                    <i class="ti ti-photo"></i><span>@lang('main.website-media')</span>
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="{{ route('website-links.index') }}"
+                                   class="{{ Request::is('admin/website-links*') || Route::is('website-links.*') ? 'active' : '' }}">
+                                    <i class="ti ti-share"></i><span>@lang('main.website-links')</span>
+                                </a>
+                            </li>
+
+                            @if((int) auth()->user()->app_type === 6)
+                                <li>
+                                    <a href="{{ route('website-visit-logs.index') }}"
+                                       class="{{ Request::is('admin/website-visit-logs*') || Route::is('website-visit-logs.*') ? 'active' : '' }}">
+                                        <i
+                                            class="ti ti-chart-bar"></i><span>@lang('main.website-visit-logs')</span>
+                                    </a>
+                                </li>
+                            @endif
 
                             <li class="submenu">
                                 <a href="javascript:void(0);"
-                                   class="{{ Request::is('cms-pages', 'cms-sections', 'cms-items') ? 'active subdrop' : '' }}">
+                                   class="{{ Request::is('cms-pages', 'cms-sections', 'cms-items') || Request::is('admin/cms*') ? 'active subdrop' : '' }}">
                                     <i
                                         class="ti ti-report"></i><span>@lang('main.cms')</span>
                                     <span class="menu-arrow"></span>

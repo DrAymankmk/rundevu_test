@@ -11,7 +11,7 @@
 					<p class="box-text">Medova clinic is equipped with best
 						world class machinery & reagents. amet
 						consectetur.</p>
-					<a href="contact.html" class="th-btn black-border">Emergeny
+					<a href="{{ frontend_route('frontend.contact') }}" class="th-btn black-border">Emergeny
 						Call <i class="fa-regular fa-arrow-right ms-2"></i></a>
 				</div>
 			</div>
@@ -23,7 +23,7 @@
 					<p class="box-text">Medova clinic is equipped with best
 						world class machinery & reagents. amet
 						consectetur.</p>
-					<a href="contact.html" class="th-btn black-border">More
+					<a href="{{ frontend_route('frontend.contact') }}" class="th-btn black-border">More
 						About Us <i class="fa-regular fa-arrow-right ms-2"></i></a>
 				</div>
 			</div>
@@ -35,7 +35,7 @@
 					<p class="box-text">Medova clinic is equipped with best
 						world class machinery & reagents. amet
 						consectetur.</p>
-					<a href="contact.html" class="th-btn black-border">Make
+					<a href="{{ frontend_route('frontend.contact') }}" class="th-btn black-border">Make
 						Appointment <i
 							class="fa-regular fa-arrow-right ms-2"></i></a>
 				</div>

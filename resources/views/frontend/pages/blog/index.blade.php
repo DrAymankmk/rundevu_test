@@ -1,17 +1,7 @@
 @extends('frontend.layout.app')
 
 @section('content')
-<div class="breadcumb-wrapper" data-bg-src="{{ asset('frontend/assets/img/bg/breadcumb-bg.jpg') }}">
-	<div class="container">
-		<div class="breadcumb-content">
-			<h1 class="breadcumb-title">{{ __('main.blogs') }}</h1>
-			<ul class="breadcumb-menu">
-				<li><a href="{{ route('frontend.home') }}">{{ __('main.home') }}</a></li>
-				<li>{{ __('main.blogs') }}</li>
-			</ul>
-		</div>
-	</div>
-</div>
+<x-breadcrumb :title="__('main.blogs')" />
 
 <section class="th-blog-wrapper space-top space-extra-bottom">
 	<div class="container">
@@ -30,7 +20,7 @@
 				@if($posts->isNotEmpty() && $posts->hasMorePages())
 				<div class="text-center mt-40" id="blog-load-more-wrap">
 					<button type="button" class="th-btn" id="blog-load-more"
-						data-url="{{ route('frontend.blog.load-more') }}"
+						data-url="{{ frontend_route('frontend.blog.load-more') }}"
 						data-page="2"
 						data-q="{{ $search }}"
 						data-category="{{ $categorySlug }}"

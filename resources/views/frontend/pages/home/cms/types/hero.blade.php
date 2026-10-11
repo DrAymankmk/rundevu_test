@@ -24,7 +24,7 @@ if (preg_match('#^(https?:)?//#i', $raw) || str_starts_with($raw, 'mailto:') || 
 return $raw;
 }
 
-return str_starts_with($raw, '/') ? url($raw) : url('/' . ltrim($raw, '/'));
+return frontend_url(str_starts_with($raw, '/') ? $raw : '/' . ltrim($raw, '/'));
 };
 
 $mapModelLinksToButtons = static function ($model) use ($locale, $fb, $resolveHref): \Illuminate\Support\Collection {
@@ -73,7 +73,7 @@ $fallbackButtons = $mapModelLinksToButtons($section);
 if ($fallbackButtons->isEmpty()) {
 $fallbackButtons = collect([
 [
-'href' => url('/contact'),
+'href' => frontend_url('/contact'),
 'label' => __('Book an Appointment'),
 'target' => '_self',
 'rel' => null,
@@ -81,7 +81,7 @@ $fallbackButtons = collect([
 'btnClass' => 'th-btn style1',
 ],
 [
-'href' => url('/services'),
+'href' => frontend_url('/services'),
 'label' => __('Our Departments'),
 'target' => '_self',
 'rel' => null,
@@ -111,6 +111,7 @@ $buttons = $mapModelLinksToButtons($item);
 // $buttons = $fallbackButtons;
 // }
 $slides->push(['title' => $title, 'subtitle' => $sub, 'desc' => $desc, 'img' => $heroImg, 'alt' => $heroAlt, 'buttons' => $buttons]);
+
 }
 } else {
 foreach ($defaultSlides as $idx => $def) {
@@ -121,8 +122,11 @@ $slides->push([
 'img' => $def['img'],
 // 'buttons' => $fallbackButtons,
 ]);
+        }
 }
-}
+
+$appleUrl = website_store_url('apple');
+$googleUrl = website_store_url('google_play');
 @endphp
 <div class="th-hero-wrapper hero-1" id="hero-{{ $section->id }}">
 	<div class="swiper th-slider" data-slider-options='{"effect":"fade"}'>
@@ -130,16 +134,16 @@ $slides->push([
 			@foreach($slides as $slide)
 			<div class="swiper-slide">
 				<div class="hero-inner">
-					<div class="th-hero-bg" data-bg-src="{{ $bg }}"></div>
+					<div class="th-hero-bg" style="background-image: url('{{ $bg }}');"></div>
 					<div class="container">
-						<div class="row align-items-end">
+						<div class="row align-items-center">
 							<div class="col-xl-7">
 								<div class="hero-style1">
 									<span class="sub-title"
 										data-ani="slideinup"
 										data-ani-delay="0.2s">{{ $slide['subtitle'] }}</span>
-									<h1 class="hero-title"
-										data-ani="slideinup"
+									<h1 class="hero-title fadein"
+										data-ani="fadein"
 										data-ani-delay="0.4s">
 										{!! $slide['title']
 										!!}</h1>
@@ -177,12 +181,34 @@ $slides->push([
 								</div>
 							</div>
 							<div class="col-xl-5">
-								<div class="hero-image"
+								<div class="hero-app-cta" style="padding-top: 280px;"
 									data-ani="slideinup"
-									data-ani-delay="0.4s">
-									<img src="{{ $slide['img'] }}"
-										style="width: 596px; height: 750px;"
-										alt="{{ $slide['alt'] ?? '' }}">
+									data-ani-delay="0.5s">
+									@if($appleUrl !== '' || $googleUrl !== '')
+									<div class="hero-app-cta__stores">
+										@if($appleUrl !== '')
+										<a class="hero-app-cta__store" href="{{ $appleUrl }}"
+											target="_blank" rel="noopener noreferrer">
+											<img src="{{ asset('frontend/assets/img/icon/apple.svg') }}"
+												width="168" height="50"
+												alt="{{ __('main.app_store') }}" decoding="async" loading="lazy">
+										</a>
+										@endif
+										@if($googleUrl !== '')
+										<a class="hero-app-cta__store" href="{{ $googleUrl }}"
+											target="_blank" rel="noopener noreferrer">
+											<img src="{{ asset('frontend/assets/img/icon/google-play.svg') }}"
+												width="168" height="50"
+												alt="{{ __('main.google_play') }}" decoding="async" loading="lazy">
+										</a>
+										@endif
+									</div>
+									@endif
+									<a href="{{ frontend_route('frontend.subscription') }}"
+										class="th-btn style1" style="padding: 15px !important">
+										{{ __('main.register_clinic') }}
+										<i class="fa-solid fa-hospital ms-2"></i>
+									</a>
 								</div>
 							</div>
 						</div>

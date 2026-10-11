@@ -10,7 +10,9 @@ class UserRepository extends BaseRepository
     public function checkJwtAuth($input)
     {
         $token = request()->bearerToken();
-        return User::where('jwt_token', $token)->first();
+        $user = User::where('jwt_token', $token)->first();
+        $this->syncPushToken($user, request());
+        return $user;
     }
 
     public function checkIfAccountExists($email)

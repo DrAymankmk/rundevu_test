@@ -100,7 +100,7 @@
                                     <div class="col-12 col-md-6 col-xl-3">
                                         <div class="form-group local-forms">
                                             <label for="city_id"> @lang('admin.reception.region')<span class="login-danger">*</span></label>
-                                            <select class="form-control select" id="city_id" name="city_id" required>
+                                            <select class="form-control select" id="city_id" name="city_id" required disabled>
                                                 <option selected="true"  disabled="disabled">@lang('admin.reception.select_city') </option>
                                                 @foreach($cities as $city)
                                                     <option value="{{$city->id}}">{{$city->name}}</option>
@@ -111,7 +111,7 @@
                                     <div class="col-12 col-md-6 col-xl-3">
                                         <div class="form-group local-forms">
                                             <label for="region_id"> @lang('admin.reception.city')<span class="login-danger">*</span></label>
-                                            <select class="form-control select" name="region_id" id="region_id" required>
+                                            <select class="form-control select" name="region_id" id="region_id" required disabled>
                                                 <option  disabled="disabled">@lang('admin.reception.select_region')</option>
                                             </select>
                                         </div>
@@ -177,24 +177,65 @@
             document.getElementById('avatar').src = URL.createObjectURL(e.target.files[0]);
         }
         $(document).ready(function () {
+        function setSelectOptions($select, placeholder, rows) {
+            $select.html('<option value="" disabled selected>' + placeholder + '</option>');
+            $.each(rows, function (key, value) {
+                $select.append('<option value="' + value.id + '">' + value.name + '</option>');
+            });
+            $select.prop('disabled', rows.length === 0);
+            $select.trigger('change.select2');
+        }
+
+        function resetLocationSelects() {
+            setSelectOptions($('#city_id'), "{{ trans('admin.reception.select_city') }}", []);
+            setSelectOptions($('#region_id'), "{{ trans('admin.reception.select_region') }}", []);
+        }
+
+        $('#nationality_id').on('change', function () {
+            var country_id = this.value;
+            resetLocationSelects();
+
+            if (!country_id) {
+                return;
+            }
+
+            $.ajax({
+                url: '{{ route('getCities') }}',
+                type: 'get',
+                dataType: 'json',
+                data: {
+                    country_id: country_id
+                },
+                success: function (res) {
+                    if (res.length > 0) {
+                        setSelectOptions($('#city_id'), "{{ trans('admin.reception.select_city') }}", res);
+                    } else {
+                        setSelectOptions($('#city_id'), "{{ trans('admin.no_data') }}", []);
+                    }
+                }
+            });
+        });
 
         $('#city_id').on('change', function () {
             var city_id = this.value;
-            var lang = $('#lang').val();
-            $('#region_id').html('');
+            setSelectOptions($('#region_id'), "{{ trans('admin.reception.select_region') }}", []);
+
+            if (!city_id) {
+                return;
+            }
+
             $.ajax({
-                url: '{{ route('getRegions') }}?city_id=' + city_id,
+                url: '{{ route('getRegions') }}',
                 type: 'get',
                 dataType: 'json',
+                data: {
+                    city_id: city_id
+                },
                 success: function (res) {
                     if (res.length > 0) { // all was ok
-                        var region_text = "{{ trans('admin.reception.select_region') }}"
-                        $('#region_id').html('<option value="" disabled> '+ region_text +' </option>');
-                        $.each(res, function (key, value) {
-                            $('#region_id').append('<option value="' + value.id + '">' + value.name + '</option>');
-                        });
+                        setSelectOptions($('#region_id'), "{{ trans('admin.reception.select_region') }}", res);
                     } else {
-                        $('#region_id').html('<option value="" disabled selected>{{ trans('admin.no_data') }} </option>');
+                        setSelectOptions($('#region_id'), "{{ trans('admin.no_data') }}", []);
                     }
                 }
             });

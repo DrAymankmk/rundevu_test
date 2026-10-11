@@ -168,6 +168,62 @@
                         </div>
                     </div>
 
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header d-flex justify-content-between">
+                            <h5 class="fw-bold mb-0">@lang('main.trial_clinics_expiring_soon')</h5>
+
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-outline-white" data-bs-toggle="dropdown">
+                                    <span id="trialExpiryLabel">@lang('main.Weekly')</span>
+                                    <i class="ti ti-chevron-down ms-1"></i>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item trial-expiry-btn" data-target="week" href="#">@lang('main.Weekly')</a></li>
+                                    <li><a class="dropdown-item trial-expiry-btn" data-target="month" href="#">@lang('main.Monthly')</a></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+                            <div id="trial-expiry-week">
+                                <div class="row g-3">
+                                    @forelse($data['trial_expiring_clinics_week'] as $clinic)
+                                        <div class="col-md-4">
+                                            <div class="border rounded-2 p-3 h-100">
+                                                <img src="{{ $clinic->image }}" class="rounded-circle me-2" width="45">
+                                                <h6 class="fw-semibold">{{ $clinic->name }}</h6>
+                                                <span class="badge badge-soft-danger">
+                                                    @lang('main.trial_end_date'):
+                                                    {{ Carbon::parse($clinic->trial_ends_at)->translatedFormat('d M Y') }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    @empty
+                                        <p class="text-muted">@lang('main.no_trial_clinics_expiring_this_week')</p>
+                                    @endforelse
+                                </div>
+                            </div>
+
+                            <div id="trial-expiry-month" class="d-none">
+                                <div class="row g-3">
+                                    @forelse($data['trial_expiring_clinics_month'] as $clinic)
+                                        <div class="col-md-4">
+                                            <div class="border rounded-2 p-3 h-100">
+                                                <h6 class="fw-semibold">{{ $clinic->name }}</h6>
+                                                <span class="badge badge-soft-warning">
+                                                    @lang('main.trial_end_date'):
+                                                    {{ Carbon::parse($clinic->trial_ends_at)->translatedFormat('d M Y') }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    @empty
+                                        <p class="text-muted">@lang('main.no_trial_clinics_expiring_this_month')</p>
+                                    @endforelse
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
                 <!-- Right Column Appointments -->
@@ -216,6 +272,16 @@
                 document.getElementById('expiry-month').classList.add('d-none');
                 document.getElementById('expiry-' + btn.dataset.target).classList.remove('d-none');
                 document.getElementById('expiryLabel').innerText = btn.innerText;
+            });
+        });
+
+        document.querySelectorAll('.trial-expiry-btn').forEach(btn => {
+            btn.addEventListener('click', e => {
+                e.preventDefault();
+                document.getElementById('trial-expiry-week').classList.add('d-none');
+                document.getElementById('trial-expiry-month').classList.add('d-none');
+                document.getElementById('trial-expiry-' + btn.dataset.target).classList.remove('d-none');
+                document.getElementById('trialExpiryLabel').innerText = btn.innerText;
             });
         });
     </script>

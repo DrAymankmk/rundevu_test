@@ -71,6 +71,23 @@
             text-overflow:ellipsis;
             white-space:nowrap;
         }
+        .complaint-attachment-link{
+            display:inline-flex;
+            align-items:center;
+            gap:6px;
+            margin-top:6px;
+            font-size:12px;
+            font-weight:600;
+            color:#0d6efd;
+        }
+        .complaint-attachment-preview{
+            width:100%;
+            max-height:260px;
+            object-fit:contain;
+            border:1px solid #e9ecef;
+            border-radius:10px;
+            background:#f8f9fa;
+        }
         @media (max-width: 767px){
             .complaints-tab-btn{
                 width:100%;
@@ -191,6 +208,7 @@
                     @foreach($complains_box as $index => $complain_box)
                         @php
                             $rowType = empty($complain_box->clinic_id) ? 'user' : 'clinic';
+                            $hasComplaintAttachment = filled($complain_box->getRawOriginal('image'));
 
                             if (!empty($complain_box->clinic_id)) {
                                 $sender_type_to = __('main.clinic');
@@ -216,7 +234,18 @@
                             </td>
                             <td>{{ $complain_box->users->phone ?? $complain_box->clinics->phone ?? '-' }}</td>
                             <td>{{ $complain_box->users->email ?? $complain_box->clinics->email ?? '-' }}</td>
-                            <td><p class="truncate-text mb-0">{{ $complain_box->complain ?? null }}</p></td>
+                            <td>
+                                <p class="truncate-text mb-0">{{ $complain_box->complain ?? null }}</p>
+                                @if($hasComplaintAttachment)
+                                    <a href="{{ $complain_box->image }}"
+                                       class="complaint-attachment-link"
+                                       target="_blank"
+                                       rel="noopener">
+                                        <i class="ti ti-photo"></i>
+                                        @lang('admin.image')
+                                    </a>
+                                @endif
+                            </td>
                             <td>{{ $sender_type_to ?? null }}{{ $receiver ? ' , '.$receiver : '' }}</td>
                             <td>{{ optional($complain_box->created_at)->format('d M Y H:i:s a') }}</td>
                             <td>{{ $complain_box->reply ?? null }}</td>
@@ -270,6 +299,19 @@
                                                         <textarea class="form-control" readonly rows="3">{{ $complain_box->complain }}</textarea>
                                                     </div>
                                                 </div>
+
+                                                @if($hasComplaintAttachment)
+                                                    <div class="col-lg-12">
+                                                        <div class="mb-2">
+                                                            <label class="form-label">@lang('admin.image')</label>
+                                                            <a href="{{ $complain_box->image }}" target="_blank" rel="noopener">
+                                                                <img src="{{ $complain_box->image }}"
+                                                                     alt="@lang('admin.image')"
+                                                                     class="complaint-attachment-preview">
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                @endif
 
                                                 <div class="col-lg-12">
                                                     <div class="mb-2">
@@ -397,4 +439,3 @@
             }, 300);
         });
     </script>
-

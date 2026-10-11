@@ -1,4 +1,4 @@
- <section class="testi-area overflow-hidden space" id="testi-sec" data-bg-src="assets/img/bg/testi-shape-1.png">
+ <section class="background-image testi-area overflow-hidden space" id="testi-sec" style="background-image: url('{{ asset('frontend/assets/img/bg/testi-shape-1.png') }}');">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-xl-4">
@@ -14,12 +14,12 @@
                         <div class="swiper-wrapper">
                             <div class="swiper-slide">
                                 <div class="testi-card style2">
-                                    <div class="box-quote"><img src="assets/img/icon/quote2.svg" alt=""></div>
+                                    <div class="box-quote"><img src="{{ asset('frontend/assets/img/icon/quote2.svg') }}" alt="" decoding="async" loading="lazy"></div>
                                     <p class="box-text">The professionalism and efficiency of the clinic made my visit smooth and stress-free. I highly recommend Dr. Jakob Smith and Medova to anyone in need of top-quality medical care.</p>
                                     <div class="box-wrapp">
                                         <div class="box-profile">
                                             <div class="box-author">
-                                                <img src="assets/img/testimonial/testi_2_1.png" alt="Avater">
+                                                <img src="{{ asset('frontend/assets/img/testimonial/testi_2_1.png') }}" alt="Avater" decoding="async" loading="lazy">
                                             </div>
                                             <div class="box-info">
                                                 <h3 class="box-title">Monika Zuli</h3>
@@ -31,12 +31,12 @@
                             </div>
                             <div class="swiper-slide">
                                 <div class="testi-card style2">
-                                    <div class="box-quote"><img src="assets/img/icon/quote2.svg" alt=""></div>
+                                    <div class="box-quote"><img src="{{ asset('frontend/assets/img/icon/quote2.svg') }}" alt="" decoding="async" loading="lazy"></div>
                                     <p class="box-text">I was impressed by the attentive staff and the state-of-the-art facilities at the clinic. Dr. Smith's expertise and compassion truly set Medova apart in the healthcare field.</p>
                                     <div class="box-wrapp">
                                         <div class="box-profile">
                                             <div class="box-author">
-                                                <img src="assets/img/testimonial/testi_2_2.png" alt="Avater">
+                                                <img src="{{ asset('frontend/assets/img/testimonial/testi_2_2.png') }}" alt="Avater" decoding="async" loading="lazy">
                                             </div>
                                             <div class="box-info">
                                                 <h3 class="box-title">Sofia Kim</h3>
@@ -48,12 +48,12 @@
                             </div>
                             <div class="swiper-slide">
                                 <div class="testi-card style2">
-                                    <div class="box-quote"><img src="assets/img/icon/quote2.svg" alt=""></div>
+                                    <div class="box-quote"><img src="{{ asset('frontend/assets/img/icon/quote2.svg') }}" alt="" decoding="async" loading="lazy"></div>
                                     <p class="box-text">The level of care and personalized treatment I received exceeded my expectations. Dr. Smith's dedication and the friendly atmosphere difference. Dr. Smith's expertise</p>
                                     <div class="box-wrapp">
                                         <div class="box-profile">
                                             <div class="box-author">
-                                                <img src="assets/img/testimonial/testi_2_3.png" alt="Avater">
+                                                <img src="{{ asset('frontend/assets/img/testimonial/testi_2_3.png') }}" alt="Avater" decoding="async" loading="lazy">
                                             </div>
                                             <div class="box-info">
                                                 <h3 class="box-title">Lucas Fletcher</h3>
@@ -65,12 +65,12 @@
                             </div>
                             <div class="swiper-slide">
                                 <div class="testi-card style2">
-                                    <div class="box-quote"><img src="assets/img/icon/quote2.svg" alt=""></div>
+                                    <div class="box-quote"><img src="{{ asset('frontend/assets/img/icon/quote2.svg') }}" alt="" decoding="async" loading="lazy"></div>
                                     <p class="box-text">The professionalism and efficiency of the clinic made my visit smooth and stress-free. I highly recommend Dr. Jakob Smith and Medova to anyone in need of top-quality medical care.</p>
                                     <div class="box-wrapp">
                                         <div class="box-profile">
                                             <div class="box-author">
-                                                <img src="assets/img/testimonial/testi_2_4.png" alt="Avater">
+                                                <img src="{{ asset('frontend/assets/img/testimonial/testi_2_4.png') }}" alt="Avater" decoding="async" loading="lazy">
                                             </div>
                                             <div class="box-info">
                                                 <h3 class="box-title">Monika Zuli</h3>
@@ -82,12 +82,12 @@
                             </div>
                             <div class="swiper-slide">
                                 <div class="testi-card style2">
-                                    <div class="box-quote"><img src="assets/img/icon/quote2.svg" alt=""></div>
+                                    <div class="box-quote"><img src="{{ asset('frontend/assets/img/icon/quote2.svg') }}" alt="" decoding="async" loading="lazy"></div>
                                     <p class="box-text">I was impressed by the attentive staff and the state-of-the-art facilities at the clinic. Dr. Smith's expertise and compassion truly set Medova apart in the healthcare field.</p>
                                     <div class="box-wrapp">
                                         <div class="box-profile">
                                             <div class="box-author">
-                                                <img src="assets/img/testimonial/testi_2_5.png" alt="Avater">
+                                                <img src="{{ asset('frontend/assets/img/testimonial/testi_2_5.png') }}" alt="Avater" decoding="async" loading="lazy">
                                             </div>
                                             <div class="box-info">
                                                 <h3 class="box-title">Sofia Kim</h3>
@@ -99,12 +99,12 @@
                             </div>
                             <div class="swiper-slide">
                                 <div class="testi-card style2">
-                                    <div class="box-quote"><img src="assets/img/icon/quote2.svg" alt=""></div>
+                                    <div class="box-quote"><img src="{{ asset('frontend/assets/img/icon/quote2.svg') }}" alt="" decoding="async" loading="lazy"></div>
                                     <p class="box-text">The professionalism and efficiency of the clinic made my visit smooth and stress-free. I highly recommend Dr. Jakob Smith and Medova to anyone in need of top-quality medical care.</p>
                                     <div class="box-wrapp">
                                         <div class="box-profile">
                                             <div class="box-author">
-                                                <img src="assets/img/testimonial/testi_2_6.png" alt="Avater">
+                                                <img src="{{ asset('frontend/assets/img/testimonial/testi_2_6.png') }}" alt="Avater" decoding="async" loading="lazy">
                                             </div>
                                             <div class="box-info">
                                                 <h3 class="box-title">Lucas Fletcher</h3>
@@ -121,16 +121,16 @@
                         </div>
                     </div>
                     <div class="testi-thumb" data-slider-tab="#testiSlide2">
-                        <div class="tab-btn active"> <img src="assets/img/testimonial/testi_2_1.png" alt="Image"></div>
-                        <div class="tab-btn"> <img src="assets/img/testimonial/testi_2_2.png" alt="Image"></div>
-                        <div class="tab-btn"> <img src="assets/img/testimonial/testi_2_3.png" alt="Image"></div>
-                        <div class="tab-btn"> <img src="assets/img/testimonial/testi_2_4.png" alt="Image"></div>
-                        <div class="tab-btn"> <img src="assets/img/testimonial/testi_2_5.png" alt="Image"></div>
-                        <div class="tab-btn"> <img src="assets/img/testimonial/testi_2_6.png" alt="Image"></div>
+                        <div class="tab-btn active"> <img src="{{ asset('frontend/assets/img/testimonial/testi_2_1.png') }}" alt="Image" decoding="async" loading="lazy"></div>
+                        <div class="tab-btn"> <img src="{{ asset('frontend/assets/img/testimonial/testi_2_2.png') }}" alt="Image" decoding="async" loading="lazy"></div>
+                        <div class="tab-btn"> <img src="{{ asset('frontend/assets/img/testimonial/testi_2_3.png') }}" alt="Image" decoding="async" loading="lazy"></div>
+                        <div class="tab-btn"> <img src="{{ asset('frontend/assets/img/testimonial/testi_2_4.png') }}" alt="Image" decoding="async" loading="lazy"></div>
+                        <div class="tab-btn"> <img src="{{ asset('frontend/assets/img/testimonial/testi_2_5.png') }}" alt="Image" decoding="async" loading="lazy"></div>
+                        <div class="tab-btn"> <img src="{{ asset('frontend/assets/img/testimonial/testi_2_6.png') }}" alt="Image" decoding="async" loading="lazy"></div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="shape-mockup movingX" data-bottom="0%" data-left="0%"><img src="assets/img/shape/element-7.png" alt="">
+        <div class="shape-mockup movingX" data-bottom="0%" data-left="0%"><img src="{{ asset('frontend/assets/img/shape/element-7.png') }}" alt="" decoding="async" loading="lazy">
         </div>
     </section>

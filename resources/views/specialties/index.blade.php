@@ -81,7 +81,7 @@
                                         @foreach($data['clinic_specializations'] as $index=>$specialty_item)
                                             <tr>
                                                 <td>{{ $index + 1 }}</td>
-                                                <td>{{ app()->getLocale() == 'en' ? $specialty_item->specialties->name_en : $specialty_item->specialties->name_ar }}</td>
+                                                <td>{{ app()->getLocale() == 'en' ? $specialty_item->specialties->name_en ?? null : $specialty_item->specialties->name_ar ?? null }}</td>
                                                 <td>
                                                     @if (auth()->user()->app_type != 6 || auth()->user()->hasPermissionTo('specialties_delete'))
 
@@ -124,7 +124,7 @@
                                                             <div class="modal-content">
                                                                 <div class="modal-header">
                                                                     <h5 class="modal-title"> @lang('admin.edit_data')
-                                                                        {{ app()->getLocale() == 'en' ? $specialty_item->specialties->name_en : $specialty_item->specialties->name_ar }} </h5>
+                                                                        {{ app()->getLocale() == 'en' ? $specialty_item->specialties->name_en ?? null : $specialty_item->specialties->name_ar ?? null }} </h5>
                                                                     <button class="close" type="button"
                                                                             data-dismiss="modal"
                                                                             aria-label="Close">

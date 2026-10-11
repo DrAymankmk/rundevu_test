@@ -23,12 +23,11 @@ class LoginRequest extends Request
      */
     public function rules()
     {
-              return [
-
-                  'email' => 'required|email',
-                  'password'=>'required',
-
-              ];
+        return [
+            'login' => 'nullable|string',
+            'email' => 'required_without:login|string',
+            'password'=>'required',
+        ];
 
     }
 
@@ -36,6 +35,7 @@ class LoginRequest extends Request
     {
         return [
             'email.required' => trans('messages.email'),
+            'email.required_without' => trans('messages.email'),
             'password.required' => trans('messages.password'),
 
         ];

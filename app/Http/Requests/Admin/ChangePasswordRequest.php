@@ -20,6 +20,11 @@ class ChangePasswordRequest extends AdminRequest
     public function rules()
     {
         return [
+            'old_password' => [
+                'required',
+                'string',
+            ],
+
             'new_password' => [
 
                 'required',
@@ -28,7 +33,7 @@ class ChangePasswordRequest extends AdminRequest
 
                 'min:6',
 
-                'max:12',             // must be at least 8 characters in length
+                'max:255',
 
             ],
 

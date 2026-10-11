@@ -10,6 +10,9 @@ return [
     'meta_title' => 'عنوان Meta',
     'meta_description' => 'وصف Meta',
     'meta_keywords' => 'كلمات Meta',
+    'module_description' => 'وصف العرض فى الصفحة',
+    'module_description_hint' => 'نص طويل اختياري يظهر في صفحة العرض. لا يُستخدم في وسوم SEO.',
+    'edit_seo' => 'تعديل SEO',
     'og_title' => 'عنوان OG',
     'og_description' => 'وصف OG',
     'twitter_title' => 'عنوان Twitter',
@@ -19,4 +22,6 @@ return [
     'current_og_image' => 'صورة OG الحالية',
     'meta_title_hint' => 'موصى به: حتى 60 حرفاً',
     'meta_description_hint' => 'موصى به: حتى 160 حرفاً',
+    'slug' => 'رابط الصفحة (Slug)',
+    'slug_hint' => 'يُستخدم في رابط صفحة التفاصيل لهذه اللغة.',
 ];

@@ -44,6 +44,13 @@ return [
         'timeout' => env('FOURJAWALY_TIMEOUT', 30),
     ],
 
+    'firebase' => [
+        'server_key' => env('FIREBASE_SERVER_KEY', env('FCM_SERVER_KEY')),
+        'credentials' => env('FIREBASE_CREDENTIALS'),
+        'android_channel_id' => env('FCM_ANDROID_CHANNEL_ID', 'default'),
+        'apns_bundle_id' => env('FCM_APNS_BUNDLE_ID'),
+    ],
+
     'google' => [
         'site_verification' => env('GOOGLE_SITE_VERIFICATION'),
         'analytics_id' => env('GOOGLE_ANALYTICS_ID'),

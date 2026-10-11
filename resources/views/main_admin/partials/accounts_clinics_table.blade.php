@@ -13,13 +13,18 @@
         </thead>
         <tbody>
         @foreach($accounts as $account)
+            @php
+                $accountName = app()->getLocale() == 'en'
+                    ? ($account->name_en ?: $account->name)
+                    : $account->name;
+            @endphp
             <tr id="row-{{ $account->id }}">
                 <td>
                     <div class="d-flex align-items-center">
                         <a href="{{url('patient-details')}}" class="avatar avatar-md me-2">
-                            <img src="{{ $account->image }}" alt="{{ $account->name }}" class="rounded-circle">
+                            <img src="{{ $account->image }}" alt="{{ $accountName }}" class="rounded-circle">
                         </a>
-                        <a href="{{url('patient-details')}}" class="text-dark fw-semibold">{{ $account->name ?? null }} <span class="text-body fs-13 fw-normal d-block"> {{ app()->getLocale() == 'en' ? $account->city->name_en ?? null : $account->city->name_ar ?? null }}, @if($account->gender == 1) @lang('admin.male')@else @lang('admin.female') @endif </span>  </a>
+                        <a href="{{url('patient-details')}}" class="text-dark fw-semibold">{{ $accountName }} <span class="text-body fs-13 fw-normal d-block"> {{ app()->getLocale() == 'en' ? $account->city->name_en ?? null : $account->city->name_ar ?? null }}, @if($account->gender == 1) @lang('admin.male')@else @lang('admin.female') @endif </span>  </a>
                     </div>
                 </td>
                 <td>{{ $account->phone ?? null }}</td>
@@ -29,6 +34,21 @@
                 <td><span class="badge @if($account->status == 1) badge-soft-success border border-success @else badge-soft-danger border border-danger @endif  px-2 py-1 fs-13 fw-medium">@if($account->status == 1) @lang('admin.Active') @else @lang('admin.Inactive') @endif </span></td>
                 <td>
                     {{--                                <a href="{{ route('SubSpecialties', $user->id) }}" class="link-reset fs-18 p-1"> <i class="ti ti-eye"></i></a>--}}
+                    <a href="{{ route('department-employee-update', $account->id) }}"
+                       class="link-reset fs-18 p-1"
+                       title="{{ trans('admin.edit') }}">
+                        <i class="ti ti-edit"></i>
+                    </a>
+                    @if((int) $type->id === 3)
+                        <a href="javascript:void(0);"
+                           class="link-reset fs-18 p-1 edit-doctor-seo-btn"
+                           title="{{ __('seo.edit_seo') }}"
+                           data-doctor-id="{{ $account->id }}"
+                           data-doctor-name="{{ $accountName }}"
+                           data-seo-url="{{ route('doctor-seo-form', $account->id) }}">
+                            <i class="ti ti-world-www"></i>
+                        </a>
+                    @endif
                     <a href="javascript:void(0);"
                        class="link-reset fs-18 p-1 delete-btn"
                        data-route="{{ route('destroy-clinic', $account->id) }}"

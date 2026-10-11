@@ -61,4 +61,28 @@ return [
             'brand_color' => '#25D366',
         ],
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | App store links
+    |--------------------------------------------------------------------------
+    |
+    | Fallback URLs used before website_links rows exist. Dashboard values
+    | take precedence once the Social & App Links module is migrated.
+    |
+    */
+    'stores' => [
+        'apple' => [
+            'url' => env(
+                'APP_STORE_APPLE_URL',
+                'https://apps.apple.com/us/app/randevu-%D8%B1%D8%A7%D9%86%D8%AF%D9%8A%D9%81%D9%88/id6761128352'
+            ),
+        ],
+        'google_play' => [
+            'url' => env(
+                'APP_STORE_GOOGLE_URL',
+                'https://play.google.com/store/apps/details?id=com.takaful.rendezvous'
+            ),
+        ],
+    ],
 ];

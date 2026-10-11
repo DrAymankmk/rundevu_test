@@ -105,6 +105,12 @@
                                                       style="color: red;">{{$errors->first('discount')}}</span>
 
                                                 <div class="form-group">
+                                                    <label class="col-form-label page-header-left">@lang('admin.image')</label>
+                                                    <input class="form-control" name="image" type="file" accept="image/*">
+                                                    <div class="invalid-feedback">{{$errors->first('image')}}</div>
+                                                </div>
+
+                                                <div class="form-group">
                                                     <label class="col-form-label page-header-left">@lang('admin.From')</label>
                                                     <input class="form-control" name="start_date" type="date" min="{{ date('Y-m-d') }}" value="{{ old('start_date', date('Y-m-d')) }}">
                                                     <div class="invalid-feedback">{{ $errors->first('start_date') }}</div>
@@ -143,6 +149,7 @@
                                             <th style="display: none">#</th>
                                             <th>@lang('admin.arabic_name')</th>
                                             <th>@lang('admin.english_name')</th>
+                                            <th>@lang('admin.image')</th>
                                             <th>@lang('admin.specialties')</th>
                                             <th>@lang('admin.Discount Percentage')</th>
                                             <th>@lang('admin.From')</th>
@@ -157,6 +164,7 @@
                                                 <td style="display: none">{{ $index + 1 }}</td>
                                                 <td>{{ $offer->title_ar }}</td>
                                                 <td>{{ $offer->title_en }}</td>
+                                                <td>@if($offer->image)<img src="{{ $offer->image }}" alt="{{ $offer->title_en }}" style="width: 60px; height: 40px; object-fit: cover;">@endif</td>
                                                 <td>{{ optional($offer->specialty)->{'name_' . app()->getLocale()} }}</td>
                                                 <td>{{ $offer->discount }}</td>
                                                 <td>{{ $offer->start_date }}</td>
@@ -279,6 +287,15 @@
                                                                         </div>
                                                                         <span class="text-danger page-header-left"
                                                                               style="color: red;">{{$errors->first('discount')}}</span>
+
+                                                                        <div class="form-group">
+                                                                            <label class="col-form-label page-header-left">@lang('admin.image')</label>
+                                                                            @if($offer->image)
+                                                                                <div class="mb-2"><img src="{{ $offer->image }}" alt="{{ $offer->title_en }}" style="width: 80px; height: 50px; object-fit: cover;"></div>
+                                                                            @endif
+                                                                            <input class="form-control" name="image" type="file" accept="image/*">
+                                                                            <div class="invalid-feedback">{{$errors->first('image')}}</div>
+                                                                        </div>
 
                                                                         <div class="form-group">
                                                                             <label class="col-form-label page-header-left">@lang('admin.From')</label>

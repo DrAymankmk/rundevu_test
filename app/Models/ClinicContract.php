@@ -19,6 +19,7 @@ class ClinicContract extends Model
         'clinic_id',
         'contract_model',
         'commission_rate',
+        'minimum_consultation_commission',
         'annual_subscription_amount',
         'annual_subscription_starts_at',
         'annual_subscription_ends_at',
@@ -28,6 +29,7 @@ class ClinicContract extends Model
 
     protected $casts = [
         'commission_rate' => 'decimal:2',
+        'minimum_consultation_commission' => 'decimal:2',
         'annual_subscription_amount' => 'decimal:2',
         'annual_subscription_starts_at' => 'date',
         'annual_subscription_ends_at' => 'date',
@@ -44,6 +46,7 @@ class ClinicContract extends Model
         return [
             'contract_model' => self::CASH_COMMISSION,
             'commission_rate' => 0,
+            'minimum_consultation_commission' => 0,
             'annual_subscription_amount' => null,
             'annual_subscription_starts_at' => null,
             'annual_subscription_ends_at' => null,

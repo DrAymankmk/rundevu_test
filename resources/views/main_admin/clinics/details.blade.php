@@ -111,6 +111,15 @@
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="d-flex align-items-center mb-3">
+                                        <span class="avatar rounded-circle bg-light text-dark flex-shrink-0 me-2"><i class="ti ti-calendar-check fs-16"></i></span>
+                                        <div>
+                                            <h6 class="fs-13 fw-bold mb-1">@lang('main.trial_ends_at')</h6>
+                                            <p class="mb-0">{{ optional($clinic->trial_ends_at)->format('Y-m-d') ?? __('main.not_applicable') }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="d-flex align-items-center mb-3">
                                         <span class="avatar rounded-circle bg-light text-dark flex-shrink-0 me-2"><i class="ti ti-calendar-event fs-16"></i></span>
                                         <div>
                                             <h6 class="fs-13 fw-bold mb-1">@lang('main.contract_number')</h6>
@@ -195,6 +204,8 @@
             @include('components.seo-form', [
                  'languages' => $languages,
                  'seo' => $clinic->seoMeta,
+                 'entity' => $clinic,
+                'showEntitySlugs' => true,
                  'formAction' => route('update-clinic-seo', $clinic->id),
              ])
             @php
@@ -209,8 +220,29 @@
                             <h5 class="fw-bold mb-0"><i class="ti ti-file-dollar me-1"></i>@lang('main.contract_booking_system')</h5>
                         </div>
                         <div class="card-body">
-                            <form action="{{ route('update-clinic', $clinic->id) }}" method="POST">
+                            <form action="{{ route('update-clinic', $clinic->id) }}" method="POST" id="clinic-details-form">
                                 @csrf
+                                <div class="row g-3 mb-3">
+                                    <div class="col-lg-6">
+                                        <label class="form-label">@lang('admin.name_en')</label>
+                                        <input type="text" name="name_en" class="form-control" value="{{ old('name_en', $clinic->name_en) }}">
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <label class="form-label">@lang('admin.address_en')</label>
+                                        <input type="text" name="address_en" class="form-control" value="{{ old('address_en', $clinic->address_en) }}">
+                                    </div>
+                                </div>
+                                <div class="row g-3 mb-3">
+                                    <div class="col-lg-12">
+                                        <label class="form-label">@lang('admin.address')</label>
+                                        <input type="text" name="address" id="clinic_details_address" class="form-control" value="{{ old('address', $clinic->address) }}">
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <div id="clinic_details_map" style="width: 100%; height: 320px; border-radius: 8px; overflow: hidden;"></div>
+                                    </div>
+                                </div>
+                                <input type="hidden" name="lat" id="clinic_details_lat" value="{{ old('lat', $clinic->lat) }}">
+                                <input type="hidden" name="lng" id="clinic_details_lng" value="{{ old('lng', $clinic->lng) }}">
                                 <div class="row g-3 align-items-end">
                                     <div class="col-lg-4">
                                         <label class="form-label">@lang('main.contract_model')</label>
@@ -222,7 +254,7 @@
                                     </div>
                                     <div class="col-lg-2">
                                         <label class="form-label">@lang('main.contract_payment_method')</label>
-                                        <select name="payment_method" class="form-control">
+                                        <select name="payment_method" id="payment_method" class="form-control">
                                             <option value="cash" {{ $paymentMethod === 'cash' ? 'selected' : '' }}>@lang('main.payment_cash')</option>
                                             <option value="online" {{ $paymentMethod === 'online' ? 'selected' : '' }}>@lang('main.payment_online')</option>
                                         </select>
@@ -230,6 +262,14 @@
                                     <div class="col-lg-2 contract-commission-field">
                                         <label class="form-label">@lang('main.platform_commission_rate')</label>
                                         <input type="number" name="commission_rate" class="form-control" min="0" max="100" step="0.01" value="{{ old('commission_rate', $contract->commission_rate) }}">
+                                    </div>
+                                    <div class="col-lg-2 contract-commission-field">
+                                        <label class="form-label">@lang('main.minimum_consultation_commission')</label>
+                                        <input type="number" name="minimum_consultation_commission" class="form-control" min="0" step="0.01" value="{{ old('minimum_consultation_commission', $contract->minimum_consultation_commission) }}">
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <label class="form-label">@lang('main.trial_ends_at')</label>
+                                        <input type="date" name="trial_ends_at" class="form-control" value="{{ old('trial_ends_at', optional($clinic->trial_ends_at)->format('Y-m-d')) }}">
                                     </div>
                                     <div class="col-lg-2 contract-subscription-field">
                                         <label class="form-label">@lang('main.annual_subscription_amount')</label>
@@ -685,6 +725,23 @@
         @endcomponent
     </div>
 
+    <div class="modal fade" id="doctorSeoModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        {{ __('seo.edit_seo') }}
+                        <span class="text-muted fs-14" id="doctorSeoModalSubtitle"></span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="doctorSeoModalBody">
+                    <p class="text-muted mb-0">@lang('main.loading')</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- ========================
         End Page Content
     ========================= -->
@@ -693,8 +750,30 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const model = document.getElementById('contract_model');
+            const paymentMethod = document.getElementById('payment_method');
             const subscriptionFields = document.querySelectorAll('.contract-subscription-field');
             const commissionFields = document.querySelectorAll('.contract-commission-field');
+            const doctorSeoModalEl = document.getElementById('doctorSeoModal');
+            const doctorSeoModalBody = document.getElementById('doctorSeoModalBody');
+            const doctorSeoModalSubtitle = document.getElementById('doctorSeoModalSubtitle');
+            const doctorSeoModal = doctorSeoModalEl && window.bootstrap
+                ? bootstrap.Modal.getOrCreateInstance(doctorSeoModalEl)
+                : null;
+            const paymentOptions = {
+                cash: '@lang('main.payment_cash')',
+                online: '@lang('main.payment_online')',
+            };
+
+            function setPaymentOptions(options, selectedValue) {
+                paymentMethod.innerHTML = '';
+                options.forEach(value => {
+                    const option = document.createElement('option');
+                    option.value = value;
+                    option.textContent = paymentOptions[value];
+                    option.selected = value === selectedValue;
+                    paymentMethod.appendChild(option);
+                });
+            }
 
             function toggleContractFields() {
                 if (!model) {
@@ -704,6 +783,21 @@
                 const isSubscription = model.value === 'annual_subscription';
                 subscriptionFields.forEach(field => field.style.display = isSubscription ? '' : 'none');
                 commissionFields.forEach(field => field.style.display = isSubscription ? 'none' : '');
+
+                if (!paymentMethod) {
+                    return;
+                }
+
+                if (model.value === 'online_payment_commission') {
+                    setPaymentOptions(['online'], 'online');
+                    paymentMethod.disabled = true;
+                } else if (model.value === 'cash_commission') {
+                    setPaymentOptions(['cash'], 'cash');
+                    paymentMethod.disabled = true;
+                } else {
+                    setPaymentOptions(['cash', 'online'], paymentMethod.value || 'cash');
+                    paymentMethod.disabled = false;
+                }
             }
 
             if (model) {
@@ -741,7 +835,172 @@
                     loadTabContent(id,clinic);
                 });
             });
+
+            document.addEventListener('click', function (event) {
+                const trigger = event.target.closest('.edit-doctor-seo-btn');
+                if (!trigger || !doctorSeoModal || !doctorSeoModalBody) {
+                    return;
+                }
+
+                event.preventDefault();
+                const seoUrl = trigger.getAttribute('data-seo-url');
+                const doctorName = trigger.getAttribute('data-doctor-name') || '';
+                if (doctorSeoModalSubtitle) {
+                    doctorSeoModalSubtitle.textContent = doctorName ? ` - ${doctorName}` : '';
+                }
+                if (typeof window.teardownCmsQuillRoot === 'function') {
+                    doctorSeoModalBody.querySelectorAll('.cms-quill-root').forEach(function (wrap) {
+                        window.teardownCmsQuillRoot(wrap);
+                    });
+                }
+                doctorSeoModalBody.innerHTML = `<p class="text-muted mb-0">{{ trans('main.loading') }}</p>`;
+                doctorSeoModal.show();
+
+                fetch(seoUrl, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'text/html',
+                    },
+                })
+                    .then(res => {
+                        if (!res.ok) {
+                            throw new Error('Failed to load SEO form');
+                        }
+                        return res.text();
+                    })
+                    .then(html => {
+                        doctorSeoModalBody.innerHTML = html;
+                        // Scripts from AJAX HTML do not run; mount Quill on injected editors.
+                        if (typeof window.initCmsQuillRoots === 'function') {
+                            window.initCmsQuillRoots(doctorSeoModalBody);
+                        }
+                    })
+                    .catch(() => {
+                        doctorSeoModalBody.innerHTML = `<div class="text-danger">{{ __('cms.an_error_occurred') }}</div>`;
+                    });
+            });
         });
+    </script>
+
+    <script>
+        let clinicDetailsMap, clinicDetailsMarker, clinicDetailsAutocomplete, clinicDetailsGeocoder;
+        let clinicDetailsSelectedAddress = '';
+        let clinicDetailsIsGeocodingBeforeSubmit = false;
+
+        function initClinicDetailsLocationMap() {
+            const defaultLocation = {
+                lat: {{ old('lat', $clinic->lat) ?: 21.485811 }},
+                lng: {{ old('lng', $clinic->lng) ?: 39.192505 }},
+            };
+            const addressInput = document.getElementById('clinic_details_address');
+            const form = document.getElementById('clinic-details-form');
+
+            clinicDetailsGeocoder = new google.maps.Geocoder();
+            clinicDetailsMap = new google.maps.Map(document.getElementById('clinic_details_map'), {
+                zoom: 14,
+                center: defaultLocation,
+                mapTypeControl: true,
+                streetViewControl: true,
+                fullscreenControl: true,
+            });
+
+            clinicDetailsMarker = new google.maps.Marker({
+                position: defaultLocation,
+                map: clinicDetailsMap,
+                draggable: true,
+            });
+
+            clinicDetailsAutocomplete = new google.maps.places.Autocomplete(addressInput, { types: ['geocode'] });
+            clinicDetailsAutocomplete.addListener('place_changed', function () {
+                const place = clinicDetailsAutocomplete.getPlace();
+                if (!place.geometry) {
+                    clinicDetailsGeocodeAddress(addressInput.value);
+                    return;
+                }
+
+                clinicDetailsSetMarker(place.geometry.location, false);
+                if (place.formatted_address) {
+                    addressInput.value = place.formatted_address;
+                    clinicDetailsSelectedAddress = place.formatted_address;
+                } else {
+                    clinicDetailsSelectedAddress = addressInput.value;
+                }
+            });
+
+            clinicDetailsMap.addListener('click', function (event) {
+                clinicDetailsSetMarker(event.latLng, true);
+            });
+
+            clinicDetailsMarker.addListener('dragend', function (event) {
+                clinicDetailsSetMarker(event.latLng, true);
+            });
+
+            form.addEventListener('submit', function (event) {
+                const address = addressInput.value.trim();
+                const lat = document.getElementById('clinic_details_lat').value;
+                const lng = document.getElementById('clinic_details_lng').value;
+
+                if (clinicDetailsIsGeocodingBeforeSubmit || !address || (address === clinicDetailsSelectedAddress && lat && lng)) {
+                    return;
+                }
+
+                event.preventDefault();
+                clinicDetailsGeocodeAddress(address, function () {
+                    clinicDetailsIsGeocodingBeforeSubmit = true;
+                    form.submit();
+                }, function () {
+                    clinicDetailsIsGeocodingBeforeSubmit = true;
+                    form.submit();
+                });
+            });
+        }
+
+        function clinicDetailsSetMarker(location, updateAddress) {
+            clinicDetailsMarker.setPosition(location);
+            clinicDetailsMap.panTo(location);
+            clinicDetailsMap.setZoom(15);
+            clinicDetailsSetLatLng(location);
+
+            if (updateAddress) {
+                clinicDetailsReverseGeocode(location);
+            }
+        }
+
+        function clinicDetailsSetLatLng(location) {
+            document.getElementById('clinic_details_lat').value = typeof location.lat === 'function' ? location.lat() : location.lat;
+            document.getElementById('clinic_details_lng').value = typeof location.lng === 'function' ? location.lng() : location.lng;
+        }
+
+        function clinicDetailsReverseGeocode(location) {
+            clinicDetailsGeocoder.geocode({ location: location }, function (results, status) {
+                if (status === 'OK' && results[0]) {
+                    document.getElementById('clinic_details_address').value = results[0].formatted_address;
+                    clinicDetailsSelectedAddress = results[0].formatted_address;
+                }
+            });
+        }
+
+        function clinicDetailsGeocodeAddress(address, successCallback, failureCallback) {
+            if (!address) {
+                if (failureCallback) failureCallback();
+                return;
+            }
+
+            clinicDetailsGeocoder.geocode({ address: address }, function (results, status) {
+                if (status === 'OK' && results[0]) {
+                    clinicDetailsSetMarker(results[0].geometry.location, false);
+                    document.getElementById('clinic_details_address').value = results[0].formatted_address;
+                    clinicDetailsSelectedAddress = results[0].formatted_address;
+                    if (successCallback) successCallback();
+                    return;
+                }
+
+                if (failureCallback) failureCallback();
+            });
+        }
+    </script>
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPf96eskAPXvkyDLPyYhxSCAKIziCUG_E&libraries=places&callback=initClinicDetailsLocationMap">
     </script>
 
 

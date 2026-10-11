@@ -24,7 +24,9 @@ class ProfileController extends Controller
             $data['sub_specializations'] = Specialty::whereIn('parent_id',$data['specialty_ids'])->where('status', 1)->where('parent_id','!=',null)->orderBy('id', 'desc')->get();
             $blade = 'doctors.profile.edit_profile';
         } else {
-            $auth_user = Auth::user()->app_type == 7 ? Auth::user()->id : Auth::user()->parent_id;
+            $auth_user = in_array((int) Auth::user()->app_type, [1, 7], true)
+                ? Auth::user()->id
+                : Auth::user()->parent_id;
             $data['cities'] = City::where('status', 1)->orderBy('id', 'desc')->get();
             $blade = 'profile.index';
         }
@@ -46,6 +48,10 @@ class ProfileController extends Controller
     function edit_profile(Request $request, $id)
     {
         $request->validate([
+            'address' => ['nullable', 'string', 'max:255'],
+            'address_en' => ['nullable', 'string', 'max:255'],
+            'lat' => ['nullable', 'numeric', 'between:-90,90'],
+            'lng' => ['nullable', 'numeric', 'between:-180,180'],
             'facebook_url' => ['nullable', 'url', 'max:255'],
             'instagram_url' => ['nullable', 'url', 'max:255'],
             'tiktok_url' => ['nullable', 'url', 'max:255'],
@@ -100,6 +106,8 @@ class ProfileController extends Controller
         }
         }
         $data = $request->all();
+        $data['lat'] = $request->filled('lat') ? $request->lat : null;
+        $data['lng'] = $request->filled('lng') ? $request->lng : null;
         $clinic->update($data);
 //        $edit_admin->name = $request->name;
 //        $edit_admin->phone = $request->phone;
@@ -120,25 +128,25 @@ class ProfileController extends Controller
 
     function add_password(ChangePasswordRequest $request)
     {
-        $check_authorization = Clinic::where('id', Auth::user()->id)->first();
-        if (isset($request->old_password)) {
-            $check = Hash::check($request->old_password, $check_authorization->password);
-            if (!$check) {
-                session()->flash('failed', trans('messages.profile.wrong_old_password'));
-                return redirect()->back();
-            }
-        }
-        $data['password'] = Hash::make($request->new_password);
+        $clinic = $request->user();
 
-        if ($request->new_password) {
-            $check_authorization->password = '';
-            $check_authorization->save();
-            if ($check_authorization) {
-                $check_authorization->password = Hash::make($request->new_password);
-                $check_authorization->save();
-            }
+        if (! $clinic instanceof Clinic) {
+            $clinic = Clinic::find(Auth::id());
         }
-        $check_authorization->update($data);
+
+        if (! $clinic) {
+            session()->flash('failed', trans('messages.something_went_wrong'));
+            return redirect()->back();
+        }
+
+        if (! Hash::check($request->old_password, $clinic->password)) {
+            session()->flash('failed', trans('messages.profile.wrong_old_password'));
+            return redirect()->back();
+        }
+
+        $clinic->forceFill([
+            'password' => Hash::make($request->new_password),
+        ])->save();
 
         session()->flash('success', trans('messages.auth.forgetPassword'));
         return redirect()->back();

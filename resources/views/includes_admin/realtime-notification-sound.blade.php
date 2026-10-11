@@ -10,6 +10,11 @@
 
             var pusherKey = @json(config('broadcasting.connections.pusher.key'));
             var pusherCluster = @json(config('broadcasting.connections.pusher.options.cluster'));
+            var currentAccountId = Number(@json(auth()->id()));
+            var currentAppType = Number(@json(auth()->user()->app_type ?? null));
+            var notificationChannelName = currentAccountId && currentAppType
+                ? 'takafoul-notify.' + currentAppType + '.' + currentAccountId
+                : 'takafoul-notify';
 
             if (!pusherKey || typeof Pusher === 'undefined') {
                 return;
@@ -147,8 +152,47 @@
                     && data.message.reservation_id !== undefined;
             }
 
+            function getPayload(data) {
+                if (!data) {
+                    return null;
+                }
+
+                if (data.data && typeof data.data === 'object') {
+                    return data.data;
+                }
+
+                if (data.message && typeof data.message === 'object') {
+                    return data.message;
+                }
+
+                return data;
+            }
+
+            function isForCurrentAccount(data) {
+                var payload = getPayload(data);
+
+                if (!payload || payload.receiver_id === undefined || payload.receiver_id === null || payload.receiver_id === '') {
+                    return true;
+                }
+
+                var receiverId = Number(payload.receiver_id);
+                var appType = payload.app_type === undefined || payload.app_type === null || payload.app_type === ''
+                    ? null
+                    : Number(payload.app_type);
+
+                if (receiverId !== currentAccountId) {
+                    return false;
+                }
+
+                return appType === null || appType === currentAppType;
+            }
+
             function showRealtimeNotification(message, data) {
                 if (isChatBroadcastMessage(data)) {
+                    return;
+                }
+
+                if (!isForCurrentAccount(data)) {
                     return;
                 }
 
@@ -184,7 +228,7 @@
 
             var channels = [
                 {
-                    name: 'takafoul-notify',
+                    name: notificationChannelName,
                     events: ['notify', 'App\\Events\\Notify'],
                     fallback: @json(app()->getLocale() === 'ar' ? 'إشعار جديد' : 'New notification')
                 },

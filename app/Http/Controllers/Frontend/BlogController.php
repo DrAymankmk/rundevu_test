@@ -48,7 +48,8 @@ class BlogController extends Controller
         $seo = $this->seoResolver->resolve(null, $locale, [
             'title' => __('main.blogs'),
             'description' => __('blog.frontend_list_description'),
-            'canonical' => route('frontend.blog'),
+            'canonical' => frontend_route('frontend.blog'),
+            'lcp_image' => frontend_breadcrumb_image('blog'),
         ]);
 
         return view('frontend.pages.blog.index', compact(
@@ -87,14 +88,20 @@ class BlogController extends Controller
 
         $post = BlogPost::query()
             ->published()
-            ->where('slug', $slug)
+            ->whereSlug($slug)
             ->with(['translations', 'categories.translations', 'media', 'seoMeta.translations'])
             ->firstOrFail();
+
+        $canonicalSlug = $post->getRouteSlug();
+
+        if ($canonicalSlug !== '' && $canonicalSlug !== $slug) {
+            return redirect()->to(frontend_route('frontend.blog.show', $canonicalSlug), 301);
+        }
 
         $translation = $post->translation($locale) ?? $post->translations->first();
         $title = $translation?->title ?? $post->name;
         $summary = $translation?->summary ?? '';
-        $image = $post->getImageUrl('preview') ?: $post->getImageUrl();
+        $image = $post->getImageUrl('preview', $locale) ?: $post->getImageUrl('', $locale);
 
         $relatedPosts = $this->relatedPosts($post, $translation, 4);
 
@@ -120,7 +127,8 @@ class BlogController extends Controller
             'title' => $title,
             'description' => $summary,
             'image' => $image,
-            'canonical' => route('frontend.blog.show', $post->slug),
+            'canonical' => frontend_route('frontend.blog.show', $canonicalSlug !== '' ? $canonicalSlug : $slug),
+            'lcp_image' => $image ?: frontend_breadcrumb_image('blog_details'),
         ]);
 
         return view('frontend.pages.blog.blog_details', compact(
@@ -192,6 +200,7 @@ class BlogController extends Controller
                     ->orWhere('slug', 'like', "%{$search}%")
                     ->orWhereHas('translations', function ($q2) use ($search) {
                         $q2->where('title', 'like', "%{$search}%")
+                            ->orWhere('slug', 'like', "%{$search}%")
                             ->orWhere('summary', 'like', "%{$search}%")
                             ->orWhere('content', 'like', "%{$search}%");
                     });

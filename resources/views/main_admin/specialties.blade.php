@@ -104,72 +104,85 @@
                     <tbody>
                     @foreach($data['specializations'] as $index=>$specialization)
                         <tr id="row-{{ $specialization->id }}">
-                        <td>
-                            <div class="d-flex align-items-center">
-                                <div>
-                                    <h6 class="mb-0 fs-14 fw-semibold"><a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#view_staff">{{ app()->getLocale() == 'en' ? $specialization->name_en : $specialization->name_ar }}</a></h6>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    @if($specialization->imageUrl())
+                                        <img src="{{ $specialization->imageUrl() }}" alt="" width="36" height="36" class="rounded-circle me-2" style="object-fit: cover;">
+                                    @elseif(filled($specialization->icon))
+                                        <span class="avatar avatar-sm bg-light text-primary me-2 d-inline-flex align-items-center justify-content-center">
+                                        <i class="{{ $specialization->icon }}"></i>
+                                    </span>
+                                    @endif
+                                    <div>
+                                        <h6 class="mb-0 fs-14 fw-semibold"><a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#view_staff">{{ app()->getLocale() == 'en' ? $specialization->name_en : $specialization->name_ar }}</a></h6>
+                                    </div>
                                 </div>
-                            </div>
-                        </td>
-                        <td>{{ $specialization->created_at->format('d M Y') }}</td>
-                        <td>{{ $specialization->clinic_specialties_count ?? 0 }}</td>
+                            </td>
+                            <td>{{ $specialization->created_at->format('d M Y') }}</td>
+                            <td>{{ $specialization->clinic_specialties_count ?? 0 }}</td>
                             <td>{{ $specialization->sub_specialties_list_count }}</td>
-                        <td><span class="badge @if($specialization->status == 1) badge-soft-success border border-success @else badge-soft-danger border border-danger @endif  px-2 py-1 fs-13 fw-medium">@if($specialization->status == 1) @lang('admin.Active') @else @lang('admin.Inactive') @endif </span></td>
+                            <td><span class="badge @if($specialization->status == 1) badge-soft-success border border-success @else badge-soft-danger border border-danger @endif  px-2 py-1 fs-13 fw-medium">@if($specialization->status == 1) @lang('admin.Active') @else @lang('admin.Inactive') @endif </span></td>
                             <td>{{$specialization->admin->name ?? null}}</td>
 
                             <td>
-                            <a href="{{ route('SubSpecialties', $specialization->id) }}" class="link-reset fs-18 p-1"> <i class="ti ti-eye"></i></a>
-                            <a href="javascript: void(0);" class="link-reset fs-18 p-1" data-bs-toggle="modal" data-bs-target="#edit_specialization_{{$specialization->id}}"> <i class="ti ti-pencil"></i></a>
+                                <a href="{{ route('SubSpecialties', $specialization->id) }}" class="link-reset fs-18 p-1"> <i class="ti ti-eye"></i></a>
+                                <a href="javascript: void(0);" class="link-reset fs-18 p-1" data-bs-toggle="modal" data-bs-target="#edit_specialization_{{$specialization->id}}"> <i class="ti ti-pencil"></i></a>
 
-                            <a href="javascript:void(0);"
-                               class="link-reset fs-18 p-1 delete-btn"
-                               data-route="{{ route('destroy-mainSpecialty', $specialization->id) }}"
-                               data-id="row-{{ $specialization->id }}"
-                               data-bs-toggle="modal"
-                               data-bs-target="#genericDeleteModal">
-                                <i class="ti ti-trash"></i>
-                            </a>
-                        </td>
-                        <!-- Start Add Modal -->
-                        <div id="edit_specialization_{{$specialization->id}}" class="modal fade">
-                            <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h4 class="text-dark modal-title fw-bold">{{ trans('admin.Edit Specialization') }} {{ app()->getLocale() == 'en' ? $specialization->name_en : $specialization->name_ar }}</h4>
-                                        <button type="button" class="btn-close btn-close-modal custom-btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="ti ti-x"></i></button>
+                                <a href="javascript:void(0);"
+                                   class="link-reset fs-18 p-1 delete-btn"
+                                   data-route="{{ route('destroy-mainSpecialty', $specialization->id) }}"
+                                   data-id="row-{{ $specialization->id }}"
+                                   data-bs-toggle="modal"
+                                   data-bs-target="#genericDeleteModal">
+                                    <i class="ti ti-trash"></i>
+                                </a>
+                            </td>
+                            <!-- Start Add Modal -->
+                            <div id="edit_specialization_{{$specialization->id}}" class="modal fade">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 class="text-dark modal-title fw-bold">{{ trans('admin.Edit Specialization') }} {{ app()->getLocale() == 'en' ? $specialization->name_en : $specialization->name_ar }}</h4>
+                                            <button type="button" class="btn-close btn-close-modal custom-btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="ti ti-x"></i></button>
+                                        </div>
+                                        <form action="{{ route('update-MainSpecialty',$specialization->id) }}" method="POST" enctype="multipart/form-data">
+                                            @csrf
+                                            <div class="modal-body">
+                                                <div class="mb-3">
+                                                    <label class="form-label">{{ trans('admin.name_ar') }}<span class="text-danger ms-1">*</span></label>
+                                                    <input type="text" class="form-control"  placeholder="@lang('admin.name_ar')" name="name_ar"
+                                                           value="{{$specialization->name_ar}}" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">{{ trans('admin.name_en') }}<span class="text-danger ms-1">*</span></label>
+                                                    <input type="text" class="form-control"  placeholder="@lang('admin.name_en')" name="name_en"
+                                                           value="{{$specialization->name_en}}" required>
+                                                </div>
+                                                @include('main_admin.partials.specialty_media_fields', [
+                                                    'inputId' => 'specialty_icon_'.$specialization->id,
+                                                    'iconValue' => old('icon', $specialization->icon),
+                                                    'imageUrl' => $specialization->imageUrl(),
+                                                    'showRemove' => true,
+                                                ])
+                                                <div class="mb-0">
+                                                    <label class="form-label">{{ trans('admin.status') }}</label>
+                                                    <select class="select" name="status">
+                                                        <option value="1" @if($specialization->status == 1) selected @endif>@lang('admin.Active')</option>
+                                                        <option value="0" @if($specialization->status == 0) selected @endif>@lang('admin.Inactive')</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer d-flex align-items-center gap-1">
+                                                <button type="button" class="btn btn-white border" data-bs-dismiss="modal">{{ trans('admin.cancel') }}</button>
+                                                <button type="submit" class="btn btn-primary">{{ trans('admin.Save Changes') }}</button>
+                                            </div>
+                                        </form>
                                     </div>
-                                    <form action="{{ route('update-MainSpecialty',$specialization->id) }}" method="POST">
-                                        @csrf
-                                        <div class="modal-body">
-                                            <div class="mb-3">
-                                                <label class="form-label">{{ trans('admin.name_ar') }}<span class="text-danger ms-1">*</span></label>
-                                                <input type="text" class="form-control"  placeholder="@lang('admin.name_ar')" name="name_ar"
-                                                       value="{{$specialization->name_ar}}" required>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label">{{ trans('admin.name_en') }}<span class="text-danger ms-1">*</span></label>
-                                                <input type="text" class="form-control"  placeholder="@lang('admin.name_en')" name="name_en"
-                                                       value="{{$specialization->name_en}}" required>
-                                            </div>
-                                            <div class="mb-0">
-                                                <label class="form-label">{{ trans('admin.status') }}</label>
-                                                <select class="select" name="status">
-                                                    <option value="1" @if($specialization->status == 1) selected @endif>@lang('admin.Active')</option>
-                                                    <option value="0" @if($specialization->status == 0) selected @endif>@lang('admin.Inactive')</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer d-flex align-items-center gap-1">
-                                            <button type="button" class="btn btn-white border" data-bs-dismiss="modal">{{ trans('admin.cancel') }}</button>
-                                            <button type="submit" class="btn btn-primary">{{ trans('admin.Save Changes') }}</button>
-                                        </div>
-                                    </form>
                                 </div>
                             </div>
-                        </div>
-                        <!-- End Add Modal -->
+                            <!-- End Add Modal -->
 
-                    </tr>
+                        </tr>
                     @endforeach
 
                     </tbody>
@@ -198,7 +211,7 @@
                     <button type="button" class="btn-close btn-close-modal custom-btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="ti ti-x"></i></button>
                 </div>
                 <form id="add_department_form" action="{{ route('add-mainSpecialty') }}"
-                      method="POST">
+                      method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="modal-body">
                         <div class="mb-3">
@@ -212,6 +225,11 @@
                             <input type="text" class="form-control"  placeholder="@lang('admin.name_en')" name="name_en"
                                    value="{{old('name_en')}}" required>
                         </div>
+
+                        @include('main_admin.partials.specialty_media_fields', [
+                            'inputId' => 'specialty_icon_create',
+                            'iconValue' => old('icon'),
+                        ])
 
                         <div class="mb-0">
                             <label class="form-label">{{ trans('admin.status') }}</label>
@@ -231,6 +249,11 @@
         </div>
     </div>
     <!-- End Add Modal -->
+
+    @include('components.icon-picker', [
+        'renderSharedModal' => true,
+        'sharedModalId' => 'specialtyIconPicker',
+    ])
 
 
 

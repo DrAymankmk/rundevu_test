@@ -10,6 +10,25 @@ class DoctorAppointments extends Model
 {
     use HasFactory;
 
+    public static function isDoctorUnavailableOnDate(int $doctorId, string $date): bool
+    {
+        $date = Carbon::parse($date)->format('Y-m-d');
+
+        $hasHoliday = ShiftEmployee::where('employee_id', $doctorId)
+            ->whereDate('dateA', $date)
+            ->where('status', 0)
+            ->exists();
+
+        if ($hasHoliday) {
+            return true;
+        }
+
+        return PermissionsRequests::where('permission_owner', $doctorId)
+            ->whereDate('dateA', $date)
+            ->where('status', 1)
+            ->exists();
+    }
+
     static function SplitTimeOld($input, $StartTime, $EndTime, $Duration = "60")
     {
 
@@ -73,13 +92,13 @@ class DoctorAppointments extends Model
 
             $check_reservation = Reservations::where('date', $input->date)
                 ->where('appointment', $res_item['time'])
-                ->whereIn('status_id', [1, 2])
+                ->whereIn('status_id', Reservations::SLOT_BLOCKING_STATUS_IDS)
                 ->exists();
 
             $schedule_consultation_date = Reservations::where('schedule_consultation_date', $input->date)
                 ->where('schedule_consultation_time', $res_item['time'])
                 ->where('user_id', $res_item['time'])
-                ->whereIn('status_id', [1, 2])
+                ->whereIn('status_id', Reservations::SLOT_BLOCKING_STATUS_IDS)
                 ->exists();
 
             if ($check_reservation || $schedule_consultation_date) {
@@ -113,6 +132,12 @@ class DoctorAppointments extends Model
 
         // ✅ معالجة المواعيد التي تعبر منتصف الليل (مثل 23:00 إلى 07:00)
         $startDate = $input->date;
+        $doctorId = $input->id ?? $input->doctor_id;
+
+        if ($doctorId && self::isDoctorUnavailableOnDate((int) $doctorId, $startDate)) {
+            return $ReturnArray;
+        }
+
         $startTime = Carbon::parse($startDate . ' ' . $StartTime);
 
         // تحقق إذا كان وقت النهاية أقل من وقت البداية (يعبر منتصف الليل)
@@ -162,28 +187,7 @@ class DoctorAppointments extends Model
 
             // ✅ التاريخ الفعلي للموعد (للمواعيد التي تعبر منتصف الليل)
             $actualDate = $intervalStart->format('Y-m-d');
-            $isReserved = Reservations::where(function ($q) use ($actualDate, $timeRange, $user, $input) {
-                $q->where(function ($sub) use ($actualDate, $timeRange, $user, $input) {
-                    $sub->where([
-                        'date' => $actualDate,
-                        'doctor_id' => $input->id ?? $input->doctor_id,
-                        'appointment' => $timeRange,
-                    ]);
-
-//                    if ($user) {
-//                        $sub->where('user_id', $user->id);
-//                    }
-                })->orWhere(function ($sub) use ($actualDate, $input) {
-                    $sub->where([
-                        'schedule_consultation_date' => $actualDate,
-                        'doctor_id' => $input->id,
-                    ]);
-                });
-            })
-                ->where(function ($query) {
-                    $query->whereNull('status_id')
-                        ->orWhereIn('status_id', [1, 2, 3]);
-                })
+            $isReserved = Reservations::blocksAppointmentSlot($doctorId, $actualDate, $timeRange)
                 ->exists();
 
             $ReturnArray[] = [

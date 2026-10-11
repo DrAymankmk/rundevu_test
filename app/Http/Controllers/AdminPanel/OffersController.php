@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\AdminPanel;
 
+use App\Events\UserNotificationEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\AddTitle;
 use App\Models\ClinicOffer;
@@ -46,6 +47,8 @@ class OffersController extends Controller
 
     function index()
     {
+        ClinicOffer::deleteExpired();
+
         $auth_user = Auth::user()->app_type == 7 ? Auth::user()->id : Auth::user()->parent_id;
 
         $specialtyIds = $this->clinicSpecialtyIds($auth_user);
@@ -67,10 +70,11 @@ class OffersController extends Controller
     public function add_offer(AddTitle $request)
     {
         $request->validate([
-            'discount' => 'required|integer|min:1|max:100',
+            'discount' => 'required|integer|min:0|max:100',
             'specialty_id' => 'required|exists:specialties,id',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
+            'image' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:5120',
         ]);
 
         $auth_user = Auth::user()->app_type == 7 ? Auth::user()->id : Auth::user()->parent_id;
@@ -88,7 +92,7 @@ class OffersController extends Controller
         $data['end_date'] = $endDate;
         $add_offer = ClinicOffer::create($data);
         if ($add_offer) {
-            $this->notifyOffer($add_offer, 'New offer', 'A new offer has been added');
+            $this->notifyOfferCreated($add_offer);
             session()->flash('success', trans('messages.Added'));
             return redirect()->back();
         }
@@ -98,10 +102,11 @@ class OffersController extends Controller
     public function edit_offer($id, AddTitle $request)
     {
         $request->validate([
-            'discount' => 'required|integer|min:1|max:100',
+            'discount' => 'required|integer|min:0|max:100',
             'specialty_id' => 'required|exists:specialties,id',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
+            'image' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:5120',
         ]);
 
         $auth_user = Auth::user()->app_type == 7 ? Auth::user()->id : Auth::user()->parent_id;
@@ -118,7 +123,7 @@ class OffersController extends Controller
         $data['start_date'] = $startDate;
         $data['end_date'] = $endDate;
         $edit_offer->update($data);
-        $this->notifyOffer($edit_offer, 'Offer updated', 'Offer data has been updated');
+        $this->notifyOfferUpdated($edit_offer);
         session()->flash('success', trans('messages.updated'));
         return redirect()->back();
     }
@@ -147,16 +152,31 @@ class OffersController extends Controller
         return redirect()->back();
     }
 
-    private function notifyOffer(ClinicOffer $offer, $title, $message)
+    private function notifyOfferCreated(ClinicOffer $offer)
+    {
+        $notification = Notifications::create([
+            'clinic_id' => $offer->clinic_id,
+            'type' => 0,
+            'app_type' => 1,
+            'title_ar' => 'عرض جديد',
+            'title_en' => 'New offer',
+            'message_ar' => 'تم إضافة عرض جديد: ' . $offer->title_ar,
+            'message_en' => 'A new offer has been added: ' . $offer->title_en,
+        ]);
+
+        broadcast(new UserNotificationEvent($notification))->toOthers();
+    }
+
+    private function notifyOfferUpdated(ClinicOffer $offer)
     {
         Notifications::create([
             'clinic_id' => $offer->clinic_id,
             'type' => 0,
             'app_type' => 1,
-            'title_ar' => $title,
-            'title_en' => $title,
-            'message_ar' => $message . ': ' . $offer->title_ar,
-            'message_en' => $message . ': ' . $offer->title_en,
+            'title_ar' => 'تحديث عرض',
+            'title_en' => 'Offer updated',
+            'message_ar' => 'تم تحديث بيانات العرض: ' . $offer->title_ar,
+            'message_en' => 'Offer data has been updated: ' . $offer->title_en,
         ]);
     }
 }
