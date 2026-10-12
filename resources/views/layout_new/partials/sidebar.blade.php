@@ -208,7 +208,7 @@
 
                             <li class="submenu">
                                 <a href="javascript:void(0);"
-                                   class="{{ Request::is('admin/loyalty-organizations*', 'loyalty-organizations*', 'admin/loyalty-point-rules*', 'loyalty-point-rules*', 'admin/points-exchanges*', 'points-exchanges*') ? 'active subdrop' : '' }}">
+								class="{{ Request::is('admin/loyalty-organizations*', 'loyalty-organizations*', 'admin/loyalty-point-rules*', 'loyalty-point-rules*', 'admin/loyalty-coupons*', 'loyalty-coupons*', 'admin/points-exchanges*', 'points-exchanges*') ? 'active subdrop' : '' }}">
                                     <i
                                         class="ti ti-gift"></i><span>@lang('admin.points')</span>
                                     <span class="menu-arrow"></span>
@@ -226,6 +226,14 @@
                                             @lang('main.loyalty_point_rules')
                                         </a>
                                     </li>
+
+                                    <li>
+									<a href="{{ route('loyalty-coupons') }}"
+										class="{{ Request::is('admin/loyalty-coupons*', 'loyalty-coupons*') ? 'active' : '' }}">
+										@lang('main.loyalty_coupons')
+									</a>
+								</li>
+
                                     <li>
                                         <a href="{{ route('points-exchanges.index') }}"
                                            class="{{ Request::is('admin/points-exchanges*', 'points-exchanges*') ? 'active' : '' }}">

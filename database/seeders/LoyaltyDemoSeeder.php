@@ -93,6 +93,7 @@ class LoyaltyDemoSeeder extends Seeder
                 'points_required' => 80,
                 'expires_at' => now()->addMonth()->toDateString(),
                 'branch_ids' => [],
+                'show_on_mobile_home' => true,
                 'status' => 1,
             ]
         );
@@ -111,6 +112,7 @@ class LoyaltyDemoSeeder extends Seeder
                 'points_required' => 50,
                 'expires_at' => now()->addMonth()->toDateString(),
                 'branch_ids' => [],
+                'show_on_mobile_home' => true,
                 'status' => 1,
             ]
         );

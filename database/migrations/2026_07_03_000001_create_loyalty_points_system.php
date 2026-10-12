@@ -111,6 +111,7 @@ class CreateLoyaltyPointsSystem extends Migration
             $table->unsignedInteger('usage_limit')->default(0);
             $table->date('expires_at');
             $table->json('branch_ids')->nullable();
+            $table->boolean('show_on_mobile_home')->default(true);
             $table->tinyInteger('status')->default(1);
             $table->timestamps();
             $table->softDeletes();

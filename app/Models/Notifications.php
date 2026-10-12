@@ -11,7 +11,23 @@ class Notifications extends Model
 {
     use HasFactory;
 
-    public $fillable = ['admin_id','user_id','clinic_id','receiver_id','type','app_type','image','title_en', 'title_ar','message_en','message_ar','status'];
+  public $fillable = [
+        'admin_id',
+        'user_id',
+        'clinic_id',
+        'receiver_id',
+        'type',
+        'app_type',
+        'image',
+        'title_en',
+        'title_ar',
+        'message_en',
+        'message_ar',
+        'url',
+        'coupon_status',
+        'flag',
+        'status',
+    ];
 
     protected static function booted()
     {

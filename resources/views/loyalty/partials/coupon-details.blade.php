@@ -54,6 +54,36 @@
                 <td>{{ $coupon->expires_at?->format('Y-m-d') }}</td>
             </tr>
             <tr>
+                <th>@lang('main.loyalty_coupon_branches')</th>
+                <td>
+                    @if($coupon->appliesToAllBranches())
+                        @lang('main.loyalty_coupon_branches_all')
+                    @else
+                        <ul class="mb-0 pl-3">
+                            @foreach($coupon->applicableBranches() as $branch)
+                                @php
+                                    $cityName = $locale === 'ar'
+                                        ? (optional($branch->city)->name_ar ?: optional($branch->city)->name_en)
+                                        : (optional($branch->city)->name_en ?: optional($branch->city)->name_ar);
+                                @endphp
+                                <li>
+                                    {{ $branch->name }}
+                                    @if($cityName)
+                                        <span class="text-muted">({{ $cityName }})</span>
+                                    @endif
+                                </li>
+                            @endforeach
+                        </ul>
+                    @endif
+                </td>
+            </tr>
+            <tr>
+                <th>@lang('main.loyalty_show_on_mobile_home')</th>
+                <td>
+                    {{ $coupon->show_on_mobile_home ? __('main.loyalty_show_on_mobile_home_yes') : __('main.loyalty_show_on_mobile_home_no') }}
+                </td>
+            </tr>
+            <tr>
                 <th>@lang('admin.status')</th>
                 <td>{{ $coupon->status ? __('main.enabled') : __('main.disabled') }}</td>
             </tr>

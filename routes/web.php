@@ -894,10 +894,10 @@ Route::group(["middleware" => ["auth", "setlocale"], 'prefix' => 'admin', 'names
     Route::group(['prefix' => 'loyalty'], function () {
         Route::get('/', 'LoyaltyDashboardController@index')->name('loyalty.dashboard');
         Route::get('coupons', 'LoyaltyDashboardController@coupons')->name('loyalty.coupons');
-        Route::post('coupons', 'LoyaltyDashboardController@storeCoupon')->name('loyalty.coupons.store');
-        Route::put('coupons/{id}', 'LoyaltyDashboardController@updateCoupon')->name('loyalty.coupons.update');
-        Route::get('coupons/{id}/status/{status}', 'LoyaltyDashboardController@updateCouponStatus')->name('loyalty.coupons.status');
-        Route::delete('coupons/{id}', 'LoyaltyDashboardController@destroyCoupon')->name('loyalty.coupons.destroy');
+        // Route::post('coupons', 'LoyaltyDashboardController@storeCoupon')->name('loyalty.coupons.store');
+        // Route::put('coupons/{id}', 'LoyaltyDashboardController@updateCoupon')->name('loyalty.coupons.update');
+        // Route::get('coupons/{id}/status/{status}', 'LoyaltyDashboardController@updateCouponStatus')->name('loyalty.coupons.status');
+        // Route::delete('coupons/{id}', 'LoyaltyDashboardController@destroyCoupon')->name('loyalty.coupons.destroy');
         Route::get('redemptions', 'LoyaltyDashboardController@redemptions')->name('loyalty.redemptions');
         Route::get('redemptions/{id}/send-otp', 'LoyaltyDashboardController@sendRedemptionOtp')->name('loyalty.redemptions.send-otp');
         Route::post('redemptions/{id}/confirm', 'LoyaltyDashboardController@confirmRedemption')->name('loyalty.redemptions.confirm');
@@ -1356,6 +1356,19 @@ Route::group(["middleware" => ["auth", "setlocale"], 'prefix' => 'admin', 'names
         Route::put('loyalty-point-rules/{id}', 'LoyaltyPointRulesController@update')->name('loyalty-point-rules.update');
         Route::get('loyalty-point-rules/{id}/status/{status}', 'LoyaltyPointRulesController@toggleStatus')->name('loyalty-point-rules.toggle');
         Route::delete('loyalty-point-rules/{id}', 'LoyaltyPointRulesController@destroy')->name('loyalty-point-rules.destroy');
+
+        Route::get('loyalty-coupons', 'LoyaltyCouponsController@index')->name('loyalty-coupons');
+        Route::get('loyalty-coupons/branches/{clinicId}', 'LoyaltyCouponsController@branches')->name('loyalty-coupons.branches');
+        Route::post('loyalty-coupons', 'LoyaltyCouponsController@store')->name('loyalty-coupons.store');
+        Route::put('loyalty-coupons/{id}', 'LoyaltyCouponsController@update')->name('loyalty-coupons.update');
+        Route::get('loyalty-coupons/{id}/status/{status}', 'LoyaltyCouponsController@toggleStatus')->name('loyalty-coupons.toggle');
+        Route::get('loyalty-coupons/{id}/patients', 'LoyaltyCouponsController@patients')->name('loyalty-coupons.patients');
+        Route::post('loyalty-coupons/{id}/notify-all', 'LoyaltyCouponsController@notifyAll')->name('loyalty-coupons.notify-all');
+        Route::post('loyalty-coupons/{id}/notify-test', 'LoyaltyCouponsController@notifyTest')->name('loyalty-coupons.notify-test');
+        Route::post('loyalty-coupons/{id}/notify/{userId}', 'LoyaltyCouponsController@notifyPatient')->name('loyalty-coupons.notify-patient');
+        Route::delete('loyalty-coupons/{id}', 'LoyaltyCouponsController@destroy')->name('loyalty-coupons.destroy');
+
+
 
         Route::get('admin-supervisor', 'SuperVisorController@index')->name('admin-supervisor');
         Route::post('create-supervisor', 'SuperVisorController@create_supervisor')->name('create-supervisor');

@@ -105,6 +105,12 @@
                                         alt=""></span>
                                 <span>@lang('main.loyalty_point_rules')</span></a></li>
 
+                        <li><a href="{{ route('loyalty-coupons') }}"><span class="menu-side"><img
+								style="background-color: #888"
+								src="/media/icons/my_points.png"
+								alt=""></span>
+						<span>@lang('main.loyalty_coupons')</span></a></li>        
+
                         <li><a href="{{ route('admin-supervisor') }}"><span class="menu-side"><img
                                         style="background-color: #888"
                                         src="/media/icons/personal_information.png"

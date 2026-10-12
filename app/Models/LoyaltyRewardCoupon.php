@@ -22,11 +22,13 @@ class LoyaltyRewardCoupon extends Model
         'usage_limit',
         'expires_at',
         'branch_ids',
+        'show_on_mobile_home',
         'status',
     ];
 
     protected $casts = [
         'branch_ids' => 'array',
+        'show_on_mobile_home' => 'boolean',
         'expires_at' => 'date',
         'price_before_discount' => 'decimal:2',
         'discount_value' => 'decimal:2',
@@ -69,6 +71,72 @@ class LoyaltyRewardCoupon extends Model
     public function clinic()
     {
         return $this->belongsTo(Clinic::class);
+    }
+
+    public function applicableBranches()
+    {
+        $ids = array_values(array_filter(array_map('intval', $this->branch_ids ?? [])));
+
+        if ($ids === []) {
+            return collect();
+        }
+
+        return Clinic::with('city')
+            ->whereIn('id', $ids)
+            ->orderBy('name')
+            ->get();
+    }
+
+    public function appliesToAllBranches(): bool
+    {
+        return empty($this->branch_ids);
+    }
+
+    /**
+     * City ids covered by this coupon (from selected branches, or all org branches / clinic city).
+     *
+     * @return array<int, int>
+     */
+    public function cityIds(): array
+    {
+        $clinic = $this->clinic ?? Clinic::find($this->clinic_id);
+
+        if (! $clinic) {
+            return [];
+        }
+
+        if (! $this->appliesToAllBranches()) {
+            return $this->applicableBranches()
+                ->pluck('city_id')
+                ->filter()
+                ->map(fn ($id) => (int) $id)
+                ->unique()
+                ->values()
+                ->all();
+        }
+
+        if ((int) $clinic->app_type === 7) {
+            return $clinic->city_id ? [(int) $clinic->city_id] : [];
+        }
+
+        $branchCityIds = Clinic::where('parent_id', $clinic->id)
+            ->where('app_type', 7)
+            ->where('status', 1)
+            ->whereNotNull('city_id')
+            ->pluck('city_id')
+            ->map(fn ($id) => (int) $id)
+            ->all();
+
+        if ($clinic->city_id) {
+            $branchCityIds[] = (int) $clinic->city_id;
+        }
+
+        return array_values(array_unique($branchCityIds));
+    }
+
+    public function notificationUrl(): string
+    {
+        return 'loyalty_coupon/' . $this->id;
     }
 
     public function redemptions()

@@ -76,59 +76,6 @@ class LoyaltyDashboardController extends Controller
         return view('loyalty.coupons', compact('data'));
     }
 
-    public function storeCoupon(Request $request)
-    {
-        $this->ensureLoyaltyEnabled();
-
-        $validated = $this->validateCouponRequest($request, true);
-
-        LoyaltyRewardCoupon::create($validated + [
-            'clinic_id' => $this->loyaltyClinicId(),
-            'branch_ids' => [],
-            'status' => 1,
-        ]);
-
-        session()->flash('success', trans('messages.Added'));
-
-        return redirect()->back();
-    }
-
-    public function updateCoupon(Request $request, $id)
-    {
-        $this->ensureLoyaltyEnabled();
-
-        $validated = $this->validateCouponRequest($request, false);
-
-        $coupon = LoyaltyRewardCoupon::where('clinic_id', $this->loyaltyClinicId())->findOrFail($id);
-        $coupon->update($validated);
-
-        session()->flash('success', trans('messages.updated'));
-
-        return redirect()->back();
-    }
-
-    public function updateCouponStatus($id, $status)
-    {
-        $this->ensureLoyaltyEnabled();
-
-        $coupon = LoyaltyRewardCoupon::where('clinic_id', $this->loyaltyClinicId())->findOrFail($id);
-        $coupon->update(['status' => (int) $status]);
-
-        return response()->json(['message' => trans('messages.updated')]);
-    }
-
-    public function destroyCoupon($id)
-    {
-        $this->ensureLoyaltyEnabled();
-
-        $coupon = LoyaltyRewardCoupon::where('clinic_id', $this->loyaltyClinicId())->findOrFail($id);
-        $coupon->delete();
-
-        session()->flash('success', trans('messages.deleted'));
-
-        return redirect()->back();
-    }
-
     public function redemptions()
     {
         $this->ensureLoyaltyEnabled();
@@ -181,43 +128,5 @@ class LoyaltyDashboardController extends Controller
             ->paginate(20);
 
         return view('loyalty.transactions', compact('data'));
-    }
-
-    private function validateCouponRequest(Request $request, bool $isCreate): array
-    {
-        $validated = $request->validate([
-            'service_name_ar' => 'required|string|max:255',
-            'service_name_en' => 'nullable|string|max:255',
-            'details_ar' => 'nullable|string',
-            'details_en' => 'nullable|string',
-            'price_before_discount' => 'required|numeric|min:0',
-            'discount_type' => 'required|in:percentage,fixed',
-            'discount_value' => [
-                'required',
-                'numeric',
-                'min:0',
-                $request->discount_type === 'percentage' ? 'max:100' : 'max:999999',
-            ],
-            'usage_limit' => 'nullable|integer|min:0',
-            'expires_at' => $isCreate ? 'required|date|after_or_equal:today' : 'required|date',
-        ]);
-
-        $priceBefore = (float) $validated['price_before_discount'];
-        $discountValue = (float) $validated['discount_value'];
-
-        if ($validated['discount_type'] === 'fixed' && $discountValue > $priceBefore) {
-            throw \Illuminate\Validation\ValidationException::withMessages([
-                'discount_value' => [trans('main.loyalty_discount_exceeds_price')],
-            ]);
-        }
-
-        $validated['usage_limit'] = (int) ($validated['usage_limit'] ?? 0);
-        $validated['price_after_discount'] = LoyaltyRewardCoupon::calculatePriceAfterDiscount(
-            $priceBefore,
-            $validated['discount_type'],
-            $discountValue
-        );
-
-        return $validated;
     }
 }
