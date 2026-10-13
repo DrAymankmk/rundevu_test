@@ -476,6 +476,8 @@ return [
     'loyalty_coupons_clinic_readonly_hint' => 'تتم إدارة الكوبونات من لوحة مدير النظام. يمكنك عرض كوبونات منشأتك هنا.',
     'loyalty_coupon_patients' => 'المرضى',
     'loyalty_coupon_patients_cities' => 'المدن',
+    'loyalty_coupon_patients_search' => 'بحث المرضى',
+    'loyalty_coupon_patients_search_placeholder' => 'بحث بالاسم أو رقم الجوال',
     'loyalty_coupon_no_cities' => 'لا توجد مدن مرتبطة بفروع هذا الكوبون.',
     'loyalty_coupon_no_patients' => 'لا يوجد مرضى في مدن هذا الكوبون.',
     'loyalty_coupon_send_notification' => 'إرسال إشعار',

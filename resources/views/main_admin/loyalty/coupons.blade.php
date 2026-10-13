@@ -494,11 +494,17 @@
         };
     }
 
-    function loadCouponPatients(couponId, pageUrl) {
+    function loadCouponPatients(couponId, pageUrl, search) {
         activePatientsCouponId = couponId;
         patientsModalBody.innerHTML = '<div class="text-center text-muted py-4">...</div>';
 
-        var url = pageUrl || ("{{ url('admin/loyalty-coupons') }}/" + couponId + "/patients");
+        var url = pageUrl;
+        if (!url) {
+            url = "{{ url('admin/loyalty-coupons') }}/" + couponId + "/patients";
+            if (typeof search === 'string' && search !== '') {
+                url += (url.indexOf('?') === -1 ? '?' : '&') + 'search=' + encodeURIComponent(search);
+            }
+        }
 
         fetch(url, {
             headers: {
@@ -515,6 +521,11 @@
             });
     }
 
+    function currentPatientsSearch() {
+        var input = patientsModalBody.querySelector('.coupon-patients-search-form input[name="search"]');
+        return input ? input.value.trim() : '';
+    }
+
     document.querySelectorAll('.btn-open-coupon-patients').forEach(function (button) {
         button.addEventListener('click', function () {
             var couponId = this.dataset.couponId;
@@ -527,7 +538,25 @@
         });
     });
 
+    patientsModalBody.addEventListener('submit', function (event) {
+        var searchForm = event.target.closest('.coupon-patients-search-form');
+        if (!searchForm) {
+            return;
+        }
+        event.preventDefault();
+        var couponId = searchForm.dataset.couponId || activePatientsCouponId;
+        var searchInput = searchForm.querySelector('input[name="search"]');
+        loadCouponPatients(couponId, null, searchInput ? searchInput.value.trim() : '');
+    });
+
     patientsModalBody.addEventListener('click', function (event) {
+        var clearSearchBtn = event.target.closest('.btn-clear-coupon-patients-search');
+        if (clearSearchBtn) {
+            event.preventDefault();
+            loadCouponPatients(clearSearchBtn.dataset.couponId || activePatientsCouponId, null, '');
+            return;
+        }
+
         var pageLink = event.target.closest('.coupon-patients-pagination a');
         if (pageLink) {
             event.preventDefault();
@@ -540,6 +569,7 @@
             event.preventDefault();
             var couponId = sendBtn.dataset.couponId;
             var userId = sendBtn.dataset.userId;
+            var search = currentPatientsSearch();
             sendBtn.disabled = true;
 
             fetch("{{ url('admin/loyalty-coupons') }}/" + couponId + "/notify/" + userId, {
@@ -550,7 +580,7 @@
                 .then(function (result) {
                     alert(result.data.message || '');
                     if (result.ok) {
-                        loadCouponPatients(couponId);
+                        loadCouponPatients(couponId, null, search);
                     }
                 })
                 .catch(function () {
@@ -569,6 +599,7 @@
                 return;
             }
             var allCouponId = sendAllBtn.dataset.couponId;
+            var allSearch = currentPatientsSearch();
             sendAllBtn.disabled = true;
 
             fetch("{{ url('admin/loyalty-coupons') }}/" + allCouponId + "/notify-all", {
@@ -579,7 +610,7 @@
                 .then(function (result) {
                     alert(result.data.message || '');
                     if (result.ok) {
-                        loadCouponPatients(allCouponId);
+                        loadCouponPatients(allCouponId, null, allSearch);
                     }
                 })
                 .catch(function () {

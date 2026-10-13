@@ -114,19 +114,30 @@ class LoyaltyCouponsController extends Controller
         return response()->json(['branches' => $branches]);
     }
 
-    public function patients($id)
+    public function patients(Request $request, $id)
     {
         $coupon = LoyaltyRewardCoupon::with('clinic')->findOrFail($id);
         $cityIds = $coupon->cityIds();
         $locale = app()->getLocale();
+        $search = trim((string) $request->get('search', ''));
 
         $patients = collect();
         if ($cityIds !== []) {
-            $patients = User::with('city')
+            $patientsQuery = User::with('city')
                 ->whereIn('city_id', $cityIds)
-                ->where('status', 1)
+                ->where('status', 1);
+
+            if ($search !== '') {
+                $patientsQuery->where(function ($query) use ($search) {
+                    $query->where('name', 'like', '%' . $search . '%')
+                        ->orWhere('phone', 'like', '%' . $search . '%');
+                });
+            }
+
+            $patients = $patientsQuery
                 ->orderBy('name')
-                ->paginate(30);
+                ->paginate(30)
+                ->appends($request->only('search'));
         }
 
         $notificationsByUser = collect();
@@ -161,7 +172,8 @@ class LoyaltyCouponsController extends Controller
             'cityIds',
             'cityNames',
             'notificationsByUser',
-            'locale'
+            'locale',
+            'search'
         ));
     }
 
@@ -304,20 +316,23 @@ class LoyaltyCouponsController extends Controller
             throw new \RuntimeException(trans('main.loyalty_coupon_notification_failed'), 0, $e);
         }
 
-        return Notifications::create([
-            'clinic_id' => $coupon->clinic_id,
-            'user_id' => $user->id,
-            'receiver_id' => $user->id,
-            'type' => 1,
-            'app_type' => 1,
-            'title_ar' => $titleAr,
-            'title_en' => $titleEn,
-            'message_ar' => $messageAr,
-            'message_en' => $messageEn,
-            'url' => $coupon->notificationUrl(),
-            'coupon_status' => 1,
-            'flag' => (int) $coupon->id,
-        ]);
+        // Skip model created events: Notifications::booted already sends Firebase on create.
+        return Notifications::withoutEvents(function () use ($coupon, $user, $titleAr, $titleEn, $messageAr, $messageEn) {
+            return Notifications::create([
+                'clinic_id' => $coupon->clinic_id,
+                'user_id' => $user->id,
+                'receiver_id' => $user->id,
+                'type' => 1,
+                'app_type' => 1,
+                'title_ar' => $titleAr,
+                'title_en' => $titleEn,
+                'message_ar' => $messageAr,
+                'message_en' => $messageEn,
+                'url' => $coupon->notificationUrl(),
+                'coupon_status' => 1,
+                'flag' => (int) $coupon->id,
+            ]);
+        });
     }
 
     private function validateCouponRequest(Request $request, bool $isCreate, ?LoyaltyRewardCoupon $coupon = null): array

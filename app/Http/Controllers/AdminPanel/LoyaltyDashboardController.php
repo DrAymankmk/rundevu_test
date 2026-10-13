@@ -76,7 +76,7 @@ class LoyaltyDashboardController extends Controller
         return view('loyalty.coupons', compact('data'));
     }
 
-public function storeCoupon(Request $request)
+    public function storeCoupon(Request $request)
     {
         $this->ensureLoyaltyEnabled();
 
@@ -93,7 +93,7 @@ public function storeCoupon(Request $request)
         return redirect()->back();
     }
 
- public function updateCoupon(Request $request, $id)
+    public function updateCoupon(Request $request, $id)
     {
         $this->ensureLoyaltyEnabled();
 

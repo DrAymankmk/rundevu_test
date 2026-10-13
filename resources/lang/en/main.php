@@ -470,6 +470,8 @@ return [
     'loyalty_coupons_clinic_readonly_hint' => 'Coupons are managed by the system admin. You can view your organization coupons here.',
     'loyalty_coupon_patients' => 'Patients',
     'loyalty_coupon_patients_cities' => 'Cities',
+    'loyalty_coupon_patients_search' => 'Search patients',
+    'loyalty_coupon_patients_search_placeholder' => 'Search by name or phone',
     'loyalty_coupon_no_cities' => 'No cities found for this coupon branches.',
     'loyalty_coupon_no_patients' => 'No patients found in the coupon cities.',
     'loyalty_coupon_send_notification' => 'Send notification',
