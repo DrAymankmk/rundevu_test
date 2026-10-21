@@ -51,13 +51,13 @@
                                 <div class="swiper-slide">
                                     <div class="background-image testi-card" style="background-image: url('{{ $patternBg }}');">
                                         <div class="box-quote">
-                                            <img src="{{ asset('frontend/assets/img/icon/quote.svg') }}" alt="" decoding="async" loading="lazy">
+                                            <img src="{{ asset('frontend/assets/img/icon/quote.svg') }}" alt="" width="48" height="48" decoding="async" loading="lazy">
                                         </div>
                                         <p class="box-text">{!! $slide['text'] !!}</p>
                                         <div class="box-wrapp">
                                             <div class="box-profile">
                                                 <div class="box-author">
-                                                    <img src="{{ $slide['img'] }}" alt="{{ $slide['alt'] ?? $slide['name'] ?? '' }}" decoding="async" loading="lazy">
+                                                    <img src="{{ $slide['img'] }}" alt="{{ $slide['alt'] ?? $slide['name'] ?? '' }}" width="72" height="72" decoding="async" loading="lazy">
                                                 </div>
                                                 <div class="box-info">
                                                     <h3 class="box-title">{{ $slide['name'] }}</h3>

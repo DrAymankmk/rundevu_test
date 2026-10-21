@@ -21,6 +21,7 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+        \App\Http\Middleware\SecurityHeaders::class,
     ];
 
     /**
@@ -30,12 +31,14 @@ class Kernel extends HttpKernel
      */
     protected $middlewareGroups = [
         'web' => [
+            // Outermost so Cache-Control / Set-Cookie stripping runs after cookies are queued.
+            \App\Http\Middleware\PublicPageCacheHeaders::class,
             \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
-            \Illuminate\Session\Middleware\StartSession::class,
+            \App\Http\Middleware\StartSessionWhenNeeded::class,
             // \Illuminate\Session\Middleware\AuthenticateSession::class,
-            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-            \App\Http\Middleware\VerifyCsrfToken::class,
+            \App\Http\Middleware\ShareErrorsFromSessionWhenNeeded::class,
+            \App\Http\Middleware\VerifyCsrfTokenWhenNeeded::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
 
@@ -66,6 +69,5 @@ class Kernel extends HttpKernel
         'setlocale' => \App\Http\Middleware\SetLocale::class,
         'clinic.module' => \App\Http\Middleware\EnsureClinicModuleAccess::class,
         'log.website.visit' => \App\Http\Middleware\LogWebsiteVisit::class,
-
     ];
 }

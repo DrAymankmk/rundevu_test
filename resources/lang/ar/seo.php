@@ -13,6 +13,7 @@ return [
     'module_description' => 'وصف العرض فى الصفحة',
     'module_description_hint' => 'نص طويل اختياري يظهر في صفحة العرض. لا يُستخدم في وسوم SEO.',
     'edit_seo' => 'تعديل SEO',
+    'fill_test_data' => 'تعبئة بيانات تجريبية',
     'og_title' => 'عنوان OG',
     'og_description' => 'وصف OG',
     'twitter_title' => 'عنوان Twitter',

@@ -6,9 +6,9 @@ use App\Events\SystemNotifications\ClinicRegistered;
 use App\Http\Controllers\Controller;
 use App\Models\Clinic;
 use App\Models\ClinicSpecialist;
-use App\Models\CmsPage;
 use App\Models\Package;
 use App\Models\SubscriptionsPackageClinic;
+use App\Services\Frontend\FrontendContentCache;
 use App\Services\Seo\SeoResolver;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
@@ -30,38 +30,11 @@ class SubscriptionController extends Controller
 
     public function index(Request $request)
     {
-        $cmsPage = CmsPage::query()
-            ->where('slug', 'subscription')
-            ->where('is_active', true)
-            ->with(['seoMeta.translations', 'translations'])
-            ->first();
+        $cached = FrontendContentCache::cmsPageWithSections('subscription');
+        $cmsPage = $cached['page'];
+        $cmsPageSections = $cached['sections'];
 
-        $cmsPageSections = collect();
-        if ($cmsPage) {
-            $cmsPageSections = $cmsPage->sections()
-                ->active()
-                ->ordered()
-                ->with([
-                    'translations',
-                    'links' => static function ($q) {
-                        $q->active()->ordered()->with('translations');
-                    },
-                    'items' => static function ($q) {
-                        $q->active()->ordered()->with([
-                            'translations',
-                            'links' => static function ($lq) {
-                                $lq->active()->ordered()->with('translations');
-                            },
-                        ]);
-                    },
-                ])
-                ->get();
-        }
-
-        $packages = Package::query()
-            ->where('status', 1)
-            ->orderBy('price')
-            ->get();
+        $packages = FrontendContentCache::packages();
 
         $selectedPackageId = $request->filled('package') ? (int) $request->query('package') : null;
         $selectedPackage = $selectedPackageId

@@ -2261,6 +2261,38 @@ body.wa-modal-open {
   --fa-style: 900;
 }
 
+/* Footer copyright: readable on dark bg + link not color-only */
+.footer-layout1 .copyright-text {
+  color: #b7b9c0;
+}
+.footer-layout1 .copyright-text a {
+  color: #ffb4b4;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.footer-layout1 .copyright-text a:hover,
+.footer-layout1 .copyright-text a:focus {
+  color: #ffffff;
+}
 
+.breadcumb-module {
+  color: #fff;
+  margin-top: 18px;
+  font-size: 16px;
+  line-height: 1.7;
+  font-weight: 400;
+}
 
+.breadcumb-module :is(p, li, h1, h2, h3, h4, h5, h6, span, strong) {
+  color: #fff;
+}
+
+.breadcumb-module p:last-child {
+  margin-bottom: 0;
+}
+
+.breadcumb-module a {
+  color: #fff;
+  text-decoration: underline;
+}
 

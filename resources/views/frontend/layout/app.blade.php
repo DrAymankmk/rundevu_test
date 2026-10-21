@@ -38,7 +38,18 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    @php
+        $hasSession = false;
+        try {
+            $hasSession = request()->hasSession() && request()->session()->isStarted();
+        } catch (\Throwable $e) {
+            $hasSession = false;
+        }
+    @endphp
+    @if($hasSession)
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+    @endif
+    <meta name="csrf-token-url" content="{{ url('/csrf-token') }}">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     @include('frontend.layout.partials.seo-meta', ['seo' => $seo ?? []])
@@ -103,13 +114,13 @@
 
 <div class="th-menu-wrapper">
     <div class="th-menu-area text-center">
-        <button class="th-menu-toggle" type="button" aria-label="{{ __('main.wa_close') }}"><i class="fal fa-times"></i></button>
+        <button class="th-menu-toggle" type="button" aria-label="{{ __('main.menu_close') }}"><i class="fal fa-times" aria-hidden="true"></i></button>
         <div class="mobile-logo">
             <a href="{{ frontend_route('frontend.home') }}">
                 @include('frontend.layout.partials.site-logo', ['logoFetchPriority' => 'high'])
             </a>
         </div>
-        <div class="th-mobile-menu">
+        <div class="th-mobile-menu" id="mobile-menu">
             <ul>
                 <li><a href="{{ frontend_route('frontend.home') }}">{{ __('main.home') }}</a></li>
                 <li><a href="{{ frontend_route('frontend.about') }}">{{ __('main.about') }}</a></li>
@@ -163,7 +174,7 @@
             @json($frontendJs('jquery.counterup.min.js')),
             @json($frontendJs('circle-progress.js')),
             @json($frontendJs('nice-select.min.js')),
-            @json($frontendJs('wow.min.js')),
+            // WOW removed: overlaps GSAP ScrollTrigger for scroll reveals
             @json($frontendJs('gsap.min.js')),
             @json($frontendJs('ScrollTrigger.min.js')),
             @json($frontendJs('SplitText.js'))
@@ -201,14 +212,16 @@
         }
     })();
 </script>
-@if(config('website_visit_logs.enabled', true) && !empty($websiteVisitLogId))
+@if(config('website_visit_logs.enabled', true) && !empty($websiteVisitLogDeferred))
     <script>
         window.__VISIT_LOG__ = {
-            id: {{ (int) $websiteVisitLogId }},
-            token: @json($websiteVisitLogToken ?? ''),
+            id: null,
+            token: null,
+            deferred: true,
             heartbeat: {{ (int) config('website_visit_logs.heartbeat_seconds', 15) }},
             endpoint: @json(route('website-visit-logs.beacon')),
-            csrf: @json(csrf_token())
+            bootstrap: @json($websiteVisitBootstrapEndpoint ?? route('website-visit-logs.bootstrap')),
+            csrf: null
         };
     </script>
     <script src="{{ $frontendJs('visit-tracker.js') }}" defer></script>

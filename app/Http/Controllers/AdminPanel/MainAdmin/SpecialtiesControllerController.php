@@ -4,7 +4,9 @@ namespace App\Http\Controllers\AdminPanel\MainAdmin;
 
 use App\Http\Controllers\Controller;
 use App\Models\ClinicSpecialist;
+use App\Models\CmsLanguage;
 use App\Models\Specialty;
+use App\Services\Seo\SeoSyncService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
@@ -60,6 +62,32 @@ class SpecialtiesControllerController extends Controller
         session()->flash('success', trans('messages.updated'));
         return redirect()->back();
     }
+
+    public function specialty_seo_form($id)
+    {
+        $specialty = $this->mainSpecialty($id);
+        $specialty->load('seoMeta.translations');
+
+        return view('components.seo-form', [
+            'languages' => CmsLanguage::active()->ordered()->get(),
+            'seo' => $specialty->seoMeta,
+            'instanceId' => 'specialty_seo_'.$specialty->id,
+            'formAction' => route('update-mainSpecialty-seo', $specialty->id),
+            'asCard' => false,
+        ]);
+    }
+
+    public function update_specialty_seo($id, Request $request, SeoSyncService $seoSync)
+    {
+        $specialty = $this->mainSpecialty($id);
+
+        $request->validate(SeoSyncService::validationRules());
+        $seoSync->sync($specialty, $request);
+
+        session()->flash('success', trans('messages.updated'));
+
+        return redirect()->route('main-specialties');
+    }
     // update status ClinicSpecialist
     public function update_status_specialty($id, $status)
     {
@@ -101,6 +129,13 @@ class SpecialtiesControllerController extends Controller
         $specialty->delete();
 
         return response()->json(['status' => true, 'message' => trans('messages.deleted')]);
+    }
+
+    private function mainSpecialty($id): Specialty
+    {
+        return Specialty::query()
+            ->whereNull('parent_id')
+            ->findOrFail($id);
     }
 
     private function validatedSpecialty(Request $request): array

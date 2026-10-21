@@ -27,7 +27,7 @@
                     <div class="col-md-6 col-xl-4">
                         <div class="feature-card th-ani">
                             @if($img)
-                                <div class="mb-3"><img src="{{ $img }}" alt="{{ $imgAlt }}" class="img-fluid rounded" decoding="async" loading="lazy"></div>
+                                <div class="mb-3"><img src="{{ $img }}" alt="{{ $imgAlt }}" class="img-fluid rounded" width="640" height="400" decoding="async" loading="lazy"></div>
                             @endif
                             <h3 class="box-title text-anime-style-2">{{ $it?->title ?: __('Item') }}</h3>
                             @if($it?->sub_title)

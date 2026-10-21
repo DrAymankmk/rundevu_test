@@ -145,8 +145,11 @@
 
 						</div>
 						<button type="button"
-							class="th-menu-toggle d-inline-block d-lg-none"><i
-								class="far fa-bars"></i></button>
+							class="th-menu-toggle d-inline-block d-lg-none"
+							aria-label="{{ __('main.menu_open') }}"
+							aria-expanded="false"
+							aria-controls="mobile-menu"><i
+								class="far fa-bars" aria-hidden="true"></i></button>
 					</div>
 				</div>
 			</div>

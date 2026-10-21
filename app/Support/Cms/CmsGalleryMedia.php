@@ -92,7 +92,7 @@ class CmsGalleryMedia
             return $media->getUrl();
         }
 
-        foreach (['thumb', 'preview'] as $conversion) {
+        foreach (['preview_webp', 'thumb_webp', 'preview', 'thumb'] as $conversion) {
             if (! $media->hasGeneratedConversion($conversion)) {
                 continue;
             }
@@ -103,6 +103,27 @@ class CmsGalleryMedia
         }
 
         return null;
+    }
+
+    /**
+     * Prefer WebP conversion URL when available (with fallback).
+     */
+    public static function webpUrl(Media $media, string $conversion = 'preview_webp'): ?string
+    {
+        if (self::isVideo($media)) {
+            return self::accessibleUrl($media);
+        }
+
+        if ($media->hasGeneratedConversion($conversion) && file_exists($media->getPath($conversion))) {
+            return $media->getUrl($conversion);
+        }
+
+        $fallback = $conversion === 'thumb_webp' ? 'thumb' : 'preview';
+        if ($media->hasGeneratedConversion($fallback) && file_exists($media->getPath($fallback))) {
+            return $media->getUrl($fallback);
+        }
+
+        return self::accessibleUrl($media);
     }
 
     public static function alt(?Media $media): string

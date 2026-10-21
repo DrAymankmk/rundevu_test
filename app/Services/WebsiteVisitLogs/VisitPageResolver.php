@@ -22,19 +22,73 @@ class VisitPageResolver
      */
     public function resolve(Request $request): array
     {
-        $path = VisitUrlDisplay::decode('/' . ltrim($request->path(), '/')) ?: '/';
+        return $this->resolvePath(
+            '/' . ltrim($request->path(), '/'),
+            $request->getQueryString(),
+            (string) optional($request->route())->getName(),
+            $request
+        );
+    }
+
+    /**
+     * Resolve visit metadata from a client-reported path (beacon bootstrap).
+     *
+     * @return array{
+     *   page_type: string,
+     *   page_path: string,
+     *   page_url: string,
+     *   entity_type: string|null,
+     *   entity_id: int|null,
+     *   entity_slug: string|null,
+     *   locale: string|null
+     * }
+     */
+    public function resolveFromClientPath(string $pagePath, ?string $pageUrl = null): array
+    {
+        $parts = parse_url($pageUrl ?: $pagePath);
+        $path = is_array($parts) && ! empty($parts['path']) ? $parts['path'] : $pagePath;
+        $query = is_array($parts) && ! empty($parts['query']) ? $parts['query'] : null;
+
+        return $this->resolvePath($path, $query, '', null, $pageUrl);
+    }
+
+    /**
+     * @return array{
+     *   page_type: string,
+     *   page_path: string,
+     *   page_url: string,
+     *   entity_type: string|null,
+     *   entity_id: int|null,
+     *   entity_slug: string|null,
+     *   locale: string|null
+     * }
+     */
+    private function resolvePath(
+        string $rawPath,
+        ?string $query,
+        string $routeName,
+        ?Request $request = null,
+        ?string $absoluteUrl = null
+    ): array {
+        $path = VisitUrlDisplay::decode('/' . ltrim($rawPath, '/')) ?: '/';
         if ($path !== '/') {
             $path = rtrim($path, '/') ?: '/';
         }
 
-        $pageUrl = $path;
-        $query = VisitUrlDisplay::decode($request->getQueryString());
-        if ($query) {
-            $pageUrl .= '?' . $query;
+        $pageUrl = $absoluteUrl
+            ? (VisitUrlDisplay::decode($absoluteUrl) ?: $absoluteUrl)
+            : $path;
+        if (! $absoluteUrl) {
+            $decodedQuery = VisitUrlDisplay::decode($query);
+            if ($decodedQuery) {
+                $pageUrl .= '?' . $decodedQuery;
+            }
         }
 
-        $routeName = (string) optional($request->route())->getName();
         $baseName = preg_replace('/^frontend\.(ar\.)?/', '', $routeName) ?: '';
+        if ($baseName === '') {
+            $baseName = $this->inferBaseNameFromPath($path);
+        }
 
         $result = [
             'page_type' => 'other',
@@ -71,19 +125,19 @@ class VisitPageResolver
                 $result['page_type'] = 'blog';
                 break;
             case 'blog.show':
-                $result = array_merge($result, $this->resolveBlogShow($request));
+                $result = array_merge($result, $this->resolveBlogShow($request, $path));
                 break;
             case 'clinics':
                 $result['page_type'] = 'clinics';
                 break;
             case 'clinics.show':
-                $result = array_merge($result, $this->resolveClinicShow($request));
+                $result = array_merge($result, $this->resolveClinicShow($request, $path));
                 break;
             case 'doctors':
                 $result['page_type'] = 'doctors';
                 break;
             case 'doctors.show':
-                $result = array_merge($result, $this->resolveDoctorShow($request));
+                $result = array_merge($result, $this->resolveDoctorShow($request, $path));
                 break;
             case 'social':
                 $result['page_type'] = 'social';
@@ -96,9 +150,51 @@ class VisitPageResolver
         return $result;
     }
 
-    private function resolveBlogShow(Request $request): array
+    private function inferBaseNameFromPath(string $path): string
     {
-        $slug = (string) ($request->route('slug') ?? '');
+        $trimmed = trim($path, '/');
+        if ($trimmed === '' || $trimmed === 'ar') {
+            return 'home';
+        }
+
+        if (strpos($trimmed, 'ar/') === 0) {
+            $trimmed = substr($trimmed, 3);
+        }
+
+        $segments = $trimmed === '' ? [] : explode('/', $trimmed);
+        $first = $segments[0] ?? '';
+        $second = $segments[1] ?? null;
+
+        $map = [
+            'about' => 'about',
+            'services' => 'services',
+            'faq' => 'faq',
+            'subscription' => 'subscription',
+            'contact' => 'contact',
+            'blog' => $second !== null ? 'blog.show' : 'blog',
+            'clinics' => $second !== null ? 'clinics.show' : 'clinics',
+            'doctors' => $second !== null ? 'doctors.show' : 'doctors',
+            'social-media' => 'social',
+        ];
+
+        return $map[$first] ?? 'other';
+    }
+
+    private function resolveBlogShow(?Request $request, string $path = ''): array
+    {
+        $slug = (string) (optional($request)->route('slug') ?? '');
+        if ($slug === '' && $path !== '') {
+            $parts = explode('/', trim($path, '/'));
+            if (($parts[0] ?? '') === 'ar') {
+                array_shift($parts);
+            }
+            if (($parts[0] ?? '') === 'blog') {
+                $slug = (string) ($parts[1] ?? '');
+            } elseif (! empty($parts[0]) && ($parts[0] ?? '') !== 'blog') {
+                // Arabic flat blog: /ar/{slug}
+                $slug = (string) $parts[0];
+            }
+        }
         $data = [
             'page_type' => 'blog_show',
             'entity_type' => 'blog_post',
@@ -128,9 +224,9 @@ class VisitPageResolver
         return $data;
     }
 
-    private function resolveClinicShow(Request $request): array
+    private function resolveClinicShow(?Request $request, string $path = ''): array
     {
-        $param = $request->route('clinic');
+        $param = optional($request)->route('clinic');
         $data = [
             'page_type' => 'clinic_show',
             'entity_type' => 'clinic',
@@ -143,6 +239,14 @@ class VisitPageResolver
             $data['entity_slug'] = $this->readableSlug((string) ($param->localizedSlug() ?: $param->id));
 
             return $data;
+        }
+
+        if (($param === null || $param === '') && $path !== '') {
+            $parts = explode('/', trim($path, '/'));
+            if (($parts[0] ?? '') === 'ar') {
+                array_shift($parts);
+            }
+            $param = ($parts[0] ?? '') === 'clinics' ? ($parts[1] ?? '') : '';
         }
 
         $slug = VisitUrlDisplay::decode((string) $param) ?: (string) $param;
@@ -166,9 +270,17 @@ class VisitPageResolver
         return $data;
     }
 
-    private function resolveDoctorShow(Request $request): array
+    private function resolveDoctorShow(?Request $request, string $path = ''): array
     {
-        $param = VisitUrlDisplay::decode((string) ($request->route('doctor') ?? '')) ?: (string) ($request->route('doctor') ?? '');
+        $raw = (string) (optional($request)->route('doctor') ?? '');
+        if ($raw === '' && $path !== '') {
+            $parts = explode('/', trim($path, '/'));
+            if (($parts[0] ?? '') === 'ar') {
+                array_shift($parts);
+            }
+            $raw = ($parts[0] ?? '') === 'doctors' ? (string) ($parts[1] ?? '') : '';
+        }
+        $param = VisitUrlDisplay::decode($raw) ?: $raw;
         $data = [
             'page_type' => 'doctors',
             'entity_type' => null,

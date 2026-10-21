@@ -30,7 +30,7 @@ $googleUrl = website_store_url('google_play', $cmsGoogleUrl);
 			<div class="col-xl-6">
 				<div class="download-img">
 					<div class="img1">
-						<img src="{{ $phoneImg }}" alt="{{ $phoneAlt }}" loading="lazy" decoding="async">
+						<img src="{{ $phoneImg }}" alt="{{ $phoneAlt }}" width="420" height="640" loading="lazy" decoding="async">
 					</div>
 				</div>
 			</div>

@@ -16,6 +16,7 @@
     <div class="container">
         <div class="breadcumb-content">
             <h1 class="breadcumb-title">{{ $title }}</h1>
+            {{ $slot }}
             <ul class="breadcumb-menu">
                 <li><a href="{{ frontend_route('frontend.home') }}">{{ __('main.home') }}</a></li>
                 @foreach($items as $item)

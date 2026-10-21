@@ -127,6 +127,13 @@
                             <td>
                                 <a href="{{ route('SubSpecialties', $specialization->id) }}" class="link-reset fs-18 p-1"> <i class="ti ti-eye"></i></a>
                                 <a href="javascript: void(0);" class="link-reset fs-18 p-1" data-bs-toggle="modal" data-bs-target="#edit_specialization_{{$specialization->id}}"> <i class="ti ti-pencil"></i></a>
+                                <a href="javascript:void(0);"
+                                   class="link-reset fs-18 p-1 edit-specialty-seo-btn"
+                                   title="{{ __('seo.edit_seo') }}"
+                                   data-specialty-name="{{ app()->getLocale() == 'en' ? $specialization->name_en : $specialization->name_ar }}"
+                                   data-seo-url="{{ route('main-specialty-seo-form', $specialization->id) }}">
+                                    <i class="ti ti-world-www"></i>
+                                </a>
 
                                 <a href="javascript:void(0);"
                                    class="link-reset fs-18 p-1 delete-btn"
@@ -255,6 +262,30 @@
         'sharedModalId' => 'specialtyIconPicker',
     ])
 
+    @include('components.rich-text-editor-assets')
+
+    <div class="modal fade" id="specialtySeoModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title me-auto">
+                        {{ __('seo.edit_seo') }}
+                        <span class="text-muted fs-14" id="specialtySeoModalSubtitle"></span>
+                    </h5>
+                    @if(app()->environment('local'))
+                        <button type="button" class="btn btn-sm btn-outline-warning me-2" id="fillSpecialtySeoTestData">
+                            {{ __('seo.fill_test_data') }}
+                        </button>
+                    @endif
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="specialtySeoModalBody">
+                    <p class="text-muted mb-0">@lang('main.loading')</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 
     <!-- General Delete Modal -->
@@ -281,6 +312,194 @@
             </div>
         </div>
     </div>
+
+    @push('scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const specialtySeoModalEl = document.getElementById('specialtySeoModal');
+                const specialtySeoModalBody = document.getElementById('specialtySeoModalBody');
+                const specialtySeoModalSubtitle = document.getElementById('specialtySeoModalSubtitle');
+                const specialtySeoModal = specialtySeoModalEl && window.bootstrap
+                    ? bootstrap.Modal.getOrCreateInstance(specialtySeoModalEl)
+                    : null;
+
+                document.addEventListener('click', function (event) {
+                    const trigger = event.target.closest('.edit-specialty-seo-btn');
+                    if (!trigger || !specialtySeoModal || !specialtySeoModalBody) {
+                        return;
+                    }
+
+                    event.preventDefault();
+                    const seoUrl = trigger.getAttribute('data-seo-url');
+                    const specialtyName = trigger.getAttribute('data-specialty-name') || '';
+                    if (specialtySeoModalSubtitle) {
+                        specialtySeoModalSubtitle.textContent = specialtyName ? ` - ${specialtyName}` : '';
+                    }
+                    if (typeof window.teardownCmsQuillRoot === 'function') {
+                        specialtySeoModalBody.querySelectorAll('.cms-quill-root').forEach(function (wrap) {
+                            window.teardownCmsQuillRoot(wrap);
+                        });
+                    }
+                    specialtySeoModalBody.innerHTML = `<p class="text-muted mb-0">{{ trans('main.loading') }}</p>`;
+                    specialtySeoModal.show();
+
+                    fetch(seoUrl, {
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'text/html',
+                        },
+                    })
+                        .then(function (res) {
+                            if (!res.ok) {
+                                throw new Error('Failed to load SEO form');
+                            }
+                            return res.text();
+                        })
+                        .then(function (html) {
+                            specialtySeoModalBody.innerHTML = html;
+                            if (typeof window.initCmsQuillRoots === 'function') {
+                                window.initCmsQuillRoots(specialtySeoModalBody);
+                            }
+                        })
+                        .catch(function () {
+                            specialtySeoModalBody.innerHTML = `<div class="text-danger">{{ __('cms.an_error_occurred') }}</div>`;
+                        });
+                });
+
+                @if(app()->environment('local'))
+                const fillSpecialtySeoTestData = document.getElementById('fillSpecialtySeoTestData');
+                if (fillSpecialtySeoTestData) {
+                    fillSpecialtySeoTestData.addEventListener('click', function () {
+                        fillSpecialtySeoForm(specialtySeoModalBody);
+                    });
+                }
+                @endif
+            });
+
+            @if(app()->environment('local'))
+            function fillSpecialtySeoForm(root) {
+                if (!root || !root.querySelector('form')) {
+                    return;
+                }
+
+                const samples = {
+                    en: {
+                        meta_title: 'Test: Brain and Nerve Doctors',
+                        meta_description: '<p>Test meta description for brain and nerve doctors.</p>',
+                        meta_keywords: 'test, neurology, brain, nerve',
+                        module_description: '<p>Local test module text shown above the doctor list for this specialty.</p>',
+                        og_title: 'Test OG title',
+                        og_description: 'Test Open Graph description for this specialty.',
+                        twitter_title: 'Test Twitter title',
+                        twitter_description: 'Test Twitter description for this specialty.',
+                        schema_json: JSON.stringify({
+                            '@context': 'https://schema.org',
+                            '@type': 'WebPage',
+                            'name': 'Test: Brain and Nerve Doctors',
+                            'description': 'Local SEO test data'
+                        }, null, 2)
+                    },
+                    ar: {
+                        meta_title: 'تجريبي: أطباء المخ والأعصاب',
+                        meta_description: '<p>وصف ميتا تجريبي لأطباء المخ والأعصاب.</p>',
+                        meta_keywords: 'تجريبي, مخ, أعصاب',
+                        module_description: '<p>نص تجريبي يظهر أعلى قائمة الأطباء لهذا التخصص.</p>',
+                        og_title: 'عنوان OG تجريبي',
+                        og_description: 'وصف Open Graph تجريبي لهذا التخصص.',
+                        twitter_title: 'عنوان تويتر تجريبي',
+                        twitter_description: 'وصف تويتر تجريبي لهذا التخصص.',
+                        schema_json: JSON.stringify({
+                            '@context': 'https://schema.org',
+                            '@type': 'WebPage',
+                            'name': 'تجريبي: أطباء المخ والأعصاب',
+                            'description': 'بيانات SEO تجريبية'
+                        }, null, 2)
+                    }
+                };
+
+                function sampleFor(locale) {
+                    if (samples[locale]) {
+                        return samples[locale];
+                    }
+
+                    return {
+                        meta_title: 'Test meta title (' + locale + ')',
+                        meta_description: '<p>Test meta description (' + locale + ').</p>',
+                        meta_keywords: 'test, ' + locale,
+                        module_description: '<p>Test module description (' + locale + ').</p>',
+                        og_title: 'Test OG title (' + locale + ')',
+                        og_description: 'Test OG description (' + locale + ').',
+                        twitter_title: 'Test Twitter title (' + locale + ')',
+                        twitter_description: 'Test Twitter description (' + locale + ').',
+                        schema_json: samples.en.schema_json
+                    };
+                }
+
+                function setNamed(name, value) {
+                    const field = root.querySelector('input[type="checkbox"][name="' + name + '"]')
+                        || root.querySelector('[name="' + name + '"]:not([type="hidden"]):not([type="file"])');
+                    if (!field || field.type === 'file' || field.type === 'hidden') {
+                        return;
+                    }
+                    if (field.type === 'checkbox') {
+                        field.checked = value === true || value === '1' || value === 1;
+                        field.dispatchEvent(new Event('change', { bubbles: true }));
+                        return;
+                    }
+                    field.value = value;
+                    field.dispatchEvent(new Event('input', { bubbles: true }));
+                    field.dispatchEvent(new Event('change', { bubbles: true }));
+                    const editor = field.closest('.cms-quill-root');
+                    const quill = editor ? editor.querySelector('.ql-editor') : null;
+                    if (quill) {
+                        quill.innerHTML = value;
+                    }
+                }
+
+                setNamed('seo[canonical_url]', window.location.origin + '/doctors/brain-and-nerve-diseases');
+                setNamed('seo[robots]', 'index,follow');
+                setNamed('seo[og_type]', 'website');
+                setNamed('seo[is_active]', '1');
+
+                const locales = new Set();
+                root.querySelectorAll('[name^="seo[translations]["]').forEach(function (field) {
+                    const match = field.name.match(/^seo\[translations\]\[([^\]]+)\]/);
+                    if (match) {
+                        locales.add(match[1]);
+                    }
+                });
+
+                locales.forEach(function (locale) {
+                    const sample = sampleFor(locale);
+                    Object.keys(sample).forEach(function (key) {
+                        setNamed('seo[translations][' + locale + '][' + key + ']', sample[key]);
+                    });
+                });
+
+                const imageInput = root.querySelector('input[type="file"][name="seo[og_image_file]"]');
+                if (imageInput && typeof DataTransfer !== 'undefined') {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 120;
+                    canvas.height = 63;
+                    const context = canvas.getContext('2d');
+                    context.fillStyle = '#3E66F3';
+                    context.fillRect(0, 0, canvas.width, canvas.height);
+                    context.fillStyle = '#ffffff';
+                    context.font = '16px sans-serif';
+                    context.fillText('OG test', 22, 38);
+                    canvas.toBlob(function (blob) {
+                        if (!blob) {
+                            return;
+                        }
+                        const transfer = new DataTransfer();
+                        transfer.items.add(new File([blob], 'og-test.png', { type: 'image/png' }));
+                        imageInput.files = transfer.files;
+                    }, 'image/png');
+                }
+            }
+            @endif
+        </script>
+    @endpush
 
 
 @endsection

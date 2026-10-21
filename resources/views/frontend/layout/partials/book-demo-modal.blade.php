@@ -37,8 +37,8 @@ body.book-demo-modal-open .modal-backdrop {
 				<button type="button" class="btn-close" data-bs-dismiss="modal"
 					aria-label="{{ __('main.Close') }}"></button>
 			</div>
-			<form action="{{ frontend_route('frontend.book_demo') }}" method="POST">
-				@csrf
+			<form action="{{ frontend_route('frontend.book_demo') }}" method="POST" id="bookDemoForm">
+				<input type="hidden" name="_token" id="bookDemoCsrf" value="{{ !empty($hasSession) ? csrf_token() : '' }}">
 				<div class="modal-body pt-2">
 					<div class="mb-3">
 						<label class="form-label"
@@ -105,13 +105,77 @@ document.addEventListener('DOMContentLoaded', function() {
 		return;
 	}
 
+	var csrfInput = document.getElementById('bookDemoCsrf');
+	var csrfPromise = null;
+
+	function ensureCsrfToken() {
+		if (csrfInput && csrfInput.value) {
+			return Promise.resolve(csrfInput.value);
+		}
+		if (csrfPromise) {
+			return csrfPromise;
+		}
+		var meta = document.querySelector('meta[name="csrf-token"]');
+		if (meta && meta.getAttribute('content')) {
+			if (csrfInput) {
+				csrfInput.value = meta.getAttribute('content');
+			}
+			return Promise.resolve(meta.getAttribute('content'));
+		}
+		var urlMeta = document.querySelector('meta[name="csrf-token-url"]');
+		var url = urlMeta ? urlMeta.getAttribute('content') : '/csrf-token';
+		csrfPromise = fetch(url, {
+			credentials: 'same-origin',
+			headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
+		}).then(function (res) {
+			return res.json();
+		}).then(function (data) {
+			var token = data && data.token ? data.token : '';
+			if (csrfInput) {
+				csrfInput.value = token;
+			}
+			if (token) {
+				var headMeta = document.querySelector('meta[name="csrf-token"]');
+				if (!headMeta) {
+					headMeta = document.createElement('meta');
+					headMeta.setAttribute('name', 'csrf-token');
+					document.head.appendChild(headMeta);
+				}
+				headMeta.setAttribute('content', token);
+			}
+			csrfPromise = null;
+			return token;
+		}).catch(function () {
+			csrfPromise = null;
+			return '';
+		});
+		return csrfPromise;
+	}
+
 	modal.addEventListener('show.bs.modal', function() {
 		document.body.classList.add('book-demo-modal-open');
+		ensureCsrfToken();
 	});
 
 	modal.addEventListener('hidden.bs.modal', function() {
 		document.body.classList.remove('book-demo-modal-open');
 	});
+
+	var form = document.getElementById('bookDemoForm');
+	if (form) {
+		form.addEventListener('submit', function (event) {
+			if (csrfInput && csrfInput.value) {
+				return;
+			}
+			event.preventDefault();
+			ensureCsrfToken().then(function (token) {
+				if (!token) {
+					return;
+				}
+				form.submit();
+			});
+		});
+	}
 
 	@if($errors->getBag('bookDemo')->isNotEmpty())
 	new bootstrap.Modal(modal).show();

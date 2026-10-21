@@ -7,6 +7,7 @@ use App\Models\City;
 use App\Models\Clinic;
 use App\Models\ReservationRate;
 use App\Models\Specialty;
+use App\Services\Frontend\FrontendContentCache;
 use App\Services\Seo\SeoResolver;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -32,6 +33,12 @@ class DoctorsController extends Controller
         $specialtyId = $activeSpecialty
             ? (int) $activeSpecialty->id
             : (int) $request->get('specialty_id', 0);
+        if (! $activeSpecialty && $specialtyId > 0) {
+            $activeSpecialty = Specialty::query()
+                ->where('status', 1)
+                ->whereNull('parent_id')
+                ->find($specialtyId);
+        }
         $clinicId = (int) $request->get('clinic_id', 0);
 
         $doctors = $this->filteredDoctorsQuery($search, $cityId, $specialtyId, $clinicId)
@@ -47,15 +54,10 @@ class DoctorsController extends Controller
             ->orderBy($locale === 'en' ? 'name_en' : 'name_ar')
             ->get();
 
-        $specialties = Specialty::assignFrontendSlugs(
-            Specialty::query()
-                ->where('status', 1)
-                ->whereNull('parent_id')
-                ->orderBy($locale === 'en' ? 'name_en' : 'name_ar')
-                ->get()
-        );
+        $specialties = FrontendContentCache::specialties();
 
         if ($activeSpecialty) {
+            $activeSpecialty->loadMissing('seoMeta.translations');
             $activeSpecialty->setAttribute(
                 'frontend_slug',
                 Specialty::frontendSlugMap()[(int) $activeSpecialty->id] ?? $activeSpecialty->frontend_slug
@@ -75,15 +77,28 @@ class DoctorsController extends Controller
         $listDescription = $specialtyName !== ''
             ? __('doctors.specialty_list_description', ['specialty' => $specialtyName])
             : __('doctors.frontend_list_description');
-        $canonical = $activeSpecialty
+        $canonical = $activeSpecialty && filled($activeSpecialty->frontend_slug ?? null)
             ? frontend_route('frontend.doctors.show', $activeSpecialty->frontend_slug)
             : frontend_route('frontend.doctors');
 
-        $seo = $this->seoResolver->resolve(null, $locale, [
+        $specialtySeo = $this->specialtySeoContent($activeSpecialty, $locale);
+        if ($specialtySeo['description'] !== '') {
+            $listDescription = strip_tags($specialtySeo['description']);
+        }
+
+        $seo = $this->seoResolver->resolve($activeSpecialty, $locale, [
             'title' => $listTitle,
             'description' => $listDescription,
+            'keywords' => $specialtySeo['keywords'],
             'canonical' => $canonical,
-            'lcp_image' => frontend_breadcrumb_image('doctors'),
+            'lcp_image' => $specialtySeo['image'] ?: frontend_breadcrumb_image('doctors'),
+            'image' => $specialtySeo['image'] ?: null,
+            'hreflang_overrides' => $activeSpecialty && filled($activeSpecialty->frontend_slug ?? null)
+                ? [
+                    'en' => frontend_route('frontend.doctors.show', $activeSpecialty->frontend_slug, true, 'en'),
+                    'ar' => frontend_route('frontend.doctors.show', $activeSpecialty->frontend_slug, true, 'ar'),
+                ]
+                : [],
         ]);
 
         return view('frontend.pages.doctors.index', compact(
@@ -98,8 +113,67 @@ class DoctorsController extends Controller
             'seo',
             'activeSpecialty',
             'specialtyName',
-            'listTitle'
+            'listTitle',
+            'specialtySeo'
         ));
+    }
+
+    /**
+     * Visible SEO copy for a specialty doctors page.
+     *
+     * @return array{title: string, description: string, module_description: string, keywords: string, image: ?string}
+     */
+    private function specialtySeoContent(?Specialty $specialty, string $locale): array
+    {
+        $empty = [
+            'title' => '',
+            'description' => '',
+            'module_description' => '',
+            'keywords' => '',
+            'image' => null,
+        ];
+
+        $seo = $specialty?->seoMeta;
+        if (! $seo || ! $seo->is_active) {
+            return $empty;
+        }
+
+        $translations = $seo->relationLoaded('translations')
+            ? $seo->translations
+            : $seo->translations()->get();
+
+        $pick = function (string $field) use ($translations, $locale): string {
+            $preferred = [
+                $translations->firstWhere('locale', $locale),
+                $translations->firstWhere('locale', config('app.fallback_locale', 'en')),
+            ];
+
+            foreach (array_filter($preferred) as $row) {
+                $value = trim((string) ($row->{$field} ?? ''));
+                if ($value !== '') {
+                    return $value;
+                }
+            }
+
+            foreach ($translations as $row) {
+                $value = trim((string) ($row->{$field} ?? ''));
+                if ($value !== '') {
+                    return $value;
+                }
+            }
+
+            return '';
+        };
+
+        $image = $seo->getFirstMediaUrl('og_image') ?: null;
+
+        return [
+            'title' => $pick('meta_title') ?: $pick('og_title'),
+            'description' => $pick('meta_description') ?: $pick('og_description'),
+            'module_description' => $pick('module_description'),
+            'keywords' => $pick('meta_keywords'),
+            'image' => filled($image) ? $image : null,
+        ];
     }
 
     public function show(string $doctor)

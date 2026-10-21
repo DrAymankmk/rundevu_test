@@ -94,6 +94,22 @@ class BlogCategory extends Model implements HasMedia
             ->nonOptimized()
             ->nonQueued()
             ->performOnCollections('image');
+
+        $this->addMediaConversion('thumb_webp')
+            ->format('webp')
+            ->width(300)
+            ->height(300)
+            ->nonOptimized()
+            ->nonQueued()
+            ->performOnCollections('image');
+
+        $this->addMediaConversion('preview_webp')
+            ->format('webp')
+            ->width(1200)
+            ->height(900)
+            ->nonOptimized()
+            ->nonQueued()
+            ->performOnCollections('image');
     }
 
     public function getImageUrl(string $conversion = ''): ?string

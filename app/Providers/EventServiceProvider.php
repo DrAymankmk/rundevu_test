@@ -5,10 +5,15 @@ namespace App\Providers;
 use App\Events\SystemNotifications\ClinicRegistered;
 use App\Events\SystemNotifications\DemoRequested;
 use App\Listeners\SendSystemNotification;
+use App\Models\CmsItem;
+use App\Models\CmsPage;
+use App\Models\CmsSection;
+use App\Models\Package;
+use App\Models\Specialty;
+use App\Observers\FrontendCacheObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -36,6 +41,12 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        $observer = FrontendCacheObserver::class;
+
+        Specialty::observe($observer);
+        Package::observe($observer);
+        CmsPage::observe($observer);
+        CmsSection::observe($observer);
+        CmsItem::observe($observer);
     }
 }

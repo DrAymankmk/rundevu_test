@@ -3,8 +3,7 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
-use App\Models\CmsPage;
-use App\Models\Specialty;
+use App\Services\Frontend\FrontendContentCache;
 use App\Services\Seo\SeoResolver;
 
 class HomeController extends Controller
@@ -15,33 +14,9 @@ class HomeController extends Controller
 
     public function index()
     {
-        $cmsPage = CmsPage::query()
-            ->where('slug', 'home')
-            ->where('is_active', true)
-            ->with(['seoMeta.translations', 'translations'])
-            ->first();
-
-        $cmsPageSections = collect();
-        if ($cmsPage) {
-            $cmsPageSections = $cmsPage->sections()
-                ->active()
-                ->ordered()
-                ->with([
-                    'translations',
-                    'links' => static function ($q) {
-                        $q->active()->ordered()->with('translations');
-                    },
-                    'items' => static function ($q) {
-                        $q->active()->ordered()->with([
-                            'translations',
-                            'links' => static function ($lq) {
-                                $lq->active()->ordered()->with('translations');
-                            },
-                        ]);
-                    },
-                ])
-                ->get();
-        }
+        $cached = FrontendContentCache::cmsPageWithSections('home');
+        $cmsPage = $cached['page'];
+        $cmsPageSections = $cached['sections'];
 
         $seo = $this->seoResolver->resolveForCmsSlug('home', 'frontend.home');
         $heroSection = $cmsPageSections->first(function ($section) {
@@ -53,14 +28,7 @@ class HomeController extends Controller
             ? $heroSection->getMediaUrl('images', app()->getLocale(), asset('frontend/assets/img/hero/hero_bg_1_1.jpg'), true)
             : asset('frontend/assets/img/hero/hero_bg_1_1.jpg');
 
-        $locale = app()->getLocale();
-        $specialties = Specialty::assignFrontendSlugs(
-            Specialty::query()
-                ->where('status', 1)
-                ->whereNull('parent_id')
-                ->orderBy($locale === 'en' ? 'name_en' : 'name_ar')
-                ->get()
-        );
+        $specialties = FrontendContentCache::specialties();
 
         return view('frontend.pages.home.index', compact('cmsPage', 'cmsPageSections', 'seo', 'specialties'));
     }

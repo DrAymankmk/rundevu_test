@@ -89,6 +89,7 @@ return [
 								<div class="box-icon box-icon--fit">
 									<img src="{{ $icon }}"
 										alt="{{ $it?->title ?: __('Service') }}"
+										width="64" height="64"
 										loading="lazy"
 										decoding="async">
 								</div>
@@ -115,7 +116,7 @@ return [
 							<div class="box-right-wrapp">
 								<div class="box-img global-img">
 									<img src="{{ $simg }}"
-										alt="{{ $simgAlt }}" decoding="async" loading="lazy">
+										alt="{{ $simgAlt }}" width="480" height="360" decoding="async" loading="lazy">
 								</div>
 								@if($itemLink)
 								<div class="service-btn">

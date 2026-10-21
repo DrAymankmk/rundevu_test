@@ -203,6 +203,20 @@ class BlogPost extends Model implements HasMedia
             ->height(600)
             ->nonOptimized()
             ->nonQueued();
+
+        $this->addMediaConversion('thumb_webp')
+            ->format('webp')
+            ->width(300)
+            ->height(300)
+            ->nonOptimized()
+            ->nonQueued();
+
+        $this->addMediaConversion('preview_webp')
+            ->format('webp')
+            ->width(1200)
+            ->height(900)
+            ->nonOptimized()
+            ->nonQueued();
     }
 
     public function getImageMedia(?string $locale = null): ?Media

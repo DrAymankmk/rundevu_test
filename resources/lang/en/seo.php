@@ -13,6 +13,7 @@ return [
     'module_description' => 'Module Description',
     'module_description_hint' => 'Optional long text shown on the module page. Not used in SEO meta tags.',
     'edit_seo' => 'Edit SEO',
+    'fill_test_data' => 'Fill test data',
     'og_title' => 'OG Title',
     'og_description' => 'OG Description',
     'twitter_title' => 'Twitter Title',

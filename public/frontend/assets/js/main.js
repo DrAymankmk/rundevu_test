@@ -85,15 +85,7 @@
             });
         }
 
-        if (typeof WOW !== 'undefined') {
-            new WOW({
-                boxClass: 'wow',
-                animateClass: 'animated',
-                offset: 0,
-                mobile: true,
-                live: true
-            }).init();
-        }
+        // WOW.js intentionally not loaded (overlaps GSAP ScrollTrigger). CSS .wow classes remain harmless.
 
         if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
             gsap.registerPlugin(ScrollTrigger);
@@ -277,6 +269,8 @@
             $(opt.menuToggleBtn).each(function () {
                 $(this).on("click", function () {
                     menuToggle();
+                    var open = menu.hasClass(opt.bodyToggleClass);
+                    $(opt.menuToggleBtn).attr("aria-expanded", open ? "true" : "false");
                 });
             });
 
@@ -296,14 +290,28 @@
     $(".th-menu-wrapper").thmobilemenu();
 
     /*---------- 04. Sticky fix ----------*/
-    $(window).scroll(function () {
-        var topPos = $(this).scrollTop();
-        if (topPos > 500) {
-            $('.sticky-wrapper').addClass('sticky');
-        } else {
-            $('.sticky-wrapper').removeClass('sticky')
+    (function () {
+        var stickyRaf = 0;
+        var stickyEl = document.querySelector(".sticky-wrapper");
+        if (!stickyEl) {
+            return;
         }
-    })
+        function updateSticky() {
+            stickyRaf = 0;
+            var topPos = window.pageYOffset || document.documentElement.scrollTop || 0;
+            if (topPos > 500) {
+                stickyEl.classList.add("sticky");
+            } else {
+                stickyEl.classList.remove("sticky");
+            }
+        }
+        window.addEventListener("scroll", function () {
+            if (stickyRaf) {
+                return;
+            }
+            stickyRaf = window.requestAnimationFrame(updateSticky);
+        }, { passive: true });
+    })();
 
     /*----------- 04.1.  One Page Nav ----------*/
     function onePageNav(element) {
@@ -340,28 +348,46 @@
         progressPath.style.strokeDashoffset = pathLength;
         // Avoid synchronous layout flush (getBoundingClientRect) after style writes.
         progressPath.style.transition = progressPath.style.WebkitTransition = 'stroke-dashoffset 10ms linear';
+        var scrollMetrics = { top: 0, range: 1 };
+        var progressRaf = 0;
+        var refreshScrollMetrics = function () {
+            var doc = document.documentElement;
+            scrollMetrics.top = window.pageYOffset || doc.scrollTop || 0;
+            scrollMetrics.range = Math.max((doc.scrollHeight || 0) - (window.innerHeight || 0), 1);
+        };
         var updateProgress = function () {
-            var scroll = $(window).scrollTop();
-            var height = $(document).height() - $(window).height();
-            var progress = pathLength - (scroll * pathLength / height);
+            progressRaf = 0;
+            var progress = pathLength - (scrollMetrics.top * pathLength / scrollMetrics.range);
             progressPath.style.strokeDashoffset = progress;
-        }
-        // Defer first paint-sensitive measurement until idle.
-        if ('requestIdleCallback' in window) {
-            requestIdleCallback(updateProgress, { timeout: 2000 });
-        } else {
-            setTimeout(updateProgress, 0);
-        }
-        $(window).scroll(updateProgress);
-        var offset = 50;
-        var duration = 750;
-        jQuery(window).on('scroll', function () {
-            if (jQuery(this).scrollTop() > offset) {
-                jQuery(scrollTopbtn).addClass('show');
+            if (scrollMetrics.top > 50) {
+                scrollTopbtn.classList.add('show');
             } else {
-                jQuery(scrollTopbtn).removeClass('show');
+                scrollTopbtn.classList.remove('show');
             }
-        });
+        };
+        var onScrollFrame = function () {
+            scrollMetrics.top = window.pageYOffset || document.documentElement.scrollTop || 0;
+            if (progressRaf) {
+                return;
+            }
+            progressRaf = window.requestAnimationFrame(updateProgress);
+        };
+        // Defer first paint-sensitive measurement until idle.
+        var firstMeasure = function () {
+            refreshScrollMetrics();
+            updateProgress();
+        };
+        if ('requestIdleCallback' in window) {
+            requestIdleCallback(firstMeasure, { timeout: 2000 });
+        } else {
+            setTimeout(firstMeasure, 0);
+        }
+        window.addEventListener('scroll', onScrollFrame, { passive: true });
+        window.addEventListener('resize', function () {
+            refreshScrollMetrics();
+            onScrollFrame();
+        }, { passive: true });
+        var duration = 750;
         jQuery(scrollTopbtn).on('click', function (event) {
             event.preventDefault();
             jQuery('html, body').animate({

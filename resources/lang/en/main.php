@@ -614,5 +614,7 @@ return [
     'wa_scan_hint' => 'Point your camera at the code to start chatting',
     'wa_open_whatsapp' => 'Open WhatsApp chat',
     'wa_close' => 'Close',
+    'menu_open' => 'Open menu',
+    'menu_close' => 'Close menu',
     'skip_to_content' => 'Skip to content',
 ];

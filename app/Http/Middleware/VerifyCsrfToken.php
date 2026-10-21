@@ -13,5 +13,6 @@ class VerifyCsrfToken extends Middleware
      */
     protected $except = [
         'website-visit-logs/beacon',
+        'website-visit-logs/bootstrap',
     ];
 }

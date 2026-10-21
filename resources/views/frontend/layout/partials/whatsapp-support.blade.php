@@ -1,8 +1,9 @@
 @php
 	$clinicWaUrl = 'https://wa.me/message/UZCY4BQEEJYYE1';
 	$patientWaUrl = 'https://wa.me/message/6OFM5AU3AHNIN1';
-	$clinicQr = 'https://api.qrserver.com/v1/create-qr-code/?size=280x280&ecc=H&margin=10&data=' . urlencode($clinicWaUrl);
-	$patientQr = 'https://api.qrserver.com/v1/create-qr-code/?size=280x280&ecc=H&margin=10&data=' . urlencode($patientWaUrl);
+	// Prefer locally generated SVG (no Imagick / third-party dependency at request time).
+	$clinicQr = asset('frontend/assets/img/qr/whatsapp-clinic.svg');
+	$patientQr = asset('frontend/assets/img/qr/whatsapp-patient.svg');
 @endphp
 
 <div class="wa-support" id="waSupportDock" hidden>

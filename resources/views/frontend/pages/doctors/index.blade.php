@@ -5,14 +5,18 @@
 	$activeSpecialty = $activeSpecialty ?? null;
 	$specialtyName = $specialtyName ?? '';
 	$listTitle = $listTitle ?? __('doctors.page_title');
+	$specialtySeo = $specialtySeo ?? ['module_description' => ''];
 @endphp
-
 <x-breadcrumb
 	:title="$listTitle"
 	:current="$specialtyName !== '' ? $specialtyName : $listTitle"
 	:items="$activeSpecialty ? [['label' => __('doctors.page_title'), 'url' => frontend_route('frontend.doctors')]] : []"
 	page="doctors"
-/>
+>
+	@if(filled($specialtySeo['module_description'] ?? null))
+		<div class="breadcumb-module">{!! $specialtySeo['module_description'] !!}</div>
+	@endif
+</x-breadcrumb>
 
 @include('frontend.pages.home.sections.specialties_section')
 

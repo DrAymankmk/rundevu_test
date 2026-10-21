@@ -1,5 +1,5 @@
 @php
-	$logoAlt = $logoAlt ?? config('app.name', 'Randevu');
+	$logoAlt = $logoAlt ?? __('main.app_name');
 	$logoWidth = (int) ($logoWidth ?? 100);
 	$logoHeight = (int) ($logoHeight ?? 50);
 	$logoClass = $logoClass ?? '';

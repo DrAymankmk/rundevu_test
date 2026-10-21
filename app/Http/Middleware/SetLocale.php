@@ -4,7 +4,6 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Session;
 
 class SetLocale
 {
@@ -32,13 +31,19 @@ class SetLocale
 
         if ($isAdmin) {
             // Admin keeps session-based locale switching.
-            $sessionLang = Session::get('lang');
             $lang = $default;
-            if ($sessionLang !== null && $sessionLang !== '') {
-                $lang = strtolower(trim((string) $sessionLang));
-                if (! in_array($lang, $allowed, true)) {
-                    $lang = $default;
+            try {
+                if ($request->hasSession() && $request->session()->isStarted()) {
+                    $sessionLang = $request->session()->get('lang');
+                    if ($sessionLang !== null && $sessionLang !== '') {
+                        $lang = strtolower(trim((string) $sessionLang));
+                        if (! in_array($lang, $allowed, true)) {
+                            $lang = $default;
+                        }
+                    }
                 }
+            } catch (\Throwable $e) {
+                $lang = $default;
             }
             App::setLocale($lang);
 

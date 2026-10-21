@@ -141,5 +141,21 @@ class CmsItem extends Model implements HasMedia
             ->nonOptimized()
             ->nonQueued()
             ->performOnCollections('images', 'gallery', 'icons');
+
+        $this->addMediaConversion('thumb_webp')
+            ->format('webp')
+            ->width(300)
+            ->height(300)
+            ->nonOptimized()
+            ->nonQueued()
+            ->performOnCollections('images', 'gallery', 'icons');
+
+        $this->addMediaConversion('preview_webp')
+            ->format('webp')
+            ->width(1200)
+            ->height(900)
+            ->nonOptimized()
+            ->nonQueued()
+            ->performOnCollections('images', 'gallery', 'icons');
     }
 }

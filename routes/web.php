@@ -139,6 +139,14 @@ Route::post('website-visit-logs/beacon', 'Frontend\WebsiteVisitLogBeaconControll
     ->middleware(['setlocale', 'throttle:60,1'])
     ->name('website-visit-logs.beacon');
 
+Route::post('website-visit-logs/bootstrap', 'Frontend\WebsiteVisitLogBootstrapController@store')
+    ->middleware(['setlocale', 'throttle:60,1'])
+    ->name('website-visit-logs.bootstrap');
+
+Route::get('csrf-token', 'Frontend\CsrfTokenController')
+    ->middleware(['setlocale', 'throttle:60,1'])
+    ->name('frontend.csrf');
+
 // Legacy language switch route (rewrites current path to /ar/... or unprefixed)
 Route::get('language/{lang}', function (string $lang) {
     return redirect()->to(frontend_language_url($lang));
@@ -1317,6 +1325,8 @@ Route::group(["middleware" => ["auth", "setlocale"], 'prefix' => 'admin', 'names
         Route::get('main-specialties', 'SpecialtiesControllerController@index')->name('main-specialties');
         Route::post('add-mainSpecialty', 'SpecialtiesControllerController@add_specialty')->name('add-mainSpecialty');
         Route::post('update-MainSpecialty/{id}', 'SpecialtiesControllerController@update_specialty')->name('update-MainSpecialty');
+        Route::get('main-specialty-seo-form/{id}', 'SpecialtiesControllerController@specialty_seo_form')->name('main-specialty-seo-form');
+        Route::post('update-mainSpecialty-seo/{id}', 'SpecialtiesControllerController@update_specialty_seo')->name('update-mainSpecialty-seo');
         Route::get('update-status-main-specialty/{id}/{status}', 'SpecialtiesControllerController@update_status_specialty')->name('update-status-main-specialty');
         Route::delete('destroy-mainSpecialty/{id}', 'SpecialtiesControllerController@destroy_specialty')->name('destroy-mainSpecialty');
 

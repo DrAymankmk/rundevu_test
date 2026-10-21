@@ -2,7 +2,7 @@
 	'use strict';
 
 	var cfg = window.__VISIT_LOG__;
-	if (!cfg || !cfg.id || !cfg.endpoint || !cfg.token) {
+	if (!cfg || !cfg.endpoint) {
 		return;
 	}
 
@@ -13,6 +13,8 @@
 	var onceEvents = {};
 	var leaveSent = false;
 	var flushing = false;
+	var bootstrapped = false;
+	var bootstrapping = false;
 	var heartbeatMs = Math.max(5, parseInt(cfg.heartbeat, 10) || 15) * 1000;
 
 	function nowIso() {
@@ -60,6 +62,9 @@
 	}
 
 	function send(body, useBeacon) {
+		if (!cfg.id || !cfg.token) {
+			return;
+		}
 		var seconds = body.time_spent_seconds || 0;
 		if (seconds < lastSentSeconds && (!body.events || !body.events.length)) {
 			return;
@@ -106,12 +111,66 @@
 	}
 
 	function flush(useBeacon, extraEvents) {
-		send(payload(extraEvents), !!useBeacon);
+		ensureBootstrap().then(function (ok) {
+			if (!ok) {
+				return;
+			}
+			send(payload(extraEvents), !!useBeacon);
+		});
+	}
+
+	function ensureBootstrap() {
+		if (cfg.id && cfg.token) {
+			bootstrapped = true;
+			return Promise.resolve(true);
+		}
+		if (!cfg.deferred || !cfg.bootstrap) {
+			return Promise.resolve(false);
+		}
+		if (bootstrapping) {
+			return new Promise(function (resolve) {
+				var t = setInterval(function () {
+					if (bootstrapped || (!bootstrapping && !(cfg.id && cfg.token))) {
+						clearInterval(t);
+						resolve(!!(cfg.id && cfg.token));
+					}
+				}, 50);
+			});
+		}
+		bootstrapping = true;
+		return fetch(cfg.bootstrap, {
+			method: 'POST',
+			credentials: 'same-origin',
+			headers: {
+				'Content-Type': 'application/json',
+				'Accept': 'application/json',
+				'X-Requested-With': 'XMLHttpRequest'
+			},
+			body: JSON.stringify({
+				page_url: window.location.href,
+				page_path: window.location.pathname + window.location.search,
+				page_title: (document.title || '').slice(0, 255),
+				referer: document.referrer || ''
+			})
+		}).then(function (res) {
+			return res.json();
+		}).then(function (data) {
+			bootstrapping = false;
+			if (data && data.ok && data.visit_id && data.visitor_token) {
+				cfg.id = data.visit_id;
+				cfg.token = data.visitor_token;
+				bootstrapped = true;
+				return true;
+			}
+			return false;
+		}).catch(function () {
+			bootstrapping = false;
+			return false;
+		});
 	}
 
 	function sendLeaveOnce(reason) {
 		if (leaveSent) {
-			// Still refresh time-on-page without another leave event.
 			flush(true);
 			return;
 		}
@@ -171,11 +230,18 @@
 		}
 	}, true);
 
+	var scrollRange = 1;
+	var scrollRaf = 0;
+
+	function measureScrollRange() {
+		var doc = document.documentElement;
+		scrollRange = Math.max((doc.scrollHeight || 0) - (window.innerHeight || 0), 1);
+	}
+
 	function checkScroll() {
 		var doc = document.documentElement;
 		var scrollTop = window.pageYOffset || doc.scrollTop || 0;
-		var height = Math.max(doc.scrollHeight - window.innerHeight, 1);
-		var pct = Math.min(100, Math.round((scrollTop / height) * 100));
+		var pct = Math.min(100, Math.round((scrollTop / scrollRange) * 100));
 		[25, 50, 75, 100].forEach(function (mark) {
 			if (!scrollMarks[mark] && pct >= mark) {
 				scrollMarks[mark] = true;
@@ -184,22 +250,57 @@
 		});
 	}
 
-	window.addEventListener('scroll', checkScroll, { passive: true });
-	checkScroll();
+	function onScroll() {
+		if (scrollRaf) {
+			return;
+		}
+		scrollRaf = window.requestAnimationFrame(function () {
+			scrollRaf = 0;
+			checkScroll();
+		});
+	}
+
+	window.addEventListener('scroll', onScroll, { passive: true });
+	window.addEventListener('resize', function () {
+		measureScrollRange();
+		onScroll();
+	}, { passive: true });
+	// Defer first geometry read so parse/eval does not force an early reflow.
+	function scheduleFirstScrollCheck() {
+		measureScrollRange();
+		checkScroll();
+	}
+	if ('requestIdleCallback' in window) {
+		requestIdleCallback(scheduleFirstScrollCheck, { timeout: 2000 });
+	} else {
+		setTimeout(scheduleFirstScrollCheck, 0);
+	}
 
 	setInterval(function () {
 		flush(false);
 	}, heartbeatMs);
 
-	// Tab switch / minimize: update time only — do NOT log leave (was causing many leave rows).
 	document.addEventListener('visibilitychange', function () {
 		if (document.visibilityState === 'hidden') {
 			flush(true);
 		}
 	});
 
-	// Real page unload / navigation: one leave event only.
 	window.addEventListener('pagehide', function () {
 		sendLeaveOnce('pagehide');
 	});
+
+	// Create the visit after first paint so HTML itself stays cacheable.
+	function scheduleBootstrap() {
+		if ('requestIdleCallback' in window) {
+			requestIdleCallback(function () { ensureBootstrap(); }, { timeout: 3000 });
+		} else {
+			setTimeout(function () { ensureBootstrap(); }, 800);
+		}
+	}
+	if (document.readyState === 'complete') {
+		scheduleBootstrap();
+	} else {
+		window.addEventListener('load', scheduleBootstrap, { once: true });
+	}
 })();
