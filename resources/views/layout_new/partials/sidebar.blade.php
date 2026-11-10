@@ -208,6 +208,28 @@
 
                             <li class="submenu">
                                 <a href="javascript:void(0);"
+                                   class="{{ Request::is('admin/deals*', 'deals*', 'admin/deals-financial*', 'deals-financial*') ? 'active subdrop' : '' }}">
+                                    <i class="ti ti-discount-2"></i><span>@lang('main.deals')</span>
+                                    <span class="menu-arrow"></span>
+                                </a>
+                                <ul>
+                                    <li>
+                                        <a href="{{ route('deals.index') }}"
+                                           class="{{ Request::is('admin/deals*', 'deals*') && !Request::is('admin/deals-financial*', 'deals-financial*') ? 'active' : '' }}">
+                                            @lang('main.deals')
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('deals-financial.index') }}"
+                                           class="{{ Request::is('admin/deals-financial*', 'deals-financial*') ? 'active' : '' }}">
+                                            @lang('main.deals_financial')
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+
+                            <li class="submenu">
+                                <a href="javascript:void(0);"
 								class="{{ Request::is('admin/loyalty-organizations*', 'loyalty-organizations*', 'admin/loyalty-point-rules*', 'loyalty-point-rules*', 'admin/loyalty-coupons*', 'loyalty-coupons*', 'admin/points-exchanges*', 'points-exchanges*') ? 'active subdrop' : '' }}">
                                     <i
                                         class="ti ti-gift"></i><span>@lang('admin.points')</span>
@@ -428,9 +450,11 @@
                                     <li><a href="{{ route('reports.index') }}" class="{{ Request::is('income-report') ? 'active' : '' }}">@lang('main.reports')</a></li>
                                     @if((int) auth()->user()->app_type === 6)
                                     <li><a href="{{ route('financial-reports.index') }}" class="{{ request()->routeIs('financial-reports.index') ? 'active' : '' }}">@lang('financial_reports.title')</a></li>
+                                    <li><a href="{{ route('deals-financial.index') }}" class="{{ request()->routeIs('deals-financial.*') ? 'active' : '' }}">@lang('main.deals_financial')</a></li>
                                     <!-- <li><a href="{{ route('analytics.index') }}" class="{{ request()->routeIs('analytics.*') ? 'active' : '' }}">@lang('analytics.title')</a></li> -->
                                     @elseif(in_array((int) auth()->user()->app_type, [1, 7, 11], true))
                                     <li><a href="{{ route('financial-reports.index') }}" class="{{ request()->routeIs('financial-reports.index') ? 'active' : '' }}">@lang('financial_reports.title')</a></li>
+                                    <li><a href="{{ route('clinic-deals-financial.index') }}" class="{{ request()->routeIs('clinic-deals-financial.*') ? 'active' : '' }}">@lang('deals_financial.clinic_title')</a></li>
                                     <li><a href="{{ route('clinic-reports.appointments') }}" class="{{ request()->routeIs('clinic-reports.*') ? 'active' : '' }}">@lang('clinic_reports.title')</a></li>
                                     @endif
                                     {{--                                <li><a href="{{url('expense-report')}}" class="{{ Request::is('expense-report') ? 'active' : '' }}">Expense Report</a></li>--}}

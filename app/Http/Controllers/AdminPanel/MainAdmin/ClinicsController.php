@@ -348,6 +348,8 @@ class ClinicsController extends Controller
             'annual_subscription_ends_at',
             'rendezvous_badge_enabled',
             'payment_method',
+            'deal_revenue_type',
+            'deal_revenue_amount',
         ];
     }
 
@@ -380,6 +382,11 @@ class ClinicsController extends Controller
                 ClinicContract::PAYMENT_CASH,
                 ClinicContract::PAYMENT_ONLINE,
             ])],
+            'deal_revenue_type' => ['nullable', Rule::in([
+                ClinicContract::DEAL_REVENUE_PERCENTAGE,
+                ClinicContract::DEAL_REVENUE_FIXED,
+            ])],
+            'deal_revenue_amount' => ['nullable', 'numeric', 'min:0'],
         ]);
     }
 
@@ -415,6 +422,8 @@ class ClinicsController extends Controller
                     : null,
                 'rendezvous_badge_enabled' => (bool) $request->input('rendezvous_badge_enabled'),
                 'payment_method' => $paymentMethod,
+                'deal_revenue_type' => $request->input('deal_revenue_type') ?: null,
+                'deal_revenue_amount' => (float) $request->input('deal_revenue_amount', 0),
             ]
         );
     }

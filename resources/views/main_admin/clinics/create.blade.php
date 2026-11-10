@@ -455,6 +455,23 @@
                                            value="{{ old('minimum_consultation_commission', 0) }}">
                                 </div>
                                 <div class="col-md-6">
+                                    <label class="form-label">@lang('main.deal_revenue_type')</label>
+                                    <select name="deal_revenue_type" class="form-control form-control-lg @error('deal_revenue_type') is-invalid @enderror">
+                                        <option value="">—</option>
+                                        <option value="percentage" {{ old('deal_revenue_type') === 'percentage' ? 'selected' : '' }}>@lang('main.deal_revenue_percentage')</option>
+                                        <option value="fixed" {{ old('deal_revenue_type') === 'fixed' ? 'selected' : '' }}>@lang('main.deal_revenue_fixed')</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">@lang('main.deal_revenue_amount')</label>
+                                    <input class="form-control form-control-lg @error('deal_revenue_amount') is-invalid @enderror"
+                                           type="number"
+                                           name="deal_revenue_amount"
+                                           min="0"
+                                           step="0.01"
+                                           value="{{ old('deal_revenue_amount', 0) }}">
+                                </div>
+                                <div class="col-md-6">
                                     <label class="form-label">@lang('main.trial_ends_at')</label>
                                     <input class="form-control form-control-lg @error('trial_ends_at') is-invalid @enderror"
                                            type="date"

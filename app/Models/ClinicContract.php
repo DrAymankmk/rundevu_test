@@ -14,6 +14,8 @@ class ClinicContract extends Model
     public const CASH_COMMISSION = 'cash_commission';
     public const PAYMENT_CASH = 'cash';
     public const PAYMENT_ONLINE = 'online';
+    public const DEAL_REVENUE_PERCENTAGE = 'percentage';
+    public const DEAL_REVENUE_FIXED = 'fixed';
 
     protected $fillable = [
         'clinic_id',
@@ -25,6 +27,8 @@ class ClinicContract extends Model
         'annual_subscription_ends_at',
         'rendezvous_badge_enabled',
         'payment_method',
+        'deal_revenue_type',
+        'deal_revenue_amount',
     ];
 
     protected $casts = [
@@ -34,6 +38,7 @@ class ClinicContract extends Model
         'annual_subscription_starts_at' => 'date',
         'annual_subscription_ends_at' => 'date',
         'rendezvous_badge_enabled' => 'boolean',
+        'deal_revenue_amount' => 'decimal:2',
     ];
 
     public function clinic()
@@ -52,6 +57,8 @@ class ClinicContract extends Model
             'annual_subscription_ends_at' => null,
             'rendezvous_badge_enabled' => false,
             'payment_method' => self::PAYMENT_CASH,
+            'deal_revenue_type' => null,
+            'deal_revenue_amount' => 0,
         ];
     }
 }

@@ -1143,6 +1143,19 @@ Route::group(["middleware" => ["auth", "setlocale"], 'prefix' => 'admin', 'names
 
     Route::get('financial-reports', 'FinancialReportsController@index')->name('financial-reports.index');
 
+    Route::group(['namespace' => 'Clinic'], function () {
+        Route::get('clinic-deals', 'ClinicDealsController@index')->name('clinic-deals.index');
+        Route::get('clinic-deals/{id}', 'ClinicDealsController@show')->name('clinic-deals.show');
+        Route::get('clinic-deals-financial', 'ClinicDealsFinancialController@index')->name('clinic-deals-financial.index');
+
+        Route::get('manage-deals', 'ManageDealsController@index')->name('manage-deals.index');
+        Route::get('manage-deals/assign', 'ManageDealsController@assignForm')->name('manage-deals.assign');
+        Route::post('manage-deals/assign', 'ManageDealsController@assign')->name('manage-deals.assign.store');
+        Route::get('manage-deals/patients', 'ManageDealsController@searchPatients')->name('manage-deals.patients');
+        Route::get('manage-deals/{id}', 'ManageDealsController@show')->name('manage-deals.show');
+        Route::post('manage-deals/{id}/confirm', 'ManageDealsController@confirm')->name('manage-deals.confirm');
+    });
+
     Route::prefix('clinic-reports')->name('clinic-reports.')->group(function () {
         Route::get('appointments', 'ClinicReportsController@appointments')->name('appointments');
         Route::get('doctors', 'ClinicReportsController@doctors')->name('doctors');
@@ -1378,7 +1391,17 @@ Route::group(["middleware" => ["auth", "setlocale"], 'prefix' => 'admin', 'names
         Route::post('loyalty-coupons/{id}/notify/{userId}', 'LoyaltyCouponsController@notifyPatient')->name('loyalty-coupons.notify-patient');
         Route::delete('loyalty-coupons/{id}', 'LoyaltyCouponsController@destroy')->name('loyalty-coupons.destroy');
 
+        Route::get('deals', 'DealsController@index')->name('deals.index');
+        Route::get('deals/create', 'DealsController@create')->name('deals.create');
+        Route::post('deals', 'DealsController@store')->name('deals.store');
+        Route::get('deals/specialties/{clinicId}', 'DealsController@specialties')->name('deals.specialties');
+        Route::get('deals/{id}/edit', 'DealsController@edit')->name('deals.edit');
+        Route::put('deals/{id}', 'DealsController@update')->name('deals.update');
+        Route::delete('deals/{id}', 'DealsController@destroy')->name('deals.destroy');
+        Route::get('deals/{id}/status/{status}', 'DealsController@toggleStatus')->name('deals.toggle');
 
+        Route::get('deals-financial', 'DealsFinancialController@index')->name('deals-financial.index');
+        Route::post('deals-financial/mark-settled', 'DealsFinancialController@markSettled')->name('deals-financial.mark-settled');
 
         Route::get('admin-supervisor', 'SuperVisorController@index')->name('admin-supervisor');
         Route::post('create-supervisor', 'SuperVisorController@create_supervisor')->name('create-supervisor');

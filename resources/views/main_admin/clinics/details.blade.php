@@ -289,12 +289,27 @@
                                             <label class="form-check-label" for="rendezvous_badge_enabled">@lang('main.rendezvous_badge_enabled')</label>
                                         </div>
                                     </div>
+                                      <div class="row g-3 align-items-end mt-1">
+                                    <div class="col-lg-4">
+                                        <label class="form-label">@lang('main.deal_revenue_type')</label>
+                                        <select name="deal_revenue_type" class="form-control">
+                                            <option value="">—</option>
+                                            <option value="percentage" {{ old('deal_revenue_type', $contract->deal_revenue_type) === 'percentage' ? 'selected' : '' }}>@lang('main.deal_revenue_percentage')</option>
+                                            <option value="fixed" {{ old('deal_revenue_type', $contract->deal_revenue_type) === 'fixed' ? 'selected' : '' }}>@lang('main.deal_revenue_fixed')</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <label class="form-label">@lang('main.deal_revenue_amount')</label>
+                                        <input type="number" name="deal_revenue_amount" class="form-control" min="0" step="0.01" value="{{ old('deal_revenue_amount', $contract->deal_revenue_amount ?? 0) }}">
+                                    </div>
+                                </div>
                                     <div class="col-lg-3 text-lg-end">
                                         <button type="submit" class="btn btn-primary w-100">
                                             <i class="ti ti-device-floppy me-1"></i>@lang('main.save_contract')
                                         </button>
                                     </div>
                                 </div>
+                              
                             </form>
                         </div>
                     </div>

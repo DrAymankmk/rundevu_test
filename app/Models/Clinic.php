@@ -183,6 +183,11 @@ class Clinic extends Authenticatable
         return $this->hasOne(ClinicContract::class, 'clinic_id');
     }
 
+    public function deals()
+    {
+        return $this->hasMany(Deal::class, 'clinic_id');
+    }
+
     public function isVerifiedForInstantBooking(): bool
     {
         $clinic = $this->contractOwner();

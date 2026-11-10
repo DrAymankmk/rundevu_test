@@ -82,6 +82,16 @@
                                         class="fa-solid fa-file-invoice-dollar"></i></span>
                                 <span>@lang('financial_reports.title')</span></a></li>
 
+                        <li><a href="{{ route('deals.index') }}"><span
+                                    class="menu-side clinic-admin-menu-icon"><i
+                                        class="fa-solid fa-handshake"></i></span>
+                                <span>@lang('main.deals')</span></a></li>
+
+                        <li><a href="{{ route('deals-financial.index') }}"><span
+                                    class="menu-side clinic-admin-menu-icon"><i
+                                        class="fa-solid fa-coins"></i></span>
+                                <span>@lang('main.deals_financial')</span></a></li>
+
                         <li><a href="{{ route('analytics.index') }}"><span
                                     class="menu-side clinic-admin-menu-icon"><i
                                         class="fa-solid fa-chart-line"></i></span>
@@ -223,6 +233,11 @@
                                 class="fa-solid fa-gift"></i></span>
                         <span>@lang('main.loyalty_program')</span></a></li>
                 @endclinicModule
+
+                <li><a href="{{ route('manage-deals.index') }}"><span
+                            class="menu-side clinic-admin-menu-icon"><i
+                                class="fa-solid fa-handshake"></i></span>
+                        <span>@lang('deals.manage_deals')</span></a></li>
                 <!-- pharmacy -->
             @elseif(in_array(auth()->user()->app_type, [5, 4, 25, 26]))
                 @clinicModule('points')
@@ -279,6 +294,24 @@
                     <li><a href="{{ route('offers') }}"><span class="menu-side clinic-admin-menu-icon"><i
                                     class="fa-solid fa-tags"></i></span>
                             <span>@lang('admin.Manage Offers')</span></a></li>
+
+                    <li class="submenu">
+                        <a href="#"><span class="menu-side clinic-admin-menu-icon"><i
+                                    class="fa-solid fa-handshake"></i></span>
+                            <span>@lang('main.deals')</span>
+                            <span class="menu-arrow"></span></a>
+                        <ul style="display: none;">
+                            <li><a href="{{ route('clinic-deals.index') }}"
+                                   class="{{ request()->routeIs('clinic-deals.*') ? 'active' : '' }}">@lang('deals.clinic_deals')</a>
+                            </li>
+                            <li><a href="{{ route('clinic-deals-financial.index') }}"
+                                   class="{{ request()->routeIs('clinic-deals-financial.*') ? 'active' : '' }}">@lang('deals_financial.clinic_title')</a>
+                            </li>
+                            <li><a href="{{ route('manage-deals.index') }}"
+                                   class="{{ request()->routeIs('manage-deals.*') ? 'active' : '' }}">@lang('deals.manage_deals')</a>
+                            </li>
+                        </ul>
+                    </li>
 
                     <li><a href="{{ route('specialties') }}"><span class="menu-side clinic-admin-menu-icon"><i
                                     class="fa-solid fa-stethoscope"></i></span>

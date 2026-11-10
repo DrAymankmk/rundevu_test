@@ -27,6 +27,23 @@ return [
             ],
         ],
 
+        'deals' => [
+            'label_en' => 'Deals',
+            'label_ar' => 'العروض الخاصة',
+            'app_types' => [1, 2, 7, 11],
+            'route_patterns' => [
+                'clinic-deals.index',
+                'clinic-deals.show',
+                'clinic-deals-financial.index',
+                'manage-deals.index',
+                'manage-deals.assign',
+                'manage-deals.assign.store',
+                'manage-deals.patients',
+                'manage-deals.show',
+                'manage-deals.confirm',
+            ],
+        ],
+
         // 'reception' => [
         //     'label_en' => 'Reception',
         //     'label_ar' => 'الاستقبال',
