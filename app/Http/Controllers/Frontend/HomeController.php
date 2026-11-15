@@ -24,9 +24,17 @@ class HomeController extends Controller
 
             return $type === 'hero' || str_contains((string) ($section->slug ?? ''), 'hero');
         });
+        $defaultHeroBg = asset('frontend/assets/img/hero/hero_bg_1_1.jpg');
         $seo['lcp_image'] = $heroSection
-            ? $heroSection->getMediaUrl('images', app()->getLocale(), asset('frontend/assets/img/hero/hero_bg_1_1.jpg'), true)
-            : asset('frontend/assets/img/hero/hero_bg_1_1.jpg');
+            ? $heroSection->getMediaUrl('images', app()->getLocale(), $defaultHeroBg, true)
+            : $defaultHeroBg;
+        // Keep the preload in sync with the hero <img srcset> so phones do not fetch both sizes.
+        $heroSmall = $heroSection
+            ? $heroSection->getMediaUrl('images', app()->getLocale(), $defaultHeroBg, true, 'preview_webp')
+            : null;
+        $seo['lcp_image_srcset'] = $heroSmall && $heroSmall !== $seo['lcp_image']
+            ? $heroSmall . ' 1200w, ' . $seo['lcp_image'] . ' 1920w'
+            : null;
 
         $specialties = FrontendContentCache::specialties();
 

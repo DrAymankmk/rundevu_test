@@ -6,21 +6,15 @@
 		<div class="swiper-wrapper">
 			<div class="swiper-slide">
 				<div class="hero-inner">
-					<div class="th-hero-bg background-image"
-						style="background-image: url('{{ asset('frontend/assets/img/hero/hero_bg_1_1.jpg') }}');">
-					</div>
+					<div class="th-hero-bg"><img src="{{ asset('frontend/assets/img/hero/hero_bg_1_1.jpg') }}" alt="" width="1920" height="1026" fetchpriority="high"></div>
 					<div class="container">
 						<div class="row align-items-end">
 							<div class="col-xl-7">
 								<div class="hero-style1">
-									<span class="sub-title"
-										data-ani="slideinup"
-										data-ani-delay="0.2s">welcome
+									<span class="sub-title">welcome
 										to
 										medova</span>
-									<h1 class="hero-title fadein"
-										data-ani="fadein"
-										data-ani-delay="0.4s">
+									<h1 class="hero-title">
 										Your <span
 											class="text-theme">Health</span>,
 										Our
@@ -60,9 +54,7 @@
 			</div>
 			<div class="swiper-slide">
 				<div class="hero-inner">
-					<div class="th-hero-bg background-image"
-						style="background-image: url('{{ asset('frontend/assets/img/hero/hero_bg_1_1.jpg') }}');">
-					</div>
+					<div class="th-hero-bg"><img src="{{ asset('frontend/assets/img/hero/hero_bg_1_1.jpg') }}" alt="" width="1920" height="1026" loading="lazy" decoding="async"></div>
 					<div class="container">
 						<div class="row align-items-end">
 							<div class="col-xl-7">
@@ -113,9 +105,7 @@
 			</div>
 			<div class="swiper-slide">
 				<div class="hero-inner">
-					<div class="th-hero-bg background-image"
-						style="background-image: url('{{ asset('frontend/assets/img/hero/hero_bg_1_1.jpg') }}');">
-					</div>
+					<div class="th-hero-bg"><img src="{{ asset('frontend/assets/img/hero/hero_bg_1_1.jpg') }}" alt="" width="1920" height="1026" loading="lazy" decoding="async"></div>
 					<div class="container">
 						<div class="row align-items-end">
 							<div class="col-xl-7">

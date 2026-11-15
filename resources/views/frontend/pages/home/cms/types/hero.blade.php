@@ -6,6 +6,9 @@ $items = $section->relationLoaded('items') ? $section->items->where('is_active',
 collect();
 $defaultBg = asset('frontend/assets/img/hero/hero_bg_1_1.jpg');
 $bg = $section->getMediaUrl('images', $locale, $defaultBg, true);
+// Smaller WebP for phones when the conversion exists; identical to $bg otherwise.
+$bgSmall = $section->getMediaUrl('images', $locale, $defaultBg, true, 'preview_webp');
+$bgSrcset = $bgSmall && $bgSmall !== $bg ? $bgSmall . ' 1200w, ' . $bg . ' 1920w' : null;
 $defaultSlides = [
 ['title' => __('Your <span class="text-theme">Health</span>, Our Priority, Care for Every Patient'), 'img' =>
 asset('frontend/assets/img/hero/hero-image-1.png')],
@@ -134,17 +137,28 @@ $googleUrl = website_store_url('google_play');
 			@foreach($slides as $slide)
 			<div class="swiper-slide">
 				<div class="hero-inner">
-					<div class="th-hero-bg" style="background-image: url('{{ $bg }}');"></div>
+					{{-- Real <img> (not a CSS background) so the browser can discover, prioritise and measure it. --}}
+					<div class="th-hero-bg">
+						<img src="{{ $bg }}"
+							@if($bgSrcset) srcset="{{ $bgSrcset }}" sizes="100vw" @endif
+							alt="" width="1920" height="1026"
+							@if($loop->first) fetchpriority="high" @else loading="lazy" decoding="async" @endif>
+					</div>
 					<div class="container">
 						<div class="row align-items-center">
 							<div class="col-xl-7">
 								<div class="hero-style1">
+									{{-- First slide: no opacity:0 entrance animation, so the headline paints immediately (LCP). --}}
 									<span class="sub-title"
+										@unless($loop->first)
 										data-ani="slideinup"
-										data-ani-delay="0.2s">{{ $slide['subtitle'] }}</span>
-									<h1 class="hero-title fadein"
+										data-ani-delay="0.2s"
+										@endunless>{{ $slide['subtitle'] }}</span>
+									<h1 class="hero-title {{ $loop->first ? '' : 'fadein' }}"
+										@unless($loop->first)
 										data-ani="fadein"
-										data-ani-delay="0.4s">
+										data-ani-delay="0.4s"
+										@endunless>
 										{!! $slide['title']
 										!!}</h1>
 									@if(! empty($slide['desc']))

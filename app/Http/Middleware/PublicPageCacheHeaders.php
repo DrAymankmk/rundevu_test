@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 /**
  * Marks cookie-free public HTML as cacheable at the edge / FastCGI layer.
@@ -42,7 +43,9 @@ class PublicPageCacheHeaders
             return false;
         }
 
-        if (! method_exists($response, 'headers')) {
+        // `headers` is a property, not a method: the previous method_exists() check was
+        // always false, so no page was ever marked cacheable.
+        if (! $response instanceof SymfonyResponse) {
             return false;
         }
 

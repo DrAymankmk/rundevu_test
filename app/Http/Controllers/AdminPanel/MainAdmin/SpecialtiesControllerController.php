@@ -191,5 +191,9 @@ class SpecialtiesControllerController extends Controller
         if (File::exists($path)) {
             File::delete($path);
         }
+
+        foreach (Specialty::thumbPaths($file) as $thumb) {
+            File::delete($thumb);
+        }
     }
 }

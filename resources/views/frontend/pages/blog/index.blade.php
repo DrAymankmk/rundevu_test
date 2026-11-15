@@ -42,47 +42,77 @@
 
 @push('scripts')
 <script>
-(function ($) {
-	var $btn = $('#blog-load-more');
-	if (!$btn.length) {
-		return;
-	}
-
-	var defaultLabel = $btn.html();
-
-	$btn.on('click', function () {
-		var $el = $(this);
-		if ($el.prop('disabled')) {
+(function () {
+	function initBlogLoadMore() {
+		var btn = document.getElementById('blog-load-more');
+		if (!btn) {
 			return;
 		}
 
-		$el.prop('disabled', true).text($el.data('loading-text'));
+		var defaultLabel = btn.innerHTML;
+		var page = parseInt(btn.getAttribute('data-page'), 10) || 2;
 
-		$.ajax({
-			url: $el.data('url'),
-			type: 'GET',
-			data: {
-				page: $el.data('page'),
-				q: $el.data('q') || '',
-				category: $el.data('category') || ''
-			},
-			success: function (response) {
-				if (response.html) {
-					$('#blog-posts-grid').append(response.html);
-				}
-
-				if (response.has_more) {
-					$el.data('page', response.next_page);
-					$el.prop('disabled', false).html(defaultLabel);
-				} else {
-					$('#blog-load-more-wrap').remove();
-				}
-			},
-			error: function () {
-				$el.prop('disabled', false).html(defaultLabel);
+		btn.addEventListener('click', function () {
+			if (btn.disabled) {
+				return;
 			}
+
+			var url = btn.getAttribute('data-url');
+			if (!url) {
+				return;
+			}
+
+			var params = new URLSearchParams({
+				page: String(page),
+				q: btn.getAttribute('data-q') || '',
+				category: btn.getAttribute('data-category') || ''
+			});
+
+			btn.disabled = true;
+			btn.textContent = btn.getAttribute('data-loading-text') || 'Loading...';
+
+			fetch(url + '?' + params.toString(), {
+				headers: {
+					'Accept': 'application/json',
+					'X-Requested-With': 'XMLHttpRequest'
+				}
+			})
+				.then(function (res) {
+					if (!res.ok) {
+						throw new Error('Load more failed');
+					}
+					return res.json();
+				})
+				.then(function (response) {
+					var grid = document.getElementById('blog-posts-grid');
+					if (response.html && grid) {
+						grid.insertAdjacentHTML('beforeend', response.html);
+					}
+
+					if (response.has_more) {
+						page = response.next_page || (page + 1);
+						btn.setAttribute('data-page', String(page));
+						btn.disabled = false;
+						btn.innerHTML = defaultLabel;
+					} else {
+						var wrap = document.getElementById('blog-load-more-wrap');
+						if (wrap) {
+							wrap.remove();
+						}
+					}
+				})
+				.catch(function () {
+					btn.disabled = false;
+					btn.innerHTML = defaultLabel;
+				});
 		});
-	});
-})(jQuery);
+	}
+
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', initBlogLoadMore);
+	} else {
+		initBlogLoadMore();
+	}
+})();
 </script>
 @endpush

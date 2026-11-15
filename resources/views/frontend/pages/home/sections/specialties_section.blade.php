@@ -57,7 +57,7 @@
 			<div class="specialty-scroll" data-specialty-scroller tabindex="0">
 				@foreach($specialties as $specialty)
 					@php
-						$specialtyImage = $specialty->imageUrl();
+						$specialtyImage = $specialty->thumbUrl(128);
 						$specialtyIcon = trim((string) ($specialty->icon ?? ''));
 						$isActive = isset($activeSpecialty) && (int) ($activeSpecialty->id ?? 0) === (int) $specialty->id;
 					@endphp

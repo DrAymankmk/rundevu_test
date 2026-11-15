@@ -77,7 +77,7 @@ return [
 				($defaultIcons[$idx % 3] ?? 'service_1_1.svg')), true);
 				$simg = $item->getMediaUrl('images', $locale,
 				asset('frontend/assets/img/service/' . ($defaultImg[$idx % 3] ??
-				'service_2_1.jpg')), true);
+				'service_2_1.jpg')), true, 'preview_webp');
 				$simgAlt = $item->getMediaAlt('images', $locale, true);
 				$itemLink = $getItemLink($item);
 				@endphp

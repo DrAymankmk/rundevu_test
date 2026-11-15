@@ -1095,7 +1095,8 @@
 
 
     /*----------- 16. Progress Bar Animation ----------*/
-    $('.progress-bar').waypoint(function () {
+    // Waypoints is not loaded on every page; without this guard the rest of the file never runs.
+    if ($.fn.waypoint) $('.progress-bar').waypoint(function () {
         $('.progress-bar').css({
             animation: "animate-positive 1.8s",
             opacity: "1"

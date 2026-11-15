@@ -64,7 +64,7 @@
                                 $anim = ['fadeInLeft', 'fadeInRight', 'fadeInUp'][$gidx % 3];
                                 $d = ['.3s', '.6s', '.9s'][$gidx % 3];
                                 $cls = ['img1', 'img2', 'img3'][$gidx % 3];
-                                $galleryUrl = \App\Support\Cms\CmsGalleryMedia::accessibleUrl($media) ?? $media->getUrl();
+                                $galleryUrl = \App\Support\Cms\CmsGalleryMedia::webpUrl($media) ?? $media->getUrl();
                             @endphp
                             <div class="{{ $cls }} wow {{ $anim }} global-img" data-wow-delay="{{ $d }}">
                                 <img src="{{ $galleryUrl }}" alt="{{ \App\Support\Cms\CmsGalleryMedia::alt($media) }}" width="420" height="480" decoding="async" loading="lazy">

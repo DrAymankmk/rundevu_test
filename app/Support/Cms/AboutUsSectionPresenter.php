@@ -42,7 +42,8 @@ class AboutUsSectionPresenter
                     continue;
                 }
 
-                $url = CmsGalleryMedia::accessibleUrl($media) ?? $media->getUrl();
+                // Prefer the generated WebP (max 1200px); falls back to the original upload.
+                $url = CmsGalleryMedia::webpUrl($media) ?? $media->getUrl();
                 if (! filled($url) || $into->contains('url', $url)) {
                     continue;
                 }

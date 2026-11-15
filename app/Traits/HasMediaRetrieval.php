@@ -14,13 +14,15 @@ trait HasMediaRetrieval
      * @param string|null $locale Locale code (e.g., 'en', 'ar'). If null, uses current locale
      * @param string|null $fallbackUrl URL to use if no media is found
      * @param bool $useLanguageFallback Whether to try language-specific collections first
+     * @param string $conversion Optional conversion to prefer (e.g. 'preview_webp'); falls back to the original file
      * @return string|null Media URL or fallback URL
      */
     public function getMediaUrl(
         string $collectionName,
         ?string $locale = null,
         ?string $fallbackUrl = null,
-        bool $useLanguageFallback = true
+        bool $useLanguageFallback = true,
+        string $conversion = ''
     ): ?string {
         $locale = $locale ?? app()->getLocale();
         $modelClass = get_class($this);
@@ -34,7 +36,7 @@ trait HasMediaRetrieval
                 ->first();
 
             if ($media) {
-                $url = CmsGalleryMedia::accessibleUrl($media);
+                $url = $this->resolveMediaUrl($media, $conversion);
                 if ($url !== null) {
                     return $url;
                 }
@@ -48,7 +50,7 @@ trait HasMediaRetrieval
             ->first();
 
         if ($media) {
-            $url = CmsGalleryMedia::accessibleUrl($media);
+            $url = $this->resolveMediaUrl($media, $conversion);
             if ($url !== null) {
                 return $url;
             }
@@ -62,7 +64,7 @@ trait HasMediaRetrieval
                 ->get();
 
             foreach ($media as $candidate) {
-                $url = CmsGalleryMedia::accessibleUrl($candidate);
+                $url = $this->resolveMediaUrl($candidate, $conversion);
                 if ($url !== null) {
                     return $url;
                 }
@@ -124,6 +126,16 @@ trait HasMediaRetrieval
         }
 
         return null;
+    }
+
+    /**
+     * Original file URL, or the given conversion when it has been generated.
+     */
+    protected function resolveMediaUrl(Media $media, string $conversion = ''): ?string
+    {
+        return $conversion !== ''
+            ? CmsGalleryMedia::webpUrl($media, $conversion)
+            : CmsGalleryMedia::accessibleUrl($media);
     }
 
     public function getFirstAccessibleMediaUrl(string $collectionName): ?string

@@ -13,7 +13,7 @@
     $slides = collect();
     foreach ($items as $idx => $item) {
         $it = $item->translation($locale) ?? $item->translation($fb);
-        $avatar = $item->getMediaUrl('images', $locale, $defaults[$idx % 3]['img'], true);
+        $avatar = $item->getMediaUrl('images', $locale, $defaults[$idx % 3]['img'], true, 'thumb_webp');
         $slides->push([
             'text' => $it?->content ?: $defaults[$idx % 3]['text'],
             'name' => $it?->title ?: $defaults[$idx % 3]['name'],

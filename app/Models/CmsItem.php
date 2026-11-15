@@ -123,6 +123,25 @@ class CmsItem extends Model implements HasMedia
     }
 
     /**
+     * Media is stored in per-locale collections (images_en, gallery_ar, ...),
+     * so conversions must be registered for those names as well as the base ones.
+     *
+     * @return array<int, string>
+     */
+    protected static function conversionCollections(): array
+    {
+        $collections = [];
+        foreach (['images', 'gallery', 'icons'] as $base) {
+            $collections[] = $base;
+            foreach (['en', 'ar'] as $locale) {
+                $collections[] = $base . '_' . $locale;
+            }
+        }
+
+        return $collections;
+    }
+
+    /**
      * Register media conversions for items
      */
     public function registerMediaConversions(Media $media = null): void
@@ -133,14 +152,14 @@ class CmsItem extends Model implements HasMedia
             ->sharpen(10)
             ->nonOptimized()
             ->nonQueued()
-            ->performOnCollections('images', 'gallery', 'icons');
+            ->performOnCollections(...self::conversionCollections());
 
         $this->addMediaConversion('preview')
             ->width(800)
             ->height(600)
             ->nonOptimized()
             ->nonQueued()
-            ->performOnCollections('images', 'gallery', 'icons');
+            ->performOnCollections(...self::conversionCollections());
 
         $this->addMediaConversion('thumb_webp')
             ->format('webp')
@@ -148,7 +167,7 @@ class CmsItem extends Model implements HasMedia
             ->height(300)
             ->nonOptimized()
             ->nonQueued()
-            ->performOnCollections('images', 'gallery', 'icons');
+            ->performOnCollections(...self::conversionCollections());
 
         $this->addMediaConversion('preview_webp')
             ->format('webp')
@@ -156,6 +175,6 @@ class CmsItem extends Model implements HasMedia
             ->height(900)
             ->nonOptimized()
             ->nonQueued()
-            ->performOnCollections('images', 'gallery', 'icons');
+            ->performOnCollections(...self::conversionCollections());
     }
 }

@@ -27,7 +27,8 @@
     $logoWebpUrl = is_file(public_path('frontend/assets/img/logo.webp')) ? frontend_logo_url('webp') : null;
     $logoPreloadUrl = $logoWebpUrl ?: $logoPngUrl;
     $themeCss = $isRtl ? $frontendCss('rtl_style.min.css') : $frontendCss('style.min.css');
-    $fontUrl = 'https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;1,14..32,400&family=Outfit:wght@400;500;600;700&family=Saira:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap';
+    // Upright faces only: the theme CSS never requests italics, so those font files were dead weight.
+    $fontUrl = 'https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&family=Outfit:wght@400..700&family=Saira:wght@400..700&display=swap';
     $lcpImage = $seo['lcp_image'] ?? null;
     $deferCss = static function (string $href): string {
         return '<link rel="stylesheet" href="' . e($href) . '" media="print" onload="this.media=\'all\'">'
@@ -77,7 +78,7 @@
         <link rel="preload" as="image" href="{{ $logoPreloadUrl }}">
     @endif
     @if($lcpImage)
-        <link rel="preload" as="image" href="{{ $lcpImage }}" fetchpriority="high">
+        <link rel="preload" as="image" href="{{ $lcpImage }}" @if(!empty($seo['lcp_image_srcset'])) imagesrcset="{{ $seo['lcp_image_srcset'] }}" imagesizes="100vw" @endif fetchpriority="high">
     @endif
     @stack('head')
 
@@ -86,8 +87,7 @@
     <link rel="stylesheet" href="{{ $themeCss }}">
     {!! $deferCss($frontendCss('randevu-overrides.min.css')) !!}
     {!! $deferCss($frontendCss('fontawesome.min.css')) !!}
-    <link rel="preload" as="font" type="font/woff2" crossorigin
-          href="{{ asset('frontend/assets/fonts/fontawesome/fa-solid-900.woff2') }}">
+    {{-- No preload for the 295 KB icon font: on mobile it competed with the hero image for bandwidth. --}}
     {!! $deferCss($frontendCss('swiper-bundle.min.css')) !!}
     {!! $deferCss($frontendCss('magnific-popup.min.css')) !!}
     @stack('styles')
