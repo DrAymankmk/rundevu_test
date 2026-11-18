@@ -2117,6 +2117,10 @@ body.wa-modal-open {
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
   padding: 8px 4px 16px;
+  /* Must match the inline padding: otherwise the first snap point is at 4px and the
+     browser auto-scrolls the carousel on load, which ends Chrome's LCP measurement
+     (PageSpeed then reports NO_LCP). */
+  scroll-padding-inline: 4px;
   flex: 1 1 auto;
   scrollbar-width: thin;
   scrollbar-color: var(--theme-color) transparent;

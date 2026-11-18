@@ -138,6 +138,61 @@ trait HasMediaRetrieval
             : CmsGalleryMedia::accessibleUrl($media);
     }
 
+    /**
+     * `srcset` value (original + generated smaller conversions) labelled with each file's
+     * real pixel width, or null when there is nothing smaller than the original to offer.
+     *
+     * @param array<int, string> $conversions Conversions to offer, best format first.
+     */
+    public function getMediaSrcset(
+        string $collectionName,
+        ?string $locale = null,
+        array $conversions = ['preview_webp', 'preview'],
+        bool $useLanguageFallback = true
+    ): ?string {
+        $media = $this->getMediaWithFallback($collectionName, $locale, $useLanguageFallback);
+        if (! $media || CmsGalleryMedia::isVideo($media) || ! file_exists($media->getPath())) {
+            return null;
+        }
+
+        $width = static function (string $path): int {
+            $size = @getimagesize($path);
+
+            return $size ? (int) $size[0] : 0;
+        };
+
+        $originalWidth = $width($media->getPath());
+        if ($originalWidth < 1) {
+            return null;
+        }
+
+        // One file per width; the first conversion listed wins (e.g. WebP over JPEG).
+        $byWidth = [];
+        foreach ($conversions as $conversion) {
+            if (! $media->hasGeneratedConversion($conversion)) {
+                continue;
+            }
+            $path = $media->getPath($conversion);
+            $w = file_exists($path) ? $width($path) : 0;
+            if ($w > 0 && $w < $originalWidth && ! isset($byWidth[$w])) {
+                $byWidth[$w] = $media->getUrl($conversion);
+            }
+        }
+
+        if ($byWidth === []) {
+            return null;
+        }
+
+        $byWidth[$originalWidth] = $media->getUrl();
+        ksort($byWidth);
+
+        return implode(', ', array_map(
+            static fn ($url, $w) => $url . ' ' . $w . 'w',
+            $byWidth,
+            array_keys($byWidth)
+        ));
+    }
+
     public function getFirstAccessibleMediaUrl(string $collectionName): ?string
     {
         $media = $this->getFirstMedia($collectionName);

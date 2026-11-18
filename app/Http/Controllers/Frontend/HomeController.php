@@ -29,11 +29,8 @@ class HomeController extends Controller
             ? $heroSection->getMediaUrl('images', app()->getLocale(), $defaultHeroBg, true)
             : $defaultHeroBg;
         // Keep the preload in sync with the hero <img srcset> so phones do not fetch both sizes.
-        $heroSmall = $heroSection
-            ? $heroSection->getMediaUrl('images', app()->getLocale(), $defaultHeroBg, true, 'preview_webp')
-            : null;
-        $seo['lcp_image_srcset'] = $heroSmall && $heroSmall !== $seo['lcp_image']
-            ? $heroSmall . ' 1200w, ' . $seo['lcp_image'] . ' 1920w'
+        $seo['lcp_image_srcset'] = $heroSection
+            ? $heroSection->getMediaSrcset('images', app()->getLocale())
             : null;
 
         $specialties = FrontendContentCache::specialties();

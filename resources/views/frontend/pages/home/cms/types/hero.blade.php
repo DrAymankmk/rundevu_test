@@ -6,9 +6,8 @@ $items = $section->relationLoaded('items') ? $section->items->where('is_active',
 collect();
 $defaultBg = asset('frontend/assets/img/hero/hero_bg_1_1.jpg');
 $bg = $section->getMediaUrl('images', $locale, $defaultBg, true);
-// Smaller WebP for phones when the conversion exists; identical to $bg otherwise.
-$bgSmall = $section->getMediaUrl('images', $locale, $defaultBg, true, 'preview_webp');
-$bgSrcset = $bgSmall && $bgSmall !== $bg ? $bgSmall . ' 1200w, ' . $bg . ' 1920w' : null;
+// Smaller generated versions for phones, labelled with their real widths (null when none exist).
+$bgSrcset = $section->getMediaSrcset('images', $locale);
 $defaultSlides = [
 ['title' => __('Your <span class="text-theme">Health</span>, Our Priority, Care for Every Patient'), 'img' =>
 asset('frontend/assets/img/hero/hero-image-1.png')],
