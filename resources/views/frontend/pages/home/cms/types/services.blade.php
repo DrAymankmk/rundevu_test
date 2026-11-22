@@ -53,7 +53,7 @@ return [
 ];
 };
 @endphp
-<section class="background-image position-relative overflow-hidden space" id="section-{{ $section->id }}" style="background-image: url('{{ $bg }}');">
+<section class="background-image position-relative overflow-hidden space" id="section-{{ $section->id }}" data-lazy-bg="{{ $bg }}">
 	<div class="container">
 		<div class="row justify-content-center">
 			<div class="col-xl-5">

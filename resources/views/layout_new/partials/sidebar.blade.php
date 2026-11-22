@@ -755,7 +755,6 @@
                                     <span class="menu-arrow"></span>
                                 </a>
                                 <ul>
-                                    <li><a href="{{url('sitemap-settings')}}" class="{{ Request::is('sitemap-settings') ? 'active' : '' }}">Sitemap</a></li>
                                     <li><a href="{{url('clear-cache-settings')}}" class="{{ Request::is('clear-cache-settings') ? 'active' : '' }}">Clear Cache</a></li>
                                     <li><a href="{{url('storage-settings')}}" class="{{ Request::is('storage-settings') ? 'active' : '' }}">Storage</a></li>
                                     <li><a href="{{url('cronjob-settings')}}" class="{{ Request::is('cronjob-settings') ? 'active' : '' }}">Cronjob</a></li>
@@ -968,6 +967,13 @@
                                 <a href="{{ route('website-links.index') }}"
                                    class="{{ Request::is('admin/website-links*') || Route::is('website-links.*') ? 'active' : '' }}">
                                     <i class="ti ti-share"></i><span>@lang('main.website-links')</span>
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="{{ route('sitemap-links.index') }}"
+                                   class="{{ Request::is('admin/sitemap-links*') || Route::is('sitemap-links.*') ? 'active' : '' }}">
+                                    <i class="ti ti-sitemap"></i><span>{{ __('sitemap_links.title') }}</span>
                                 </a>
                             </li>
 

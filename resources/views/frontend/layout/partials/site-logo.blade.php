@@ -8,8 +8,8 @@
 	$logoFetchPriority = $logoFetchPriority ?? null;
 	// Source of truth: Dashboard → Website Media → Website logo (theme:logo).
 	$logoPng = frontend_logo_url('png');
-	$logoWebpPath = public_path('frontend/assets/img/logo.webp');
-	$logoWebp = is_file($logoWebpPath) ? frontend_logo_url('webp') : null;
+	// Small WebP copy (created on first use): the PNG is ~750 px wide for a 100x50 slot.
+	$logoWebp = frontend_logo_webp_available() ? frontend_logo_url('webp') : null;
 @endphp
 @if($logoWebp)
 <picture>

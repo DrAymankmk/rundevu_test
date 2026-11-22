@@ -434,6 +434,56 @@ if (! function_exists('frontend_logo_url')) {
     }
 }
 
+if (! function_exists('frontend_logo_webp_available')) {
+    /**
+     * Make sure a small WebP copy of the header logo exists next to logo.png.
+     * The uploaded PNG is ~750 px wide but shown at 100x50, so phones downloaded ~25 KB
+     * for nothing. Built once with GD; Website Media deletes logo.webp on a new upload,
+     * and a PNG newer than the WebP also triggers a rebuild.
+     */
+    function frontend_logo_webp_available(int $maxWidth = 240): bool
+    {
+        static $result = null;
+        if ($result !== null) {
+            return $result;
+        }
+
+        $png = public_path('frontend/assets/img/logo.png');
+        $webp = public_path('frontend/assets/img/logo.webp');
+        if (is_file($webp) && (! is_file($png) || filemtime($webp) >= filemtime($png))) {
+            return $result = true;
+        }
+        if (! is_file($png) || ! function_exists('imagewebp') || ! function_exists('imagecreatefromstring')) {
+            return $result = is_file($webp);
+        }
+
+        $src = @imagecreatefromstring((string) @file_get_contents($png));
+        if (! $src) {
+            return $result = is_file($webp);
+        }
+
+        $width = imagesx($src);
+        $height = imagesy($src);
+        $targetWidth = min($width, $maxWidth);
+        $targetHeight = max(1, (int) round($height * $targetWidth / max($width, 1)));
+        $dst = imagecreatetruecolor($targetWidth, $targetHeight);
+        imagealphablending($dst, false);
+        imagesavealpha($dst, true);
+        imagefill($dst, 0, 0, imagecolorallocatealpha($dst, 0, 0, 0, 127));
+        imagecopyresampled($dst, $src, 0, 0, 0, 0, $targetWidth, $targetHeight, $width, $height);
+
+        $tmp = $webp . '.' . getmypid() . '.tmp';
+        $ok = @imagewebp($dst, $tmp, 90) && @rename($tmp, $webp);
+        if (! $ok && is_file($tmp)) {
+            @unlink($tmp);
+        }
+        imagedestroy($src);
+        imagedestroy($dst);
+
+        return $result = $ok || is_file($webp);
+    }
+}
+
 if (! function_exists('website_social_platforms')) {
     function website_social_platforms(): \Illuminate\Support\Collection
     {

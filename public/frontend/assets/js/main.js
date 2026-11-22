@@ -346,8 +346,8 @@
         progressPath.style.transition = progressPath.style.WebkitTransition = 'none';
         progressPath.style.strokeDasharray = pathLength + ' ' + pathLength;
         progressPath.style.strokeDashoffset = pathLength;
-        // Avoid synchronous layout flush (getBoundingClientRect) after style writes.
-        progressPath.style.transition = progressPath.style.WebkitTransition = 'stroke-dashoffset 10ms linear';
+        // No stroke-dashoffset transition: updates already run once per frame, and the
+        // (non-composited) transition was flagged by Lighthouse.
         var scrollMetrics = { top: 0, range: 1 };
         var progressRaf = 0;
         var refreshScrollMetrics = function () {

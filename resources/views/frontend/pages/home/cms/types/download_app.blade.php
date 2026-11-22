@@ -23,7 +23,7 @@ $cmsGoogleUrl = $googleIt?->content ? strip_tags($googleIt->content) : '';
 $appleUrl = website_store_url('apple', $cmsAppleUrl);
 $googleUrl = website_store_url('google_play', $cmsGoogleUrl);
 @endphp
-<section class="download-area space overflow-hidden background-image" style="background-image: url('{{ asset('frontend/assets/img/download_bg.jpeg') }}');"
+<section class="download-area space overflow-hidden background-image" data-lazy-bg="{{ asset('frontend/assets/img/download_bg.jpeg') }}"
 	id="section-{{ $section->id }}">
 	<div class="container">
 		<div class="row gy-5 align-items-center">

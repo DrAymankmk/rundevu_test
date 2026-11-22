@@ -10,6 +10,31 @@
 <meta name="google-site-verification" content="{{ $googleSiteVerification }}">
 @endif
 
+@if($googleTagManagerId !== '' || $loadStandaloneGtag)
+<script>
+// Analytics tags (GTM, gtag, Clarity via GTM) cost ~300 ms of main-thread work on phones.
+// Start them on the visitor's first interaction, or 8 s after load at the latest, so they
+// never compete with the first render.
+window.rundevoLoadTagsLater = function (fn) {
+	var done = false;
+	var events = ['pointerdown', 'keydown', 'touchstart', 'mousemove', 'scroll', 'wheel'];
+	function run() {
+		if (done) return;
+		done = true;
+		events.forEach(function (e) { window.removeEventListener(e, run, { passive: true }); });
+		fn();
+	}
+	events.forEach(function (e) { window.addEventListener(e, run, { passive: true, once: true }); });
+	function fallback() { setTimeout(run, 8000); }
+	if (document.readyState === 'complete') {
+		fallback();
+	} else {
+		window.addEventListener('load', fallback, { once: true });
+	}
+};
+</script>
+@endif
+
 @if($googleTagManagerId !== '')
 <script>
 window.dataLayer = window.dataLayer || [];
@@ -27,18 +52,7 @@ window.dataLayer = window.dataLayer || [];
 			f.parentNode.insertBefore(j, f);
 		})(window, document, 'script', 'dataLayer', gtmId);
 	}
-	function schedule() {
-		if ('requestIdleCallback' in window) {
-			requestIdleCallback(injectGtm, { timeout: 3000 });
-		} else {
-			setTimeout(injectGtm, 2000);
-		}
-	}
-	if (document.readyState === 'complete') {
-		schedule();
-	} else {
-		window.addEventListener('load', schedule, { once: true });
-	}
+	window.rundevoLoadTagsLater(injectGtm);
 })();
 </script>
 @endif
@@ -59,18 +73,7 @@ function gtag(){dataLayer.push(arguments);}
 		};
 		document.head.appendChild(s);
 	}
-	function schedule() {
-		if ('requestIdleCallback' in window) {
-			requestIdleCallback(injectGtag, { timeout: 3000 });
-		} else {
-			setTimeout(injectGtag, 2000);
-		}
-	}
-	if (document.readyState === 'complete') {
-		schedule();
-	} else {
-		window.addEventListener('load', schedule, { once: true });
-	}
+	window.rundevoLoadTagsLater(injectGtag);
 })();
 </script>
 @endif

@@ -1,5 +1,5 @@
 	<footer class="background-image footer-wrapper bg-title footer-layout1"
-		style="background-image: url('{{ asset('frontend/assets/img/bg/footer_bg_1.png') }}');">
+		data-lazy-bg="{{ asset('frontend/assets/img/bg/footer_bg_1.png') }}">
 		<div class="widget-area">
 			<div class="container">
 				<div class="row justify-content-between">

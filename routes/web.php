@@ -559,6 +559,15 @@ Route::group(["middleware" => ["auth", "setlocale"], 'prefix' => 'admin', 'names
     Route::delete('website-links/{id}', 'WebsiteLinkController@destroy')->name('website-links.destroy');
     Route::post('website-links/{id}/toggle-status', 'WebsiteLinkController@toggleStatus')->name('website-links.toggle-status');
 
+    Route::get('sitemap-links', 'SitemapLinkController@index')->name('sitemap-links.index');
+    Route::get('sitemap-links/create', 'SitemapLinkController@create')->name('sitemap-links.create');
+    Route::post('sitemap-links', 'SitemapLinkController@store')->name('sitemap-links.store');
+    Route::get('sitemap-links/{id}/edit', 'SitemapLinkController@edit')->name('sitemap-links.edit');
+    Route::put('sitemap-links/{id}', 'SitemapLinkController@update')->name('sitemap-links.update');
+    Route::delete('sitemap-links/{id}', 'SitemapLinkController@destroy')->name('sitemap-links.destroy');
+    Route::post('sitemap-links/{id}/toggle-status', 'SitemapLinkController@toggleStatus')->name('sitemap-links.toggle-status');
+
+
     Route::get('website-visit-logs', 'WebsiteVisitLogController@index')->name('website-visit-logs.index');
     Route::get('website-visit-logs/data', 'WebsiteVisitLogController@data')->name('website-visit-logs.data');
     Route::get('website-visit-logs/stats', 'WebsiteVisitLogController@stats')->name('website-visit-logs.stats');

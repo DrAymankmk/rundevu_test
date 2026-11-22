@@ -24,11 +24,20 @@
         return asset($relative) . '?v=' . $version;
     };
     $logoPngUrl = frontend_logo_url('png');
-    $logoWebpUrl = is_file(public_path('frontend/assets/img/logo.webp')) ? frontend_logo_url('webp') : null;
+    $logoWebpUrl = frontend_logo_webp_available() ? frontend_logo_url('webp') : null;
     $logoPreloadUrl = $logoWebpUrl ?: $logoPngUrl;
-    $themeCss = $isRtl ? $frontendCss('rtl_style.min.css') : $frontendCss('style.min.css');
+    // Render-blocking CSS: use the copies with unused template rules removed
+    // (built by tools/purge_theme_css.py), or the full files if they are missing.
+    $purgedCss = static function (string $file) use ($frontendCss): string {
+        $purged = str_replace('.min.css', '.purged.min.css', $file);
+
+        return $frontendCss(is_file(public_path('frontend/assets/css/' . $purged)) ? $purged : $file);
+    };
+    $bootstrapCss = $purgedCss('bootstrap.min.css');
+    $themeCss = $purgedCss($isRtl ? 'rtl_style.min.css' : 'style.min.css');
     // Upright faces only: the theme CSS never requests italics, so those font files were dead weight.
-    $fontUrl = 'https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&family=Outfit:wght@400..700&family=Saira:wght@400..700&display=swap';
+    // No Inter "opsz" axis: it made the Inter file roughly 50% larger for a barely visible difference.
+    $fontUrl = 'https://fonts.googleapis.com/css2?family=Inter:wght@400..700&family=Outfit:wght@400..700&family=Saira:wght@400..700&display=swap';
     $lcpImage = $seo['lcp_image'] ?? null;
     $deferCss = static function (string $href): string {
         return '<link rel="stylesheet" href="' . e($href) . '" media="print" onload="this.media=\'all\'">'
@@ -70,7 +79,7 @@
         <link rel="stylesheet" href="{{ $fontUrl }}">
     </noscript>
 
-    <link rel="preload" as="style" href="{{ $frontendCss('bootstrap.min.css') }}">
+    <link rel="preload" as="style" href="{{ $bootstrapCss }}">
     <link rel="preload" as="style" href="{{ $themeCss }}">
     @if($logoWebpUrl)
         <link rel="preload" as="image" href="{{ $logoPreloadUrl }}" type="image/webp">
@@ -83,11 +92,16 @@
     @stack('head')
 
     {{-- Critical CSS only (blocks first paint). Everything else is deferred. --}}
-    <link rel="stylesheet" href="{{ $frontendCss('bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ $bootstrapCss }}">
     <link rel="stylesheet" href="{{ $themeCss }}">
     {!! $deferCss($frontendCss('randevu-overrides.min.css')) !!}
-    {!! $deferCss($frontendCss('fontawesome.min.css')) !!}
-    {{-- No preload for the 295 KB icon font: on mobile it competed with the hero image for bandwidth. --}}
+    {{-- Icons the site uses (~20 KB CSS + 12 KB fonts, built by tools/build_fontawesome_subset.py).
+         The other icon rules load only if the page shows an icon outside the subset (see bottom). --}}
+    <link rel="stylesheet" href="{{ $frontendCss('fontawesome-subset.min.css') }}" media="print" onload="this.media='all'">
+    <noscript>
+        <link rel="stylesheet" href="{{ $frontendCss('fontawesome-subset.min.css') }}">
+        <link rel="stylesheet" href="{{ $frontendCss('fontawesome-rest.min.css') }}">
+    </noscript>
     {!! $deferCss($frontendCss('swiper-bundle.min.css')) !!}
     {!! $deferCss($frontendCss('magnific-popup.min.css')) !!}
     @stack('styles')
@@ -156,10 +170,35 @@
 <div class="scroll-top">
     <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102" aria-hidden="true">
         <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"
-              style="transition: stroke-dashoffset 10ms linear 0s; stroke-dasharray: 307.919, 307.919; stroke-dashoffset: 307.919;">
+              style="stroke-dasharray: 307.919, 307.919; stroke-dashoffset: 307.919;">
         </path>
     </svg>
 </div>
+
+{{-- Below-the-fold section backgrounds (data-lazy-bg): fetch only when near the screen,
+     so they do not compete with the hero for bandwidth on phones. --}}
+<script>
+    (function () {
+        var els = document.querySelectorAll('[data-lazy-bg]');
+        function show(el) {
+            el.style.backgroundImage = 'url("' + el.getAttribute('data-lazy-bg') + '")';
+            el.removeAttribute('data-lazy-bg');
+        }
+        if (!('IntersectionObserver' in window)) {
+            els.forEach(show);
+            return;
+        }
+        var io = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    io.unobserve(entry.target);
+                    show(entry.target);
+                }
+            });
+        }, { rootMargin: '400px 0px' });
+        els.forEach(function (el) { io.observe(el); });
+    })();
+</script>
 
 {{-- Critical path: menu, slider, UI --}}
 <script src="{{ $frontendJs('vendor/jquery-3.7.1.min.js') }}" defer></script>
@@ -210,6 +249,47 @@
         } else {
             window.addEventListener('load', schedule, { once: true });
         }
+    })();
+</script>
+{{-- Load the remaining Font Awesome icon rules only when an icon on the page has no glyph yet
+     (e.g. an icon picked in the CMS that is not in the prebuilt subset). --}}
+<script>
+    (function () {
+        var restHref = @json($frontendCss('fontawesome-rest.min.css'));
+        var added = false;
+        function missingIcon() {
+            var els = document.querySelectorAll('[class*="fa-"]');
+            for (var i = 0; i < els.length; i++) {
+                var cls = typeof els[i].className === 'string' ? els[i].className : (els[i].getAttribute('class') || '');
+                if (!/(^|\s)fa-[a-z0-9]/.test(cls)) continue;
+                var before = getComputedStyle(els[i], '::before');
+                if (before.fontFamily.indexOf('Font Awesome') === -1) continue;
+                if (!before.content || before.content === 'none' || before.content === 'normal') return true;
+            }
+            return false;
+        }
+        function check() {
+            if (added || !missingIcon()) return;
+            added = true;
+            var link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = restHref;
+            document.head.appendChild(link);
+        }
+        function schedule() {
+            if ('requestIdleCallback' in window) {
+                requestIdleCallback(check, { timeout: 2000 });
+            } else {
+                setTimeout(check, 200);
+            }
+        }
+        if (document.readyState === 'complete') {
+            schedule();
+        } else {
+            window.addEventListener('load', schedule, { once: true });
+        }
+        document.addEventListener('rundevo:secondary-scripts', schedule);
+        window.rundevoCheckIcons = check;
     })();
 </script>
 @if(config('website_visit_logs.enabled', true) && !empty($websiteVisitLogDeferred))

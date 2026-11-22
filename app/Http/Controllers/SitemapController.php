@@ -4,32 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\BlogPost;
 use App\Models\Clinic;
-use App\Models\CmsItem;
-use App\Models\CmsPage;
-use App\Models\CmsSection;
+use App\Models\SitemapLink;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Schema;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Throwable;
 
 class SitemapController extends Controller
 {
-    private const CMS_ROUTES = [
-        'home' => '/',
-        'about' => '/about',
-        'services' => '/services',
-        'faq' => '/faq',
-        'subscription' => '/subscription',
-        'contact' => '/contact',
-    ];
-
-    private const STATIC_ROUTES = [
-        'blog' => '/blog',
-        'clinics' => '/clinics',
-        'doctors' => '/doctors',
-        'social-media' => '/social-media',
-    ];
-
     public function __invoke()
     {
         $urls = $this->buildUrls();
@@ -43,75 +24,154 @@ class SitemapController extends Controller
 
     private function buildUrls(): array
     {
-        $pages = $this->cmsPages();
         $urls = [];
 
-        foreach (self::CMS_ROUTES as $slug => $path) {
-            $page = $pages->get($slug);
-            $urls[] = $this->localizedUrl(
+        if (! $this->hasSitemapLinksTable()) {
+            return $urls;
+        }
+
+        $links = SitemapLink::query()->active()->ordered()->get();
+
+        foreach ($links->where('link_type', SitemapLink::TYPE_PAGE) as $link) {
+            $path = $link->normalizedPath();
+            if (! $path) {
+                continue;
+            }
+
+            $urls[] = $this->makeUrlEntry(
                 $path,
-                $page ? $this->pageLastModified($page) : now(),
-                $slug === 'home' ? 'daily' : 'weekly',
-                $slug === 'home' ? '1.0' : '0.8'
+                $link->effectiveLastmod(),
+                $link->changefreq,
+                number_format((float) $link->priority, 1, '.', ''),
+                $link->include_alternates,
+                [],
+                $link->x_default_locale
             );
         }
 
-        foreach (self::STATIC_ROUTES as $path) {
-            $urls[] = $this->localizedUrl($path, now(), 'weekly', '0.7');
-        }
+        foreach ($links->where('link_type', SitemapLink::TYPE_GROUP) as $group) {
+            $changefreq = $group->changefreq;
+            $priority = number_format((float) $group->priority, 1, '.', '');
+            $includeAlternates = $group->include_alternates;
+            $xDefaultLocale = $group->x_default_locale;
 
-        foreach ($this->publishedBlogPosts() as $post) {
-            $path = function_exists('frontend_blog_path')
-                ? frontend_blog_path($post->getRouteSlug(), frontend_default_locale())
-                : '/blog/' . ltrim((string) $post->getRouteSlug(), '/');
-            $overrides = [];
-            foreach ((array) config('app.locales', ['en', 'ar']) as $locale) {
-                $overrides[$locale] = frontend_url(frontend_blog_path($post->getSlug($locale) ?: $post->getRouteSlug(), $locale), [], $locale);
-            }
-            $urls[] = $this->localizedUrl($path, $post->updated_at ?? $post->publish_date, 'weekly', '0.6', $overrides);
-        }
+            if ($group->group_key === 'blogs') {
+                foreach ($this->publishedBlogPosts() as $post) {
+                    $path = function_exists('frontend_blog_path')
+                        ? frontend_blog_path($post->getRouteSlug(), frontend_default_locale())
+                        : '/blog/' . ltrim((string) $post->getRouteSlug(), '/');
 
-        foreach ($this->publicClinics(1) as $clinic) {
-            $overrides = [];
-            foreach ((array) config('app.locales', ['en', 'ar']) as $locale) {
-                $overrides[$locale] = frontend_route('frontend.clinics.show', $clinic, true, $locale);
-            }
-            $urls[] = $this->localizedUrl(
-                '/clinics/' . $clinic->localizedSlug(frontend_default_locale()),
-                $clinic->updated_at,
-                'weekly',
-                '0.6',
-                $overrides
-            );
-        }
+                    $overrides = [];
+                    if ($includeAlternates) {
+                        foreach ((array) config('app.locales', ['en', 'ar']) as $locale) {
+                            $overrides[$locale] = frontend_url(
+                                frontend_blog_path($post->getSlug($locale) ?: $post->getRouteSlug(), $locale),
+                                [],
+                                $locale
+                            );
+                        }
+                    }
 
-        foreach ($this->publicClinics(3) as $doctor) {
-            $overrides = [];
-            foreach ((array) config('app.locales', ['en', 'ar']) as $locale) {
-                $overrides[$locale] = frontend_route('frontend.doctors.show', $doctor, true, $locale);
+                    $urls[] = $this->makeUrlEntry(
+                        $path,
+                        $post->updated_at ?? $post->publish_date,
+                        $changefreq,
+                        $priority,
+                        $includeAlternates,
+                        $overrides,
+                        $xDefaultLocale
+                    );
+                }
             }
-            $urls[] = $this->localizedUrl(
-                '/doctors/' . $doctor->localizedSlug(frontend_default_locale()),
-                $doctor->updated_at,
-                'weekly',
-                '0.6',
-                $overrides
-            );
+
+            if ($group->group_key === 'clinics') {
+                foreach ($this->publicClinics(1) as $clinic) {
+                    $overrides = [];
+                    if ($includeAlternates) {
+                        foreach ((array) config('app.locales', ['en', 'ar']) as $locale) {
+                            $overrides[$locale] = frontend_route('frontend.clinics.show', $clinic, true, $locale);
+                        }
+                    }
+
+                    $urls[] = $this->makeUrlEntry(
+                        '/clinics/' . $clinic->localizedSlug(frontend_default_locale()),
+                        $clinic->updated_at,
+                        $changefreq,
+                        $priority,
+                        $includeAlternates,
+                        $overrides,
+                        $xDefaultLocale
+                    );
+                }
+            }
+
+            if ($group->group_key === 'doctors') {
+                foreach ($this->publicClinics(3) as $doctor) {
+                    $overrides = [];
+                    if ($includeAlternates) {
+                        foreach ((array) config('app.locales', ['en', 'ar']) as $locale) {
+                            $overrides[$locale] = frontend_route('frontend.doctors.show', $doctor, true, $locale);
+                        }
+                    }
+
+                    $urls[] = $this->makeUrlEntry(
+                        '/doctors/' . $doctor->localizedSlug(frontend_default_locale()),
+                        $doctor->updated_at,
+                        $changefreq,
+                        $priority,
+                        $includeAlternates,
+                        $overrides,
+                        $xDefaultLocale
+                    );
+                }
+            }
         }
 
         return $urls;
     }
 
-    private function localizedUrl(string $path, $lastmod, string $changefreq, string $priority, array $overrides = []): array
-    {
-        $alternates = function_exists('frontend_hreflang_urls')
-            ? frontend_hreflang_urls($path, $overrides)
-            : ['x-default' => url($path)];
+    private function makeUrlEntry(
+        string $path,
+        $lastmod,
+        string $changefreq,
+        string $priority,
+        bool $includeAlternates = true,
+        array $overrides = [],
+        ?string $xDefaultLocale = null
+    ): array {
+        if (preg_match('/^https?:\/\//i', $path)) {
+            $loc = $path;
+            $alternates = [];
+            if ($includeAlternates) {
+                $alternates = ['x-default' => $loc];
+                $alternates = $this->applyXDefault($alternates, $path, $overrides, $xDefaultLocale, true);
+            }
+
+            return [
+                'loc' => $loc,
+                'lastmod' => $this->toAtom($lastmod),
+                'changefreq' => $changefreq,
+                'priority' => $priority,
+                'alternates' => $alternates,
+            ];
+        }
+
+        if ($includeAlternates) {
+            $alternates = function_exists('frontend_hreflang_urls')
+                ? frontend_hreflang_urls($path, $overrides)
+                : ['x-default' => url($path)];
+            $alternates = $this->applyXDefault($alternates, $path, $overrides, $xDefaultLocale);
+        } else {
+            $alternates = [];
+        }
 
         $defaultLocale = function_exists('frontend_default_locale') ? frontend_default_locale() : 'en';
+        $loc = $alternates[$defaultLocale]
+            ?? ($alternates['x-default'] ?? null)
+            ?? (function_exists('frontend_url') ? frontend_url($path) : url($path));
 
         return [
-            'loc' => $alternates[$defaultLocale] ?? reset($alternates),
+            'loc' => $loc,
             'lastmod' => $this->toAtom($lastmod),
             'changefreq' => $changefreq,
             'priority' => $priority,
@@ -119,9 +179,42 @@ class SitemapController extends Controller
         ];
     }
 
+    private function applyXDefault(
+        array $alternates,
+        string $path,
+        array $overrides,
+        ?string $xDefaultLocale,
+        bool $absoluteOnly = false
+    ): array {
+        $choice = strtolower(trim((string) $xDefaultLocale));
+        if ($choice === '' || $choice === SitemapLink::X_DEFAULT_AUTO) {
+            return $alternates;
+        }
+
+        if ($choice === SitemapLink::X_DEFAULT_OMIT) {
+            unset($alternates['x-default']);
+
+            return $alternates;
+        }
+
+        if ($absoluteOnly) {
+            return $alternates;
+        }
+
+        if (isset($alternates[$choice])) {
+            $alternates['x-default'] = $alternates[$choice];
+        } elseif (isset($overrides[$choice])) {
+            $alternates['x-default'] = $overrides[$choice];
+        } elseif (function_exists('frontend_url')) {
+            $alternates['x-default'] = frontend_url($path, [], $choice);
+        }
+
+        return $alternates;
+    }
+
     private function toAtom($date): ?string
     {
-        if (!$date) {
+        if (! $date) {
             return null;
         }
 
@@ -130,36 +223,19 @@ class SitemapController extends Controller
         return $carbon->toAtomString();
     }
 
-    private function cmsPages()
+    private function hasSitemapLinksTable(): bool
     {
         try {
-            if (!Schema::hasTable('cms_pages')) {
-                return collect();
-            }
-
-            return CmsPage::query()
-                ->active()
-                ->whereIn('slug', array_keys(self::CMS_ROUTES))
-                ->with([
-                    'sections' => static function ($query) {
-                        $query->active()->with([
-                            'items' => static function ($itemsQuery) {
-                                $itemsQuery->active();
-                            },
-                        ]);
-                    },
-                ])
-                ->get()
-                ->keyBy('slug');
+            return Schema::hasTable('sitemap_links');
         } catch (Throwable $exception) {
-            return collect();
+            return false;
         }
     }
 
     private function publishedBlogPosts()
     {
         try {
-            if (!Schema::hasTable('blog_posts')) {
+            if (! Schema::hasTable('blog_posts')) {
                 return collect();
             }
 
@@ -178,7 +254,7 @@ class SitemapController extends Controller
     private function publicClinics(int $appType)
     {
         try {
-            if (!Schema::hasTable('clinics')) {
+            if (! Schema::hasTable('clinics')) {
                 return collect();
             }
 
@@ -196,36 +272,5 @@ class SitemapController extends Controller
         } catch (Throwable $exception) {
             return collect();
         }
-    }
-
-    private function pageLastModified(CmsPage $page): Carbon
-    {
-        $dates = collect([$page->updated_at]);
-        $sectionIds = $page->sections->pluck('id')->all();
-        $itemIds = $page->sections->flatMap->items->pluck('id')->all();
-
-        $dates = $dates
-            ->merge($page->sections->pluck('updated_at'))
-            ->merge($page->sections->flatMap->items->pluck('updated_at'))
-            ->merge($this->mediaUpdatedDates(CmsSection::class, $sectionIds))
-            ->merge($this->mediaUpdatedDates(CmsItem::class, $itemIds))
-            ->filter();
-
-        return $dates
-            ->map(static fn ($date) => $date instanceof Carbon ? $date : Carbon::parse($date))
-            ->sortDesc()
-            ->first() ?? now();
-    }
-
-    private function mediaUpdatedDates(string $modelType, array $modelIds)
-    {
-        if ($modelIds === []) {
-            return collect();
-        }
-
-        return Media::query()
-            ->where('model_type', $modelType)
-            ->whereIn('model_id', $modelIds)
-            ->pluck('updated_at');
     }
 }
