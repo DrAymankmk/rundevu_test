@@ -239,10 +239,6 @@ class BlogPostController extends Controller
 
             $slug = BlogPost::uniqueSlug($slug, $ignorePostId);
 
-            if (in_array($slug, $resolved, true)) {
-                $slug = BlogPost::uniqueSlug($slug . '-' . $locale, $ignorePostId);
-            }
-
             $resolved[$locale] = $slug;
         }
 
