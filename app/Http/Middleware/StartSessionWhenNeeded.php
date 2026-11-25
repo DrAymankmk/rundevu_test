@@ -100,6 +100,8 @@ class StartSessionWhenNeeded
             'doctors',
             'social-media',
             'sitemap.xml',
+            'sitemap-en.xml',
+            'sitemap-ar.xml',
             'robots.txt',
         ];
 

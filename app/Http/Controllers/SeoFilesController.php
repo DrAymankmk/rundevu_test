@@ -84,6 +84,8 @@ class SeoFilesController extends Controller
             'Disallow: /test',
             '',
             'Sitemap: ' . $baseUrl . '/sitemap.xml',
+            'Sitemap: ' . $baseUrl . '/sitemap-en.xml',
+            'Sitemap: ' . $baseUrl . '/sitemap-ar.xml',
             '',
         ]);
 

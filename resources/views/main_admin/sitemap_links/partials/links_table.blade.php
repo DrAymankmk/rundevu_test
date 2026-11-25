@@ -7,6 +7,8 @@
 				<tr>
 					<th>{{ __('sitemap_links.name') }}</th>
 					<th>{{ __('sitemap_links.path') }}</th>
+					<th>{{ __('sitemap_links.url_en') }}</th>
+					<th>{{ __('sitemap_links.url_ar') }}</th>
 					<th>{{ __('sitemap_links.changefreq') }}</th>
 					<th>{{ __('sitemap_links.priority') }}</th>
 					<th>{{ __('sitemap_links.lastmod') }}</th>
@@ -19,6 +21,13 @@
 			</thead>
 			<tbody>
 				@foreach($links as $link)
+				@php
+					$path = $link->isPage() ? $link->normalizedPath() : null;
+					$urlEn = $path ? (preg_match('/^https?:\/\//i', $path) ? $path : frontend_url($path, [], 'en')) : null;
+					$urlAr = $path ? (preg_match('/^https?:\/\//i', $path) ? $path : frontend_url($path, [], 'ar')) : null;
+					$xDefault = $link->x_default_locale ?: \App\Models\SitemapLink::X_DEFAULT_AUTO;
+					$xDefaultLabel = \App\Models\SitemapLink::xDefaultOptions()[$xDefault] ?? $xDefault;
+				@endphp
 				<tr>
 					<td class="fw-semibold">
 						{{ $link->title }}
@@ -31,6 +40,24 @@
 							<span class="text-muted">{{ __('sitemap_links.no_path') }} ({{ $link->group_key }})</span>
 						@else
 							<code>{{ $link->path }}</code>
+						@endif
+					</td>
+					<td>
+						@if($urlEn)
+							<a href="{{ $urlEn }}" target="_blank" rel="noopener noreferrer" class="small">
+								{{ \Illuminate\Support\Str::limit($urlEn, 42) }}
+							</a>
+						@else
+							<span class="text-muted">—</span>
+						@endif
+					</td>
+					<td>
+						@if($urlAr)
+							<a href="{{ $urlAr }}" target="_blank" rel="noopener noreferrer" class="small">
+								{{ \Illuminate\Support\Str::limit($urlAr, 42) }}
+							</a>
+						@else
+							<span class="text-muted">—</span>
 						@endif
 					</td>
 					<td>{{ $link->changefreq }}</td>
@@ -49,13 +76,7 @@
 							<span class="badge bg-secondary-subtle text-secondary">OFF</span>
 						@endif
 					</td>
-					<td>
-						@php
-							$xDefault = $link->x_default_locale ?: \App\Models\SitemapLink::X_DEFAULT_AUTO;
-							$xDefaultLabel = \App\Models\SitemapLink::xDefaultOptions()[$xDefault] ?? $xDefault;
-						@endphp
-						{{ $xDefaultLabel }}
-					</td>
+					<td>{{ $xDefaultLabel }}</td>
 					<td>{{ $link->sort_order }}</td>
 					<td>
 						<form action="{{ route('sitemap-links.toggle-status', $link->id) }}" method="POST" class="d-inline">

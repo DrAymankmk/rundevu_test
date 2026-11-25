@@ -23,7 +23,10 @@ use Illuminate\Support\Facades\Schema;
 
 use Illuminate\Support\Facades\Artisan;
 
-Route::get('/sitemap.xml', 'SitemapController')->name('sitemap');
+Route::get('/sitemap.xml', 'SitemapController@index')->name('sitemap');
+Route::get('/sitemap-{locale}.xml', 'SitemapController@locale')
+    ->where('locale', 'en|ar')
+    ->name('sitemap.locale');
 Route::get('/robots.txt', 'SeoFilesController@robots')->name('robots');
 Route::get('/clear', function () {
 //    Artisan::call('optimize:clear');

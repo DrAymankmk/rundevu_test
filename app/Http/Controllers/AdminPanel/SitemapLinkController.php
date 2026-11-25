@@ -3,19 +3,24 @@
 namespace App\Http\Controllers\AdminPanel;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\SitemapController;
 use App\Models\SitemapLink;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
 class SitemapLinkController extends Controller
 {
-    public function index()
+    public function index(SitemapController $sitemapController)
     {
         $links = SitemapLink::ordered()->get();
         $pages = $links->where('link_type', SitemapLink::TYPE_PAGE)->values();
         $groups = $links->where('link_type', SitemapLink::TYPE_GROUP)->values();
+        $sitemapCounts = [
+            'en' => $sitemapController->urlCount('en'),
+            'ar' => $sitemapController->urlCount('ar'),
+        ];
 
-        return view('main_admin.sitemap_links.index', compact('pages', 'groups'));
+        return view('main_admin.sitemap_links.index', compact('pages', 'groups', 'sitemapCounts'));
     }
 
     public function create()
