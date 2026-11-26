@@ -106,18 +106,39 @@
     {!! $deferCss($frontendCss('magnific-popup.min.css')) !!}
     @stack('styles')
     <style>
+        /* Prevent RTL pages from gaining a huge horizontal scroll area.
+           body already uses overflow-x:hidden; html must too or off-screen
+           absolute children (e.g. skip-link) expand document scrollWidth. */
+        html {
+            overflow-x: clip;
+        }
         .skip-link {
             position: absolute;
-            left: -9999px;
-            top: 0;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            clip-path: inset(50%);
+            white-space: nowrap;
+            border: 0;
             z-index: 10000;
             background: #0b1b4a;
             color: #fff;
-            padding: 8px 16px;
         }
         .skip-link:focus {
-            left: 8px;
+            position: fixed;
+            inset-inline-start: 8px;
             top: 8px;
+            width: auto;
+            height: auto;
+            margin: 0;
+            padding: 8px 16px;
+            overflow: visible;
+            clip: auto;
+            clip-path: none;
+            white-space: normal;
         }
     </style>
 </head>
