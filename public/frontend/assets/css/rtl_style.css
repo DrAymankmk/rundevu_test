@@ -115,7 +115,7 @@ Version: 1.0.0
   --main-container: 1620px;
   --container-gutters: 24px;
   --section-space: 120px;
-  --section-space-mobile: 80px;
+  --section-space-mobile: 40px;
   --section-title-space: 60px;
   --ripple-ani-duration: 5s;
 }
@@ -34819,11 +34819,11 @@ span.select2-selection.select2-selection--single:focus {
 @media (max-width: 991px) {
   .space,
   .space-top {
-    padding-block-start: var(--section-space-mobile);
+    padding-block-start: 30px;
   }
   .space,
   .space-bottom {
-    padding-block-end: var(--section-space-mobile);
+    padding-block-end: 30px;
   }
   .space-extra,
   .space-extra-top {

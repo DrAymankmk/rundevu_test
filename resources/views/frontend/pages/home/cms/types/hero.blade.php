@@ -194,7 +194,7 @@ $googleUrl = website_store_url('google_play');
 								</div>
 							</div>
 							<div class="col-xl-5">
-								<div class="hero-app-cta" style="padding-top: 280px;"
+								<div class="hero-app-cta"
 									data-ani="slideinup"
 									data-ani-delay="0.5s">
 									@if($appleUrl !== '' || $googleUrl !== '')
